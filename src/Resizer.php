@@ -15,12 +15,17 @@ use Contao\CoreBundle\Adapter\AdapterFactoryInterface;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
- * Creates Image objects
+ * Resizes Image objects
  *
  * @author Martin Auswöger <martin@auswoeger.com>
  */
-class ImageFactory
+class Resizer
 {
+    /**
+     * @var ResizeCalculator
+     */
+    private $calculator;
+
     /**
      * @var ImagineInterface
      */
@@ -49,27 +54,28 @@ class ImageFactory
      * @param AdapterFactoryInterface $adapterFactory The adapter factory
      */
     public function __construct(
+        ResizeCalculator $calculator,
         ImagineInterface $imagine,
         Filesystem $filesystem,
         AdapterFactoryInterface $adapterFactory
     ) {
+        $this->calculator = $calculator;
         $this->imagine = $imagine;
         $this->filesystem = $filesystem;
         $this->adapterFactory = $adapterFactory;
     }
 
     /**
-     * Creates an Image object
+     * Resizes an Image object
      *
-     * @param string    $path The path to the source image
-     * @param int|array $size The ID of an image size or an array with width
-     *                        height and resize mode
+     * @param Image               $image        The source image
+     * @param ResizeConfiguration $resizeConfig The resize configuration
      *
-     * @return Image The created image object
+     * @return Image The resized image as new object
      */
-    public function create($path, $size)
+    public function resize(Image $image, ResizeConfiguration $resizeConfig)
     {
-        // Create an `Image` and a `ResizeConfiguration`, pass it to `Resizer`
-        // and return the resulting `Image`.
+        // Pass the `Image` data to the `ResizeCalculator`, resize the image
+        // based on the result and return the resized image
     }
 }
