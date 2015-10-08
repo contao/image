@@ -37,32 +37,41 @@ class Resizer
     private $config;
 
     /**
-     * @var AdapterFactoryInterface
-     */
-    private $adapterFactory;
-
-    /**
      * @var Filesystem
      */
     private $filesystem;
 
     /**
+     * @var string
+     */
+    private $path;
+
+    /**
+     * @var AdapterFactoryInterface
+     */
+    private $adapterFactory;
+
+    /**
      * Constructor.
      *
+     * @param ResizeCalculator        $calculator     The resize calculator object
      * @param ImagineInterface        $imagine        The imagine object
      * @param Filesystem              $filesystem     The filesystem object
+     * @param string                  $path           The absolute image assets path
      * @param AdapterFactoryInterface $adapterFactory The adapter factory
      */
     public function __construct(
         ResizeCalculator $calculator,
         ImagineInterface $imagine,
         Filesystem $filesystem,
-        AdapterFactoryInterface $adapterFactory
+        $path/*,
+        AdapterFactoryInterface $adapterFactory*/
     ) {
         $this->calculator = $calculator;
         $this->imagine = $imagine;
         $this->filesystem = $filesystem;
-        $this->adapterFactory = $adapterFactory;
+        $this->path = (string) $path;
+        //$this->adapterFactory = $adapterFactory;
     }
 
     /**
@@ -75,7 +84,48 @@ class Resizer
      */
     public function resize(Image $image, ResizeConfiguration $resizeConfig)
     {
-        // Pass the `Image` data to the `ResizeCalculator`, resize the image
-        // based on the result and return the resized image
+        $coordinates = $this->calculator->calculate(
+            $resizeConfig,
+            $image->getDimensions(),
+            $image->getImportantPart()
+        );
+
+        $targetPath = $this->path . '/' . $this->createTargetPath($image->getPath(), $coordinates);
+
+        if (!$this->filesystem->exists(dirname($targetPath))) {
+            $this->filesystem->mkdir(dirname($targetPath));
+        }
+
+        $this->imagine
+            ->open($image->getPath())
+            ->resize($coordinates->getSize())
+            ->crop($coordinates->getCropStart(), $coordinates->getCropSize())
+            ->save($targetPath);
+
+        return new Image($this->imagine, $this->filesystem, $targetPath);
+    }
+
+    /**
+     * Creates the target path
+     *
+     * @param string            $path        The source image path
+     * @param ResizeCoordinates $coordinates The resize coordinates
+     *
+     * @return string The realtive target path
+     */
+    private function createTargetPath($path, ResizeCoordinates $coordinates)
+    {
+        $hash = substr(md5(implode('|', [
+            $path,
+            filemtime($path),
+            serialize($coordinates),
+        ])), 0, 9);
+
+        $pathinfo = pathinfo($path);
+
+        return substr($hash, 0, 1)
+            . '/' . $pathinfo['filename']
+            . '-' . substr($hash, 1)
+            . '.' . $pathinfo['extension'];
     }
 }
