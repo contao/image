@@ -11,6 +11,7 @@
 namespace Contao\CoreBundle\Image;
 
 use Imagine\Image\ImagineInterface;
+use Imagine\Image\Point;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
@@ -83,6 +84,12 @@ class Image
      */
     public function getDimensions()
     {
+        if (null === $this->dimensions) {
+            $this->dimensions = new ImageDimensions(
+                $this->imagine->open($this->getPath())->getSize()
+            );
+        }
+
         return $this->dimensions;
     }
 
@@ -93,6 +100,13 @@ class Image
      */
     public function getImportantPart()
     {
+        if (null === $this->importantPart) {
+            $this->importantPart = new ImportantPart(
+                new Point(0, 0),
+                $this->getDimensions()->getSize()
+            );
+        }
+
         return $this->importantPart;
     }
 
