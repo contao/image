@@ -74,10 +74,11 @@ class Resizer
      *
      * @param Image               $image        The source image
      * @param ResizeConfiguration $resizeConfig The resize configuration
+     * @param string              $targetPath   The absolute target path
      *
      * @return Image The resized image as new object
      */
-    public function resize(Image $image, ResizeConfiguration $resizeConfig)
+    public function resize(Image $image, ResizeConfiguration $resizeConfig, $targetPath = null)
     {
         $coordinates = $this->calculator->calculate(
             $resizeConfig,
@@ -85,7 +86,9 @@ class Resizer
             $image->getImportantPart()
         );
 
-        $targetPath = $this->path . '/' . $this->createTargetPath($image->getPath(), $coordinates);
+        if (null === $targetPath) {
+            $targetPath = $this->path . '/' . $this->createTargetPath($image->getPath(), $coordinates);
+        }
 
         if (!$this->filesystem->exists(dirname($targetPath))) {
             $this->filesystem->mkdir(dirname($targetPath));

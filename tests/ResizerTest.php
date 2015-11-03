@@ -94,5 +94,10 @@ class ResizerTest extends TestCase
 
         $this->assertEquals(new ImageDimensions(new Box(100, 100)), $resizedImage->getDimensions());
         $this->assertRegExp('(/[0-9a-f]/dummy-[0-9a-f]{8}.jpg$)', $resizedImage->getPath());
+
+        $resizedImage = $resizer->resize($image, $configuration, $this->getRootDir() . '/system/tmp/images/target-path.jpg');
+
+        $this->assertEquals(new ImageDimensions(new Box(100, 100)), $resizedImage->getDimensions());
+        $this->assertEquals($this->getRootDir() . '/system/tmp/images/target-path.jpg', $resizedImage->getPath());
     }
 }
