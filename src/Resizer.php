@@ -11,7 +11,7 @@
 namespace Contao\CoreBundle\Image;
 
 use Imagine\Image\ImagineInterface;
-use Contao\CoreBundle\Adapter\AdapterFactoryInterface;
+use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
@@ -32,11 +32,6 @@ class Resizer
     private $imagine;
 
     /**
-     * @var ConfigAdapter
-     */
-    private $config;
-
-    /**
      * @var Filesystem
      */
     private $filesystem;
@@ -47,31 +42,31 @@ class Resizer
     private $path;
 
     /**
-     * @var AdapterFactoryInterface
+     * @var ContaoFrameworkInterface
      */
-    private $adapterFactory;
+    private $framework;
 
     /**
      * Constructor.
      *
-     * @param ResizeCalculator        $calculator     The resize calculator object
-     * @param ImagineInterface        $imagine        The imagine object
-     * @param Filesystem              $filesystem     The filesystem object
-     * @param string                  $path           The absolute image assets path
-     * @param AdapterFactoryInterface $adapterFactory The adapter factory
+     * @param ResizeCalculator         $calculator The resize calculator object
+     * @param ImagineInterface         $imagine    The imagine object
+     * @param Filesystem               $filesystem The filesystem object
+     * @param string                   $path       The absolute image assets path
+     * @param ContaoFrameworkInterface $framework  The Contao framework
      */
     public function __construct(
         ResizeCalculator $calculator,
         ImagineInterface $imagine,
         Filesystem $filesystem,
-        $path/*,
-        AdapterFactoryInterface $adapterFactory*/
+        $path,
+        ContaoFrameworkInterface $framework
     ) {
         $this->calculator = $calculator;
         $this->imagine = $imagine;
         $this->filesystem = $filesystem;
         $this->path = (string) $path;
-        //$this->adapterFactory = $adapterFactory;
+        $this->framework = $framework;
     }
 
     /**

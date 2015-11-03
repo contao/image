@@ -35,7 +35,7 @@ class ResizerTest extends TestCase
      *
      * @return Resizer
      */
-    private function createResizer($calculator = null, $imagine = null, $filesystem = null, $path = null)
+    private function createResizer($calculator = null, $imagine = null, $filesystem = null, $path = null, $framework = null)
     {
         if (null === $calculator) {
             $calculator = $this->getMock('Contao\CoreBundle\Image\ResizeCalculator');
@@ -53,7 +53,11 @@ class ResizerTest extends TestCase
             $path = $this->getRootDir() . '/system/tmp/images';
         }
 
-        return new Resizer($calculator, $imagine, $filesystem, $path);
+        if (null === $framework) {
+            $framework = $this->getMock('Contao\CoreBundle\Framework\ContaoFrameworkInterface');
+        }
+
+        return new Resizer($calculator, $imagine, $filesystem, $path, $framework);
     }
 
     /**
