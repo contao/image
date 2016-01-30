@@ -15,6 +15,7 @@ use Contao\CoreBundle\Image\Resizer;
 use Contao\CoreBundle\Image\ImageDimensions;
 use Contao\CoreBundle\Image\ImportantPart;
 use Contao\CoreBundle\Image\ResizeCoordinates;
+use Contao\CoreBundle\ImagineSvg\Imagine as ImagineSvg;
 use Symfony\Component\Filesystem\Filesystem;
 use Imagine\Image\Box;
 use Imagine\Image\Point;
@@ -35,7 +36,7 @@ class ResizerTest extends TestCase
      *
      * @return Resizer
      */
-    private function createResizer($calculator = null, $imagine = null, $filesystem = null, $path = null, $framework = null)
+    private function createResizer($calculator = null, $imagine = null, $imagineSvg = null, $filesystem = null, $path = null, $framework = null)
     {
         if (null === $calculator) {
             $calculator = $this->getMock('Contao\CoreBundle\Image\ResizeCalculator');
@@ -43,6 +44,10 @@ class ResizerTest extends TestCase
 
         if (null === $imagine) {
             $imagine = $this->getMock('Imagine\Image\ImagineInterface');
+        }
+
+        if (null === $imagineSvg) {
+            $imagineSvg = $this->getMock('Imagine\Image\ImagineInterface');
         }
 
         if (null === $filesystem) {
@@ -57,7 +62,7 @@ class ResizerTest extends TestCase
             $framework = $this->getMock('Contao\CoreBundle\Framework\ContaoFrameworkInterface');
         }
 
-        return new Resizer($calculator, $imagine, $filesystem, $path, $framework);
+        return new Resizer($calculator, $imagine, $imagineSvg, $filesystem, $path, $framework);
     }
 
     /**
@@ -94,10 +99,58 @@ class ResizerTest extends TestCase
 
         $this->assertEquals(new ImageDimensions(new Box(100, 100)), $resizedImage->getDimensions());
         $this->assertRegExp('(/[0-9a-f]/dummy-[0-9a-f]{8}.jpg$)', $resizedImage->getPath());
+        unlink($resizedImage->getPath());
 
         $resizedImage = $resizer->resize($image, $configuration, $this->getRootDir() . '/system/tmp/images/target-path.jpg');
 
         $this->assertEquals(new ImageDimensions(new Box(100, 100)), $resizedImage->getDimensions());
         $this->assertEquals($this->getRootDir() . '/system/tmp/images/target-path.jpg', $resizedImage->getPath());
+        unlink($resizedImage->getPath());
+    }
+
+    /**
+     * Tests the resize() method for SVG files.
+     */
+    public function testResizeSvg()
+    {
+        $xml = '<?xml version="1.0"?>' .
+            '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="100" height="100"></svg>';
+
+
+        if (!is_dir($this->getRootDir() . '/system/tmp/images')) {
+            mkdir($this->getRootDir() . '/system/tmp/images', 0777, true);
+        }
+        file_put_contents($this->getRootDir() . '/system/tmp/images/dummy.svg', $xml);
+
+        $calculator = $this->getMock('Contao\CoreBundle\Image\ResizeCalculator');
+        $calculator->method('calculate')->willReturn(new ResizeCoordinates(
+            new Box(100, 100),
+            new Point(0, 0),
+            new Box(100, 100)
+        ));
+
+        $resizer = $this->createResizer($calculator, null, new ImagineSvg);
+
+        $image = $this->getMockBuilder('Contao\CoreBundle\Image\Image')
+             ->disableOriginalConstructor()
+             ->getMock();
+        $image->method('getDimensions')->willReturn(new ImageDimensions(new Box(100, 100)));
+        $image->method('getPath')->willReturn($this->getRootDir() . '/system/tmp/images/dummy.svg');
+
+        $configuration = $this->getMock('Contao\CoreBundle\Image\ResizeConfiguration');
+
+        $resizedImage = $resizer->resize($image, $configuration);
+
+        $this->assertEquals(new ImageDimensions(new Box(100, 100)), $resizedImage->getDimensions());
+        $this->assertRegExp('(/[0-9a-f]/dummy-[0-9a-f]{8}.svg$)', $resizedImage->getPath());
+        unlink($resizedImage->getPath());
+
+        $resizedImage = $resizer->resize($image, $configuration, $this->getRootDir() . '/system/tmp/images/target-path.svg');
+
+        $this->assertEquals(new ImageDimensions(new Box(100, 100)), $resizedImage->getDimensions());
+        $this->assertEquals($this->getRootDir() . '/system/tmp/images/target-path.svg', $resizedImage->getPath());
+        unlink($resizedImage->getPath());
+
+        unlink($this->getRootDir() . '/system/tmp/images/dummy.svg');
     }
 }

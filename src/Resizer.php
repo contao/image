@@ -32,6 +32,11 @@ class Resizer
     private $imagine;
 
     /**
+     * @var ImagineInterface
+     */
+    private $imagineSvg;
+
+    /**
      * @var Filesystem
      */
     private $filesystem;
@@ -51,6 +56,7 @@ class Resizer
      *
      * @param ResizeCalculator         $calculator The resize calculator object
      * @param ImagineInterface         $imagine    The imagine object
+     * @param ImagineInterface         $imagineSvg The imagine object for SVG files
      * @param Filesystem               $filesystem The filesystem object
      * @param string                   $path       The absolute image assets path
      * @param ContaoFrameworkInterface $framework  The Contao framework
@@ -58,12 +64,14 @@ class Resizer
     public function __construct(
         ResizeCalculator $calculator,
         ImagineInterface $imagine,
+        ImagineInterface $imagineSvg,
         Filesystem $filesystem,
         $path,
         ContaoFrameworkInterface $framework
     ) {
         $this->calculator = $calculator;
         $this->imagine = $imagine;
+        $this->imagineSvg = $imagineSvg;
         $this->filesystem = $filesystem;
         $this->path = (string) $path;
         $this->framework = $framework;
@@ -94,13 +102,23 @@ class Resizer
             $this->filesystem->mkdir(dirname($targetPath));
         }
 
-        $this->imagine
+        if (in_array(
+            strtolower(pathinfo($image->getPath(), PATHINFO_EXTENSION)),
+            ['svg', 'svgz']
+        )) {
+            $imagine = $this->imagineSvg;
+        }
+        else {
+            $imagine = $this->imagine;
+        }
+
+        $imagine
             ->open($image->getPath())
             ->resize($coordinates->getSize())
             ->crop($coordinates->getCropStart(), $coordinates->getCropSize())
             ->save($targetPath);
 
-        return new Image($this->imagine, $this->filesystem, $targetPath);
+        return new Image($imagine, $this->filesystem, $targetPath);
     }
 
     /**

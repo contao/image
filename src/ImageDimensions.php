@@ -11,6 +11,8 @@
 namespace Contao\CoreBundle\Image;
 
 use Imagine\Image\BoxInterface;
+use Contao\CoreBundle\ImagineSvg\RelativeBoxInterface;
+use Contao\CoreBundle\ImagineSvg\UndefinedBoxInterface;
 
 /**
  * Image Dimensions
@@ -30,17 +32,33 @@ class ImageDimensions
     private $relative;
 
     /**
+     * @var bool
+     */
+    private $undefined;
+
+    /**
      * Constructor.
      *
-     * @param BoxInterface $size     The size
-     * @param bool         $relative The relative flag
+     * @param BoxInterface $size      The size
+     * @param bool         $relative  The relative flag
+     * @param bool         $undefined The undefined flag
      */
     public function __construct(
         BoxInterface $size,
-        $relative = false
+        $relative = null,
+        $undefined = null
     ) {
+        if ($relative === null && $size instanceof RelativeBoxInterface) {
+            $relative = true;
+        }
+
+        if ($undefined === null && $size instanceof UndefinedBoxInterface) {
+            $undefined = true;
+        }
+
         $this->size = $size;
         $this->relative = (bool) $relative;
+        $this->undefined = (bool) $undefined;
     }
 
     /**
@@ -61,5 +79,15 @@ class ImageDimensions
     public function isRelative()
     {
         return $this->relative;
+    }
+
+    /**
+     * Gets the undefined flag.
+     *
+     * @return bool
+     */
+    public function isUndefined()
+    {
+        return $this->undefined;
     }
 }
