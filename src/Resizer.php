@@ -134,7 +134,7 @@ class Resizer
         $hash = substr(md5(implode('|', [
             $path,
             filemtime($path),
-            serialize($coordinates),
+            (string) $coordinates,
         ])), 0, 9);
 
         $pathinfo = pathinfo($path);

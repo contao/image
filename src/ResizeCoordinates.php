@@ -81,4 +81,16 @@ class ResizeCoordinates
     {
         return $this->cropSize;
     }
+
+    /**
+     * String representation of the coordinates.
+     *
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->size->getWidth() . 'x' . $this->size->getHeight() .
+            ',' . $this->cropStart->getX() . 'x' . $this->cropStart->getY() .
+            ',' . $this->cropSize->getWidth() . 'x' . $this->cropSize->getHeight();
+    }
 }
