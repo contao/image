@@ -33,6 +33,11 @@ class PictureConfigurationItem
     private $densities = '';
 
     /**
+     * @var string
+     */
+    private $media = '';
+
+    /**
      * Gets the resize configuration.
      *
      * @return ResizeConfiguration
@@ -104,6 +109,30 @@ class PictureConfigurationItem
     public function setDensities($densities)
     {
         $this->densities = (string) $densities;
+
+        return $this;
+    }
+
+    /**
+     * Gets the media.
+     *
+     * @return string
+     */
+    public function getMedia()
+    {
+        return $this->media;
+    }
+
+    /**
+     * Sets the media.
+     *
+     * @param string $media the media
+     *
+     * @return self
+     */
+    public function setMedia($media)
+    {
+        $this->media = (string) $media;
 
         return $this;
     }
