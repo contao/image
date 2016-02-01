@@ -25,7 +25,7 @@ use Imagine\Image\Point;
 class ImageTest extends TestCase
 {
     /**
-     * Create an image instance helper
+     * Create an image instance helper.
      *
      * @param ImagineInterface $imagine
      * @param Filesystem       $filesystem

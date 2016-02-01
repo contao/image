@@ -31,7 +31,7 @@ class ResizeCalculatorTest extends TestCase
      */
     public function testInstantiation()
     {
-        $calculator = new ResizeCalculator;
+        $calculator = new ResizeCalculator();
 
         $this->assertInstanceOf('Contao\\CoreBundle\\Image\\ResizeCalculator', $calculator);
     }
@@ -46,7 +46,7 @@ class ResizeCalculatorTest extends TestCase
      */
     public function testCalculateWithoutImportantPart(array $arguments, array $expectedResult)
     {
-        $calculator = new ResizeCalculator;
+        $calculator = new ResizeCalculator();
 
         $expected = new ResizeCoordinates(
             new Box($expectedResult['target_width'], $expectedResult['target_height']),
@@ -54,7 +54,7 @@ class ResizeCalculatorTest extends TestCase
             new Box($expectedResult['width'], $expectedResult['height'])
         );
 
-        $config = (new ResizeConfiguration)
+        $config = (new ResizeConfiguration())
             ->setWidth($arguments[0])
             ->setHeight($arguments[1]);
 
@@ -283,7 +283,7 @@ class ResizeCalculatorTest extends TestCase
      */
     public function testCalculateWithImportantPart(array $arguments, array $expectedResult)
     {
-        $calculator = new ResizeCalculator;
+        $calculator = new ResizeCalculator();
 
         $expected = new ResizeCoordinates(
             new Box($expectedResult['target_width'], $expectedResult['target_height']),
@@ -291,7 +291,7 @@ class ResizeCalculatorTest extends TestCase
             new Box($expectedResult['width'], $expectedResult['height'])
         );
 
-        $config = (new ResizeConfiguration)
+        $config = (new ResizeConfiguration())
             ->setWidth($arguments[0])
             ->setHeight($arguments[1])
             ->setZoomLevel($arguments[5]);
@@ -455,5 +455,4 @@ class ResizeCalculatorTest extends TestCase
             ],
         ];
     }
-
 }

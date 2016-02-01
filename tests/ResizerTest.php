@@ -13,7 +13,6 @@ namespace Contao\CoreBundle\Test\Image;
 use Contao\CoreBundle\Test\TestCase;
 use Contao\CoreBundle\Image\Resizer;
 use Contao\CoreBundle\Image\ImageDimensions;
-use Contao\CoreBundle\Image\ImportantPart;
 use Contao\CoreBundle\Image\ResizeCoordinates;
 use Contao\CoreBundle\ImagineSvg\Imagine as ImagineSvg;
 use Symfony\Component\Filesystem\Filesystem;
@@ -28,7 +27,7 @@ use Imagine\Image\Point;
 class ResizerTest extends TestCase
 {
     /**
-     * Create a resizer instance helper
+     * Create a resizer instance helper.
      *
      * @param ImagineInterface $imagine
      * @param Filesystem       $filesystem
@@ -51,7 +50,7 @@ class ResizerTest extends TestCase
         }
 
         if (null === $filesystem) {
-            $filesystem = new Filesystem;
+            $filesystem = new Filesystem();
         }
 
         if (null === $path) {
@@ -85,7 +84,7 @@ class ResizerTest extends TestCase
             new Box(100, 100)
         ));
 
-        $resizer = $this->createResizer($calculator, new \Imagine\Gd\Imagine);
+        $resizer = $this->createResizer($calculator, new \Imagine\Gd\Imagine());
 
         $image = $this->getMockBuilder('Contao\CoreBundle\Image\Image')
              ->disableOriginalConstructor()
@@ -116,7 +115,6 @@ class ResizerTest extends TestCase
         $xml = '<?xml version="1.0"?>' .
             '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="100" height="100"></svg>';
 
-
         if (!is_dir($this->getRootDir() . '/system/tmp/images')) {
             mkdir($this->getRootDir() . '/system/tmp/images', 0777, true);
         }
@@ -129,7 +127,7 @@ class ResizerTest extends TestCase
             new Box(100, 100)
         ));
 
-        $resizer = $this->createResizer($calculator, null, new ImagineSvg);
+        $resizer = $this->createResizer($calculator, null, new ImagineSvg());
 
         $image = $this->getMockBuilder('Contao\CoreBundle\Image\Image')
              ->disableOriginalConstructor()

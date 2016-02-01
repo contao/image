@@ -11,7 +11,7 @@
 namespace Contao\CoreBundle\Image;
 
 /**
- * Generates Picture objects
+ * Generates Picture objects.
  *
  * @author Martin Auswöger <martin@auswoeger.com>
  */
@@ -33,7 +33,7 @@ class PictureGenerator
     }
 
     /**
-     * Generates a Picture object
+     * Generates a Picture object.
      *
      * @param Image                $image  The Image object
      * @param PictureConfiguration $config The configuration
@@ -73,7 +73,6 @@ class PictureGenerator
         $srcset = [];
 
         foreach ($densities as $density) {
-
             $resizeConfig = clone $config->getResizeConfig();
             $resizeConfig->setWidth($resizeConfig->getWidth() * $density);
             $resizeConfig->setHeight($resizeConfig->getHeight() * $density);
@@ -106,7 +105,6 @@ class PictureGenerator
             }
 
             $srcset[] = $src;
-
         }
 
         $attributes['srcset'] = htmlspecialchars(implode(', ', $srcset), ENT_QUOTES);
@@ -115,8 +113,7 @@ class PictureGenerator
             $attributes['sizes'] = htmlspecialchars($config->getSizes(), ENT_QUOTES);
         }
 
-        if ($config->getMedia())
-        {
+        if ($config->getMedia()) {
             $attributes['media'] = htmlspecialchars($config->getMedia(), ENT_QUOTES);
         }
 

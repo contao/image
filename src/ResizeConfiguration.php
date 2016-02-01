@@ -11,12 +11,16 @@
 namespace Contao\CoreBundle\Image;
 
 /**
- * Resize configuration used by the ResizeCalculator
+ * Resize configuration used by the ResizeCalculator.
  *
  * @author Martin Auswöger <martin@auswoeger.com>
  */
 class ResizeConfiguration
 {
+    const MODE_CROP = 'crop';
+    const MODE_BOX = 'box';
+    const MODE_PROPORTIONAL = 'proportional';
+
     /**
      * @var int
      */
@@ -31,10 +35,6 @@ class ResizeConfiguration
      * @var string
      */
     private $mode = self::MODE_CROP;
-
-    const MODE_CROP = 'crop';
-    const MODE_BOX = 'box';
-    const MODE_PROPORTIONAL = 'proportional';
 
     /**
      * @var int

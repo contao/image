@@ -15,7 +15,7 @@ use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
- * Resizes Image objects
+ * Resizes Image objects.
  *
  * @author Martin Auswöger <martin@auswoeger.com>
  */
@@ -78,7 +78,7 @@ class Resizer
     }
 
     /**
-     * Resizes an Image object
+     * Resizes an Image object.
      *
      * @param Image               $image        The source image
      * @param ResizeConfiguration $resizeConfig The resize configuration
@@ -107,8 +107,7 @@ class Resizer
             ['svg', 'svgz']
         )) {
             $imagine = $this->imagineSvg;
-        }
-        else {
+        } else {
             $imagine = $this->imagine;
         }
 
@@ -122,7 +121,7 @@ class Resizer
     }
 
     /**
-     * Creates the target path
+     * Creates the target path.
      *
      * @param string            $path        The source image path
      * @param ResizeCoordinates $coordinates The resize coordinates

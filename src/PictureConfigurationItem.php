@@ -11,7 +11,7 @@
 namespace Contao\CoreBundle\Image;
 
 /**
- * Picture resize configuration item used by PictureConfiguration
+ * Picture resize configuration item used by PictureConfiguration.
  *
  * @author Martin Auswöger <martin@auswoeger.com>
  */
@@ -45,7 +45,7 @@ class PictureConfigurationItem
     public function getResizeConfig()
     {
         if (null === $this->resizeConfig) {
-            $this->setResizeConfig(new ResizeConfiguration);
+            $this->setResizeConfig(new ResizeConfiguration());
         }
 
         return $this->resizeConfig;

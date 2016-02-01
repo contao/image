@@ -14,14 +14,14 @@ use Imagine\Image\Box;
 use Imagine\Image\Point;
 
 /**
- * Calculates image coordinates for resizing Image objects
+ * Calculates image coordinates for resizing Image objects.
  *
  * @author Martin Auswöger <martin@auswoeger.com>
  */
 class ResizeCalculator
 {
     /**
-     * Resizes an Image object
+     * Resizes an Image object.
      *
      * @param ResizeConfiguration $config        The resize configuration
      * @param ImageDimensions     $dimensions    The image dimensions
@@ -67,16 +67,13 @@ class ResizeCalculator
         if ($mode === 'proportional' && $width && $height) {
             if ($zoomedImportantPart['width'] >= $zoomedImportantPart['height']) {
                 $height = null;
-            }
-            else {
+            } else {
                 $width = null;
             }
-        }
-        elseif ($mode === 'box' && $width && $height) {
+        } elseif ($mode === 'box' && $width && $height) {
             if ($zoomedImportantPart['height'] * $width / $zoomedImportantPart['width'] <= $height) {
                 $height = null;
-            }
-            else {
+            } else {
                 $width = null;
             }
         }
@@ -93,50 +90,38 @@ class ResizeCalculator
             ];
 
             if ($originalHeight * $width / $originalWidth <= $height) {
-
                 $leastZoomed['width'] = $originalHeight * $width / $height;
 
                 if ($leastZoomed['width'] > $importantPart['width']) {
                     $leastZoomed['x'] = ($originalWidth - $leastZoomed['width']) * $importantPart['x'] / ($originalWidth - $importantPart['width']);
-                }
-                else {
+                } else {
                     $leastZoomed['x'] = $importantPart['x'] + (($importantPart['width'] - $leastZoomed['width']) / 2);
                 }
-
-            }
-            else {
-
+            } else {
                 $leastZoomed['height'] = $originalWidth * $height / $width;
 
                 if ($leastZoomed['height'] > $importantPart['height']) {
                     $leastZoomed['y'] = ($originalHeight - $leastZoomed['height']) * $importantPart['y'] / ($originalHeight - $importantPart['height']);
-                }
-                else {
+                } else {
                     $leastZoomed['y'] = $importantPart['y'] + (($importantPart['height'] - $leastZoomed['height']) / 2);
                 }
-
             }
 
             // Calculate the image part for zoom 100
             $mostZoomed = $importantPart;
 
             if ($importantPart['height'] * $width / $importantPart['width'] <= $height) {
-
                 $mostZoomed['height'] = $height * $importantPart['width'] / $width;
 
                 if ($originalHeight > $importantPart['height']) {
                     $mostZoomed['y'] -= ($mostZoomed['height'] - $importantPart['height']) * $importantPart['y'] / ($originalHeight - $importantPart['height']);
                 }
-
-            }
-            else {
-
+            } else {
                 $mostZoomed['width'] = $width * $mostZoomed['height'] / $height;
 
                 if ($originalWidth > $importantPart['width']) {
                     $mostZoomed['x'] -= ($mostZoomed['width'] - $importantPart['width']) * $importantPart['x'] / ($originalWidth - $importantPart['width']);
                 }
-
             }
 
             if ($mostZoomed['width'] > $leastZoomed['width']) {
@@ -152,9 +137,7 @@ class ResizeCalculator
             $targetY = $zoomedImportantPart['y'] * $height / $zoomedImportantPart['height'];
             $targetWidth = $originalWidth * $width / $zoomedImportantPart['width'];
             $targetHeight = $originalHeight * $height / $zoomedImportantPart['height'];
-
-        }
-        else {
+        } else {
 
             // Calculate the height if only the width is given
             if ($width) {
@@ -171,7 +154,6 @@ class ResizeCalculator
             $targetHeight = $originalHeight / $zoomedImportantPart['height'] * $height;
             $targetX = $zoomedImportantPart['x'] * $targetWidth / $originalWidth;
             $targetY = $zoomedImportantPart['y'] * $targetHeight / $originalHeight;
-
         }
 
         return new ResizeCoordinates(

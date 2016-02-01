@@ -14,7 +14,7 @@ use Imagine\Image\BoxInterface;
 use Imagine\Image\PointInterface;
 
 /**
- * Important part used by the ResizeCalculator
+ * Important part used by the ResizeCalculator.
  *
  * @author Martin Auswöger <martin@auswoeger.com>
  */

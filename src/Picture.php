@@ -11,7 +11,7 @@
 namespace Contao\CoreBundle\Image;
 
 /**
- * Picture element data
+ * Picture element data.
  *
  * @author Martin Auswöger <martin@auswoeger.com>
  */
@@ -37,7 +37,8 @@ class Picture
      * @param array $img     The image tag attributes
      * @param array $sources The source tags attributes
      */
-    public function __construct(array $img, array $sources) {
+    public function __construct(array $img, array $sources)
+    {
         $this->img = $img;
         $this->sources = $sources;
     }

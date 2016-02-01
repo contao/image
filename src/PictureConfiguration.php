@@ -11,7 +11,7 @@
 namespace Contao\CoreBundle\Image;
 
 /**
- * Picture resize configuration used by the PictureGenerator
+ * Picture resize configuration used by the PictureGenerator.
  *
  * @author Martin Auswöger <martin@auswoeger.com>
  */
@@ -35,7 +35,7 @@ class PictureConfiguration
     public function getSize()
     {
         if (null === $this->size) {
-            $this->setSize(new PictureConfigurationItem);
+            $this->setSize(new PictureConfigurationItem());
         }
 
         return $this->size;

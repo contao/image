@@ -15,7 +15,7 @@ use Contao\CoreBundle\ImagineSvg\RelativeBoxInterface;
 use Contao\CoreBundle\ImagineSvg\UndefinedBoxInterface;
 
 /**
- * Image Dimensions
+ * Image Dimensions.
  *
  * @author Martin Auswöger <martin@auswoeger.com>
  */

@@ -15,7 +15,7 @@ use Imagine\Image\Point;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
- * Image data
+ * Image data.
  *
  * @author Martin Auswöger <martin@auswoeger.com>
  */
@@ -68,7 +68,7 @@ class Image
     }
 
     /**
-     * Gets the path
+     * Gets the path.
      *
      * @return string
      */
@@ -78,7 +78,7 @@ class Image
     }
 
     /**
-     * Gets the dimensions
+     * Gets the dimensions.
      *
      * @return ImageDimensions
      */
@@ -94,7 +94,7 @@ class Image
     }
 
     /**
-     * Gets the important part
+     * Gets the important part.
      *
      * @return ImportantPart
      */
@@ -111,7 +111,7 @@ class Image
     }
 
     /**
-     * Sets the important part
+     * Sets the important part.
      *
      * @param ImportantPart $importantPart The important part
      *

@@ -14,14 +14,10 @@ use Contao\CoreBundle\Test\TestCase;
 use Contao\CoreBundle\Image\PictureGenerator;
 use Contao\CoreBundle\Image\Resizer;
 use Contao\CoreBundle\Image\ImageDimensions;
-use Contao\CoreBundle\Image\ImportantPart;
 use Contao\CoreBundle\Image\ResizeConfiguration;
 use Contao\CoreBundle\Image\PictureConfiguration;
 use Contao\CoreBundle\Image\PictureConfigurationItem;
-use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
-use Symfony\Component\Filesystem\Filesystem;
 use Imagine\Image\Box;
-use Imagine\Image\Point;
 
 /**
  * Tests the PictureGenerator class.
@@ -31,9 +27,9 @@ use Imagine\Image\Point;
 class PictureGeneratorTest extends TestCase
 {
     /**
-     * Create a PictureGenerator instance helper
+     * Create a PictureGenerator instance helper.
      *
-     * @param Resizer                  $resizer
+     * @param Resizer $resizer
      *
      * @return PictureGenerator
      */
@@ -88,12 +84,12 @@ class PictureGeneratorTest extends TestCase
 
         $pictureGenerator = $this->createPictureGenerator($resizer);
 
-        $pictureConfig = new PictureConfiguration;
-        $pictureItem = new PictureConfigurationItem;
+        $pictureConfig = new PictureConfiguration();
+        $pictureItem = new PictureConfigurationItem();
         $pictureItem->setMedia('(min-width: 600px)');
         $pictureItem->setDensities('1x, 2x');
         $pictureItem->setSizes('100vw');
-        $resizeConfig = new ResizeConfiguration;
+        $resizeConfig = new ResizeConfiguration();
         $resizeConfig->setWidth(100)->setHeight(100);
         $pictureItem->setResizeConfig($resizeConfig);
         $pictureConfig->setSize($pictureItem);
