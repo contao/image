@@ -11,8 +11,8 @@
 namespace Contao\CoreBundle\Image;
 
 use Imagine\Image\BoxInterface;
-use Contao\CoreBundle\ImagineSvg\RelativeBoxInterface;
-use Contao\CoreBundle\ImagineSvg\UndefinedBoxInterface;
+use Contao\CoreBundle\Image\ImagineSvg\RelativeBoxInterface;
+use Contao\CoreBundle\Image\ImagineSvg\UndefinedBoxInterface;
 
 /**
  * Image Dimensions.

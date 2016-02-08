@@ -14,7 +14,7 @@ use Contao\CoreBundle\Test\TestCase;
 use Contao\CoreBundle\Image\Resizer;
 use Contao\CoreBundle\Image\ImageDimensions;
 use Contao\CoreBundle\Image\ResizeCoordinates;
-use Contao\CoreBundle\ImagineSvg\Imagine as ImagineSvg;
+use Contao\CoreBundle\Image\ImagineSvg\Imagine as ImagineSvg;
 use Symfony\Component\Filesystem\Filesystem;
 use Imagine\Image\Box;
 use Imagine\Image\Point;
