@@ -33,7 +33,7 @@ class PictureGeneratorTest extends TestCase
      *
      * @return PictureGenerator
      */
-    private function createPictureGenerator($resizer = null)
+    private function createPictureGenerator($resizer = null, $bypassCache = null)
     {
         if (null === $resizer) {
             $resizer = $this->getMockBuilder('Contao\CoreBundle\Image\Resizer')
@@ -41,7 +41,11 @@ class PictureGeneratorTest extends TestCase
              ->getMock();
         }
 
-        return new PictureGenerator($resizer);
+        if (null === $bypassCache) {
+            $bypassCache = false;
+        }
+
+        return new PictureGenerator($resizer, $bypassCache);
     }
 
     /**

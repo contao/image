@@ -149,4 +149,52 @@ class ResizerTest extends TestCase
 
         unlink($this->getRootDir() . '/system/tmp/images/dummy.svg');
     }
+
+    /**
+     * Tests the resize() method.
+     */
+    public function testResizeCache()
+    {
+        $calculator = $this->getMock('Contao\CoreBundle\Image\ResizeCalculator');
+        $calculator->method('calculate')->willReturn(new ResizeCoordinates(
+            new Box(100, 100),
+            new Point(0, 0),
+            new Box(100, 100)
+        ));
+
+        $resizer = $this->createResizer($calculator);
+
+        $image = $this->getMockBuilder('Contao\CoreBundle\Image\Image')
+             ->disableOriginalConstructor()
+             ->getMock();
+        $image->method('getDimensions')->willReturn(new ImageDimensions(new Box(100, 100)));
+        $image->method('getPath')->willReturn($this->getRootDir() . '/images/dummy.jpg');
+        $image->method('getImagine')->willReturn(new GdImagine());
+
+        $configuration = $this->getMock('Contao\CoreBundle\Image\ResizeConfiguration');
+
+        $resizedImage = $resizer->resize($image, $configuration);
+
+        $this->assertEquals(new ImageDimensions(new Box(100, 100)), $resizedImage->getDimensions());
+        $this->assertRegExp('(/[0-9a-f]/dummy-[0-9a-f]{8}.jpg$)', $resizedImage->getPath());
+
+        $imagePath = $resizedImage->getPath();
+
+        // Empty cache file
+        file_put_contents($imagePath, '');
+
+        // With cache
+        $resizedImage = $resizer->resize($image, $configuration);
+
+        $this->assertEquals($imagePath, $resizedImage->getPath());
+        $this->assertEquals(0, filesize($imagePath));
+
+        // Without cache
+        $resizedImage = $resizer->resize($image, $configuration, null, true);
+
+        $this->assertEquals($imagePath, $resizedImage->getPath());
+        $this->assertNotEquals(0, filesize($imagePath));
+
+        unlink($imagePath);
+    }
 }

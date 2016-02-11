@@ -25,11 +25,13 @@ class PictureGenerator
     /**
      * Constructor.
      *
-     * @param Resizer $resizer The resizer object
+     * @param Resizer $resizer     The resizer object
+     * @param bool    $bypassCache True to bypass the image cache
      */
-    public function __construct(Resizer $resizer)
+    public function __construct(Resizer $resizer, $bypassCache)
     {
         $this->resizer = $resizer;
+        $this->bypassCache = (bool) $bypassCache;
     }
 
     /**
@@ -77,7 +79,7 @@ class PictureGenerator
             $resizeConfig->setWidth($resizeConfig->getWidth() * $density);
             $resizeConfig->setHeight($resizeConfig->getHeight() * $density);
 
-            $resizedImage = $this->resizer->resize($image, $resizeConfig);
+            $resizedImage = $this->resizer->resize($image, $resizeConfig, $this->bypassCache);
 
             // TODO: add TL_FILES_URL to src
             $src = $resizedImage->getPath();

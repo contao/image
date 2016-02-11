@@ -66,10 +66,11 @@ class Resizer
      * @param Image               $image        The source image
      * @param ResizeConfiguration $resizeConfig The resize configuration
      * @param string              $targetPath   The absolute target path
+     * @param boolean             $bypassCache  True to bypass the image cache
      *
      * @return Image The resized image as new object
      */
-    public function resize(Image $image, ResizeConfiguration $resizeConfig, $targetPath = null)
+    public function resize(Image $image, ResizeConfiguration $resizeConfig, $targetPath = null, $bypassCache = false)
     {
         $coordinates = $this->calculator->calculate(
             $resizeConfig,
@@ -79,6 +80,10 @@ class Resizer
 
         if (null === $targetPath) {
             $targetPath = $this->path . '/' . $this->createTargetPath($image->getPath(), $coordinates);
+        }
+
+        if ($this->filesystem->exists($targetPath) && !$bypassCache) {
+            return new Image($image->getImagine(), $this->filesystem, $targetPath);
         }
 
         if (!$this->filesystem->exists(dirname($targetPath))) {
