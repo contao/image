@@ -68,6 +68,16 @@ class Image
     }
 
     /**
+     * Gets the imagine instance.
+     *
+     * @return ImagineInterface
+     */
+    public function getImagine()
+    {
+        return $this->imagine;
+    }
+
+    /**
      * Gets the path.
      *
      * @return string

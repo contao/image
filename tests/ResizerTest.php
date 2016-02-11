@@ -13,9 +13,12 @@ namespace Contao\CoreBundle\Test\Image;
 use Contao\CoreBundle\Test\TestCase;
 use Contao\CoreBundle\Image\Resizer;
 use Contao\CoreBundle\Image\ImageDimensions;
+use Contao\CoreBundle\Image\ResizeCalculator;
 use Contao\CoreBundle\Image\ResizeCoordinates;
-use Contao\CoreBundle\Image\ImagineSvg\Imagine as ImagineSvg;
+use Contao\CoreBundle\Image\ImagineSvg\Imagine as SvgImagine;
+use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Symfony\Component\Filesystem\Filesystem;
+use Imagine\Gd\Imagine as GdImagine;
 use Imagine\Image\Box;
 use Imagine\Image\Point;
 
@@ -29,24 +32,17 @@ class ResizerTest extends TestCase
     /**
      * Create a resizer instance helper.
      *
-     * @param ImagineInterface $imagine
-     * @param Filesystem       $filesystem
-     * @param string           $path
+     * @param ResizeCalculator         $calculator
+     * @param Filesystem               $filesystem
+     * @param string                   $path
+     * @param ContaoFrameworkInterface $framework
      *
      * @return Resizer
      */
-    private function createResizer($calculator = null, $imagine = null, $imagineSvg = null, $filesystem = null, $path = null, $framework = null)
+    private function createResizer($calculator = null, $filesystem = null, $path = null, $framework = null)
     {
         if (null === $calculator) {
             $calculator = $this->getMock('Contao\CoreBundle\Image\ResizeCalculator');
-        }
-
-        if (null === $imagine) {
-            $imagine = $this->getMock('Imagine\Image\ImagineInterface');
-        }
-
-        if (null === $imagineSvg) {
-            $imagineSvg = $this->getMock('Imagine\Image\ImagineInterface');
         }
 
         if (null === $filesystem) {
@@ -61,7 +57,7 @@ class ResizerTest extends TestCase
             $framework = $this->getMock('Contao\CoreBundle\Framework\ContaoFrameworkInterface');
         }
 
-        return new Resizer($calculator, $imagine, $imagineSvg, $filesystem, $path, $framework);
+        return new Resizer($calculator, $filesystem, $path, $framework);
     }
 
     /**
@@ -84,13 +80,14 @@ class ResizerTest extends TestCase
             new Box(100, 100)
         ));
 
-        $resizer = $this->createResizer($calculator, new \Imagine\Gd\Imagine());
+        $resizer = $this->createResizer($calculator);
 
         $image = $this->getMockBuilder('Contao\CoreBundle\Image\Image')
              ->disableOriginalConstructor()
              ->getMock();
         $image->method('getDimensions')->willReturn(new ImageDimensions(new Box(100, 100)));
         $image->method('getPath')->willReturn($this->getRootDir() . '/images/dummy.jpg');
+        $image->method('getImagine')->willReturn(new GdImagine());
 
         $configuration = $this->getMock('Contao\CoreBundle\Image\ResizeConfiguration');
 
@@ -127,13 +124,14 @@ class ResizerTest extends TestCase
             new Box(100, 100)
         ));
 
-        $resizer = $this->createResizer($calculator, null, new ImagineSvg());
+        $resizer = $this->createResizer($calculator);
 
         $image = $this->getMockBuilder('Contao\CoreBundle\Image\Image')
              ->disableOriginalConstructor()
              ->getMock();
         $image->method('getDimensions')->willReturn(new ImageDimensions(new Box(100, 100)));
         $image->method('getPath')->willReturn($this->getRootDir() . '/system/tmp/images/dummy.svg');
+        $image->method('getImagine')->willReturn(new SvgImagine());
 
         $configuration = $this->getMock('Contao\CoreBundle\Image\ResizeConfiguration');
 
