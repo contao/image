@@ -64,17 +64,19 @@ class ResizeCalculator
             $width = $zoomedImportantPart['width'];
         }
 
-        if ($mode === 'proportional' && $width && $height) {
-            if ($zoomedImportantPart['width'] >= $zoomedImportantPart['height']) {
-                $height = null;
-            } else {
-                $width = null;
-            }
-        } elseif ($mode === 'box' && $width && $height) {
-            if ($zoomedImportantPart['height'] * $width / $zoomedImportantPart['width'] <= $height) {
-                $height = null;
-            } else {
-                $width = null;
+        if ($width && $height) {
+            if ($mode === ResizeConfiguration::MODE_PROPORTIONAL) {
+                if ($zoomedImportantPart['width'] >= $zoomedImportantPart['height']) {
+                    $height = null;
+                } else {
+                    $width = null;
+                }
+            } elseif ($mode === ResizeConfiguration::MODE_BOX) {
+                if ($zoomedImportantPart['height'] * $width / $zoomedImportantPart['width'] <= $height) {
+                    $height = null;
+                } else {
+                    $width = null;
+                }
             }
         }
 
@@ -82,48 +84,20 @@ class ResizeCalculator
         if ($width && $height) {
 
             // Calculate the image part for zoom 0
-            $leastZoomed = [
-                'x' => 0,
-                'y' => 0,
-                'width' => $originalWidth,
-                'height' => $originalHeight,
-            ];
-
-            if ($originalHeight * $width / $originalWidth <= $height) {
-                $leastZoomed['width'] = $originalHeight * $width / $height;
-
-                if ($leastZoomed['width'] > $importantPart['width']) {
-                    $leastZoomed['x'] = ($originalWidth - $leastZoomed['width']) * $importantPart['x'] / ($originalWidth - $importantPart['width']);
-                } else {
-                    $leastZoomed['x'] = $importantPart['x'] + (($importantPart['width'] - $leastZoomed['width']) / 2);
-                }
-            } else {
-                $leastZoomed['height'] = $originalWidth * $height / $width;
-
-                if ($leastZoomed['height'] > $importantPart['height']) {
-                    $leastZoomed['y'] = ($originalHeight - $leastZoomed['height']) * $importantPart['y'] / ($originalHeight - $importantPart['height']);
-                } else {
-                    $leastZoomed['y'] = $importantPart['y'] + (($importantPart['height'] - $leastZoomed['height']) / 2);
-                }
-            }
+            $leastZoomed = $this->calculateLeastZoomed(
+                [$width, $height],
+                [$originalWidth, $originalHeight],
+                $importantPart
+            );
 
             // Calculate the image part for zoom 100
-            $mostZoomed = $importantPart;
+            $mostZoomed = $this->calculateMostZoomed(
+                [$width, $height],
+                [$originalWidth, $originalHeight],
+                $importantPart
+            );
 
-            if ($importantPart['height'] * $width / $importantPart['width'] <= $height) {
-                $mostZoomed['height'] = $height * $importantPart['width'] / $width;
-
-                if ($originalHeight > $importantPart['height']) {
-                    $mostZoomed['y'] -= ($mostZoomed['height'] - $importantPart['height']) * $importantPart['y'] / ($originalHeight - $importantPart['height']);
-                }
-            } else {
-                $mostZoomed['width'] = $width * $mostZoomed['height'] / $height;
-
-                if ($originalWidth > $importantPart['width']) {
-                    $mostZoomed['x'] -= ($mostZoomed['width'] - $importantPart['width']) * $importantPart['x'] / ($originalWidth - $importantPart['width']);
-                }
-            }
-
+            // If the most zoomed area is larger, no zooming can be applied
             if ($mostZoomed['width'] > $leastZoomed['width']) {
                 $mostZoomed = $leastZoomed;
             }
@@ -170,5 +144,74 @@ class ResizeCalculator
                 (int) round($height)
             )
         );
+    }
+
+    /**
+     * Calculate the least zoomed crop possible.
+     *
+     * @param array $size Target size
+     * @param array $orig Original size
+     * @param array $part Important part
+     *
+     * @return array
+     */
+    private function calculateLeastZoomed($size, $orig, $part)
+    {
+        $zoomed = [
+            'x' => 0,
+            'y' => 0,
+            'width' => $orig[0],
+            'height' => $orig[1],
+        ];
+
+        if ($orig[1] * $size[0] / $orig[0] <= $size[1]) {
+            $zoomed['width'] = $orig[1] * $size[0] / $size[1];
+
+            if ($zoomed['width'] > $part['width']) {
+                $zoomed['x'] = ($orig[0] - $zoomed['width']) * $part['x'] / ($orig[0] - $part['width']);
+            } else {
+                $zoomed['x'] = $part['x'] + (($part['width'] - $zoomed['width']) / 2);
+            }
+        } else {
+            $zoomed['height'] = $orig[0] * $size[1] / $size[0];
+
+            if ($zoomed['height'] > $part['height']) {
+                $zoomed['y'] = ($orig[1] - $zoomed['height']) * $part['y'] / ($orig[1] - $part['height']);
+            } else {
+                $zoomed['y'] = $part['y'] + (($part['height'] - $zoomed['height']) / 2);
+            }
+        }
+
+        return $zoomed;
+    }
+
+    /**
+     * Calculate the most zoomed crop possible.
+     *
+     * @param array $size Target size
+     * @param array $orig Original size
+     * @param array $part Important part
+     *
+     * @return array
+     */
+    private function calculateMostZoomed($size, $orig, $part)
+    {
+        $zoomed = $part;
+
+        if ($part['height'] * $size[0] / $part['width'] <= $size[1]) {
+            $zoomed['height'] = $size[1] * $part['width'] / $size[0];
+
+            if ($orig[1] > $part['height']) {
+                $zoomed['y'] -= ($zoomed['height'] - $part['height']) * $part['y'] / ($orig[1] - $part['height']);
+            }
+        } else {
+            $zoomed['width'] = $size[0] * $zoomed['height'] / $size[1];
+
+            if ($orig[0] > $part['width']) {
+                $zoomed['x'] -= ($zoomed['width'] - $part['width']) * $part['x'] / ($orig[0] - $part['width']);
+            }
+        }
+
+        return $zoomed;
     }
 }
