@@ -58,16 +58,44 @@ class ResizeCalculatorTest extends TestCase
             ->setWidth($arguments[0])
             ->setHeight($arguments[1]);
 
+        $dimensions = new ImageDimensions(new Box($arguments[2], $arguments[3]));
+
+        $importantPart = null;
+        if ($arguments[4] && substr_count($arguments[4], '_') === 1) {
+            $importantPart = array('x' => 0, 'y' => 0, 'width' => $arguments[2], 'height' => $arguments[3]);
+            $mode = explode('_', $arguments[4]);
+            if ($mode[0] === 'left') {
+                $importantPart['width'] = 1;
+            } elseif ($mode[0] === 'right') {
+                $importantPart['x'] = $arguments[2] - 1;
+                $importantPart['width'] = 1;
+            }
+
+            if ($mode[1] === 'top') {
+                $importantPart['height'] = 1;
+            } elseif ($mode[1] === 'bottom') {
+                $importantPart['y'] = $arguments[3] - 1;
+                $importantPart['height'] = 1;
+            }
+            $arguments[4] = 'crop';
+            $importantPart = new ImportantPart(
+                new Point($importantPart['x'], $importantPart['y']),
+                new Box($importantPart['width'], $importantPart['height'])
+            );
+        }
+
         if ($arguments[4]) {
             $config->setMode($arguments[4]);
         }
 
-        $dimensions = new ImageDimensions(new Box($arguments[2], $arguments[3]));
-
         $this->assertEquals(
             $expected,
-            $calculator->calculate($config, $dimensions)
+            $calculator->calculate($config, $dimensions, $importantPart)
         );
+
+        if ($importantPart !== null) {
+            return;
+        }
 
         $config->setZoomLevel(50);
 
@@ -257,6 +285,204 @@ class ResizeCalculatorTest extends TestCase
                     'target_y' => 0,
                     'target_width' => 10,
                     'target_height' => 20,
+                ],
+            ],
+            'Mode left_top landscape' => [
+                [100, 100, 100, 50, 'left_top'],
+                [
+                    'width' => 100,
+                    'height' => 100,
+                    'target_x' => 0,
+                    'target_y' => 0,
+                    'target_width' => 200,
+                    'target_height' => 100,
+                ],
+            ],
+            'Mode left_top portrait' => [
+                [100, 100, 50, 100, 'left_top'],
+                [
+                    'width' => 100,
+                    'height' => 100,
+                    'target_x' => 0,
+                    'target_y' => 0,
+                    'target_width' => 100,
+                    'target_height' => 200,
+                ],
+            ],
+            'Mode center_top landscape' => [
+                [100, 100, 100, 50, 'center_top'],
+                [
+                    'width' => 100,
+                    'height' => 100,
+                    'target_x' => 50,
+                    'target_y' => 0,
+                    'target_width' => 200,
+                    'target_height' => 100,
+                ],
+            ],
+            'Mode center_top portrait' => [
+                [100, 100, 50, 100, 'center_top'],
+                [
+                    'width' => 100,
+                    'height' => 100,
+                    'target_x' => 0,
+                    'target_y' => 0,
+                    'target_width' => 100,
+                    'target_height' => 200,
+                ],
+            ],
+            'Mode right_top landscape' => [
+                [100, 100, 100, 50, 'right_top'],
+                [
+                    'width' => 100,
+                    'height' => 100,
+                    'target_x' => 100,
+                    'target_y' => 0,
+                    'target_width' => 200,
+                    'target_height' => 100,
+                ],
+            ],
+            'Mode right_top portrait' => [
+                [100, 100, 50, 100, 'right_top'],
+                [
+                    'width' => 100,
+                    'height' => 100,
+                    'target_x' => 0,
+                    'target_y' => 0,
+                    'target_width' => 100,
+                    'target_height' => 200,
+                ],
+            ],
+            'Mode left_center landscape' => [
+                [100, 100, 100, 50, 'left_center'],
+                [
+                    'width' => 100,
+                    'height' => 100,
+                    'target_x' => 0,
+                    'target_y' => 0,
+                    'target_width' => 200,
+                    'target_height' => 100,
+                ],
+            ],
+            'Mode left_center portrait' => [
+                [100, 100, 50, 100, 'left_center'],
+                [
+                    'width' => 100,
+                    'height' => 100,
+                    'target_x' => 0,
+                    'target_y' => 50,
+                    'target_width' => 100,
+                    'target_height' => 200,
+                ],
+            ],
+            'Mode center_center landscape' => [
+                [100, 100, 100, 50, 'center_center'],
+                [
+                    'width' => 100,
+                    'height' => 100,
+                    'target_x' => 50,
+                    'target_y' => 0,
+                    'target_width' => 200,
+                    'target_height' => 100,
+                ],
+            ],
+            'Mode center_center portrait' => [
+                [100, 100, 50, 100, 'center_center'],
+                [
+                    'width' => 100,
+                    'height' => 100,
+                    'target_x' => 0,
+                    'target_y' => 50,
+                    'target_width' => 100,
+                    'target_height' => 200,
+                ],
+            ],
+            'Mode right_center landscape' => [
+                [100, 100, 100, 50, 'right_center'],
+                [
+                    'width' => 100,
+                    'height' => 100,
+                    'target_x' => 100,
+                    'target_y' => 0,
+                    'target_width' => 200,
+                    'target_height' => 100,
+                ],
+            ],
+            'Mode right_center portrait' => [
+                [100, 100, 50, 100, 'right_center'],
+                [
+                    'width' => 100,
+                    'height' => 100,
+                    'target_x' => 0,
+                    'target_y' => 50,
+                    'target_width' => 100,
+                    'target_height' => 200,
+                ],
+            ],
+            'Mode left_bottom landscape' => [
+                [100, 100, 100, 50, 'left_bottom'],
+                [
+                    'width' => 100,
+                    'height' => 100,
+                    'target_x' => 0,
+                    'target_y' => 0,
+                    'target_width' => 200,
+                    'target_height' => 100,
+                ],
+            ],
+            'Mode left_bottom portrait' => [
+                [100, 100, 50, 100, 'left_bottom'],
+                [
+                    'width' => 100,
+                    'height' => 100,
+                    'target_x' => 0,
+                    'target_y' => 100,
+                    'target_width' => 100,
+                    'target_height' => 200,
+                ],
+            ],
+            'Mode center_bottom landscape' => [
+                [100, 100, 100, 50, 'center_bottom'],
+                [
+                    'width' => 100,
+                    'height' => 100,
+                    'target_x' => 50,
+                    'target_y' => 0,
+                    'target_width' => 200,
+                    'target_height' => 100,
+                ],
+            ],
+            'Mode center_bottom portrait' => [
+                [100, 100, 50, 100, 'center_bottom'],
+                [
+                    'width' => 100,
+                    'height' => 100,
+                    'target_x' => 0,
+                    'target_y' => 100,
+                    'target_width' => 100,
+                    'target_height' => 200,
+                ],
+            ],
+            'Mode right_bottom landscape' => [
+                [100, 100, 100, 50, 'right_bottom'],
+                [
+                    'width' => 100,
+                    'height' => 100,
+                    'target_x' => 100,
+                    'target_y' => 0,
+                    'target_width' => 200,
+                    'target_height' => 100,
+                ],
+            ],
+            'Mode right_bottom portrait' => [
+                [100, 100, 50, 100, 'right_bottom'],
+                [
+                    'width' => 100,
+                    'height' => 100,
+                    'target_x' => 0,
+                    'target_y' => 100,
+                    'target_width' => 100,
+                    'target_height' => 200,
                 ],
             ],
             'Float values' => [

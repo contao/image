@@ -42,6 +42,18 @@ class ResizeConfiguration
     private $zoomLevel = 0;
 
     /**
+     * Returns true if the resize would have no effect.
+     *
+     * @return bool
+     */
+    public function isEmpty()
+    {
+        return 0 === $this->width &&
+            0 === $this->height &&
+            0 === $this->zoomLevel;
+    }
+
+    /**
      * Gets the width.
      *
      * @return int
