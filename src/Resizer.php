@@ -82,6 +82,10 @@ class Resizer
             $targetPath = $this->path . '/' . $this->createTargetPath($image->getPath(), $coordinates);
         }
 
+        if (!$this->filesystem->isAbsolutePath($targetPath)) {
+            throw new \InvalidArgumentException('"' . $targetPath . '" is not an absolute target path');
+        }
+
         if ($this->filesystem->exists($targetPath) && !$bypassCache) {
             return new Image($image->getImagine(), $this->filesystem, $targetPath);
         }

@@ -59,7 +59,10 @@ class Image
         $path
     ) {
         if (!$filesystem->exists($path)) {
-            throw new \RuntimeException($path . ' doesn\'t exist');
+            throw new \InvalidArgumentException($path . ' doesn\'t exist');
+        }
+        if (is_dir($path)) {
+            throw new \InvalidArgumentException($path . ' is a directory');
         }
 
         $this->imagine = $imagine;

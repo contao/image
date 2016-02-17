@@ -58,7 +58,7 @@ class ImageTest extends TestCase
     /**
      * Tests the object instantiation with a missing image.
      *
-     * @expectedException RuntimeException
+     * @expectedException InvalidArgumentException
      */
     public function testInstantiationMissingFiles()
     {
