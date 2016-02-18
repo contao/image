@@ -98,7 +98,7 @@ class PictureGenerator
                 $resizedImage = $image;
             }
 
-            $src = $this->pathToUrl($resizedImage->getPath());
+            $src = $resizedImage->getUrl($this->rootDir);
 
             if (empty($attributes['src'])) {
                 $attributes['src'] = htmlspecialchars($src, ENT_QUOTES);
@@ -136,23 +136,5 @@ class PictureGenerator
         }
 
         return $attributes;
-    }
-
-    private function pathToUrl($path)
-    {
-        if (
-            substr($path, 0, strlen($this->rootDir) + 1) === $this->rootDir . '/'
-            || substr($path, 0, strlen($this->rootDir) + 1) === $this->rootDir . '\\'
-        ) {
-            $url = substr($path, strlen($this->rootDir) + 1);
-        }
-        else {
-            throw new \InvalidArgumentException('Path "' . $path . '" is not inside root directory "' . $this->rootDir . '"');
-        }
-
-        // TODO: add TL_FILES_URL to src
-        $url = str_replace('%2F', '/', rawurlencode($url));
-
-        return $url;
     }
 }

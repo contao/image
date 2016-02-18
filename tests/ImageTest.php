@@ -79,6 +79,22 @@ class ImageTest extends TestCase
     }
 
     /**
+     * Tests the getUrl() method.
+     */
+    public function testGetUrl()
+    {
+        $image = $this->createImage(null, null, '/path/to/a/filename with special&chars.jpeg');
+
+        $this->assertEquals('path/to/a/filename%20with%20special%26chars.jpeg', $image->getUrl(''));
+        $this->assertEquals('to/a/filename%20with%20special%26chars.jpeg', $image->getUrl('/path'));
+        $this->assertEquals('a/filename%20with%20special%26chars.jpeg', $image->getUrl('/path/to'));
+        $this->assertEquals('filename%20with%20special%26chars.jpeg', $image->getUrl('/path/to/a'));
+
+        $this->setExpectedException('InvalidArgumentException');
+        $image->getUrl('/path/t');
+    }
+
+    /**
      * Tests the getDimensions() method.
      */
     public function testGetDimensions()

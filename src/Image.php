@@ -91,6 +91,30 @@ class Image
     }
 
     /**
+     * Gets the URL relative to the specified root directory
+     *
+     * @param string $rootDir
+     *
+     * @return string
+     */
+    public function getUrl($rootDir)
+    {
+        if (
+            substr($this->path, 0, strlen($rootDir) + 1) === $rootDir . '/'
+            || substr($this->path, 0, strlen($rootDir) + 1) === $rootDir . '\\'
+        ) {
+            $url = substr($this->path, strlen($rootDir) + 1);
+        }
+        else {
+            throw new \InvalidArgumentException('Path "' . $this->path . '" is not inside root directory "' . $rootDir . '"');
+        }
+
+        $url = str_replace('%2F', '/', rawurlencode($url));
+
+        return $url;
+    }
+
+    /**
      * Gets the dimensions.
      *
      * @return ImageDimensions
