@@ -23,15 +23,27 @@ class PictureGenerator
     private $resizer;
 
     /**
+     * @var bool
+     */
+    private $bypassCache;
+
+    /**
+     * @var string
+     */
+    private $rootDir;
+
+    /**
      * Constructor.
      *
      * @param Resizer $resizer     The resizer object
      * @param bool    $bypassCache True to bypass the image cache
+     * @param string  $rootDir     Path to root directory
      */
-    public function __construct(Resizer $resizer, $bypassCache)
+    public function __construct(Resizer $resizer, $bypassCache, $rootDir)
     {
         $this->resizer = $resizer;
         $this->bypassCache = (bool) $bypassCache;
+        $this->rootDir = (string) $rootDir;
     }
 
     /**
@@ -79,10 +91,14 @@ class PictureGenerator
             $resizeConfig->setWidth($resizeConfig->getWidth() * $density);
             $resizeConfig->setHeight($resizeConfig->getHeight() * $density);
 
-            $resizedImage = $this->resizer->resize($image, $resizeConfig, $this->bypassCache);
+            if (!$image->getDimensions()->isUndefined() && !$resizeConfig->isEmpty()) {
+                $resizedImage = $this->resizer->resize($image, $resizeConfig, null, $this->bypassCache);
+            }
+            else {
+                $resizedImage = $image;
+            }
 
-            // TODO: add TL_FILES_URL to src
-            $src = $resizedImage->getPath();
+            $src = $this->pathToUrl($resizedImage->getPath());
 
             if (empty($attributes['src'])) {
                 $attributes['src'] = htmlspecialchars($src, ENT_QUOTES);
@@ -120,5 +136,23 @@ class PictureGenerator
         }
 
         return $attributes;
+    }
+
+    private function pathToUrl($path)
+    {
+        if (
+            substr($path, 0, strlen($this->rootDir) + 1) === $this->rootDir . '/'
+            || substr($path, 0, strlen($this->rootDir) + 1) === $this->rootDir . '\\'
+        ) {
+            $url = substr($path, strlen($this->rootDir) + 1);
+        }
+        else {
+            throw new \InvalidArgumentException('Path "' . $path . '" is not inside root directory "' . $this->rootDir . '"');
+        }
+
+        // TODO: add TL_FILES_URL to src
+        $url = str_replace('%2F', '/', rawurlencode($url));
+
+        return $url;
     }
 }
