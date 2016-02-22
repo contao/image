@@ -30,7 +30,4 @@ if (
     exit(1);
 }
 
-/** @var Composer\Autoload\ClassLoader $loader */
-$loader->addPsr4('Contao\Image\Test\\', __DIR__);
-
 return $loader;
