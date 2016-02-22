@@ -26,6 +26,11 @@ use Imagine\Image\Box;
 class PictureGeneratorTest extends \PHPUnit_Framework_TestCase
 {
     /**
+     * @var string
+     */
+    private $rootDir = '/root/dir';
+
+    /**
      * Create a PictureGenerator instance helper.
      *
      * @param Resizer $resizer
@@ -45,7 +50,7 @@ class PictureGeneratorTest extends \PHPUnit_Framework_TestCase
         }
 
         if (null === $rootDir) {
-            $rootDir = $this->getRootDir();
+            $rootDir = $this->rootDir;
         }
 
         return new PictureGenerator($resizer, $bypassCache, $rootDir);
@@ -64,7 +69,7 @@ class PictureGeneratorTest extends \PHPUnit_Framework_TestCase
      */
     public function testGenerate()
     {
-        $path = $this->getRootDir() . '/images/dummy.jpg';
+        $path = $this->rootDir . '/images/dummy.jpg';
 
         $imageMock = $this->getMockBuilder('Contao\Image\Image')
              ->disableOriginalConstructor()
@@ -78,7 +83,7 @@ class PictureGeneratorTest extends \PHPUnit_Framework_TestCase
         $imageMock
             ->expects($this->any())
             ->method('getPath')
-            ->willReturn($this->getRootDir() . '/path/to/image.jpg');
+            ->willReturn($this->rootDir . '/path/to/image.jpg');
 
         $resizer = $this->getMockBuilder('Contao\Image\Resizer')
              ->disableOriginalConstructor()
