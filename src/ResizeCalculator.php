@@ -41,10 +41,12 @@ class ResizeCalculator
         $mode = $config->getMode();
         $zoom = max(0, min(1, (int) $config->getZoomLevel() / 100));
 
-        $importantPart = $importantPart ?: new ImportantPart(
-            new Point(0, 0),
-            clone $dimensions->getSize()
-        );
+        if (null === $importantPart) {
+            $importantPart = new ImportantPart(
+                new Point(0, 0),
+                clone $dimensions->getSize()
+            );
+        }
         $importantPart = [
             'x' => $importantPart->getPosition()->getX(),
             'y' => $importantPart->getPosition()->getY(),

@@ -94,11 +94,13 @@ class Resizer
             $this->filesystem->mkdir(dirname($targetPath));
         }
 
-        $image->getImagine()
+        $image
+            ->getImagine()
             ->open($image->getPath())
             ->resize($coordinates->getSize())
             ->crop($coordinates->getCropStart(), $coordinates->getCropSize())
-            ->save($targetPath);
+            ->save($targetPath)
+        ;
 
         return new Image($image->getImagine(), $this->filesystem, $targetPath);
     }
