@@ -8,15 +8,14 @@
  * @license LGPL-3.0+
  */
 
-namespace Contao\CoreBundle\Test\Image;
+namespace Contao\Image\Test;
 
-use Contao\CoreBundle\Test\TestCase;
-use Contao\CoreBundle\Image\PictureGenerator;
-use Contao\CoreBundle\Image\Resizer;
-use Contao\CoreBundle\Image\ImageDimensions;
-use Contao\CoreBundle\Image\ResizeConfiguration;
-use Contao\CoreBundle\Image\PictureConfiguration;
-use Contao\CoreBundle\Image\PictureConfigurationItem;
+use Contao\Image\PictureGenerator;
+use Contao\Image\Resizer;
+use Contao\Image\ImageDimensions;
+use Contao\Image\ResizeConfiguration;
+use Contao\Image\PictureConfiguration;
+use Contao\Image\PictureConfigurationItem;
 use Imagine\Image\Box;
 
 /**
@@ -24,7 +23,7 @@ use Imagine\Image\Box;
  *
  * @author Martin Auswöger <martin@auswoeger.com>
  */
-class PictureGeneratorTest extends TestCase
+class PictureGeneratorTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * Create a PictureGenerator instance helper.
@@ -36,7 +35,7 @@ class PictureGeneratorTest extends TestCase
     private function createPictureGenerator($resizer = null, $bypassCache = null, $rootDir = null)
     {
         if (null === $resizer) {
-            $resizer = $this->getMockBuilder('Contao\CoreBundle\Image\Resizer')
+            $resizer = $this->getMockBuilder('Contao\Image\Resizer')
              ->disableOriginalConstructor()
              ->getMock();
         }
@@ -57,7 +56,7 @@ class PictureGeneratorTest extends TestCase
      */
     public function testInstantiation()
     {
-        $this->assertInstanceOf('Contao\CoreBundle\Image\PictureGenerator', $this->createPictureGenerator());
+        $this->assertInstanceOf('Contao\Image\PictureGenerator', $this->createPictureGenerator());
     }
 
     /**
@@ -67,7 +66,7 @@ class PictureGeneratorTest extends TestCase
     {
         $path = $this->getRootDir() . '/images/dummy.jpg';
 
-        $imageMock = $this->getMockBuilder('Contao\CoreBundle\Image\Image')
+        $imageMock = $this->getMockBuilder('Contao\Image\Image')
              ->disableOriginalConstructor()
              ->getMock();
 
@@ -81,7 +80,7 @@ class PictureGeneratorTest extends TestCase
             ->method('getPath')
             ->willReturn($this->getRootDir() . '/path/to/image.jpg');
 
-        $resizer = $this->getMockBuilder('Contao\CoreBundle\Image\Resizer')
+        $resizer = $this->getMockBuilder('Contao\Image\Resizer')
              ->disableOriginalConstructor()
              ->getMock();
 
@@ -105,6 +104,6 @@ class PictureGeneratorTest extends TestCase
 
         $picture = $pictureGenerator->generate($imageMock, $pictureConfig);
 
-        $this->assertInstanceOf('Contao\\CoreBundle\\Image\\Picture', $picture);
+        $this->assertInstanceOf('Contao\Image\Picture', $picture);
     }
 }

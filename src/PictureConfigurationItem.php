@@ -8,7 +8,7 @@
  * @license LGPL-3.0+
  */
 
-namespace Contao\CoreBundle\Image;
+namespace Contao\Image;
 
 /**
  * Picture resize configuration item used by PictureConfiguration.

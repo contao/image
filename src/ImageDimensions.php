@@ -8,11 +8,11 @@
  * @license LGPL-3.0+
  */
 
-namespace Contao\CoreBundle\Image;
+namespace Contao\Image;
 
 use Imagine\Image\BoxInterface;
-use Contao\CoreBundle\Image\ImagineSvg\RelativeBoxInterface;
-use Contao\CoreBundle\Image\ImagineSvg\UndefinedBoxInterface;
+use Contao\ImagineSvg\RelativeBoxInterface;
+use Contao\ImagineSvg\UndefinedBoxInterface;
 
 /**
  * Image Dimensions.

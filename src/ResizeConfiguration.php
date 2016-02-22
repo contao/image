@@ -8,7 +8,7 @@
  * @license LGPL-3.0+
  */
 
-namespace Contao\CoreBundle\Image;
+namespace Contao\Image;
 
 /**
  * Resize configuration used by the ResizeCalculator.

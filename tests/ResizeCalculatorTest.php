@@ -8,14 +8,13 @@
  * @license LGPL-3.0+
  */
 
-namespace Contao\CoreBundle\Test\Image;
+namespace Contao\Image\Test;
 
-use Contao\CoreBundle\Test\TestCase;
-use Contao\CoreBundle\Image\ResizeCalculator;
-use Contao\CoreBundle\Image\ResizeConfiguration;
-use Contao\CoreBundle\Image\ImageDimensions;
-use Contao\CoreBundle\Image\ResizeCoordinates;
-use Contao\CoreBundle\Image\ImportantPart;
+use Contao\Image\ResizeCalculator;
+use Contao\Image\ResizeConfiguration;
+use Contao\Image\ImageDimensions;
+use Contao\Image\ResizeCoordinates;
+use Contao\Image\ImportantPart;
 use Imagine\Image\Box;
 use Imagine\Image\Point;
 
@@ -24,7 +23,7 @@ use Imagine\Image\Point;
  *
  * @author Martin Auswöger <martin@auswoeger.com>
  */
-class ResizeCalculatorTest extends TestCase
+class ResizeCalculatorTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * Tests the object instantiation.
@@ -33,7 +32,7 @@ class ResizeCalculatorTest extends TestCase
     {
         $calculator = new ResizeCalculator();
 
-        $this->assertInstanceOf('Contao\\CoreBundle\\Image\\ResizeCalculator', $calculator);
+        $this->assertInstanceOf('Contao\Image\ResizeCalculator', $calculator);
     }
 
     /**

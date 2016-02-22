@@ -8,7 +8,7 @@
  * @license LGPL-3.0+
  */
 
-namespace Contao\CoreBundle\Image;
+namespace Contao\Image;
 
 use Imagine\Image\BoxInterface;
 use Imagine\Image\PointInterface;

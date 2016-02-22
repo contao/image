@@ -8,12 +8,11 @@
  * @license LGPL-3.0+
  */
 
-namespace Contao\CoreBundle\Test\Image;
+namespace Contao\Image\Test;
 
-use Contao\CoreBundle\Test\TestCase;
-use Contao\CoreBundle\Image\Image;
-use Contao\CoreBundle\Image\ImageDimensions;
-use Contao\CoreBundle\Image\ImportantPart;
+use Contao\Image\Image;
+use Contao\Image\ImageDimensions;
+use Contao\Image\ImportantPart;
 use Imagine\Image\Box;
 use Imagine\Image\Point;
 
@@ -22,7 +21,7 @@ use Imagine\Image\Point;
  *
  * @author Martin Auswöger <martin@auswoeger.com>
  */
-class ImageTest extends TestCase
+class ImageTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * Create an image instance helper.
@@ -52,7 +51,7 @@ class ImageTest extends TestCase
      */
     public function testInstantiation()
     {
-        $this->assertInstanceOf('Contao\\CoreBundle\\Image\\Image', $this->createImage());
+        $this->assertInstanceOf('Contao\Image\Image', $this->createImage());
     }
 
     /**
