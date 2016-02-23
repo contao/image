@@ -25,7 +25,7 @@ class ResizeCalculator
      *
      * @param ResizeConfiguration $config        The resize configuration
      * @param ImageDimensions     $dimensions    The image dimensions
-     * @param ImportantPart       $importantPart The important part
+     * @param ImportantPart|null  $importantPart The important part
      *
      * @return ResizeCoordinates The resize coordinates
      */

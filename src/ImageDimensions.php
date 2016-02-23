@@ -40,8 +40,8 @@ class ImageDimensions
      * Constructor.
      *
      * @param BoxInterface $size      The size
-     * @param bool         $relative  The relative flag
-     * @param bool         $undefined The undefined flag
+     * @param bool|null    $relative  The relative flag
+     * @param bool|null    $undefined The undefined flag
      */
     public function __construct(
         BoxInterface $size,

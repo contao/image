@@ -66,7 +66,7 @@ class Resizer
      * @param Image               $image          The source image
      * @param ResizeConfiguration $resizeConfig   The resize configuration
      * @param array               $imagineOptions The options for Imagine save
-     * @param string              $targetPath     The absolute target path
+     * @param string|null         $targetPath     The absolute target path
      * @param boolean             $bypassCache    True to bypass the image cache
      *
      * @return Image The resized image as new object
