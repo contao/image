@@ -127,7 +127,7 @@ class ResizerTest extends \PHPUnit_Framework_TestCase
         $this->assertRegExp('(/[0-9a-f]/dummy-[0-9a-f]{8}.jpg$)', $resizedImage->getPath());
         unlink($resizedImage->getPath());
 
-        $resizedImage = $resizer->resize($image, $configuration, $this->rootDir . '/target-path.jpg');
+        $resizedImage = $resizer->resize($image, $configuration, [], $this->rootDir . '/target-path.jpg');
 
         $this->assertEquals(new ImageDimensions(new Box(100, 100)), $resizedImage->getDimensions());
         $this->assertEquals($this->rootDir . '/target-path.jpg', $resizedImage->getPath());
@@ -171,7 +171,7 @@ class ResizerTest extends \PHPUnit_Framework_TestCase
         $this->assertRegExp('(/[0-9a-f]/dummy-[0-9a-f]{8}.svg$)', $resizedImage->getPath());
         unlink($resizedImage->getPath());
 
-        $resizedImage = $resizer->resize($image, $configuration, $this->rootDir . '/target-path.svg');
+        $resizedImage = $resizer->resize($image, $configuration, [], $this->rootDir . '/target-path.svg');
 
         $this->assertEquals(new ImageDimensions(new Box(100, 100)), $resizedImage->getDimensions());
         $this->assertEquals($this->rootDir . '/target-path.svg', $resizedImage->getPath());
@@ -226,7 +226,7 @@ class ResizerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(0, filesize($imagePath));
 
         // Without cache
-        $resizedImage = $resizer->resize($image, $configuration, null, true);
+        $resizedImage = $resizer->resize($image, $configuration, [], null, true);
 
         $this->assertEquals($imagePath, $resizedImage->getPath());
         $this->assertNotEquals(0, filesize($imagePath));

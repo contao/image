@@ -33,6 +33,11 @@ class PictureGenerator
     private $rootDir;
 
     /**
+     * @var array
+     */
+    private $imagineOptions;
+
+    /**
      * Constructor.
      *
      * @param Resizer $resizer     The resizer object
@@ -49,13 +54,16 @@ class PictureGenerator
     /**
      * Generates a Picture object.
      *
-     * @param Image                $image  The Image object
-     * @param PictureConfiguration $config The configuration
+     * @param Image                $image          The Image object
+     * @param PictureConfiguration $config         The configuration
+     * @param array                $imagineOptions The options for Imagine save
      *
      * @return Picture The generated Picture object
      */
-    public function generate(Image $image, PictureConfiguration $config)
+    public function generate(Image $image, PictureConfiguration $config, array $imagineOptions = [])
     {
+        $this->imagineOptions = $imagineOptions;
+
         $img = $this->generateSource($image, $config->getSize());
 
         $sources = [];
@@ -92,7 +100,7 @@ class PictureGenerator
             $resizeConfig->setHeight($resizeConfig->getHeight() * $density);
 
             if (!$image->getDimensions()->isUndefined() && !$resizeConfig->isEmpty()) {
-                $resizedImage = $this->resizer->resize($image, $resizeConfig, null, $this->bypassCache);
+                $resizedImage = $this->resizer->resize($image, $resizeConfig, $this->imagineOptions, null, $this->bypassCache);
             }
             else {
                 $resizedImage = $image;

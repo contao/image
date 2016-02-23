@@ -63,14 +63,15 @@ class Resizer
     /**
      * Resizes an Image object.
      *
-     * @param Image               $image        The source image
-     * @param ResizeConfiguration $resizeConfig The resize configuration
-     * @param string              $targetPath   The absolute target path
-     * @param boolean             $bypassCache  True to bypass the image cache
+     * @param Image               $image          The source image
+     * @param ResizeConfiguration $resizeConfig   The resize configuration
+     * @param array               $imagineOptions The options for Imagine save
+     * @param string              $targetPath     The absolute target path
+     * @param boolean             $bypassCache    True to bypass the image cache
      *
      * @return Image The resized image as new object
      */
-    public function resize(Image $image, ResizeConfiguration $resizeConfig, $targetPath = null, $bypassCache = false)
+    public function resize(Image $image, ResizeConfiguration $resizeConfig, array $imagineOptions = [], $targetPath = null, $bypassCache = false)
     {
         $coordinates = $this->calculator->calculate(
             $resizeConfig,
@@ -99,7 +100,7 @@ class Resizer
             ->open($image->getPath())
             ->resize($coordinates->getSize())
             ->crop($coordinates->getCropStart(), $coordinates->getCropSize())
-            ->save($targetPath)
+            ->save($targetPath, $imagineOptions)
         ;
 
         return new Image($image->getImagine(), $this->filesystem, $targetPath);
