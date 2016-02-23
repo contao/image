@@ -69,15 +69,15 @@ class ResizeCalculator
         if ($width && $height) {
             if ($mode === ResizeConfiguration::MODE_PROPORTIONAL) {
                 if ($zoomedImportantPart['width'] >= $zoomedImportantPart['height']) {
-                    $height = null;
+                    $height = 0;
                 } else {
-                    $width = null;
+                    $width = 0;
                 }
             } elseif ($mode === ResizeConfiguration::MODE_BOX) {
                 if ($zoomedImportantPart['height'] * $width / $zoomedImportantPart['width'] <= $height) {
-                    $height = null;
+                    $height = 0;
                 } else {
-                    $width = null;
+                    $width = 0;
                 }
             }
         }
