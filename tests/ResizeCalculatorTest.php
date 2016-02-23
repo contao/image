@@ -57,7 +57,7 @@ class ResizeCalculatorTest extends \PHPUnit_Framework_TestCase
             ->setWidth($arguments[0])
             ->setHeight($arguments[1]);
 
-        $dimensions = new ImageDimensions(new Box($arguments[2], $arguments[3]));
+        $dimensions = new ImageDimensions(new Box($arguments[2], $arguments[3]), !empty($arguments[5]));
 
         $importantPart = null;
         if ($arguments[4] && substr_count($arguments[4], '_') === 1) {
@@ -111,6 +111,23 @@ class ResizeCalculatorTest extends \PHPUnit_Framework_TestCase
             $calculator->calculate($config, $dimensions),
             'Zoom 100 should return the same results if no important part is specified'
         );
+
+        $dimensions = new ImageDimensions(new Box($arguments[2], $arguments[3]));
+
+        if (empty($arguments[5])) {
+            $this->assertEquals(
+                $expected,
+                $calculator->calculate($config, $dimensions),
+                'Up scaling should have no effect'
+            );
+        }
+        else {
+            $this->assertNotEquals(
+                $expected,
+                $calculator->calculate($config, $dimensions),
+                'Up scaling should have an effect'
+            );
+        }
     }
 
     /**
@@ -155,7 +172,7 @@ class ResizeCalculatorTest extends \PHPUnit_Framework_TestCase
                 ],
             ],
             'Scale up' => [
-                [100, 100, 50, 50, null],
+                [100, 100, 50, 50, null, true],
                 [
                     'width' => 100,
                     'height' => 100,
@@ -165,8 +182,19 @@ class ResizeCalculatorTest extends \PHPUnit_Framework_TestCase
                     'target_height' => 100,
                 ],
             ],
+            'Do not scale up' => [
+                [100, 100, 50, 50, null],
+                [
+                    'width' => 50,
+                    'height' => 50,
+                    'target_x' => 0,
+                    'target_y' => 0,
+                    'target_width' => 50,
+                    'target_height' => 50,
+                ],
+            ],
             'Width only' => [
-                [100, null, 50, 50, null],
+                [100, null, 50, 50, null, true],
                 [
                     'width' => 100,
                     'height' => 100,
@@ -177,7 +205,7 @@ class ResizeCalculatorTest extends \PHPUnit_Framework_TestCase
                 ],
             ],
             'Height only' => [
-                [null, 100, 50, 50, null],
+                [null, 100, 50, 50, null, true],
                 [
                     'width' => 100,
                     'height' => 100,
@@ -287,7 +315,7 @@ class ResizeCalculatorTest extends \PHPUnit_Framework_TestCase
                 ],
             ],
             'Mode left_top landscape' => [
-                [100, 100, 100, 50, 'left_top'],
+                [100, 100, 100, 50, 'left_top', true],
                 [
                     'width' => 100,
                     'height' => 100,
@@ -298,7 +326,7 @@ class ResizeCalculatorTest extends \PHPUnit_Framework_TestCase
                 ],
             ],
             'Mode left_top portrait' => [
-                [100, 100, 50, 100, 'left_top'],
+                [100, 100, 50, 100, 'left_top', true],
                 [
                     'width' => 100,
                     'height' => 100,
@@ -309,7 +337,7 @@ class ResizeCalculatorTest extends \PHPUnit_Framework_TestCase
                 ],
             ],
             'Mode center_top landscape' => [
-                [100, 100, 100, 50, 'center_top'],
+                [100, 100, 100, 50, 'center_top', true],
                 [
                     'width' => 100,
                     'height' => 100,
@@ -320,7 +348,7 @@ class ResizeCalculatorTest extends \PHPUnit_Framework_TestCase
                 ],
             ],
             'Mode center_top portrait' => [
-                [100, 100, 50, 100, 'center_top'],
+                [100, 100, 50, 100, 'center_top', true],
                 [
                     'width' => 100,
                     'height' => 100,
@@ -331,7 +359,7 @@ class ResizeCalculatorTest extends \PHPUnit_Framework_TestCase
                 ],
             ],
             'Mode right_top landscape' => [
-                [100, 100, 100, 50, 'right_top'],
+                [100, 100, 100, 50, 'right_top', true],
                 [
                     'width' => 100,
                     'height' => 100,
@@ -342,7 +370,7 @@ class ResizeCalculatorTest extends \PHPUnit_Framework_TestCase
                 ],
             ],
             'Mode right_top portrait' => [
-                [100, 100, 50, 100, 'right_top'],
+                [100, 100, 50, 100, 'right_top', true],
                 [
                     'width' => 100,
                     'height' => 100,
@@ -353,7 +381,7 @@ class ResizeCalculatorTest extends \PHPUnit_Framework_TestCase
                 ],
             ],
             'Mode left_center landscape' => [
-                [100, 100, 100, 50, 'left_center'],
+                [100, 100, 100, 50, 'left_center', true],
                 [
                     'width' => 100,
                     'height' => 100,
@@ -364,7 +392,7 @@ class ResizeCalculatorTest extends \PHPUnit_Framework_TestCase
                 ],
             ],
             'Mode left_center portrait' => [
-                [100, 100, 50, 100, 'left_center'],
+                [100, 100, 50, 100, 'left_center', true],
                 [
                     'width' => 100,
                     'height' => 100,
@@ -375,7 +403,7 @@ class ResizeCalculatorTest extends \PHPUnit_Framework_TestCase
                 ],
             ],
             'Mode center_center landscape' => [
-                [100, 100, 100, 50, 'center_center'],
+                [100, 100, 100, 50, 'center_center', true],
                 [
                     'width' => 100,
                     'height' => 100,
@@ -386,7 +414,7 @@ class ResizeCalculatorTest extends \PHPUnit_Framework_TestCase
                 ],
             ],
             'Mode center_center portrait' => [
-                [100, 100, 50, 100, 'center_center'],
+                [100, 100, 50, 100, 'center_center', true],
                 [
                     'width' => 100,
                     'height' => 100,
@@ -397,7 +425,7 @@ class ResizeCalculatorTest extends \PHPUnit_Framework_TestCase
                 ],
             ],
             'Mode right_center landscape' => [
-                [100, 100, 100, 50, 'right_center'],
+                [100, 100, 100, 50, 'right_center', true],
                 [
                     'width' => 100,
                     'height' => 100,
@@ -408,7 +436,7 @@ class ResizeCalculatorTest extends \PHPUnit_Framework_TestCase
                 ],
             ],
             'Mode right_center portrait' => [
-                [100, 100, 50, 100, 'right_center'],
+                [100, 100, 50, 100, 'right_center', true],
                 [
                     'width' => 100,
                     'height' => 100,
@@ -419,7 +447,7 @@ class ResizeCalculatorTest extends \PHPUnit_Framework_TestCase
                 ],
             ],
             'Mode left_bottom landscape' => [
-                [100, 100, 100, 50, 'left_bottom'],
+                [100, 100, 100, 50, 'left_bottom', true],
                 [
                     'width' => 100,
                     'height' => 100,
@@ -430,7 +458,7 @@ class ResizeCalculatorTest extends \PHPUnit_Framework_TestCase
                 ],
             ],
             'Mode left_bottom portrait' => [
-                [100, 100, 50, 100, 'left_bottom'],
+                [100, 100, 50, 100, 'left_bottom', true],
                 [
                     'width' => 100,
                     'height' => 100,
@@ -441,7 +469,7 @@ class ResizeCalculatorTest extends \PHPUnit_Framework_TestCase
                 ],
             ],
             'Mode center_bottom landscape' => [
-                [100, 100, 100, 50, 'center_bottom'],
+                [100, 100, 100, 50, 'center_bottom', true],
                 [
                     'width' => 100,
                     'height' => 100,
@@ -452,7 +480,7 @@ class ResizeCalculatorTest extends \PHPUnit_Framework_TestCase
                 ],
             ],
             'Mode center_bottom portrait' => [
-                [100, 100, 50, 100, 'center_bottom'],
+                [100, 100, 50, 100, 'center_bottom', true],
                 [
                     'width' => 100,
                     'height' => 100,
@@ -463,7 +491,7 @@ class ResizeCalculatorTest extends \PHPUnit_Framework_TestCase
                 ],
             ],
             'Mode right_bottom landscape' => [
-                [100, 100, 100, 50, 'right_bottom'],
+                [100, 100, 100, 50, 'right_bottom', true],
                 [
                     'width' => 100,
                     'height' => 100,
@@ -474,7 +502,7 @@ class ResizeCalculatorTest extends \PHPUnit_Framework_TestCase
                 ],
             ],
             'Mode right_bottom portrait' => [
-                [100, 100, 50, 100, 'right_bottom'],
+                [100, 100, 50, 100, 'right_bottom', true],
                 [
                     'width' => 100,
                     'height' => 100,
@@ -485,7 +513,7 @@ class ResizeCalculatorTest extends \PHPUnit_Framework_TestCase
                 ],
             ],
             'Float values' => [
-                [100.4, 100.4, 50, 50, null],
+                [100.4, 100.4, 50, 50, null, true],
                 [
                     'width' => 100,
                     'height' => 100,
@@ -525,17 +553,34 @@ class ResizeCalculatorTest extends \PHPUnit_Framework_TestCase
             $config->setMode($arguments[4]);
         }
 
-        $dimensions = new ImageDimensions(new Box($arguments[2], $arguments[3]));
-
         $importantPart = new ImportantPart(
             new Point($arguments[6]['x'], $arguments[6]['y']),
             new Box($arguments[6]['width'], $arguments[6]['height'])
         );
 
+        $dimensions = new ImageDimensions(new Box($arguments[2], $arguments[3]), !empty($arguments[7]));
+
         $this->assertEquals(
             $expected,
             $calculator->calculate($config, $dimensions, $importantPart)
         );
+
+        $dimensions = new ImageDimensions(new Box($arguments[2], $arguments[3]));
+
+        if (empty($arguments[7])) {
+            $this->assertEquals(
+                $expected,
+                $calculator->calculate($config, $dimensions, $importantPart),
+                'Up scaling should have no effect'
+            );
+        }
+        else {
+            $this->assertNotEquals(
+                $expected,
+                $calculator->calculate($config, $dimensions, $importantPart),
+                'Up scaling should have an effect'
+            );
+        }
     }
 
     /**
@@ -591,7 +636,7 @@ class ResizeCalculatorTest extends \PHPUnit_Framework_TestCase
                 ],
             ],
             'Width only zoom 50' => [
-                [100, null, 100, 100, null, 50, ['x' => 20, 'y' => 20, 'width' => 60, 'height' => 60]],
+                [100, null, 100, 100, null, 50, ['x' => 20, 'y' => 20, 'width' => 60, 'height' => 60], true],
                 [
                     'width' => 100,
                     'height' => 100,
@@ -602,7 +647,7 @@ class ResizeCalculatorTest extends \PHPUnit_Framework_TestCase
                 ],
             ],
             'Width only zoom 100' => [
-                [100, null, 100, 100, null, 100, ['x' => 20, 'y' => 20, 'width' => 60, 'height' => 60]],
+                [100, null, 100, 100, null, 100, ['x' => 20, 'y' => 20, 'width' => 60, 'height' => 60], true],
                 [
                     'width' => 100,
                     'height' => 100,
@@ -624,7 +669,7 @@ class ResizeCalculatorTest extends \PHPUnit_Framework_TestCase
                 ],
             ],
             'Same dimensions zoom 50' => [
-                [100, 100, 100, 100, null, 50, ['x' => 25, 'y' => 25, 'width' => 50, 'height' => 50]],
+                [100, 100, 100, 100, null, 50, ['x' => 25, 'y' => 25, 'width' => 50, 'height' => 50], true],
                 [
                     'width' => 100,
                     'height' => 100,
@@ -635,7 +680,7 @@ class ResizeCalculatorTest extends \PHPUnit_Framework_TestCase
                 ],
             ],
             'Same dimensions zoom 100' => [
-                [100, 100, 100, 100, null, 100, ['x' => 25, 'y' => 25, 'width' => 50, 'height' => 50]],
+                [100, 100, 100, 100, null, 100, ['x' => 25, 'y' => 25, 'width' => 50, 'height' => 50], true],
                 [
                     'width' => 100,
                     'height' => 100,
@@ -646,7 +691,7 @@ class ResizeCalculatorTest extends \PHPUnit_Framework_TestCase
                 ],
             ],
             'Landscape to portrait zoom 0' => [
-                [100, 200, 200, 100, null, 0, ['x' => 140, 'y' => 40, 'width' => 20, 'height' => 20]],
+                [100, 200, 200, 100, null, 0, ['x' => 140, 'y' => 40, 'width' => 20, 'height' => 20], true],
                 [
                     'width' => 100,
                     'height' => 200,
@@ -657,7 +702,7 @@ class ResizeCalculatorTest extends \PHPUnit_Framework_TestCase
                 ],
             ],
             'Landscape to portrait zoom 50' => [
-                [100, 200, 200, 100, null, 50, ['x' => 140, 'y' => 40, 'width' => 20, 'height' => 20]],
+                [100, 200, 200, 100, null, 50, ['x' => 140, 'y' => 40, 'width' => 20, 'height' => 20], true],
                 [
                     'width' => 100,
                     'height' => 200,
@@ -668,7 +713,7 @@ class ResizeCalculatorTest extends \PHPUnit_Framework_TestCase
                 ],
             ],
             'Landscape to portrait zoom 100' => [
-                [100, 200, 200, 100, null, 100, ['x' => 140, 'y' => 40, 'width' => 20, 'height' => 20]],
+                [100, 200, 200, 100, null, 100, ['x' => 140, 'y' => 40, 'width' => 20, 'height' => 20], true],
                 [
                     'width' => 100,
                     'height' => 200,

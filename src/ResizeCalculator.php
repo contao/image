@@ -132,6 +132,16 @@ class ResizeCalculator
             $targetY = $zoomedImportantPart['y'] * $targetHeight / $originalHeight;
         }
 
+        if (round($targetWidth) > $originalWidth && !$dimensions->isRelative()) {
+            $scale = $originalWidth / $targetWidth;
+            $targetWidth *= $scale;
+            $targetHeight *= $scale;
+            $targetX *= $scale;
+            $targetY *= $scale;
+            $width *= $scale;
+            $height *= $scale;
+        }
+
         return new ResizeCoordinates(
             new Box(
                 (int) round($targetWidth),
