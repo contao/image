@@ -99,12 +99,7 @@ class PictureGenerator
             $resizeConfig->setWidth($resizeConfig->getWidth() * $density);
             $resizeConfig->setHeight($resizeConfig->getHeight() * $density);
 
-            if (!$image->getDimensions()->isUndefined() && !$resizeConfig->isEmpty()) {
-                $resizedImage = $this->resizer->resize($image, $resizeConfig, $this->imagineOptions, null, $this->bypassCache);
-            }
-            else {
-                $resizedImage = $image;
-            }
+            $resizedImage = $this->resizer->resize($image, $resizeConfig, $this->imagineOptions, null, $this->bypassCache);
 
             $src = $resizedImage->getUrl($this->rootDir);
 

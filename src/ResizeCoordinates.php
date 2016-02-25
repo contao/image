@@ -83,14 +83,19 @@ class ResizeCoordinates
     }
 
     /**
-     * String representation of the coordinates.
+     * Gets a hash of the coordinates.
      *
      * @return string
      */
-    public function __toString()
+    public function getHash()
     {
-        return $this->size->getWidth() . 'x' . $this->size->getHeight() .
-            ',' . $this->cropStart->getX() . 'x' . $this->cropStart->getY() .
-            ',' . $this->cropSize->getWidth() . 'x' . $this->cropSize->getHeight();
+        return md5(implode(',', [
+            (int) $this->size->getWidth(),
+            (int) $this->size->getHeight(),
+            (int) $this->cropStart->getX(),
+            (int) $this->cropStart->getY(),
+            (int) $this->cropSize->getWidth(),
+            (int) $this->cropSize->getHeight(),
+        ]));
     }
 }

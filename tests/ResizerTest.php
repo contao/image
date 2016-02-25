@@ -15,6 +15,7 @@ use Contao\Image\ImageDimensions;
 use Contao\Image\ResizeCalculator;
 use Contao\Image\ResizeCoordinates;
 use Contao\ImagineSvg\Imagine as SvgImagine;
+use Contao\ImagineSvg\UndefinedBox;
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Imagine\Gd\Imagine as GdImagine;
@@ -216,21 +217,88 @@ class ResizerTest extends \PHPUnit_Framework_TestCase
 
         $imagePath = $resizedImage->getPath();
 
-        // Empty cache file
-        file_put_contents($imagePath, '');
+        // Different cache file for testing
+        (new GdImagine())
+            ->create(new Box(200, 100))
+            ->save($imagePath);
 
         // With cache
         $resizedImage = $resizer->resize($image, $configuration);
 
         $this->assertEquals($imagePath, $resizedImage->getPath());
-        $this->assertEquals(0, filesize($imagePath));
+        $this->assertEquals(200, getimagesize($imagePath)[0], 'Cache file should no be overwritten');
+
+        // With cache and target path
+        $targetPath = $this->rootDir . '/target-image.jpg';
+        $resizedImage = $resizer->resize($image, $configuration, [], $targetPath);
+
+        $this->assertEquals($targetPath, $resizedImage->getPath());
+        $this->assertFileEquals($imagePath, $targetPath, 'Cache file should have been copied');
 
         // Without cache
         $resizedImage = $resizer->resize($image, $configuration, [], null, true);
 
         $this->assertEquals($imagePath, $resizedImage->getPath());
-        $this->assertNotEquals(0, filesize($imagePath));
+        $this->assertEquals(100, getimagesize($imagePath)[0]);
+    }
 
-        unlink($imagePath);
+    /**
+     * Tests the resize() method.
+     */
+    public function testResizeUndefinedSize()
+    {
+        $imagePath = $this->rootDir . '/dummy.jpg';
+
+        $resizer = $this->createResizer();
+
+        if (!is_dir($this->rootDir)) {
+            mkdir($this->rootDir, 0777, true);
+        }
+
+        file_put_contents($imagePath, '');
+
+        $image = $this->getMockBuilder('Contao\Image\Image')
+             ->disableOriginalConstructor()
+             ->getMock();
+        $image->method('getDimensions')->willReturn(new ImageDimensions(new UndefinedBox()));
+        $image->method('getPath')->willReturn($imagePath);
+        $image->method('getImagine')->willReturn(new GdImagine());
+
+        $configuration = $this->getMock('Contao\Image\ResizeConfiguration');
+
+        $resizedImage = $resizer->resize($image, $configuration);
+
+        $this->assertEquals($imagePath, $resizedImage->getPath());
+    }
+
+    /**
+     * Tests the resize() method.
+     */
+    public function testResizeEmptyConfig()
+    {
+        $imagePath = $this->rootDir . '/dummy.jpg';
+
+        $resizer = $this->createResizer();
+
+        if (!is_dir($this->rootDir)) {
+            mkdir($this->rootDir, 0777, true);
+        }
+
+        file_put_contents($imagePath, '');
+
+        $image = $this->getMockBuilder('Contao\Image\Image')
+             ->disableOriginalConstructor()
+             ->getMock();
+        $image->method('getDimensions')->willReturn(new ImageDimensions(new Box(100, 100)));
+        $image->method('getPath')->willReturn($imagePath);
+        $image->method('getImagine')->willReturn(new GdImagine());
+
+        $configuration = $this->getMock('Contao\Image\ResizeConfiguration');
+        $configuration->method('isEmpty')->willReturn(true);
+
+        $resizedImage = $resizer->resize($image, $configuration);
+
+        $this->assertEquals($image->getPath(), $resizedImage->getPath());
+        $this->assertNotSame($image, $resizedImage);
     }
 }
