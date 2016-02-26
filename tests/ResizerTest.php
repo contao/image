@@ -16,7 +16,6 @@ use Contao\Image\ResizeCalculator;
 use Contao\Image\ResizeCoordinates;
 use Contao\ImagineSvg\Imagine as SvgImagine;
 use Contao\ImagineSvg\UndefinedBox;
-use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Imagine\Gd\Imagine as GdImagine;
 use Imagine\Image\Box;
@@ -58,11 +57,10 @@ class ResizerTest extends \PHPUnit_Framework_TestCase
      * @param ResizeCalculator         $calculator
      * @param Filesystem               $filesystem
      * @param string                   $path
-     * @param ContaoFrameworkInterface $framework
      *
      * @return Resizer
      */
-    private function createResizer($calculator = null, $filesystem = null, $path = null, $framework = null)
+    private function createResizer($calculator = null, $filesystem = null, $path = null)
     {
         if (null === $calculator) {
             $calculator = $this->getMock('Contao\Image\ResizeCalculator');
@@ -76,11 +74,7 @@ class ResizerTest extends \PHPUnit_Framework_TestCase
             $path = $this->rootDir;
         }
 
-        if (null === $framework) {
-            $framework = $this->getMock('Contao\CoreBundle\Framework\ContaoFrameworkInterface');
-        }
-
-        return new Resizer($calculator, $filesystem, $path, $framework);
+        return new Resizer($calculator, $filesystem, $path);
     }
 
     /**

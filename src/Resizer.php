@@ -10,7 +10,6 @@
 
 namespace Contao\Image;
 
-use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
@@ -36,28 +35,20 @@ class Resizer
     private $path;
 
     /**
-     * @var ContaoFrameworkInterface
-     */
-    private $framework;
-
-    /**
      * Constructor.
      *
      * @param ResizeCalculator         $calculator The resize calculator object
      * @param Filesystem               $filesystem The filesystem object
      * @param string                   $path       The absolute image assets path
-     * @param ContaoFrameworkInterface $framework  The Contao framework
      */
     public function __construct(
         ResizeCalculator $calculator,
         Filesystem $filesystem,
-        $path,
-        ContaoFrameworkInterface $framework
+        $path
     ) {
         $this->calculator = $calculator;
         $this->filesystem = $filesystem;
         $this->path = (string) $path;
-        $this->framework = $framework;
     }
 
     /**
