@@ -110,7 +110,7 @@ class ResizerTest extends \PHPUnit_Framework_TestCase
         $image = $this->getMockBuilder('Contao\Image\Image')
              ->disableOriginalConstructor()
              ->getMock();
-        $image->method('getDimensions')->willReturn(new ImageDimensions(new Box(100, 100)));
+        $image->method('getDimensions')->willReturn(new ImageDimensions(new Box(200, 200)));
         $image->method('getPath')->willReturn($this->rootDir . '/dummy.jpg');
         $image->method('getImagine')->willReturn(new GdImagine());
 
@@ -154,7 +154,7 @@ class ResizerTest extends \PHPUnit_Framework_TestCase
         $image = $this->getMockBuilder('Contao\Image\Image')
              ->disableOriginalConstructor()
              ->getMock();
-        $image->method('getDimensions')->willReturn(new ImageDimensions(new Box(100, 100)));
+        $image->method('getDimensions')->willReturn(new ImageDimensions(new Box(200, 200)));
         $image->method('getPath')->willReturn($this->rootDir . '/dummy.svg');
         $image->method('getImagine')->willReturn(new SvgImagine());
 
@@ -198,7 +198,7 @@ class ResizerTest extends \PHPUnit_Framework_TestCase
         $image = $this->getMockBuilder('Contao\Image\Image')
              ->disableOriginalConstructor()
              ->getMock();
-        $image->method('getDimensions')->willReturn(new ImageDimensions(new Box(100, 100)));
+        $image->method('getDimensions')->willReturn(new ImageDimensions(new Box(200, 200)));
         $image->method('getPath')->willReturn($this->rootDir . '/dummy.jpg');
         $image->method('getImagine')->willReturn(new GdImagine());
 
@@ -294,5 +294,49 @@ class ResizerTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals($image->getPath(), $resizedImage->getPath());
         $this->assertNotSame($image, $resizedImage);
+    }
+
+    /**
+     * Tests the resize() method.
+     */
+    public function testResizeSameDimensions()
+    {
+        $path = $this->rootDir . '/dummy.jpg';
+
+        $calculator = $this->getMock('Contao\Image\ResizeCalculator');
+        $calculator->method('calculate')->willReturn(new ResizeCoordinates(
+            new Box(100, 100),
+            new Point(0, 0),
+            new Box(100, 100)
+        ));
+
+        $resizer = $this->createResizer($calculator);
+
+        if (!is_dir($this->rootDir)) {
+            mkdir($this->rootDir, 0777, true);
+        }
+
+        (new GdImagine())
+            ->create(new Box(100, 100))
+            ->save($path);
+
+        $image = $this->getMockBuilder('Contao\Image\Image')
+             ->disableOriginalConstructor()
+             ->getMock();
+        $image->method('getDimensions')->willReturn(new ImageDimensions(new Box(100, 100)));
+        $image->method('getPath')->willReturn($path);
+        $image->method('getImagine')->willReturn(new GdImagine());
+
+        $configuration = $this->getMock('Contao\Image\ResizeConfiguration');
+
+        $resizedImage = $resizer->resize($image, $configuration);
+
+        $this->assertEquals(new ImageDimensions(new Box(100, 100)), $resizedImage->getDimensions());
+        $this->assertEquals($path, $resizedImage->getPath());
+
+        $resizedImage = $resizer->resize($image, $configuration, [], $this->rootDir . '/target-path.jpg');
+
+        $this->assertEquals(new ImageDimensions(new Box(100, 100)), $resizedImage->getDimensions());
+        $this->assertEquals($this->rootDir . '/target-path.jpg', $resizedImage->getPath());
     }
 }

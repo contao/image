@@ -103,6 +103,10 @@ class Resizer
             $image->getImportantPart()
         );
 
+        if ($coordinates->equals($image->getDimensions()->getSize())) {
+            return $this->createImage($image, $image->getPath());
+        }
+
         $cachePath = $this->path . '/' . $this->createCachePath($image->getPath(), $coordinates);
 
         if ($this->filesystem->exists($cachePath) && !$bypassCache) {
