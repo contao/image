@@ -54,32 +54,24 @@ class Resizer
     /**
      * Resizes an Image object.
      *
-     * @param Image               $image          The source image
-     * @param ResizeConfiguration $resizeConfig   The resize configuration
-     * @param array               $imagineOptions The options for Imagine save
-     * @param string|null         $targetPath     The absolute target path
-     * @param boolean             $bypassCache    True to bypass the image cache
+     * @param Image               $image   The source image
+     * @param ResizeConfiguration $config  The resize configuration
+     * @param ResizeOptions       $options The resize options
      *
      * @return Image The resized image as new object
      */
-    public function resize(Image $image, ResizeConfiguration $resizeConfig, array $imagineOptions = [], $targetPath = null, $bypassCache = false)
+    public function resize(Image $image, ResizeConfiguration $config, ResizeOptions $options)
     {
-        if ($image->getDimensions()->isUndefined() || $resizeConfig->isEmpty()) {
+        if ($image->getDimensions()->isUndefined() || $config->isEmpty()) {
             $image = $this->createImage($image, $image->getPath());
         }
         else {
-            $image = $this->processResize($image, $resizeConfig, $imagineOptions, $bypassCache);
+            $image = $this->processResize($image, $config, $options);
         }
 
-        if (null !== $targetPath) {
-
-            if (!$this->filesystem->isAbsolutePath($targetPath)) {
-                throw new \InvalidArgumentException('"' . $targetPath . '" is not an absolute target path');
-            }
-
-            $this->filesystem->copy($image->getPath(), $targetPath);
-            $image = $this->createImage($image, $targetPath);
-
+        if (null !== $options->getTargetPath()) {
+            $this->filesystem->copy($image->getPath(), $options->getTargetPath(), true);
+            $image = $this->createImage($image, $options->getTargetPath());
         }
 
         return $image;
@@ -89,16 +81,15 @@ class Resizer
      * Processes the resize and executes it if not already cached.
      *
      * @param Image               $image
-     * @param ResizeConfiguration $resizeConfig
-     * @param array               $imagineOptions
-     * @param boolean             $bypassCache
+     * @param ResizeConfiguration $config
+     * @param ResizeOptions       $options
      *
      * @return Image
      */
-    protected function processResize(Image $image, ResizeConfiguration $resizeConfig, array $imagineOptions, $bypassCache)
+    protected function processResize(Image $image, ResizeConfiguration $config, ResizeOptions $options)
     {
         $coordinates = $this->calculator->calculate(
-            $resizeConfig,
+            $config,
             $image->getDimensions(),
             $image->getImportantPart()
         );
@@ -109,11 +100,11 @@ class Resizer
 
         $cachePath = $this->path . '/' . $this->createCachePath($image->getPath(), $coordinates);
 
-        if ($this->filesystem->exists($cachePath) && !$bypassCache) {
+        if ($this->filesystem->exists($cachePath) && !$options->getBypassCache()) {
             return $this->createImage($image, $cachePath);
         }
 
-        return $this->executeResize($image, $coordinates, $cachePath, $imagineOptions);
+        return $this->executeResize($image, $coordinates, $cachePath, $options->getImagineOptions());
     }
 
     /**

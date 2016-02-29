@@ -11,6 +11,7 @@
 namespace Contao\Image\Test;
 
 use Contao\Image\Resizer;
+use Contao\Image\ResizeOptions;
 use Contao\Image\ImageDimensions;
 use Contao\Image\ResizeCalculator;
 use Contao\Image\ResizeCoordinates;
@@ -116,17 +117,36 @@ class ResizerTest extends \PHPUnit_Framework_TestCase
 
         $configuration = $this->getMock('Contao\Image\ResizeConfiguration');
 
-        $resizedImage = $resizer->resize($image, $configuration);
+        $resizedImage = $resizer->resize($image, $configuration, new ResizeOptions());
 
         $this->assertEquals(new ImageDimensions(new Box(100, 100)), $resizedImage->getDimensions());
         $this->assertRegExp('(/[0-9a-f]/dummy-[0-9a-f]{8}.jpg$)', $resizedImage->getPath());
         unlink($resizedImage->getPath());
 
-        $resizedImage = $resizer->resize($image, $configuration, [], $this->rootDir . '/target-path.jpg');
+        $resizedImage = $resizer->resize(
+            $image,
+            $configuration,
+            (new ResizeOptions())->setTargetPath($this->rootDir . '/target-path.jpg')
+        );
 
         $this->assertEquals(new ImageDimensions(new Box(100, 100)), $resizedImage->getDimensions());
         $this->assertEquals($this->rootDir . '/target-path.jpg', $resizedImage->getPath());
-        unlink($resizedImage->getPath());
+
+        // Replace target image with larger image
+        (new GdImagine())
+            ->create(new Box(200, 200))
+            ->save($this->rootDir . '/target-path.jpg');
+
+        // Resize with override
+        $resizedImage = $resizer->resize(
+            $image,
+            $configuration,
+            (new ResizeOptions())
+                ->setTargetPath($this->rootDir . '/target-path.jpg')
+        );
+
+        $this->assertEquals($this->rootDir . '/target-path.jpg', $resizedImage->getPath());
+        $this->assertEquals(new ImageDimensions(new Box(100, 100)), $resizedImage->getDimensions());
     }
 
     /**
@@ -160,13 +180,17 @@ class ResizerTest extends \PHPUnit_Framework_TestCase
 
         $configuration = $this->getMock('Contao\Image\ResizeConfiguration');
 
-        $resizedImage = $resizer->resize($image, $configuration);
+        $resizedImage = $resizer->resize($image, $configuration, new ResizeOptions());
 
         $this->assertEquals(new ImageDimensions(new Box(100, 100)), $resizedImage->getDimensions());
         $this->assertRegExp('(/[0-9a-f]/dummy-[0-9a-f]{8}.svg$)', $resizedImage->getPath());
         unlink($resizedImage->getPath());
 
-        $resizedImage = $resizer->resize($image, $configuration, [], $this->rootDir . '/target-path.svg');
+        $resizedImage = $resizer->resize(
+            $image,
+            $configuration,
+            (new ResizeOptions())->setTargetPath($this->rootDir . '/target-path.svg')
+        );
 
         $this->assertEquals(new ImageDimensions(new Box(100, 100)), $resizedImage->getDimensions());
         $this->assertEquals($this->rootDir . '/target-path.svg', $resizedImage->getPath());
@@ -204,7 +228,7 @@ class ResizerTest extends \PHPUnit_Framework_TestCase
 
         $configuration = $this->getMock('Contao\Image\ResizeConfiguration');
 
-        $resizedImage = $resizer->resize($image, $configuration);
+        $resizedImage = $resizer->resize($image, $configuration, new ResizeOptions());
 
         $this->assertEquals(new ImageDimensions(new Box(100, 100)), $resizedImage->getDimensions());
         $this->assertRegExp('(/[0-9a-f]/dummy-[0-9a-f]{8}.jpg$)', $resizedImage->getPath());
@@ -217,20 +241,20 @@ class ResizerTest extends \PHPUnit_Framework_TestCase
             ->save($imagePath);
 
         // With cache
-        $resizedImage = $resizer->resize($image, $configuration);
+        $resizedImage = $resizer->resize($image, $configuration, new ResizeOptions());
 
         $this->assertEquals($imagePath, $resizedImage->getPath());
         $this->assertEquals(200, getimagesize($imagePath)[0], 'Cache file should no be overwritten');
 
         // With cache and target path
         $targetPath = $this->rootDir . '/target-image.jpg';
-        $resizedImage = $resizer->resize($image, $configuration, [], $targetPath);
+        $resizedImage = $resizer->resize($image, $configuration, (new ResizeOptions())->setTargetPath($targetPath));
 
         $this->assertEquals($targetPath, $resizedImage->getPath());
         $this->assertFileEquals($imagePath, $targetPath, 'Cache file should have been copied');
 
         // Without cache
-        $resizedImage = $resizer->resize($image, $configuration, [], null, true);
+        $resizedImage = $resizer->resize($image, $configuration, (new ResizeOptions())->setBypassCache(true));
 
         $this->assertEquals($imagePath, $resizedImage->getPath());
         $this->assertEquals(100, getimagesize($imagePath)[0]);
@@ -260,7 +284,7 @@ class ResizerTest extends \PHPUnit_Framework_TestCase
 
         $configuration = $this->getMock('Contao\Image\ResizeConfiguration');
 
-        $resizedImage = $resizer->resize($image, $configuration);
+        $resizedImage = $resizer->resize($image, $configuration, new ResizeOptions());
 
         $this->assertEquals($imagePath, $resizedImage->getPath());
     }
@@ -290,7 +314,7 @@ class ResizerTest extends \PHPUnit_Framework_TestCase
         $configuration = $this->getMock('Contao\Image\ResizeConfiguration');
         $configuration->method('isEmpty')->willReturn(true);
 
-        $resizedImage = $resizer->resize($image, $configuration);
+        $resizedImage = $resizer->resize($image, $configuration, new ResizeOptions());
 
         $this->assertEquals($image->getPath(), $resizedImage->getPath());
         $this->assertNotSame($image, $resizedImage);
@@ -329,12 +353,16 @@ class ResizerTest extends \PHPUnit_Framework_TestCase
 
         $configuration = $this->getMock('Contao\Image\ResizeConfiguration');
 
-        $resizedImage = $resizer->resize($image, $configuration);
+        $resizedImage = $resizer->resize($image, $configuration, new ResizeOptions());
 
         $this->assertEquals(new ImageDimensions(new Box(100, 100)), $resizedImage->getDimensions());
         $this->assertEquals($path, $resizedImage->getPath());
 
-        $resizedImage = $resizer->resize($image, $configuration, [], $this->rootDir . '/target-path.jpg');
+        $resizedImage = $resizer->resize(
+            $image,
+            $configuration,
+            (new ResizeOptions())->setTargetPath($this->rootDir . '/target-path.jpg')
+        );
 
         $this->assertEquals(new ImageDimensions(new Box(100, 100)), $resizedImage->getDimensions());
         $this->assertEquals($this->rootDir . '/target-path.jpg', $resizedImage->getPath());
