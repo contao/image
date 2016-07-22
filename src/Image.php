@@ -93,8 +93,7 @@ class Image implements ImageInterface
             || substr($this->path, 0, strlen($rootDir) + 1) === $rootDir . '\\'
         ) {
             $url = substr($this->path, strlen($rootDir) + 1);
-        }
-        else {
+        } else {
             throw new \InvalidArgumentException('Path "' . $this->path . '" is not inside root directory "' . $rootDir . '"');
         }
 
@@ -122,7 +121,6 @@ class Image implements ImageInterface
                     $this->imagine->open($this->getPath())->getSize()
                 );
             }
-
         }
 
         return $this->dimensions;

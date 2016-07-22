@@ -10,8 +10,6 @@
 
 namespace Contao\Image;
 
-use Symfony\Component\Filesystem\Filesystem;
-
 /**
  * Resize options used by the Resizer.
  *

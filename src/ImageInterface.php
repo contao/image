@@ -48,7 +48,7 @@ interface ImageInterface
     public function getPath();
 
     /**
-     * Gets the URL relative to the specified root directory
+     * Gets the URL relative to the specified root directory.
      *
      * @param string $rootDir
      *

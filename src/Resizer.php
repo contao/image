@@ -54,8 +54,7 @@ class Resizer implements ResizerInterface
     {
         if ($image->getDimensions()->isUndefined() || $config->isEmpty()) {
             $image = $this->createImage($image, $image->getPath());
-        }
-        else {
+        } else {
             $image = $this->processResize($image, $config, $options);
         }
 

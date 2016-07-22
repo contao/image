@@ -62,7 +62,7 @@ class ResizeCalculatorTest extends \PHPUnit_Framework_TestCase
 
         $importantPart = null;
         if ($arguments[4] && substr_count($arguments[4], '_') === 1) {
-            $importantPart = array('x' => 0, 'y' => 0, 'width' => $arguments[2], 'height' => $arguments[3]);
+            $importantPart = ['x' => 0, 'y' => 0, 'width' => $arguments[2], 'height' => $arguments[3]];
             $mode = explode('_', $arguments[4]);
             if ($mode[0] === 'left') {
                 $importantPart['width'] = 1;
@@ -121,8 +121,7 @@ class ResizeCalculatorTest extends \PHPUnit_Framework_TestCase
                 $calculator->calculate($config, $dimensions),
                 'Up scaling should have no effect'
             );
-        }
-        else {
+        } else {
             $this->assertNotEquals(
                 $expected,
                 $calculator->calculate($config, $dimensions),
@@ -574,8 +573,7 @@ class ResizeCalculatorTest extends \PHPUnit_Framework_TestCase
                 $calculator->calculate($config, $dimensions, $importantPart),
                 'Up scaling should have no effect'
             );
-        }
-        else {
+        } else {
             $this->assertNotEquals(
                 $expected,
                 $calculator->calculate($config, $dimensions, $importantPart),

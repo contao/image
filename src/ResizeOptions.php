@@ -66,13 +66,11 @@ class ResizeOptions implements ResizeOptionsInterface
     public function setTargetPath($targetPath)
     {
         if (null !== $targetPath) {
-
             $targetPath = (string) $targetPath;
 
             if (!(new Filesystem())->isAbsolutePath($targetPath)) {
                 throw new \InvalidArgumentException('"' . $targetPath . '" is not an absolute target path');
             }
-
         }
 
         $this->targetPath = $targetPath;

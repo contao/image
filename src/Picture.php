@@ -79,13 +79,13 @@ class Picture implements PictureInterface
      */
     public function getSources($rootDir)
     {
-        return array_map(function($source) use($rootDir) {
+        return array_map(function ($source) use ($rootDir) {
             return $this->buildUrls($source, $rootDir);
         }, $this->sources);
     }
 
     /**
-     * Converts image objects in an attributes array to URLs
+     * Converts image objects in an attributes array to URLs.
      *
      * @param array  $img
      * @param string $rootDir
@@ -98,8 +98,9 @@ class Picture implements PictureInterface
             $img['src'] = $img['src']->getUrl($rootDir);
         }
 
-        $img['srcset'] = array_map(function($src) use($rootDir) {
+        $img['srcset'] = array_map(function ($src) use ($rootDir) {
             $src[0] = $src[0]->getUrl($rootDir);
+
             return implode(' ', $src);
         }, $img['srcset']);
         $img['srcset'] = implode(', ', $img['srcset']);

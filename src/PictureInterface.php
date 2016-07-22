@@ -36,7 +36,7 @@ interface PictureInterface
 
     /**
      * Gets the source tags attributes.
-
+     *
      * @param string $rootDir Directory to which the URLs should be relative to
      *
      * @return array

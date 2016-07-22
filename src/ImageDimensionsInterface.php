@@ -11,8 +11,6 @@
 namespace Contao\Image;
 
 use Imagine\Image\BoxInterface;
-use Contao\ImagineSvg\RelativeBoxInterface;
-use Contao\ImagineSvg\UndefinedBoxInterface;
 
 /**
  * Image Dimensions.

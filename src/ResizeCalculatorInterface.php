@@ -10,9 +10,6 @@
 
 namespace Contao\Image;
 
-use Imagine\Image\Box;
-use Imagine\Image\Point;
-
 /**
  * Calculates image coordinates for resizing Image objects.
  *
