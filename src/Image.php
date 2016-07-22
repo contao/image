@@ -10,6 +10,7 @@
 
 namespace Contao\Image;
 
+use Imagine\Image\Box;
 use Imagine\Image\ImagineInterface;
 use Imagine\Image\Point;
 use Symfony\Component\Filesystem\Filesystem;
@@ -108,9 +109,20 @@ class Image implements ImageInterface
     public function getDimensions()
     {
         if (null === $this->dimensions) {
-            $this->dimensions = new ImageDimensions(
-                $this->imagine->open($this->getPath())->getSize()
-            );
+
+            // Try native getimagesize() for better performance
+            $size = @getimagesize($this->getPath());
+            if (!empty($size[0]) && !empty($size[1])) {
+                $this->dimensions = new ImageDimensions(new Box($size[0], $size[1]));
+            }
+
+            // Fallback to Imagine
+            else {
+                $this->dimensions = new ImageDimensions(
+                    $this->imagine->open($this->getPath())->getSize()
+                );
+            }
+
         }
 
         return $this->dimensions;
