@@ -18,7 +18,7 @@ use Imagine\Image\PointInterface;
  *
  * @author Martin Auswöger <martin@auswoeger.com>
  */
-class ImportantPart
+class ImportantPart implements ImportantPartInterface
 {
     /**
      * @var PointInterface
@@ -31,10 +31,7 @@ class ImportantPart
     private $size;
 
     /**
-     * Constructor.
-     *
-     * @param PointInterface $position The position
-     * @param BoxInterface   $size     The size
+     * {@inheritdoc}
      */
     public function __construct(
         PointInterface $position,
@@ -45,9 +42,7 @@ class ImportantPart
     }
 
     /**
-     * Gets the position.
-     *
-     * @return PointInterface
+     * {@inheritdoc}
      */
     public function getPosition()
     {
@@ -55,9 +50,7 @@ class ImportantPart
     }
 
     /**
-     * Gets the size.
-     *
-     * @return BoxInterface
+     * {@inheritdoc}
      */
     public function getSize()
     {

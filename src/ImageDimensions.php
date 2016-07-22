@@ -19,7 +19,7 @@ use Contao\ImagineSvg\UndefinedBoxInterface;
  *
  * @author Martin Auswöger <martin@auswoeger.com>
  */
-class ImageDimensions
+class ImageDimensions implements ImageDimensionsInterface
 {
     /**
      * @var BoxInterface
@@ -37,11 +37,7 @@ class ImageDimensions
     private $undefined;
 
     /**
-     * Constructor.
-     *
-     * @param BoxInterface $size      The size
-     * @param bool|null    $relative  The relative flag
-     * @param bool|null    $undefined The undefined flag
+     * {@inheritdoc}
      */
     public function __construct(
         BoxInterface $size,
@@ -62,9 +58,7 @@ class ImageDimensions
     }
 
     /**
-     * Gets the size.
-     *
-     * @return BoxInterface
+     * {@inheritdoc}
      */
     public function getSize()
     {
@@ -72,9 +66,7 @@ class ImageDimensions
     }
 
     /**
-     * Gets the relative flag.
-     *
-     * @return bool
+     * {@inheritdoc}
      */
     public function isRelative()
     {
@@ -82,9 +74,7 @@ class ImageDimensions
     }
 
     /**
-     * Gets the undefined flag.
-     *
-     * @return bool
+     * {@inheritdoc}
      */
     public function isUndefined()
     {

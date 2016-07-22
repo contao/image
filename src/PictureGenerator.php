@@ -15,10 +15,10 @@ namespace Contao\Image;
  *
  * @author Martin Auswöger <martin@auswoeger.com>
  */
-class PictureGenerator
+class PictureGenerator implements PictureGeneratorInterface
 {
     /**
-     * @var Resizer
+     * @var ResizerInterface
      */
     private $resizer;
 
@@ -38,13 +38,9 @@ class PictureGenerator
     private $imagineOptions;
 
     /**
-     * Constructor.
-     *
-     * @param Resizer $resizer     The resizer object
-     * @param bool    $bypassCache True to bypass the image cache
-     * @param string  $rootDir     Path to root directory
+     * {@inheritdoc}
      */
-    public function __construct(Resizer $resizer, $bypassCache, $rootDir)
+    public function __construct(ResizerInterface $resizer, $bypassCache, $rootDir)
     {
         $this->resizer = $resizer;
         $this->bypassCache = (bool) $bypassCache;
@@ -52,15 +48,9 @@ class PictureGenerator
     }
 
     /**
-     * Generates a Picture object.
-     *
-     * @param Image                $image          The Image object
-     * @param PictureConfiguration $config         The configuration
-     * @param array                $imagineOptions The options for Imagine save
-     *
-     * @return Picture The generated Picture object
+     * {@inheritdoc}
      */
-    public function generate(Image $image, PictureConfiguration $config, array $imagineOptions = [])
+    public function generate(ImageInterface $image, PictureConfigurationInterface $config, array $imagineOptions = [])
     {
         $this->imagineOptions = $imagineOptions;
 
@@ -74,7 +64,7 @@ class PictureGenerator
         return new Picture($img, $sources);
     }
 
-    private function generateSource(Image $image, PictureConfigurationItem $config)
+    private function generateSource(ImageInterface $image, PictureConfigurationItemInterface $config)
     {
         $densities = [];
 

@@ -52,6 +52,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
     public function testInstantiation()
     {
         $this->assertInstanceOf('Contao\Image\Image', $this->createImage());
+        $this->assertInstanceOf('Contao\Image\ImageInterface', $this->createImage());
     }
 
     /**

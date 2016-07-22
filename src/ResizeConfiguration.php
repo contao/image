@@ -15,12 +15,8 @@ namespace Contao\Image;
  *
  * @author Martin Auswöger <martin@auswoeger.com>
  */
-class ResizeConfiguration
+class ResizeConfiguration implements ResizeConfigurationInterface
 {
-    const MODE_CROP = 'crop';
-    const MODE_BOX = 'box';
-    const MODE_PROPORTIONAL = 'proportional';
-
     /**
      * @var int
      */
@@ -42,9 +38,7 @@ class ResizeConfiguration
     private $zoomLevel = 0;
 
     /**
-     * Returns true if the resize would have no effect.
-     *
-     * @return bool
+     * {@inheritdoc}
      */
     public function isEmpty()
     {
@@ -54,9 +48,7 @@ class ResizeConfiguration
     }
 
     /**
-     * Gets the width.
-     *
-     * @return int
+     * {@inheritdoc}
      */
     public function getWidth()
     {
@@ -64,11 +56,7 @@ class ResizeConfiguration
     }
 
     /**
-     * Sets the width.
-     *
-     * @param int $width the width
-     *
-     * @return self
+     * {@inheritdoc}
      */
     public function setWidth($width)
     {
@@ -84,9 +72,7 @@ class ResizeConfiguration
     }
 
     /**
-     * Gets the height.
-     *
-     * @return int
+     * {@inheritdoc}
      */
     public function getHeight()
     {
@@ -94,11 +80,7 @@ class ResizeConfiguration
     }
 
     /**
-     * Sets the height.
-     *
-     * @param int $height the height
-     *
-     * @return self
+     * {@inheritdoc}
      */
     public function setHeight($height)
     {
@@ -114,9 +96,7 @@ class ResizeConfiguration
     }
 
     /**
-     * Gets the mode.
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function getMode()
     {
@@ -124,11 +104,7 @@ class ResizeConfiguration
     }
 
     /**
-     * Sets the mode.
-     *
-     * @param string $mode the mode
-     *
-     * @return self
+     * {@inheritdoc}
      */
     public function setMode($mode)
     {
@@ -146,9 +122,7 @@ class ResizeConfiguration
     }
 
     /**
-     * Gets the zoom level.
-     *
-     * @return int
+     * {@inheritdoc}
      */
     public function getZoomLevel()
     {
@@ -156,11 +130,7 @@ class ResizeConfiguration
     }
 
     /**
-     * Sets the zoom level.
-     *
-     * @param int $zoomLevel the zoom level
-     *
-     * @return self
+     * {@inheritdoc}
      */
     public function setZoomLevel($zoomLevel)
     {

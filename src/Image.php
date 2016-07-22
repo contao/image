@@ -19,7 +19,7 @@ use Symfony\Component\Filesystem\Filesystem;
  *
  * @author Martin Auswöger <martin@auswoeger.com>
  */
-class Image
+class Image implements ImageInterface
 {
     /**
      * @var ImagineInterface
@@ -37,21 +37,17 @@ class Image
     private $path;
 
     /**
-     * @var ImageDimensions
+     * @var ImageDimensionsInterface
      */
     private $dimensions;
 
     /**
-     * @var ImportantPart
+     * @var ImportantPartInterface
      */
     private $importantPart;
 
     /**
-     * Constructor.
-     *
-     * @param ImagineInterface $imagine    The imagine object
-     * @param Filesystem       $filesystem The filesystem object
-     * @param string           $path       The path to the file
+     * {@inheritdoc}
      */
     public function __construct(
         ImagineInterface $imagine,
@@ -71,9 +67,7 @@ class Image
     }
 
     /**
-     * Gets the imagine instance.
-     *
-     * @return ImagineInterface
+     * {@inheritdoc}
      */
     public function getImagine()
     {
@@ -81,9 +75,7 @@ class Image
     }
 
     /**
-     * Gets the path.
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function getPath()
     {
@@ -91,11 +83,7 @@ class Image
     }
 
     /**
-     * Gets the URL relative to the specified root directory
-     *
-     * @param string $rootDir
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function getUrl($rootDir)
     {
@@ -115,9 +103,7 @@ class Image
     }
 
     /**
-     * Gets the dimensions.
-     *
-     * @return ImageDimensions
+     * {@inheritdoc}
      */
     public function getDimensions()
     {
@@ -131,9 +117,7 @@ class Image
     }
 
     /**
-     * Gets the important part.
-     *
-     * @return ImportantPart
+     * {@inheritdoc}
      */
     public function getImportantPart()
     {
@@ -148,13 +132,9 @@ class Image
     }
 
     /**
-     * Sets the important part.
-     *
-     * @param ImportantPart $importantPart The important part
-     *
-     * @return self
+     * {@inheritdoc}
      */
-    public function setImportantPart(ImportantPart $importantPart = null)
+    public function setImportantPart(ImportantPartInterface $importantPart = null)
     {
         $this->importantPart = $importantPart;
 

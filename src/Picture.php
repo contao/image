@@ -15,7 +15,7 @@ namespace Contao\Image;
  *
  * @author Martin Auswöger <martin@auswoeger.com>
  */
-class Picture
+class Picture implements PictureInterface
 {
     /**
      * Image tag attributes.
@@ -32,10 +32,7 @@ class Picture
     private $sources = [];
 
     /**
-     * Constructor.
-     *
-     * @param array $img     The image tag attributes
-     * @param array $sources The source tags attributes
+     * {@inheritdoc}
      */
     public function __construct(array $img, array $sources)
     {
@@ -44,9 +41,7 @@ class Picture
     }
 
     /**
-     * Gets the image tag attributes.
-     *
-     * @return array
+     * {@inheritdoc}
      */
     public function getImg()
     {
@@ -54,9 +49,7 @@ class Picture
     }
 
     /**
-     * Gets the source tags attributes.
-     *
-     * @return array
+     * {@inheritdoc}
      */
     public function getSources()
     {

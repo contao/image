@@ -17,10 +17,10 @@ use Symfony\Component\Filesystem\Filesystem;
  *
  * @author Martin Auswöger <martin@auswoeger.com>
  */
-class Resizer
+class Resizer implements ResizerInterface
 {
     /**
-     * @var ResizeCalculator
+     * @var ResizeCalculatorInterface
      */
     private $calculator;
 
@@ -35,14 +35,10 @@ class Resizer
     private $path;
 
     /**
-     * Constructor.
-     *
-     * @param ResizeCalculator         $calculator The resize calculator object
-     * @param Filesystem               $filesystem The filesystem object
-     * @param string                   $path       The absolute image assets path
+     * {@inheritdoc}
      */
     public function __construct(
-        ResizeCalculator $calculator,
+        ResizeCalculatorInterface $calculator,
         Filesystem $filesystem,
         $path
     ) {
@@ -52,15 +48,9 @@ class Resizer
     }
 
     /**
-     * Resizes an Image object.
-     *
-     * @param Image               $image   The source image
-     * @param ResizeConfiguration $config  The resize configuration
-     * @param ResizeOptions       $options The resize options
-     *
-     * @return Image The resized image as new object
+     * {@inheritdoc}
      */
-    public function resize(Image $image, ResizeConfiguration $config, ResizeOptions $options)
+    public function resize(ImageInterface $image, ResizeConfigurationInterface $config, ResizeOptionsInterface $options)
     {
         if ($image->getDimensions()->isUndefined() || $config->isEmpty()) {
             $image = $this->createImage($image, $image->getPath());
@@ -80,13 +70,13 @@ class Resizer
     /**
      * Processes the resize and executes it if not already cached.
      *
-     * @param Image               $image
-     * @param ResizeConfiguration $config
-     * @param ResizeOptions       $options
+     * @param ImageInterface               $image
+     * @param ResizeConfigurationInterface $config
+     * @param ResizeOptionsInterface       $options
      *
-     * @return Image
+     * @return ImageInterface
      */
-    protected function processResize(Image $image, ResizeConfiguration $config, ResizeOptions $options)
+    protected function processResize(ImageInterface $image, ResizeConfigurationInterface $config, ResizeOptionsInterface $options)
     {
         $coordinates = $this->calculator->calculate(
             $config,
@@ -114,14 +104,14 @@ class Resizer
     /**
      * Executes the resize operation via Imagine.
      *
-     * @param Image             $image
-     * @param ResizeCoordinates $coordinates
-     * @param string            $path
-     * @param array             $imagineOptions
+     * @param ImageInterface             $image
+     * @param ResizeCoordinatesInterface $coordinates
+     * @param string                     $path
+     * @param array                      $imagineOptions
      *
-     * @return Image
+     * @return ImageInterface
      */
-    protected function executeResize(Image $image, ResizeCoordinates $coordinates, $path, array $imagineOptions)
+    protected function executeResize(ImageInterface $image, ResizeCoordinatesInterface $coordinates, $path, array $imagineOptions)
     {
         if (!$this->filesystem->exists(dirname($path))) {
             $this->filesystem->mkdir(dirname($path));
@@ -141,12 +131,12 @@ class Resizer
     /**
      * Creates a new image instance for the specified path.
      *
-     * @param Image  $image
-     * @param string $path
+     * @param ImageInterface $image
+     * @param string         $path
      *
-     * @return Image
+     * @return ImageInterface
      */
-    protected function createImage(Image $image, $path)
+    protected function createImage(ImageInterface $image, $path)
     {
         return new Image($image->getImagine(), $this->filesystem, $path);
     }
@@ -154,12 +144,12 @@ class Resizer
     /**
      * Creates the target cache path.
      *
-     * @param string            $path        The source image path
-     * @param ResizeCoordinates $coordinates The resize coordinates
+     * @param string                     $path        The source image path
+     * @param ResizeCoordinatesInterface $coordinates The resize coordinates
      *
      * @return string The realtive target path
      */
-    protected function createCachePath($path, ResizeCoordinates $coordinates)
+    protected function createCachePath($path, ResizeCoordinatesInterface $coordinates)
     {
         $hash = substr(md5(implode('|', [
             $path,

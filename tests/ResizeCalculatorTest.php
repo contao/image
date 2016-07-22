@@ -33,6 +33,7 @@ class ResizeCalculatorTest extends \PHPUnit_Framework_TestCase
         $calculator = new ResizeCalculator();
 
         $this->assertInstanceOf('Contao\Image\ResizeCalculator', $calculator);
+        $this->assertInstanceOf('Contao\Image\ResizeCalculatorInterface', $calculator);
     }
 
     /**

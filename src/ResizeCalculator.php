@@ -18,21 +18,15 @@ use Imagine\Image\Point;
  *
  * @author Martin Auswöger <martin@auswoeger.com>
  */
-class ResizeCalculator
+class ResizeCalculator implements ResizeCalculatorInterface
 {
     /**
-     * Resizes an Image object.
-     *
-     * @param ResizeConfiguration $config        The resize configuration
-     * @param ImageDimensions     $dimensions    The image dimensions
-     * @param ImportantPart|null  $importantPart The important part
-     *
-     * @return ResizeCoordinates The resize coordinates
+     * {@inheritdoc}
      */
     public function calculate(
-        ResizeConfiguration $config,
-        ImageDimensions $dimensions,
-        ImportantPart $importantPart = null
+        ResizeConfigurationInterface $config,
+        ImageDimensionsInterface $dimensions,
+        ImportantPartInterface $importantPart = null
     ) {
         $width = $config->getWidth();
         $height = $config->getHeight();
@@ -67,13 +61,13 @@ class ResizeCalculator
         }
 
         if ($width && $height) {
-            if ($mode === ResizeConfiguration::MODE_PROPORTIONAL) {
+            if ($mode === ResizeConfigurationInterface::MODE_PROPORTIONAL) {
                 if ($zoomedImportantPart['width'] >= $zoomedImportantPart['height']) {
                     $height = 0;
                 } else {
                     $width = 0;
                 }
-            } elseif ($mode === ResizeConfiguration::MODE_BOX) {
+            } elseif ($mode === ResizeConfigurationInterface::MODE_BOX) {
                 if ($zoomedImportantPart['height'] * $width / $zoomedImportantPart['width'] <= $height) {
                     $height = 0;
                 } else {

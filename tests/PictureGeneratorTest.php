@@ -11,7 +11,7 @@
 namespace Contao\Image\Test;
 
 use Contao\Image\PictureGenerator;
-use Contao\Image\Resizer;
+use Contao\Image\ResizerInterface;
 use Contao\Image\ImageDimensions;
 use Contao\Image\ResizeConfiguration;
 use Contao\Image\PictureConfiguration;
@@ -33,14 +33,14 @@ class PictureGeneratorTest extends \PHPUnit_Framework_TestCase
     /**
      * Create a PictureGenerator instance helper.
      *
-     * @param Resizer $resizer
+     * @param ResizerInterface $resizer
      *
      * @return PictureGenerator
      */
     private function createPictureGenerator($resizer = null, $bypassCache = null, $rootDir = null)
     {
         if (null === $resizer) {
-            $resizer = $this->getMockBuilder('Contao\Image\Resizer')
+            $resizer = $this->getMockBuilder('Contao\Image\ResizerInterface')
              ->disableOriginalConstructor()
              ->getMock();
         }
@@ -62,6 +62,7 @@ class PictureGeneratorTest extends \PHPUnit_Framework_TestCase
     public function testInstantiation()
     {
         $this->assertInstanceOf('Contao\Image\PictureGenerator', $this->createPictureGenerator());
+        $this->assertInstanceOf('Contao\Image\PictureGeneratorInterface', $this->createPictureGenerator());
     }
 
     /**
@@ -85,7 +86,7 @@ class PictureGeneratorTest extends \PHPUnit_Framework_TestCase
             ->method('getPath')
             ->willReturn($this->rootDir . '/path/to/image.jpg');
 
-        $resizer = $this->getMockBuilder('Contao\Image\Resizer')
+        $resizer = $this->getMockBuilder('Contao\Image\ResizerInterface')
              ->disableOriginalConstructor()
              ->getMock();
 
@@ -110,5 +111,6 @@ class PictureGeneratorTest extends \PHPUnit_Framework_TestCase
         $picture = $pictureGenerator->generate($imageMock, $pictureConfig);
 
         $this->assertInstanceOf('Contao\Image\Picture', $picture);
+        $this->assertInstanceOf('Contao\Image\PictureInterface', $picture);
     }
 }

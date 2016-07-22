@@ -15,10 +15,10 @@ namespace Contao\Image;
  *
  * @author Martin Auswöger <martin@auswoeger.com>
  */
-class PictureConfigurationItem
+class PictureConfigurationItem implements PictureConfigurationItemInterface
 {
     /**
-     * @var ResizeConfiguration
+     * @var ResizeConfigurationInterface
      */
     private $resizeConfig;
 
@@ -38,9 +38,7 @@ class PictureConfigurationItem
     private $media = '';
 
     /**
-     * Gets the resize configuration.
-     *
-     * @return ResizeConfiguration
+     * {@inheritdoc}
      */
     public function getResizeConfig()
     {
@@ -52,13 +50,9 @@ class PictureConfigurationItem
     }
 
     /**
-     * Sets the resize configuration.
-     *
-     * @param ResizeConfiguration $resizeConfig the resize configuration
-     *
-     * @return self
+     * {@inheritdoc}
      */
-    public function setResizeConfig(ResizeConfiguration $resizeConfig)
+    public function setResizeConfig(ResizeConfigurationInterface $resizeConfig)
     {
         $this->resizeConfig = $resizeConfig;
 
@@ -66,9 +60,7 @@ class PictureConfigurationItem
     }
 
     /**
-     * Gets the sizes.
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function getSizes()
     {
@@ -76,11 +68,7 @@ class PictureConfigurationItem
     }
 
     /**
-     * Sets the sizes.
-     *
-     * @param string $sizes the sizes
-     *
-     * @return self
+     * {@inheritdoc}
      */
     public function setSizes($sizes)
     {
@@ -90,9 +78,7 @@ class PictureConfigurationItem
     }
 
     /**
-     * Gets the densities.
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function getDensities()
     {
@@ -100,11 +86,7 @@ class PictureConfigurationItem
     }
 
     /**
-     * Sets the densities.
-     *
-     * @param string $densities the densities
-     *
-     * @return self
+     * {@inheritdoc}
      */
     public function setDensities($densities)
     {
@@ -114,9 +96,7 @@ class PictureConfigurationItem
     }
 
     /**
-     * Gets the media.
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function getMedia()
     {
@@ -124,11 +104,7 @@ class PictureConfigurationItem
     }
 
     /**
-     * Sets the media.
-     *
-     * @param string $media the media
-     *
-     * @return self
+     * {@inheritdoc}
      */
     public function setMedia($media)
     {

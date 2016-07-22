@@ -15,22 +15,20 @@ namespace Contao\Image;
  *
  * @author Martin Auswöger <martin@auswoeger.com>
  */
-class PictureConfiguration
+class PictureConfiguration implements PictureConfigurationInterface
 {
     /**
-     * @var PictureConfigurationItem
+     * @var PictureConfigurationItemInterface
      */
     private $size;
 
     /**
-     * @var PictureConfigurationItem[]
+     * @var PictureConfigurationItemInterface[]
      */
     private $sizeItems = [];
 
     /**
-     * Gets the size.
-     *
-     * @return PictureConfigurationItem
+     * {@inheritdoc}
      */
     public function getSize()
     {
@@ -42,13 +40,9 @@ class PictureConfiguration
     }
 
     /**
-     * Sets the size.
-     *
-     * @param PictureConfigurationItem $size the size
-     *
-     * @return self
+     * {@inheritdoc}
      */
-    public function setSize(PictureConfigurationItem $size)
+    public function setSize(PictureConfigurationItemInterface $size)
     {
         $this->size = $size;
 
@@ -56,9 +50,7 @@ class PictureConfiguration
     }
 
     /**
-     * Gets the size items.
-     *
-     * @return PictureConfigurationItem[]
+     * {@inheritdoc}
      */
     public function getSizeItems()
     {
@@ -66,17 +58,13 @@ class PictureConfiguration
     }
 
     /**
-     * Sets the sizeItems.
-     *
-     * @param PictureConfigurationItem[] $sizeItems the size items
-     *
-     * @return self
+     * {@inheritdoc}
      */
     public function setSizeItems(array $sizeItems)
     {
         foreach ($sizeItems as $sizeItem) {
-            if (!$sizeItem instanceof PictureConfigurationItem) {
-                throw new \InvalidArgumentException('$sizeItems must be an array of PictureConfigurationItem objects');
+            if (!$sizeItem instanceof PictureConfigurationItemInterface) {
+                throw new \InvalidArgumentException('$sizeItems must be an array of PictureConfigurationItemInterface objects');
             }
         }
 

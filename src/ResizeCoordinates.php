@@ -19,7 +19,7 @@ use Imagine\Image\Point;
  *
  * @author Martin Auswöger <martin@auswoeger.com>
  */
-class ResizeCoordinates
+class ResizeCoordinates implements ResizeCoordinatesInterface
 {
     /**
      * @var BoxInterface
@@ -37,11 +37,7 @@ class ResizeCoordinates
     private $cropSize;
 
     /**
-     * Constructor.
-     *
-     * @param BoxInterface   $size      The target size
-     * @param PointInterface $cropStart The crop start coordinate
-     * @param BoxInterface   $cropSize  The crop size
+     * {@inheritdoc}
      */
     public function __construct(
         BoxInterface $size,
@@ -54,9 +50,7 @@ class ResizeCoordinates
     }
 
     /**
-     * Gets the size.
-     *
-     * @return BoxInterface
+     * {@inheritdoc}
      */
     public function getSize()
     {
@@ -64,9 +58,7 @@ class ResizeCoordinates
     }
 
     /**
-     * Gets the crop start coordinate.
-     *
-     * @return PointInterface
+     * {@inheritdoc}
      */
     public function getCropStart()
     {
@@ -74,9 +66,7 @@ class ResizeCoordinates
     }
 
     /**
-     * Gets the crop size.
-     *
-     * @return BoxInterface
+     * {@inheritdoc}
      */
     public function getCropSize()
     {
@@ -84,9 +74,7 @@ class ResizeCoordinates
     }
 
     /**
-     * Gets a hash of the coordinates.
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function getHash()
     {
@@ -101,11 +89,7 @@ class ResizeCoordinates
     }
 
     /**
-     * Compares the coordinates with another ResizeCoordinates or Box object.
-     *
-     * @param self|BoxInterface $coordinates The object to compare
-     *
-     * @return boolean
+     * {@inheritdoc}
      */
     public function equals($coordinates)
     {
@@ -119,7 +103,7 @@ class ResizeCoordinates
 
         if (!$coordinates instanceof self) {
             throw new \InvalidArgumentException(
-                '$coordinates must be an instance of ResizeCoordinates or BoxInterface, "' .
+                '$coordinates must be an instance of ResizeCoordinatesInterface or BoxInterface, "' .
                 get_class($coordinates) .
                 '" given'
             );

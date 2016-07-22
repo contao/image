@@ -17,7 +17,7 @@ use Symfony\Component\Filesystem\Filesystem;
  *
  * @author Martin Auswöger <martin@auswoeger.com>
  */
-class ResizeOptions
+class ResizeOptions implements ResizeOptionsInterface
 {
     /**
      * @var array
@@ -35,9 +35,7 @@ class ResizeOptions
     private $bypassCache = false;
 
     /**
-     * Gets the imagine options.
-     *
-     * @return array
+     * {@inheritdoc}
      */
     public function getImagineOptions()
     {
@@ -45,11 +43,7 @@ class ResizeOptions
     }
 
     /**
-     * Sets the imagine options.
-     *
-     * @param array $imagineOptions
-     *
-     * @return self
+     * {@inheritdoc}
      */
     public function setImagineOptions(array $imagineOptions)
     {
@@ -59,9 +53,7 @@ class ResizeOptions
     }
 
     /**
-     * Gets the target path.
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function getTargetPath()
     {
@@ -69,11 +61,7 @@ class ResizeOptions
     }
 
     /**
-     * Sets the target path.
-     *
-     * @param string|null $targetPath
-     *
-     * @return self
+     * {@inheritdoc}
      */
     public function setTargetPath($targetPath)
     {
@@ -93,9 +81,7 @@ class ResizeOptions
     }
 
     /**
-     * Gets the bypass cache flag.
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function getBypassCache()
     {
@@ -103,11 +89,7 @@ class ResizeOptions
     }
 
     /**
-     * Sets the bypass cache flag.
-     *
-     * @param bool $bypassCache
-     *
-     * @return self
+     * {@inheritdoc}
      */
     public function setBypassCache($bypassCache)
     {
