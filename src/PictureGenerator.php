@@ -28,11 +28,6 @@ class PictureGenerator implements PictureGeneratorInterface
     private $bypassCache;
 
     /**
-     * @var string
-     */
-    private $rootDir;
-
-    /**
      * @var array
      */
     private $imagineOptions;
@@ -40,11 +35,10 @@ class PictureGenerator implements PictureGeneratorInterface
     /**
      * {@inheritdoc}
      */
-    public function __construct(ResizerInterface $resizer, $bypassCache, $rootDir)
+    public function __construct(ResizerInterface $resizer, $bypassCache)
     {
         $this->resizer = $resizer;
         $this->bypassCache = (bool) $bypassCache;
-        $this->rootDir = (string) $rootDir;
     }
 
     /**
@@ -97,10 +91,8 @@ class PictureGenerator implements PictureGeneratorInterface
                     ->setBypassCache($this->bypassCache)
             );
 
-            $src = $resizedImage->getUrl($this->rootDir);
-
             if (empty($attributes['src'])) {
-                $attributes['src'] = htmlspecialchars($src, ENT_QUOTES);
+                $attributes['src'] = $resizedImage;
                 if (
                     !$resizedImage->getDimensions()->isRelative() &&
                     !$resizedImage->getDimensions()->isUndefined()
@@ -110,28 +102,30 @@ class PictureGenerator implements PictureGeneratorInterface
                 }
             }
 
+            $src = [$resizedImage];
+
             if (count($densities) > 1) {
                 // Use pixel density descriptors if the sizes attribute is empty
                 if (!$config->getSizes()) {
-                    $src .= ' ' . $density . 'x';
+                    $src[1] = $density . 'x';
                 }
                 // Otherwise use width descriptors
                 else {
-                    $src .= ' ' . $resizedImage->getDimensions()->getSize()->getWidth() . 'w';
+                    $src[1] = $resizedImage->getDimensions()->getSize()->getWidth() . 'w';
                 }
             }
 
             $srcset[] = $src;
         }
 
-        $attributes['srcset'] = htmlspecialchars(implode(', ', $srcset), ENT_QUOTES);
+        $attributes['srcset'] = $srcset;
 
         if ($config->getSizes()) {
-            $attributes['sizes'] = htmlspecialchars($config->getSizes(), ENT_QUOTES);
+            $attributes['sizes'] = $config->getSizes();
         }
 
         if ($config->getMedia()) {
-            $attributes['media'] = htmlspecialchars($config->getMedia(), ENT_QUOTES);
+            $attributes['media'] = $config->getMedia();
         }
 
         return $attributes;

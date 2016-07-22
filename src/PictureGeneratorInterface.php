@@ -22,9 +22,8 @@ interface PictureGeneratorInterface
      *
      * @param ResizerInterface $resizer     The resizer object
      * @param bool             $bypassCache True to bypass the image cache
-     * @param string           $rootDir     Path to root directory
      */
-    public function __construct(ResizerInterface $resizer, $bypassCache, $rootDir);
+    public function __construct(ResizerInterface $resizer, $bypassCache);
 
     /**
      * Generates a Picture object.

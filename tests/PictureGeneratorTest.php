@@ -26,18 +26,13 @@ use Imagine\Image\Box;
 class PictureGeneratorTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var string
-     */
-    private $rootDir = '/root/dir';
-
-    /**
      * Create a PictureGenerator instance helper.
      *
      * @param ResizerInterface $resizer
      *
      * @return PictureGenerator
      */
-    private function createPictureGenerator($resizer = null, $bypassCache = null, $rootDir = null)
+    private function createPictureGenerator($resizer = null, $bypassCache = null)
     {
         if (null === $resizer) {
             $resizer = $this->getMockBuilder('Contao\Image\ResizerInterface')
@@ -49,11 +44,7 @@ class PictureGeneratorTest extends \PHPUnit_Framework_TestCase
             $bypassCache = false;
         }
 
-        if (null === $rootDir) {
-            $rootDir = $this->rootDir;
-        }
-
-        return new PictureGenerator($resizer, $bypassCache, $rootDir);
+        return new PictureGenerator($resizer, $bypassCache);
     }
 
     /**
@@ -70,8 +61,6 @@ class PictureGeneratorTest extends \PHPUnit_Framework_TestCase
      */
     public function testGenerate()
     {
-        $path = $this->rootDir . '/images/dummy.jpg';
-
         $imageMock = $this->getMockBuilder('Contao\Image\Image')
              ->disableOriginalConstructor()
              ->getMock();
@@ -84,7 +73,12 @@ class PictureGeneratorTest extends \PHPUnit_Framework_TestCase
         $imageMock
             ->expects($this->any())
             ->method('getPath')
-            ->willReturn($this->rootDir . '/path/to/image.jpg');
+            ->willReturn('/path/to/image.jpg');
+
+        $imageMock
+            ->expects($this->any())
+            ->method('getUrl')
+            ->willReturn('image.jpg');
 
         $resizer = $this->getMockBuilder('Contao\Image\ResizerInterface')
              ->disableOriginalConstructor()
@@ -109,6 +103,24 @@ class PictureGeneratorTest extends \PHPUnit_Framework_TestCase
         $pictureConfig->setSizeItems([$pictureItem]);
 
         $picture = $pictureGenerator->generate($imageMock, $pictureConfig);
+
+        $this->assertEquals([
+            'src' => 'image.jpg',
+            'width' => '100',
+            'height' => '100',
+            'srcset' => 'image.jpg 100w, image.jpg 100w',
+            'sizes' => '100vw',
+            'media' => '(min-width: 600px)',
+        ], $picture->getImg('/root/dir'));
+
+        $this->assertEquals([[
+            'src' => 'image.jpg',
+            'width' => '100',
+            'height' => '100',
+            'srcset' => 'image.jpg 100w, image.jpg 100w',
+            'sizes' => '100vw',
+            'media' => '(min-width: 600px)',
+        ]], $picture->getSources('/root/dir'));
 
         $this->assertInstanceOf('Contao\Image\Picture', $picture);
         $this->assertInstanceOf('Contao\Image\PictureInterface', $picture);
