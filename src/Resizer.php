@@ -94,7 +94,11 @@ class Resizer
             $image->getImportantPart()
         );
 
-        if ($coordinates->equals($image->getDimensions()->getSize())) {
+        // Skip resizing if it would have no effect
+        if (
+            $coordinates->equals($image->getDimensions()->getSize()) &&
+            !$image->getDimensions()->isRelative()
+        ) {
             return $this->createImage($image, $image->getPath());
         }
 

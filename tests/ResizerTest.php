@@ -367,4 +367,45 @@ class ResizerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(new ImageDimensions(new Box(100, 100)), $resizedImage->getDimensions());
         $this->assertEquals($this->rootDir . '/target-path.jpg', $resizedImage->getPath());
     }
+
+    /**
+     * Tests the resize() method.
+     */
+    public function testResizeSameDimensionsRelative()
+    {
+        $xml = '<?xml version="1.0"?>' .
+            '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 100 100"></svg>';
+
+        if (!is_dir($this->rootDir)) {
+            mkdir($this->rootDir, 0777, true);
+        }
+        file_put_contents($this->rootDir . '/dummy.svg', $xml);
+
+        $calculator = $this->getMock('Contao\Image\ResizeCalculator');
+        $calculator->method('calculate')->willReturn(new ResizeCoordinates(
+            new Box(100, 100),
+            new Point(0, 0),
+            new Box(100, 100)
+        ));
+
+        $resizer = $this->createResizer($calculator);
+
+        $image = $this->getMockBuilder('Contao\Image\Image')
+             ->disableOriginalConstructor()
+             ->getMock();
+        $image->method('getDimensions')->willReturn(new ImageDimensions(new Box(100, 100), true));
+        $image->method('getPath')->willReturn($this->rootDir . '/dummy.svg');
+        $image->method('getImagine')->willReturn(new SvgImagine());
+
+        $configuration = $this->getMock('Contao\Image\ResizeConfiguration');
+
+        $resizedImage = $resizer->resize($image, $configuration, new ResizeOptions());
+
+        $this->assertEquals(100, $resizedImage->getDimensions()->getSize()->getWidth());
+        $this->assertEquals(100, $resizedImage->getDimensions()->getSize()->getHeight());
+        $this->assertEquals(false, $resizedImage->getDimensions()->isRelative());
+        $this->assertRegExp('(/[0-9a-f]/dummy-[0-9a-f]{8}.svg$)', $resizedImage->getPath());
+
+        unlink($resizedImage->getPath());
+    }
 }
