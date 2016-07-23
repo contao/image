@@ -23,30 +23,25 @@ class PictureGenerator implements PictureGeneratorInterface
     private $resizer;
 
     /**
-     * @var bool
+     * @var ResizeOptionsInterface
      */
-    private $bypassCache;
-
-    /**
-     * @var array
-     */
-    private $imagineOptions;
+    private $resizeOptions;
 
     /**
      * {@inheritdoc}
      */
-    public function __construct(ResizerInterface $resizer, $bypassCache)
+    public function __construct(ResizerInterface $resizer)
     {
         $this->resizer = $resizer;
-        $this->bypassCache = (bool) $bypassCache;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function generate(ImageInterface $image, PictureConfigurationInterface $config, array $imagineOptions = [])
+    public function generate(ImageInterface $image, PictureConfigurationInterface $config, ResizeOptionsInterface $options)
     {
-        $this->imagineOptions = $imagineOptions;
+        $this->resizeOptions = clone $options;
+        $this->resizeOptions->setTargetPath(null);
 
         $img = $this->generateSource($image, $config->getSize());
 
@@ -86,9 +81,7 @@ class PictureGenerator implements PictureGeneratorInterface
             $resizedImage = $this->resizer->resize(
                 $image,
                 $resizeConfig,
-                (new ResizeOptions())
-                    ->setImagineOptions($this->imagineOptions)
-                    ->setBypassCache($this->bypassCache)
+                $this->resizeOptions
             );
 
             if (empty($attributes['src'])) {

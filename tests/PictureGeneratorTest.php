@@ -12,6 +12,7 @@ namespace Contao\Image\Test;
 
 use Contao\Image\PictureGenerator;
 use Contao\Image\ResizerInterface;
+use Contao\Image\ResizeOptions;
 use Contao\Image\ImageDimensions;
 use Contao\Image\ResizeConfiguration;
 use Contao\Image\PictureConfiguration;
@@ -102,7 +103,7 @@ class PictureGeneratorTest extends \PHPUnit_Framework_TestCase
         $pictureConfig->setSize($pictureItem);
         $pictureConfig->setSizeItems([$pictureItem]);
 
-        $picture = $pictureGenerator->generate($imageMock, $pictureConfig);
+        $picture = $pictureGenerator->generate($imageMock, $pictureConfig, new ResizeOptions());
 
         $this->assertEquals([
             'src' => 'image.jpg',

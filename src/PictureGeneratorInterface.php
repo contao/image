@@ -20,19 +20,18 @@ interface PictureGeneratorInterface
     /**
      * Constructor.
      *
-     * @param ResizerInterface $resizer     The resizer object
-     * @param bool             $bypassCache True to bypass the image cache
+     * @param ResizerInterface $resizer The resizer object
      */
-    public function __construct(ResizerInterface $resizer, $bypassCache);
+    public function __construct(ResizerInterface $resizer);
 
     /**
      * Generates a Picture object.
      *
-     * @param ImageInterface                $image          The Image object
-     * @param PictureConfigurationInterface $config         The configuration
-     * @param array                         $imagineOptions The options for Imagine save
+     * @param ImageInterface                $image   The Image object
+     * @param PictureConfigurationInterface $config  The configuration
+     * @param ResizeOptionsInterface        $options The options for Resizer resize
      *
      * @return PictureInterface The generated Picture object
      */
-    public function generate(ImageInterface $image, PictureConfigurationInterface $config, array $imagineOptions = []);
+    public function generate(ImageInterface $image, PictureConfigurationInterface $config, ResizeOptionsInterface $options);
 }
