@@ -30,7 +30,7 @@ class ResizeCalculator implements ResizeCalculatorInterface
         ImportantPartInterface $importantPart = null
     ) {
         $zoom = max(0, min(1, (int) $config->getZoomLevel() / 100));
-        $importantPart = $this->importantPartAsArray($importantPart, $dimensions);
+        $importantPart = $this->importantPartAsArray($dimensions, $importantPart);
 
         // If both dimensions are present, use the mode specific calculations
         if ($config->getWidth() && $config->getHeight()) {
@@ -98,6 +98,7 @@ class ResizeCalculator implements ResizeCalculatorInterface
         }
 
         // Apply zoom
+        $zoomedImportantPart = [];
         foreach (['x', 'y', 'width', 'height'] as $key) {
             $zoomedImportantPart[$key] = ($mostZoomed[$key] * $zoom) + ($leastZoomed[$key] * (1 - $zoom));
         }
@@ -210,11 +211,11 @@ class ResizeCalculator implements ResizeCalculatorInterface
      * @param ImportantPartInterface|null $importantPart
      * @param ImageDimensionsInterface    $dimensions
      *
-     * @return array
+     * @return array<string,integer>
      */
     private function importantPartAsArray(
-        ImportantPartInterface $importantPart = null,
-        ImageDimensionsInterface $dimensions
+        ImageDimensionsInterface $dimensions,
+        ImportantPartInterface $importantPart = null
     ) {
         if (null === $importantPart) {
             $importantPart = new ImportantPart(
@@ -238,7 +239,7 @@ class ResizeCalculator implements ResizeCalculatorInterface
      * @param float        $zoom
      * @param BoxInterface $origSize
      *
-     * @return array
+     * @return array<string,float>
      */
     private function zoomImportantPart(array $importantPart, $zoom, BoxInterface $origSize)
     {
@@ -295,7 +296,7 @@ class ResizeCalculator implements ResizeCalculatorInterface
      * @param BoxInterface $origSize Original size
      * @param array        $part     Important part
      *
-     * @return array
+     * @return array<string,float>
      */
     private function calculateLeastZoomed($size, $origSize, $part)
     {
@@ -310,7 +311,8 @@ class ResizeCalculator implements ResizeCalculatorInterface
             $zoomed['width'] = $origSize->getHeight() * $size[0] / $size[1];
 
             if ($zoomed['width'] > $part['width']) {
-                $zoomed['x'] = ($origSize->getWidth() - $zoomed['width']) * $part['x'] / ($origSize->getWidth() - $part['width']);
+                $zoomed['x'] = ($origSize->getWidth() - $zoomed['width']) * $part['x'] /
+                    ($origSize->getWidth() - $part['width']);
             } else {
                 $zoomed['x'] = $part['x'] + (($part['width'] - $zoomed['width']) / 2);
             }
@@ -318,7 +320,8 @@ class ResizeCalculator implements ResizeCalculatorInterface
             $zoomed['height'] = $origSize->getWidth() * $size[1] / $size[0];
 
             if ($zoomed['height'] > $part['height']) {
-                $zoomed['y'] = ($origSize->getHeight() - $zoomed['height']) * $part['y'] / ($origSize->getHeight() - $part['height']);
+                $zoomed['y'] = ($origSize->getHeight() - $zoomed['height']) * $part['y'] /
+                    ($origSize->getHeight() - $part['height']);
             } else {
                 $zoomed['y'] = $part['y'] + (($part['height'] - $zoomed['height']) / 2);
             }
@@ -330,11 +333,11 @@ class ResizeCalculator implements ResizeCalculatorInterface
     /**
      * Calculate the most zoomed crop possible.
      *
-     * @param array $size     Target size
-     * @param array $origSize Original size
-     * @param array $part     Important part
+     * @param array        $size     Target size
+     * @param BoxInterface $origSize Original size
+     * @param array        $part     Important part
      *
-     * @return array
+     * @return array<string,float>
      */
     private function calculateMostZoomed($size, $origSize, $part)
     {
@@ -344,13 +347,15 @@ class ResizeCalculator implements ResizeCalculatorInterface
             $zoomed['height'] = $size[1] * $part['width'] / $size[0];
 
             if ($origSize->getHeight() > $part['height']) {
-                $zoomed['y'] -= ($zoomed['height'] - $part['height']) * $part['y'] / ($origSize->getHeight() - $part['height']);
+                $zoomed['y'] -= ($zoomed['height'] - $part['height']) * $part['y'] /
+                    ($origSize->getHeight() - $part['height']);
             }
         } else {
             $zoomed['width'] = $size[0] * $zoomed['height'] / $size[1];
 
             if ($origSize->getWidth() > $part['width']) {
-                $zoomed['x'] -= ($zoomed['width'] - $part['width']) * $part['x'] / ($origSize->getWidth() - $part['width']);
+                $zoomed['x'] -= ($zoomed['width'] - $part['width']) * $part['x'] /
+                    ($origSize->getWidth() - $part['width']);
             }
         }
 
