@@ -69,16 +69,24 @@ class Picture implements PictureInterface
     /**
      * {@inheritdoc}
      */
-    public function getImg($rootDir)
+    public function getImg($rootDir = null)
     {
+        if ($rootDir === null) {
+            return $this->img;
+        }
+
         return $this->buildUrls($this->img, $rootDir);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getSources($rootDir)
+    public function getSources($rootDir = null)
     {
+        if ($rootDir === null) {
+            return $this->sources;
+        }
+
         return array_map(function ($source) use ($rootDir) {
             return $this->buildUrls($source, $rootDir);
         }, $this->sources);

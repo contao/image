@@ -39,8 +39,8 @@ class PictureTest extends \PHPUnit_Framework_TestCase
         }
 
         return new Picture(
-            ['src' => $image, 'srcset' => [[$image, '1x']]],
-            [['srcset' => [[$image, '1x']]]]
+            ['src' => $image, 'srcset' => [[$image, '1x']], 'data-custom' => 'custom attribute'],
+            [['srcset' => [[$image, '1x']], 'data-custom' => 'custom attribute']]
         );
     }
 
@@ -60,15 +60,20 @@ class PictureTest extends \PHPUnit_Framework_TestCase
     {
         $picture = $this->createPicture(null, '/path/to/a/filename with special&<>"\'chars.jpeg');
 
+        $this->assertInstanceOf('Contao\Image\ImageInterface', $picture->getImg()['src']);
         $this->assertEquals('path/to/a/filename%20with%20special%26%3C%3E%22%27chars.jpeg', $picture->getImg('')['src']);
         $this->assertEquals('to/a/filename%20with%20special%26%3C%3E%22%27chars.jpeg', $picture->getImg('/path')['src']);
         $this->assertEquals('a/filename%20with%20special%26%3C%3E%22%27chars.jpeg', $picture->getImg('/path/to')['src']);
         $this->assertEquals('filename%20with%20special%26%3C%3E%22%27chars.jpeg', $picture->getImg('/path/to/a')['src']);
 
+        $this->assertInstanceOf('Contao\Image\ImageInterface', $picture->getImg()['srcset'][0][0]);
         $this->assertEquals('path/to/a/filename%20with%20special%26%3C%3E%22%27chars.jpeg 1x', $picture->getImg('')['srcset']);
         $this->assertEquals('to/a/filename%20with%20special%26%3C%3E%22%27chars.jpeg 1x', $picture->getImg('/path')['srcset']);
         $this->assertEquals('a/filename%20with%20special%26%3C%3E%22%27chars.jpeg 1x', $picture->getImg('/path/to')['srcset']);
         $this->assertEquals('filename%20with%20special%26%3C%3E%22%27chars.jpeg 1x', $picture->getImg('/path/to/a')['srcset']);
+
+        $this->assertEquals('custom attribute', $picture->getImg()['data-custom']);
+        $this->assertEquals('custom attribute', $picture->getImg('')['data-custom']);
 
         $this->setExpectedException('InvalidArgumentException');
         $picture->getImg('/path/t');
@@ -81,10 +86,14 @@ class PictureTest extends \PHPUnit_Framework_TestCase
     {
         $picture = $this->createPicture(null, '/path/to/a/filename with special&<>"\'chars.jpeg');
 
+        $this->assertInstanceOf('Contao\Image\ImageInterface', $picture->getSources()[0]['srcset'][0][0]);
         $this->assertEquals('path/to/a/filename%20with%20special%26%3C%3E%22%27chars.jpeg 1x', $picture->getSources('')[0]['srcset']);
         $this->assertEquals('to/a/filename%20with%20special%26%3C%3E%22%27chars.jpeg 1x', $picture->getSources('/path')[0]['srcset']);
         $this->assertEquals('a/filename%20with%20special%26%3C%3E%22%27chars.jpeg 1x', $picture->getSources('/path/to')[0]['srcset']);
         $this->assertEquals('filename%20with%20special%26%3C%3E%22%27chars.jpeg 1x', $picture->getSources('/path/to/a')[0]['srcset']);
+
+        $this->assertEquals('custom attribute', $picture->getSources()[0]['data-custom']);
+        $this->assertEquals('custom attribute', $picture->getSources('')[0]['data-custom']);
 
         $this->setExpectedException('InvalidArgumentException');
         $picture->getSources('/path/t');

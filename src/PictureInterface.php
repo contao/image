@@ -28,18 +28,18 @@ interface PictureInterface
     /**
      * Gets the image tag attributes.
      *
-     * @param string $rootDir Directory to which the URLs should be relative to
+     * @param string|null $rootDir Directory to which the URLs should be relative to
      *
      * @return array
      */
-    public function getImg($rootDir);
+    public function getImg($rootDir = null);
 
     /**
      * Gets the source tags attributes.
      *
-     * @param string $rootDir Directory to which the URLs should be relative to
+     * @param string|null $rootDir Directory to which the URLs should be relative to
      *
      * @return array
      */
-    public function getSources($rootDir);
+    public function getSources($rootDir = null);
 }
