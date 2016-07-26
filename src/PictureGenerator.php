@@ -55,20 +55,18 @@ class PictureGenerator implements PictureGeneratorInterface
 
     private function generateSource(ImageInterface $image, PictureConfigurationItemInterface $config)
     {
-        $densities = [];
+        $densities = [1];
+        $sizesAttribute = $config->getSizes();
 
         if ($config->getDensities() && (
             $config->getResizeConfig()->getWidth() ||
             $config->getResizeConfig()->getHeight()
         )) {
-            $densities = array_filter(array_map(
-                'floatval',
-                explode(',', $config->getDensities())
-            ));
+            if (!$sizesAttribute && strpos($config->getDensities(), 'w') !== false) {
+                $sizesAttribute = '100vw';
+            }
+            $densities = $this->parseDensities($image, $config);
         }
-
-        array_unshift($densities, 1);
-        $densities = array_values(array_unique($densities));
 
         $attributes = [];
         $srcset = [];
@@ -99,7 +97,7 @@ class PictureGenerator implements PictureGeneratorInterface
 
             if (count($densities) > 1) {
                 // Use pixel density descriptors if the sizes attribute is empty
-                if (!$config->getSizes()) {
+                if (!$sizesAttribute) {
                     $src[1] = $density . 'x';
                 }
                 // Otherwise use width descriptors
@@ -113,8 +111,8 @@ class PictureGenerator implements PictureGeneratorInterface
 
         $attributes['srcset'] = $srcset;
 
-        if ($config->getSizes()) {
-            $attributes['sizes'] = $config->getSizes();
+        if ($sizesAttribute) {
+            $attributes['sizes'] = $sizesAttribute;
         }
 
         if ($config->getMedia()) {
@@ -122,5 +120,48 @@ class PictureGenerator implements PictureGeneratorInterface
         }
 
         return $attributes;
+    }
+
+    /**
+     * Parse densities string and return an array of scaling factors.
+     *
+     * @param ImageInterface                    $image
+     * @param PictureConfigurationItemInterface $config
+     *
+     * @return array<integer,float>
+     */
+    private function parseDensities(ImageInterface $image, PictureConfigurationItemInterface $config)
+    {
+        $width1x = $config->getResizeConfig()->getWidth();
+
+        if (!$width1x && strpos($config->getDensities(), 'w') !== false) {
+            $width1x = $this->resizer->resize(
+                $image,
+                $config->getResizeConfig(),
+                $this->resizeOptions
+            )->getDimensions()->getSize()->getWidth();
+        }
+
+        $densities = explode(',', $config->getDensities());
+
+        $densities = array_map(function ($density) use ($width1x) {
+            $type = substr(trim($density), -1);
+            if ($type === 'w') {
+                return intval($density) / $width1x;
+            } else {
+                return floatval($density);
+            }
+        }, $densities);
+
+        // Strip empty densities
+        $densities = array_filter($densities);
+
+        // Add 1x to the beginning of the list
+        array_unshift($densities, 1);
+
+        // Strip duplicates
+        $densities = array_values(array_unique($densities));
+
+        return  $densities;
     }
 }
