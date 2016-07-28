@@ -32,34 +32,11 @@ class Picture implements PictureInterface
      */
     public function __construct(array $img, array $sources)
     {
-        if (!isset($img['src'])) {
-            throw new \InvalidArgumentException('Missing src attribute in img');
-        }
-
-        if (!isset($img['srcset'])) {
-            throw new \InvalidArgumentException('Missing src attribute in img');
-        }
-
-        if (!($img['src'] instanceof ImageInterface)) {
-            throw new \InvalidArgumentException('Src must be of type ImageInterface');
-        }
-
-        foreach ($img['srcset'] as $src) {
-            if (!($src[0] instanceof ImageInterface)) {
-                throw new \InvalidArgumentException('Srcets must be of type ImageInterface');
-            }
-        }
+        $this->validateSrcAttribute($img);
+        $this->validateSrcsetAttribute($img);
 
         foreach ($sources as $source) {
-            if (!isset($source['srcset'])) {
-                throw new \InvalidArgumentException('Missing srcset attribute in source');
-            }
-
-            foreach ($img['srcset'] as $src) {
-                if (!($src[0] instanceof ImageInterface)) {
-                    throw new \InvalidArgumentException('Srcets must be of type ImageInterface');
-                }
-            }
+            $this->validateSrcsetAttribute($source);
         }
 
         $this->img = $img;
@@ -121,5 +98,43 @@ class Picture implements PictureInterface
         $img['srcset'] = implode(', ', $img['srcset']);
 
         return $img;
+    }
+
+    /**
+     * Validates the src attribute.
+     *
+     * @param array $img
+     *
+     * @throws \InvalidArgumentException
+     */
+    private function validateSrcAttribute(array $img)
+    {
+        if (!isset($img['src'])) {
+            throw new \InvalidArgumentException('Missing src attribute');
+        }
+
+        if (!($img['src'] instanceof ImageInterface)) {
+            throw new \InvalidArgumentException('Src must be of type ImageInterface');
+        }
+    }
+
+    /**
+     * Validates the srcset attribute.
+     *
+     * @param array $img
+     *
+     * @throws \InvalidArgumentException
+     */
+    private function validateSrcsetAttribute(array $img)
+    {
+        if (!isset($img['srcset'])) {
+            throw new \InvalidArgumentException('Missing srcset attribute');
+        }
+
+        foreach ($img['srcset'] as $src) {
+            if (!($src[0] instanceof ImageInterface)) {
+                throw new \InvalidArgumentException('Srcets must be of type ImageInterface');
+            }
+        }
     }
 }
