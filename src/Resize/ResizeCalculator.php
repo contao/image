@@ -74,7 +74,7 @@ class ResizeCalculator implements ResizeCalculatorInterface
     /**
      * Calculates resize coordinates for mode crop.
      *
-     * @param array                    $size
+     * @param integer[]                $size
      * @param ImageDimensionsInterface $original
      * @param array                    $importantPart
      * @param float                    $zoom
@@ -120,7 +120,7 @@ class ResizeCalculator implements ResizeCalculatorInterface
     /**
      * Calculates resize coordinates for mode proportional.
      *
-     * @param array                    $size
+     * @param integer[]                $size
      * @param ImageDimensionsInterface $original
      * @param array                    $importantPart
      * @param float                    $zoom
@@ -143,7 +143,7 @@ class ResizeCalculator implements ResizeCalculatorInterface
     /**
      * Calculates resize coordinates for mode box.
      *
-     * @param array                    $size
+     * @param integer[]                $size
      * @param ImageDimensionsInterface $original
      * @param array                    $importantPart
      * @param float                    $zoom
@@ -166,7 +166,7 @@ class ResizeCalculator implements ResizeCalculatorInterface
     /**
      * Calculates resize coordinates for single dimension size.
      *
-     * @param array                    $size
+     * @param integer[]                $size
      * @param ImageDimensionsInterface $original
      * @param array                    $importantPart
      *
@@ -196,8 +196,8 @@ class ResizeCalculator implements ResizeCalculatorInterface
     /**
      * Converts an important part to an x, y, width and height array.
      *
-     * @param ImportantPartInterface|null $importantPart
      * @param ImageDimensionsInterface    $dimensions
+     * @param ImportantPartInterface|null $importantPart
      *
      * @return array<string,integer>
      */
