@@ -31,14 +31,16 @@ $resizer = new Resizer($calculator, $filesystem, '/path/to/cache/dir');
 $image = new Image($imagine, $filesystem, '/path/to/image.jpg');
 
 $config = (new ResizeConfiguration())
-	->setWidth(100)
-	->setHeight(100)
-	->setMode(ResizeConfiguration::MODE_CROP);
+    ->setWidth(100)
+    ->setHeight(100)
+    ->setMode(ResizeConfiguration::MODE_CROP)
+;
 
 $options = (new ResizeOptions())
-	->setImagineOptions(['jpeg_quality' => 95])
-	->setBypassCache(true)
-	->setTargetPath('/custom/target/path.jpg');
+    ->setImagineOptions(['jpeg_quality' => 95])
+    ->setBypassCache(true)
+    ->setTargetPath('/custom/target/path.jpg')
+;
 
 $resizedImage = $resizer->resize($image, $config, $options);
 
@@ -59,49 +61,50 @@ $pictureGenerator = new PictureGenerator($resizer);
 $image = new Image($imagine, $filesystem, '/path/to/image.jpg');
 
 $config = (new PictureConfiguration())
-	->setSize((new PictureConfigurationItem())
-		->setResizeConfig((new ResizeConfiguration())
-			->setWidth(100)
-			->setHeight(100)
-			->setMode(ResizeConfiguration::MODE_CROP)
-		)
-		->setDensities('1x, 2x')
-		->setSizes('100vw')
-	)
-	->setSizeItems([
-		(new PictureConfigurationItem())
-			->setResizeConfig((new ResizeConfiguration())
-				->setWidth(400)
-				->setHeight(200)
-				->setMode(ResizeConfiguration::MODE_CROP)
-			)
-			->setDensities('1x, 2x')
-			->setSizes('100vw')
-			->setMedia('(min-width: 900px)')
-	]);
+    ->setSize((new PictureConfigurationItem())
+        ->setResizeConfig((new ResizeConfiguration())
+            ->setWidth(100)
+            ->setHeight(100)
+            ->setMode(ResizeConfiguration::MODE_CROP)
+        )
+        ->setDensities('1x, 2x')
+        ->setSizes('100vw')
+    )
+    ->setSizeItems([
+        (new PictureConfigurationItem())
+            ->setResizeConfig((new ResizeConfiguration())
+                ->setWidth(400)
+                ->setHeight(200)
+                ->setMode(ResizeConfiguration::MODE_CROP)
+            )
+            ->setDensities('1x, 2x')
+            ->setSizes('100vw')
+            ->setMedia('(min-width: 900px)')
+    ])
+;
 
 $options = (new ResizeOptions());
 $picture = $pictureGenerator->generate($image, $config, $options);
 
 $picture->getImg('/path/to');
 /* [
-	'src' => 'cache/dir/4/image-de332f09.jpg',
-	'width' => 100,
-	'height' => 100,
-	'srcset' => 'cache/dir/4/image-de332f09.jpg 100w, cache/dir/4/image-9e0829dd.jpg 200w',
-	'sizes' => '100vw',
+    'src' => 'cache/dir/4/image-de332f09.jpg',
+    'width' => 100,
+    'height' => 100,
+    'srcset' => 'cache/dir/4/image-de332f09.jpg 100w, cache/dir/4/image-9e0829dd.jpg 200w',
+    'sizes' => '100vw',
 ] */
 
 $picture->getSources('/path/to');
 /* [
-	[
-		'src' => 'cache/dir/c/image-996db4cf.jpg',
-		'width' => 400,
-		'height' => 200,
-		'srcset' => 'cache/dir/c/image-996db4cf.jpg 0w, cache/dir/2/image-457dc5e0.jpg 800w',
-		'sizes' => '100vw',
-		'media' => '(min-width: 900px)',
-	],
+    [
+        'src' => 'cache/dir/c/image-996db4cf.jpg',
+        'width' => 400,
+        'height' => 200,
+        'srcset' => 'cache/dir/c/image-996db4cf.jpg 0w, cache/dir/2/image-457dc5e0.jpg 800w',
+        'sizes' => '100vw',
+        'media' => '(min-width: 900px)',
+    ],
 ] */
 ```
 
