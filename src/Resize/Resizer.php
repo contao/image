@@ -77,7 +77,7 @@ class Resizer implements ResizerInterface
      *
      * @return ImageInterface
      */
-    private function processResize(
+    protected function processResize(
         ImageInterface $image,
         ResizeConfigurationInterface $config,
         ResizeOptionsInterface $options
@@ -111,7 +111,7 @@ class Resizer implements ResizerInterface
      *
      * @return ImageInterface
      */
-    private function executeResize(
+    protected function executeResize(
         ImageInterface $image,
         ResizeCoordinatesInterface $coordinates,
         $path,
