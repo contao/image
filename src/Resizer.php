@@ -3,7 +3,7 @@
 /*
  * This file is part of Contao.
  *
- * Copyright (c) 2005-2015 Leo Feyer
+ * Copyright (c) 2005-2016 Leo Feyer
  *
  * @license LGPL-3.0+
  */
@@ -91,7 +91,7 @@ class Resizer implements ResizerInterface
             return $this->createImage($image, $image->getPath());
         }
 
-        $cachePath = $this->path . '/' . $this->createCachePath($image->getPath(), $coordinates);
+        $cachePath = $this->path.'/'.$this->createCachePath($image->getPath(), $coordinates);
 
         if ($this->filesystem->exists($cachePath) && !$options->getBypassCache()) {
             return $this->createImage($image, $cachePath);
@@ -159,8 +159,8 @@ class Resizer implements ResizerInterface
         $pathinfo = pathinfo($path);
 
         return substr($hash, 0, 1)
-            . '/' . $pathinfo['filename']
-            . '-' . substr($hash, 1)
-            . '.' . $pathinfo['extension'];
+            .'/'.$pathinfo['filename']
+            .'-'.substr($hash, 1)
+            .'.'.$pathinfo['extension'];
     }
 }

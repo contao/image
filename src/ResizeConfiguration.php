@@ -3,7 +3,7 @@
 /*
  * This file is part of Contao.
  *
- * Copyright (c) 2005-2015 Leo Feyer
+ * Copyright (c) 2005-2016 Leo Feyer
  *
  * @license LGPL-3.0+
  */
@@ -113,7 +113,7 @@ class ResizeConfiguration implements ResizeConfigurationInterface
             self::MODE_BOX,
             self::MODE_PROPORTIONAL,
         ], true)) {
-            throw new \InvalidArgumentException('Mode must be one of the ' . __CLASS__ . '::MODE_* constants');
+            throw new \InvalidArgumentException('Mode must be one of the '.__CLASS__.'::MODE_* constants');
         }
 
         $this->mode = $mode;

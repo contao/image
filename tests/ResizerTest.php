@@ -3,7 +3,7 @@
 /*
  * This file is part of Contao.
  *
- * Copyright (c) 2005-2015 Leo Feyer
+ * Copyright (c) 2005-2016 Leo Feyer
  *
  * @license LGPL-3.0+
  */
@@ -38,7 +38,7 @@ class ResizerTest extends \PHPUnit_Framework_TestCase
      */
     public function setUp()
     {
-        $this->rootDir = __DIR__ . '/tmp';
+        $this->rootDir = __DIR__.'/tmp';
     }
 
     /**
@@ -106,13 +106,13 @@ class ResizerTest extends \PHPUnit_Framework_TestCase
 
         (new GdImagine())
             ->create(new Box(100, 100))
-            ->save($this->rootDir . '/dummy.jpg');
+            ->save($this->rootDir.'/dummy.jpg');
 
         $image = $this->getMockBuilder('Contao\Image\Image')
              ->disableOriginalConstructor()
              ->getMock();
         $image->method('getDimensions')->willReturn(new ImageDimensions(new Box(200, 200)));
-        $image->method('getPath')->willReturn($this->rootDir . '/dummy.jpg');
+        $image->method('getPath')->willReturn($this->rootDir.'/dummy.jpg');
         $image->method('getImagine')->willReturn(new GdImagine());
 
         $configuration = $this->getMock('Contao\Image\ResizeConfigurationInterface');
@@ -126,26 +126,26 @@ class ResizerTest extends \PHPUnit_Framework_TestCase
         $resizedImage = $resizer->resize(
             $image,
             $configuration,
-            (new ResizeOptions())->setTargetPath($this->rootDir . '/target-path.jpg')
+            (new ResizeOptions())->setTargetPath($this->rootDir.'/target-path.jpg')
         );
 
         $this->assertEquals(new ImageDimensions(new Box(100, 100)), $resizedImage->getDimensions());
-        $this->assertEquals($this->rootDir . '/target-path.jpg', $resizedImage->getPath());
+        $this->assertEquals($this->rootDir.'/target-path.jpg', $resizedImage->getPath());
 
         // Replace target image with larger image
         (new GdImagine())
             ->create(new Box(200, 200))
-            ->save($this->rootDir . '/target-path.jpg');
+            ->save($this->rootDir.'/target-path.jpg');
 
         // Resize with override
         $resizedImage = $resizer->resize(
             $image,
             $configuration,
             (new ResizeOptions())
-                ->setTargetPath($this->rootDir . '/target-path.jpg')
+                ->setTargetPath($this->rootDir.'/target-path.jpg')
         );
 
-        $this->assertEquals($this->rootDir . '/target-path.jpg', $resizedImage->getPath());
+        $this->assertEquals($this->rootDir.'/target-path.jpg', $resizedImage->getPath());
         $this->assertEquals(new ImageDimensions(new Box(100, 100)), $resizedImage->getDimensions());
     }
 
@@ -154,13 +154,13 @@ class ResizerTest extends \PHPUnit_Framework_TestCase
      */
     public function testResizeSvg()
     {
-        $xml = '<?xml version="1.0"?>' .
+        $xml = '<?xml version="1.0"?>'.
             '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="100" height="100"></svg>';
 
         if (!is_dir($this->rootDir)) {
             mkdir($this->rootDir, 0777, true);
         }
-        file_put_contents($this->rootDir . '/dummy.svg', $xml);
+        file_put_contents($this->rootDir.'/dummy.svg', $xml);
 
         $calculator = $this->getMock('Contao\Image\ResizeCalculatorInterface');
         $calculator->method('calculate')->willReturn(new ResizeCoordinates(
@@ -175,7 +175,7 @@ class ResizerTest extends \PHPUnit_Framework_TestCase
              ->disableOriginalConstructor()
              ->getMock();
         $image->method('getDimensions')->willReturn(new ImageDimensions(new Box(200, 200)));
-        $image->method('getPath')->willReturn($this->rootDir . '/dummy.svg');
+        $image->method('getPath')->willReturn($this->rootDir.'/dummy.svg');
         $image->method('getImagine')->willReturn(new SvgImagine());
 
         $configuration = $this->getMock('Contao\Image\ResizeConfigurationInterface');
@@ -189,11 +189,11 @@ class ResizerTest extends \PHPUnit_Framework_TestCase
         $resizedImage = $resizer->resize(
             $image,
             $configuration,
-            (new ResizeOptions())->setTargetPath($this->rootDir . '/target-path.svg')
+            (new ResizeOptions())->setTargetPath($this->rootDir.'/target-path.svg')
         );
 
         $this->assertEquals(new ImageDimensions(new Box(100, 100)), $resizedImage->getDimensions());
-        $this->assertEquals($this->rootDir . '/target-path.svg', $resizedImage->getPath());
+        $this->assertEquals($this->rootDir.'/target-path.svg', $resizedImage->getPath());
         unlink($resizedImage->getPath());
     }
 
@@ -217,13 +217,13 @@ class ResizerTest extends \PHPUnit_Framework_TestCase
 
         (new GdImagine())
             ->create(new Box(100, 100))
-            ->save($this->rootDir . '/dummy.jpg');
+            ->save($this->rootDir.'/dummy.jpg');
 
         $image = $this->getMockBuilder('Contao\Image\Image')
              ->disableOriginalConstructor()
              ->getMock();
         $image->method('getDimensions')->willReturn(new ImageDimensions(new Box(200, 200)));
-        $image->method('getPath')->willReturn($this->rootDir . '/dummy.jpg');
+        $image->method('getPath')->willReturn($this->rootDir.'/dummy.jpg');
         $image->method('getImagine')->willReturn(new GdImagine());
 
         $configuration = $this->getMock('Contao\Image\ResizeConfigurationInterface');
@@ -247,7 +247,7 @@ class ResizerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(200, getimagesize($imagePath)[0], 'Cache file should no be overwritten');
 
         // With cache and target path
-        $targetPath = $this->rootDir . '/target-image.jpg';
+        $targetPath = $this->rootDir.'/target-image.jpg';
         $resizedImage = $resizer->resize($image, $configuration, (new ResizeOptions())->setTargetPath($targetPath));
 
         $this->assertEquals($targetPath, $resizedImage->getPath());
@@ -265,7 +265,7 @@ class ResizerTest extends \PHPUnit_Framework_TestCase
      */
     public function testResizeUndefinedSize()
     {
-        $imagePath = $this->rootDir . '/dummy.jpg';
+        $imagePath = $this->rootDir.'/dummy.jpg';
 
         $resizer = $this->createResizer();
 
@@ -294,7 +294,7 @@ class ResizerTest extends \PHPUnit_Framework_TestCase
      */
     public function testResizeEmptyConfig()
     {
-        $imagePath = $this->rootDir . '/dummy.jpg';
+        $imagePath = $this->rootDir.'/dummy.jpg';
 
         $resizer = $this->createResizer();
 
@@ -325,7 +325,7 @@ class ResizerTest extends \PHPUnit_Framework_TestCase
      */
     public function testResizeSameDimensions()
     {
-        $path = $this->rootDir . '/dummy.jpg';
+        $path = $this->rootDir.'/dummy.jpg';
 
         $calculator = $this->getMock('Contao\Image\ResizeCalculatorInterface');
         $calculator->method('calculate')->willReturn(new ResizeCoordinates(
@@ -361,11 +361,11 @@ class ResizerTest extends \PHPUnit_Framework_TestCase
         $resizedImage = $resizer->resize(
             $image,
             $configuration,
-            (new ResizeOptions())->setTargetPath($this->rootDir . '/target-path.jpg')
+            (new ResizeOptions())->setTargetPath($this->rootDir.'/target-path.jpg')
         );
 
         $this->assertEquals(new ImageDimensions(new Box(100, 100)), $resizedImage->getDimensions());
-        $this->assertEquals($this->rootDir . '/target-path.jpg', $resizedImage->getPath());
+        $this->assertEquals($this->rootDir.'/target-path.jpg', $resizedImage->getPath());
     }
 
     /**
@@ -373,13 +373,13 @@ class ResizerTest extends \PHPUnit_Framework_TestCase
      */
     public function testResizeSameDimensionsRelative()
     {
-        $xml = '<?xml version="1.0"?>' .
+        $xml = '<?xml version="1.0"?>'.
             '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 100 100"></svg>';
 
         if (!is_dir($this->rootDir)) {
             mkdir($this->rootDir, 0777, true);
         }
-        file_put_contents($this->rootDir . '/dummy.svg', $xml);
+        file_put_contents($this->rootDir.'/dummy.svg', $xml);
 
         $calculator = $this->getMock('Contao\Image\ResizeCalculatorInterface');
         $calculator->method('calculate')->willReturn(new ResizeCoordinates(
@@ -394,7 +394,7 @@ class ResizerTest extends \PHPUnit_Framework_TestCase
              ->disableOriginalConstructor()
              ->getMock();
         $image->method('getDimensions')->willReturn(new ImageDimensions(new Box(100, 100), true));
-        $image->method('getPath')->willReturn($this->rootDir . '/dummy.svg');
+        $image->method('getPath')->willReturn($this->rootDir.'/dummy.svg');
         $image->method('getImagine')->willReturn(new SvgImagine());
 
         $configuration = $this->getMock('Contao\Image\ResizeConfigurationInterface');

@@ -3,7 +3,7 @@
 /*
  * This file is part of Contao.
  *
- * Copyright (c) 2005-2015 Leo Feyer
+ * Copyright (c) 2005-2016 Leo Feyer
  *
  * @license LGPL-3.0+
  */
@@ -69,7 +69,7 @@ class ResizeOptions implements ResizeOptionsInterface
             $targetPath = (string) $targetPath;
 
             if (!(new Filesystem())->isAbsolutePath($targetPath)) {
-                throw new \InvalidArgumentException('"' . $targetPath . '" is not an absolute target path');
+                throw new \InvalidArgumentException('"'.$targetPath.'" is not an absolute target path');
             }
         }
 

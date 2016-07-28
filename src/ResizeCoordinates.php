@@ -3,7 +3,7 @@
 /*
  * This file is part of Contao.
  *
- * Copyright (c) 2005-2015 Leo Feyer
+ * Copyright (c) 2005-2016 Leo Feyer
  *
  * @license LGPL-3.0+
  */
@@ -103,8 +103,8 @@ class ResizeCoordinates implements ResizeCoordinatesInterface
 
         if (!$coordinates instanceof self) {
             throw new \InvalidArgumentException(
-                '$coordinates must be an instance of ResizeCoordinatesInterface or BoxInterface, "' .
-                get_class($coordinates) .
+                '$coordinates must be an instance of ResizeCoordinatesInterface or BoxInterface, "'.
+                get_class($coordinates).
                 '" given'
             );
         }

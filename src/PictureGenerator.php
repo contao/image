@@ -3,7 +3,7 @@
 /*
  * This file is part of Contao.
  *
- * Copyright (c) 2005-2015 Leo Feyer
+ * Copyright (c) 2005-2016 Leo Feyer
  *
  * @license LGPL-3.0+
  */
@@ -98,11 +98,11 @@ class PictureGenerator implements PictureGeneratorInterface
             if (count($densities) > 1) {
                 // Use pixel density descriptors if the sizes attribute is empty
                 if (!$sizesAttribute) {
-                    $src[1] = $density . 'x';
+                    $src[1] = $density.'x';
                 }
                 // Otherwise use width descriptors
                 else {
-                    $src[1] = $resizedImage->getDimensions()->getSize()->getWidth() . 'w';
+                    $src[1] = $resizedImage->getDimensions()->getSize()->getWidth().'w';
                 }
             }
 

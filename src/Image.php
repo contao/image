@@ -3,7 +3,7 @@
 /*
  * This file is part of Contao.
  *
- * Copyright (c) 2005-2015 Leo Feyer
+ * Copyright (c) 2005-2016 Leo Feyer
  *
  * @license LGPL-3.0+
  */
@@ -56,10 +56,10 @@ class Image implements ImageInterface
         $path
     ) {
         if (!$filesystem->exists($path)) {
-            throw new \InvalidArgumentException($path . ' doesn\'t exist');
+            throw new \InvalidArgumentException($path.' doesn\'t exist');
         }
         if (is_dir($path)) {
-            throw new \InvalidArgumentException($path . ' is a directory');
+            throw new \InvalidArgumentException($path.' is a directory');
         }
 
         $this->imagine = $imagine;
@@ -89,12 +89,12 @@ class Image implements ImageInterface
     public function getUrl($rootDir)
     {
         if (
-            substr($this->path, 0, strlen($rootDir) + 1) === $rootDir . '/'
-            || substr($this->path, 0, strlen($rootDir) + 1) === $rootDir . '\\'
+            substr($this->path, 0, strlen($rootDir) + 1) === $rootDir.'/'
+            || substr($this->path, 0, strlen($rootDir) + 1) === $rootDir.'\\'
         ) {
             $url = substr($this->path, strlen($rootDir) + 1);
         } else {
-            throw new \InvalidArgumentException('Path "' . $this->path . '" is not inside root directory "' . $rootDir . '"');
+            throw new \InvalidArgumentException('Path "'.$this->path.'" is not inside root directory "'.$rootDir.'"');
         }
 
         $url = str_replace('%2F', '/', rawurlencode($url));
