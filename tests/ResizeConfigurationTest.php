@@ -84,7 +84,7 @@ class ResizeConfigurationTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(100, $config->getWidth());
         $this->assertInternalType('int', $config->getWidth());
 
-        $this->setExpectedException('\InvalidArgumentException');
+        $this->setExpectedException('InvalidArgumentException');
 
         $config->setWidth(-1);
     }
@@ -101,7 +101,7 @@ class ResizeConfigurationTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(100, $config->getHeight());
         $this->assertInternalType('int', $config->getHeight());
 
-        $this->setExpectedException('\InvalidArgumentException');
+        $this->setExpectedException('InvalidArgumentException');
 
         $config->setHeight(-1);
     }
@@ -117,7 +117,7 @@ class ResizeConfigurationTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($config, $config->setMode(ResizeConfiguration::MODE_BOX));
         $this->assertEquals(ResizeConfiguration::MODE_BOX, $config->getMode());
 
-        $this->setExpectedException('\InvalidArgumentException');
+        $this->setExpectedException('InvalidArgumentException');
 
         $config->setMode('invalid');
     }
@@ -134,7 +134,7 @@ class ResizeConfigurationTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(100, $config->getZoomLevel());
         $this->assertInternalType('int', $config->getZoomLevel());
 
-        $this->setExpectedException('\InvalidArgumentException');
+        $this->setExpectedException('InvalidArgumentException');
 
         $config->setZoomLevel(-1);
     }
@@ -147,6 +147,9 @@ class ResizeConfigurationTest extends \PHPUnit_Framework_TestCase
     public function testSetZoomLevelTooHigh()
     {
         $config = new ResizeConfiguration();
+
+        $this->setExpectedException('InvalidArgumentException');
+
         $config->setZoomLevel(101);
     }
 }
