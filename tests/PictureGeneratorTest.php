@@ -109,6 +109,12 @@ class PictureGeneratorTest extends \PHPUnit_Framework_TestCase
                             ->setWidth(100)
                             ->setHeight(50)
                         ),
+                    (new PictureConfigurationItem())
+                        ->setMedia('(min-width: 300px)')
+                        ->setResizeConfig((new ResizeConfiguration())
+                            ->setWidth(50)
+                            ->setHeight(25)
+                        ),
                 ]
             )
         ;
@@ -134,6 +140,13 @@ class PictureGeneratorTest extends \PHPUnit_Framework_TestCase
                     'srcset' => 'image-100.jpg 100w, image-50.jpg 50w',
                     'sizes' => '50vw',
                     'media' => '(min-width: 600px)',
+                ],
+                [
+                    'src' => 'image-50.jpg',
+                    'width' => '50',
+                    'height' => '25',
+                    'srcset' => 'image-50.jpg',
+                    'media' => '(min-width: 300px)',
                 ],
             ],
             $picture->getSources('/root/dir')

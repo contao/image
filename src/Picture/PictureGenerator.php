@@ -85,43 +85,27 @@ class PictureGenerator implements PictureGeneratorInterface
         $attributes = [];
         $srcset = [];
 
+        $descriptorType = '';
+
+        if (count($densities) > 1) {
+            $descriptorType = $sizesAttribute ? 'w' : 'x'; // use pixel density descriptors if the sizes attribute is empty
+        }
+
         foreach ($densities as $density) {
-            $resizeConfig = clone $config->getResizeConfig();
-            $resizeConfig->setWidth($resizeConfig->getWidth() * $density);
-            $resizeConfig->setHeight($resizeConfig->getHeight() * $density);
-
-            $resizedImage = $this->resizer->resize(
-                $image,
-                $resizeConfig,
-                $this->resizeOptions
-            );
-
-            if (empty($attributes['src'])) {
-                $attributes['src'] = $resizedImage;
-
-                if (
-                    !$resizedImage->getDimensions()->isRelative() &&
-                    !$resizedImage->getDimensions()->isUndefined()
-                ) {
-                    $attributes['width'] = $resizedImage->getDimensions()->getSize()->getWidth();
-                    $attributes['height'] = $resizedImage->getDimensions()->getSize()->getHeight();
-                }
-            }
-
-            $src = [$resizedImage];
-
-            if (count($densities) > 1) {
-                if (!$sizesAttribute) {
-                    $src[1] = $density.'x'; // use pixel density descriptors if the sizes attribute is empty
-                } else {
-                    $src[1] = $resizedImage->getDimensions()->getSize()->getWidth().'w';
-                }
-            }
-
-            $srcset[] = $src;
+            $srcset[] = $this->generateSrcsetItem($image, $config, $density, $descriptorType);
         }
 
         $attributes['srcset'] = $srcset;
+
+        $attributes['src'] = $srcset[0][0];
+
+        if (
+            !$attributes['src']->getDimensions()->isRelative() &&
+            !$attributes['src']->getDimensions()->isUndefined()
+        ) {
+            $attributes['width'] = $attributes['src']->getDimensions()->getSize()->getWidth();
+            $attributes['height'] = $attributes['src']->getDimensions()->getSize()->getHeight();
+        }
 
         if ($sizesAttribute) {
             $attributes['sizes'] = $sizesAttribute;
@@ -180,5 +164,38 @@ class PictureGenerator implements PictureGeneratorInterface
         $densities = array_values(array_unique($densities));
 
         return $densities;
+    }
+
+    /**
+     * Generate a srcset item
+     *
+     * @param ImageInterface                    $image
+     * @param PictureConfigurationItemInterface $config
+     * @param float                             $density
+     * @param string                            $descriptorType x, w or the empty string
+     *
+     * @return array Array containing an ImageInterface and an optional descriptor string
+     */
+    private function generateSrcsetItem(
+        ImageInterface $image,
+        PictureConfigurationItemInterface $config,
+        $density,
+        $descriptorType
+    ) {
+        $resizeConfig = clone $config->getResizeConfig();
+        $resizeConfig->setWidth($resizeConfig->getWidth() * $density);
+        $resizeConfig->setHeight($resizeConfig->getHeight() * $density);
+
+        $resizedImage = $this->resizer->resize($image, $resizeConfig, $this->resizeOptions);
+
+        $src = [$resizedImage];
+
+        if ('x' === $descriptorType) {
+            $src[1] = $density.'x';
+        } elseif ('w' === $descriptorType) {
+            $src[1] = $resizedImage->getDimensions()->getSize()->getWidth().'w';
+        }
+
+        return $src;
     }
 }
