@@ -12,13 +12,13 @@
     "require": {
         "php": ">=5.5.0",
         "contao/imagine-svg": "~1.0@dev",
-        "imagine/imagine": "~0.6"
+        "imagine/imagine": "~0.6",
+        "symfony/filesystem": "~2.8|~3.0"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "~1.8",
         "phpunit/phpunit": "~4.5",
-        "satooshi/php-coveralls": "~0.6",
-        "symfony/filesystem": "~2.8|~3.0"
+        "satooshi/php-coveralls": "~0.6"
     },
     "autoload": {
         "psr-4": {
