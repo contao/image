@@ -8,7 +8,7 @@
  * @license LGPL-3.0+
  */
 
-namespace Contao\Image;
+namespace Contao\Image\Resize;
 
 use Imagine\Image\BoxInterface;
 use Imagine\Image\PointInterface;
@@ -94,13 +94,14 @@ class ResizeCoordinates implements ResizeCoordinatesInterface
             $coordinates = new static($coordinates, new Point(0, 0), $coordinates);
         }
 
-        if (!$coordinates instanceof self) {
+        if (!$coordinates instanceof ResizeCoordinatesInterface) {
             throw new \InvalidArgumentException(sprintf(
                 '$coordinates must be an instance of ResizeCoordinatesInterface or BoxInterface, "%s" given',
                 get_class($coordinates)
             ));
         }
 
+        /** @var ResizeCoordinatesInterface $coordinates */
         return $this->cropStart->getX() === $coordinates->getCropStart()->getX()
             && $this->cropStart->getY() === $coordinates->getCropStart()->getY()
             && $this->cropSize->getWidth() === $coordinates->getCropSize()->getWidth()

@@ -10,7 +10,7 @@
 
 namespace Contao\Image\Test;
 
-use Contao\Image\ResizeConfiguration;
+use Contao\Image\Resize\ResizeConfiguration;
 
 /**
  * Tests the ResizeConfiguration class.
@@ -26,8 +26,8 @@ class ResizeConfigurationTest extends \PHPUnit_Framework_TestCase
     {
         $resizeConfig = new ResizeConfiguration();
 
-        $this->assertInstanceOf('Contao\Image\ResizeConfiguration', $resizeConfig);
-        $this->assertInstanceOf('Contao\Image\ResizeConfigurationInterface', $resizeConfig);
+        $this->assertInstanceOf('Contao\Image\Resize\ResizeConfiguration', $resizeConfig);
+        $this->assertInstanceOf('Contao\Image\Resize\ResizeConfigurationInterface', $resizeConfig);
     }
 
     /**

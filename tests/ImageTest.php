@@ -10,9 +10,9 @@
 
 namespace Contao\Image\Test;
 
-use Contao\Image\Image;
-use Contao\Image\ImageDimensions;
-use Contao\Image\ImportantPart;
+use Contao\Image\Image\Image;
+use Contao\Image\Image\ImageDimensions;
+use Contao\Image\Image\ImportantPart;
 use Imagine\Image\Box;
 use Imagine\Image\ImagineInterface;
 use Imagine\Image\Point;
@@ -32,8 +32,8 @@ class ImageTest extends \PHPUnit_Framework_TestCase
     {
         $image = $this->createImage();
 
-        $this->assertInstanceOf('Contao\Image\Image', $image);
-        $this->assertInstanceOf('Contao\Image\ImageInterface', $image);
+        $this->assertInstanceOf('Contao\Image\Image\Image', $image);
+        $this->assertInstanceOf('Contao\Image\Image\ImageInterface', $image);
     }
 
     /**

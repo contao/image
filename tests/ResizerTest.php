@@ -10,18 +10,18 @@
 
 namespace Contao\Image\Test;
 
-use Contao\Image\Image;
-use Contao\Image\ResizeCalculatorInterface;
-use Contao\Image\Resizer;
-use Contao\Image\ResizeOptions;
-use Contao\Image\ImageDimensions;
-use Contao\Image\ResizeCoordinates;
+use Contao\Image\Image\Image;
+use Contao\Image\Image\ImageDimensions;
+use Contao\Image\Resize\ResizeCalculatorInterface;
+use Contao\Image\Resize\ResizeCoordinates;
+use Contao\Image\Resize\ResizeOptions;
+use Contao\Image\Resize\Resizer;
 use Contao\ImagineSvg\Imagine as SvgImagine;
 use Contao\ImagineSvg\UndefinedBox;
-use Symfony\Component\Filesystem\Filesystem;
 use Imagine\Gd\Imagine as GdImagine;
 use Imagine\Image\Box;
 use Imagine\Image\Point;
+use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * Tests the Resizer class.
@@ -60,8 +60,8 @@ class ResizerTest extends \PHPUnit_Framework_TestCase
     {
         $resizer = $this->createResizer();
 
-        $this->assertInstanceOf('Contao\Image\Resizer', $resizer);
-        $this->assertInstanceOf('Contao\Image\ResizerInterface', $resizer);
+        $this->assertInstanceOf('Contao\Image\Resize\Resizer', $resizer);
+        $this->assertInstanceOf('Contao\Image\Resize\ResizerInterface', $resizer);
     }
 
     /**
@@ -69,7 +69,7 @@ class ResizerTest extends \PHPUnit_Framework_TestCase
      */
     public function testResize()
     {
-        $calculator = $this->getMock('Contao\Image\ResizeCalculatorInterface');
+        $calculator = $this->getMock('Contao\Image\Resize\ResizeCalculatorInterface');
 
         $calculator
             ->method('calculate')
@@ -88,7 +88,7 @@ class ResizerTest extends \PHPUnit_Framework_TestCase
         ;
 
         $image = $this
-            ->getMockBuilder('Contao\Image\Image')
+            ->getMockBuilder('Contao\Image\Image\Image')
             ->disableOriginalConstructor()
             ->getMock()
         ;
@@ -108,7 +108,7 @@ class ResizerTest extends \PHPUnit_Framework_TestCase
             ->willReturn(new GdImagine())
         ;
 
-        $configuration = $this->getMock('Contao\Image\ResizeConfigurationInterface');
+        $configuration = $this->getMock('Contao\Image\Resize\ResizeConfigurationInterface');
         $resizedImage = $resizer->resize($image, $configuration, new ResizeOptions());
 
         $this->assertEquals(new ImageDimensions(new Box(100, 100)), $resizedImage->getDimensions());
@@ -156,7 +156,7 @@ class ResizerTest extends \PHPUnit_Framework_TestCase
 
         file_put_contents($this->rootDir.'/dummy.svg', $xml);
 
-        $calculator = $this->getMock('Contao\Image\ResizeCalculatorInterface');
+        $calculator = $this->getMock('Contao\Image\Resize\ResizeCalculatorInterface');
 
         $calculator
             ->method('calculate')
@@ -166,7 +166,7 @@ class ResizerTest extends \PHPUnit_Framework_TestCase
         $resizer = $this->createResizer($calculator);
 
         $image = $this
-            ->getMockBuilder('Contao\Image\Image')
+            ->getMockBuilder('Contao\Image\Image\Image')
             ->disableOriginalConstructor()
             ->getMock()
         ;
@@ -186,7 +186,7 @@ class ResizerTest extends \PHPUnit_Framework_TestCase
             ->willReturn(new SvgImagine())
         ;
 
-        $configuration = $this->getMock('Contao\Image\ResizeConfigurationInterface');
+        $configuration = $this->getMock('Contao\Image\Resize\ResizeConfigurationInterface');
         $resizedImage = $resizer->resize($image, $configuration, new ResizeOptions());
 
         $this->assertEquals(new ImageDimensions(new Box(100, 100)), $resizedImage->getDimensions());
@@ -211,7 +211,7 @@ class ResizerTest extends \PHPUnit_Framework_TestCase
      */
     public function testResizeCache()
     {
-        $calculator = $this->getMock('Contao\Image\ResizeCalculatorInterface');
+        $calculator = $this->getMock('Contao\Image\Resize\ResizeCalculatorInterface');
 
         $calculator
             ->method('calculate')
@@ -230,7 +230,7 @@ class ResizerTest extends \PHPUnit_Framework_TestCase
         ;
 
         $image = $this
-            ->getMockBuilder('Contao\Image\Image')
+            ->getMockBuilder('Contao\Image\Image\Image')
             ->disableOriginalConstructor()
             ->getMock()
         ;
@@ -250,7 +250,7 @@ class ResizerTest extends \PHPUnit_Framework_TestCase
             ->willReturn(new GdImagine())
         ;
 
-        $configuration = $this->getMock('Contao\Image\ResizeConfigurationInterface');
+        $configuration = $this->getMock('Contao\Image\Resize\ResizeConfigurationInterface');
         $resizedImage = $resizer->resize($image, $configuration, new ResizeOptions());
 
         $this->assertEquals(new ImageDimensions(new Box(100, 100)), $resizedImage->getDimensions());
@@ -299,7 +299,7 @@ class ResizerTest extends \PHPUnit_Framework_TestCase
         file_put_contents($imagePath, '');
 
         $image = $this
-            ->getMockBuilder('Contao\Image\Image')
+            ->getMockBuilder('Contao\Image\Image\Image')
             ->disableOriginalConstructor()
             ->getMock()
         ;
@@ -319,7 +319,7 @@ class ResizerTest extends \PHPUnit_Framework_TestCase
             ->willReturn(new GdImagine())
         ;
 
-        $configuration = $this->getMock('Contao\Image\ResizeConfigurationInterface');
+        $configuration = $this->getMock('Contao\Image\Resize\ResizeConfigurationInterface');
         $resizedImage = $resizer->resize($image, $configuration, new ResizeOptions());
 
         $this->assertEquals($imagePath, $resizedImage->getPath());
@@ -341,7 +341,7 @@ class ResizerTest extends \PHPUnit_Framework_TestCase
 
         /** @var Image|\PHPUnit_Framework_MockObject_MockObject $image */
         $image = $this
-            ->getMockBuilder('Contao\Image\Image')
+            ->getMockBuilder('Contao\Image\Image\Image')
             ->disableOriginalConstructor()
             ->getMock()
         ;
@@ -361,7 +361,7 @@ class ResizerTest extends \PHPUnit_Framework_TestCase
             ->willReturn(new GdImagine())
         ;
 
-        $configuration = $this->getMock('Contao\Image\ResizeConfigurationInterface');
+        $configuration = $this->getMock('Contao\Image\Resize\ResizeConfigurationInterface');
 
         $configuration
             ->method('isEmpty')
@@ -381,7 +381,7 @@ class ResizerTest extends \PHPUnit_Framework_TestCase
     {
         $path = $this->rootDir.'/dummy.jpg';
 
-        $calculator = $this->getMock('Contao\Image\ResizeCalculatorInterface');
+        $calculator = $this->getMock('Contao\Image\Resize\ResizeCalculatorInterface');
 
         $calculator
             ->method('calculate')
@@ -400,7 +400,7 @@ class ResizerTest extends \PHPUnit_Framework_TestCase
         ;
 
         $image = $this
-            ->getMockBuilder('Contao\Image\Image')
+            ->getMockBuilder('Contao\Image\Image\Image')
             ->disableOriginalConstructor()
             ->getMock()
         ;
@@ -420,7 +420,7 @@ class ResizerTest extends \PHPUnit_Framework_TestCase
             ->willReturn(new GdImagine())
         ;
 
-        $configuration = $this->getMock('Contao\Image\ResizeConfigurationInterface');
+        $configuration = $this->getMock('Contao\Image\Resize\ResizeConfigurationInterface');
         $resizedImage = $resizer->resize($image, $configuration, new ResizeOptions());
 
         $this->assertEquals(new ImageDimensions(new Box(100, 100)), $resizedImage->getDimensions());
@@ -450,7 +450,7 @@ class ResizerTest extends \PHPUnit_Framework_TestCase
 
         file_put_contents($this->rootDir.'/dummy.svg', $xml);
 
-        $calculator = $this->getMock('Contao\Image\ResizeCalculatorInterface');
+        $calculator = $this->getMock('Contao\Image\Resize\ResizeCalculatorInterface');
 
         $calculator
             ->method('calculate')
@@ -460,7 +460,7 @@ class ResizerTest extends \PHPUnit_Framework_TestCase
         $resizer = $this->createResizer($calculator);
 
         $image = $this
-            ->getMockBuilder('Contao\Image\Image')
+            ->getMockBuilder('Contao\Image\Image\Image')
             ->disableOriginalConstructor()
             ->getMock()
         ;
@@ -480,7 +480,7 @@ class ResizerTest extends \PHPUnit_Framework_TestCase
             ->willReturn(new SvgImagine())
         ;
 
-        $configuration = $this->getMock('Contao\Image\ResizeConfigurationInterface');
+        $configuration = $this->getMock('Contao\Image\Resize\ResizeConfigurationInterface');
         $resizedImage = $resizer->resize($image, $configuration, new ResizeOptions());
 
         $this->assertEquals(100, $resizedImage->getDimensions()->getSize()->getWidth());
@@ -503,7 +503,7 @@ class ResizerTest extends \PHPUnit_Framework_TestCase
     private function createResizer($calculator = null, $filesystem = null, $path = null)
     {
         if (null === $calculator) {
-            $calculator = $this->getMock('Contao\Image\ResizeCalculatorInterface');
+            $calculator = $this->getMock('Contao\Image\Resize\ResizeCalculatorInterface');
         }
 
         if (null === $filesystem) {

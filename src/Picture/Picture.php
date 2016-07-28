@@ -8,7 +8,9 @@
  * @license LGPL-3.0+
  */
 
-namespace Contao\Image;
+namespace Contao\Image\Picture;
+
+use Contao\Image\Image\ImageInterface;
 
 /**
  * Picture element class.
