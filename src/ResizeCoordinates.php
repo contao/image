@@ -88,7 +88,7 @@ class ResizeCoordinates implements ResizeCoordinatesInterface
     /**
      * {@inheritdoc}
      */
-    public function equals($coordinates)
+    public function isEqualTo($coordinates)
     {
         if ($coordinates instanceof BoxInterface) {
             $coordinates = new static($coordinates, new Point(0, 0), $coordinates);

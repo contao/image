@@ -64,5 +64,5 @@ interface ResizeCoordinatesInterface
      *
      * @return bool
      */
-    public function equals($coordinates);
+    public function isEqualTo($coordinates);
 }
