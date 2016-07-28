@@ -8,7 +8,7 @@
  * @license LGPL-3.0+
  */
 
-namespace Contao\Image;
+namespace Contao\Image\Resize;
 
 /**
  * Resize options interface.

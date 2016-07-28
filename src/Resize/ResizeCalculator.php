@@ -8,8 +8,11 @@
  * @license LGPL-3.0+
  */
 
-namespace Contao\Image;
+namespace Contao\Image\Resize;
 
+use Contao\Image\Image\ImageDimensionsInterface;
+use Contao\Image\Image\ImportantPart;
+use Contao\Image\Image\ImportantPartInterface;
 use Imagine\Image\Box;
 use Imagine\Image\BoxInterface;
 use Imagine\Image\Point;

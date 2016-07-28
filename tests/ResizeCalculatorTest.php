@@ -10,11 +10,11 @@
 
 namespace Contao\Image\Test;
 
-use Contao\Image\ResizeCalculator;
-use Contao\Image\ResizeConfiguration;
-use Contao\Image\ImageDimensions;
-use Contao\Image\ResizeCoordinates;
-use Contao\Image\ImportantPart;
+use Contao\Image\Image\ImageDimensions;
+use Contao\Image\Image\ImportantPart;
+use Contao\Image\Resize\ResizeCalculator;
+use Contao\Image\Resize\ResizeConfiguration;
+use Contao\Image\Resize\ResizeCoordinates;
 use Imagine\Image\Box;
 use Imagine\Image\Point;
 
@@ -32,8 +32,8 @@ class ResizeCalculatorTest extends \PHPUnit_Framework_TestCase
     {
         $calculator = new ResizeCalculator();
 
-        $this->assertInstanceOf('Contao\Image\ResizeCalculator', $calculator);
-        $this->assertInstanceOf('Contao\Image\ResizeCalculatorInterface', $calculator);
+        $this->assertInstanceOf('Contao\Image\Resize\ResizeCalculator', $calculator);
+        $this->assertInstanceOf('Contao\Image\Resize\ResizeCalculatorInterface', $calculator);
     }
 
     /**
