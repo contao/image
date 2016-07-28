@@ -3,7 +3,7 @@
 /*
  * This file is part of Contao.
  *
- * Copyright (c) 2005-2015 Leo Feyer
+ * Copyright (c) 2005-2016 Leo Feyer
  *
  * @license LGPL-3.0+
  */
@@ -11,14 +11,14 @@
 namespace Contao\Image;
 
 /**
- * Picture resize configuration used by the PictureGenerator.
+ * Picture configuration interface.
  *
  * @author Martin Auswöger <martin@auswoeger.com>
  */
 interface PictureConfigurationInterface
 {
     /**
-     * Gets the size.
+     * Returns the size.
      *
      * @return PictureConfigurationItemInterface
      */
@@ -27,23 +27,23 @@ interface PictureConfigurationInterface
     /**
      * Sets the size.
      *
-     * @param PictureConfigurationItemInterface $size the size
+     * @param PictureConfigurationItemInterface $size
      *
      * @return self
      */
     public function setSize(PictureConfigurationItemInterface $size);
 
     /**
-     * Gets the size items.
+     * Returns the size items.
      *
      * @return PictureConfigurationItemInterface[]
      */
     public function getSizeItems();
 
     /**
-     * Sets the sizeItems.
+     * Sets the size items.
      *
-     * @param PictureConfigurationItemInterface[] $sizeItems the size items
+     * @param PictureConfigurationItemInterface[] $sizeItems
      *
      * @return self
      */

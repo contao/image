@@ -3,7 +3,7 @@
 /*
  * This file is part of Contao.
  *
- * Copyright (c) 2005-2015 Leo Feyer
+ * Copyright (c) 2005-2016 Leo Feyer
  *
  * @license LGPL-3.0+
  */
@@ -11,7 +11,7 @@
 namespace Contao\Image;
 
 /**
- * Resize configuration used by the ResizeCalculator.
+ * Resize configuration interface.
  *
  * @author Martin Auswöger <martin@auswoeger.com>
  */
@@ -29,7 +29,7 @@ interface ResizeConfigurationInterface
     public function isEmpty();
 
     /**
-     * Gets the width.
+     * Returns the width.
      *
      * @return int
      */
@@ -45,7 +45,7 @@ interface ResizeConfigurationInterface
     public function setWidth($width);
 
     /**
-     * Gets the height.
+     * Returns the height.
      *
      * @return int
      */
@@ -61,7 +61,7 @@ interface ResizeConfigurationInterface
     public function setHeight($height);
 
     /**
-     * Gets the mode.
+     * Returns the mode.
      *
      * @return string
      */
@@ -77,7 +77,7 @@ interface ResizeConfigurationInterface
     public function setMode($mode);
 
     /**
-     * Gets the zoom level.
+     * Returns the zoom level.
      *
      * @return int
      */

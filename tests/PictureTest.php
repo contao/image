@@ -3,7 +3,7 @@
 /*
  * This file is part of Contao.
  *
- * Copyright (c) 2005-2015 Leo Feyer
+ * Copyright (c) 2005-2016 Leo Feyer
  *
  * @license LGPL-3.0+
  */
@@ -22,7 +22,114 @@ use Contao\Image\Picture;
 class PictureTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * Create a picture instance helper.
+     * Tests the object instantiation.
+     */
+    public function testInstantiation()
+    {
+        $picture = $this->createPicture();
+
+        $this->assertInstanceOf('Contao\Image\Picture', $picture);
+        $this->assertInstanceOf('Contao\Image\PictureInterface', $picture);
+    }
+
+    /**
+     * Tests the getImg() method.
+     */
+    public function testGetImg()
+    {
+        $picture = $this->createPicture(null, '/path/to/a/filename with special&<>"\'chars.jpeg');
+
+        $this->assertInstanceOf('Contao\Image\ImageInterface', $picture->getImg()['src']);
+
+        $this->assertEquals(
+            'path/to/a/filename%20with%20special%26%3C%3E%22%27chars.jpeg',
+            $picture->getImg('')['src']
+        );
+
+        $this->assertEquals(
+            'to/a/filename%20with%20special%26%3C%3E%22%27chars.jpeg',
+            $picture->getImg('/path')['src'])
+        ;
+
+        $this->assertEquals(
+            'a/filename%20with%20special%26%3C%3E%22%27chars.jpeg',
+            $picture->getImg('/path/to')['src'])
+        ;
+
+        $this->assertEquals(
+            'filename%20with%20special%26%3C%3E%22%27chars.jpeg',
+            $picture->getImg('/path/to/a')['src'])
+        ;
+
+        $this->assertInstanceOf('Contao\Image\ImageInterface', $picture->getImg()['srcset'][0][0]);
+
+        $this->assertEquals(
+            'path/to/a/filename%20with%20special%26%3C%3E%22%27chars.jpeg 1x',
+            $picture->getImg('')['srcset']
+        );
+
+        $this->assertEquals(
+            'to/a/filename%20with%20special%26%3C%3E%22%27chars.jpeg 1x',
+            $picture->getImg('/path')['srcset']
+        );
+
+        $this->assertEquals(
+            'a/filename%20with%20special%26%3C%3E%22%27chars.jpeg 1x',
+            $picture->getImg('/path/to')['srcset']
+        );
+
+        $this->assertEquals(
+            'filename%20with%20special%26%3C%3E%22%27chars.jpeg 1x',
+            $picture->getImg('/path/to/a')['srcset']
+        );
+
+        $this->assertEquals('custom attribute', $picture->getImg()['data-custom']);
+        $this->assertEquals('custom attribute', $picture->getImg('')['data-custom']);
+
+        $this->setExpectedException('InvalidArgumentException');
+
+        $picture->getImg('/path/t');
+    }
+
+    /**
+     * Tests the getSources() method.
+     */
+    public function testGetSources()
+    {
+        $picture = $this->createPicture(null, '/path/to/a/filename with special&<>"\'chars.jpeg');
+
+        $this->assertInstanceOf('Contao\Image\ImageInterface', $picture->getSources()[0]['srcset'][0][0]);
+
+        $this->assertEquals(
+            'path/to/a/filename%20with%20special%26%3C%3E%22%27chars.jpeg 1x',
+            $picture->getSources('')[0]['srcset']
+        );
+
+        $this->assertEquals(
+            'to/a/filename%20with%20special%26%3C%3E%22%27chars.jpeg 1x',
+            $picture->getSources('/path')[0]['srcset']
+        );
+
+        $this->assertEquals(
+            'a/filename%20with%20special%26%3C%3E%22%27chars.jpeg 1x',
+            $picture->getSources('/path/to')[0]['srcset']
+        );
+
+        $this->assertEquals(
+            'filename%20with%20special%26%3C%3E%22%27chars.jpeg 1x',
+            $picture->getSources('/path/to/a')[0]['srcset']
+        );
+
+        $this->assertEquals('custom attribute', $picture->getSources()[0]['data-custom']);
+        $this->assertEquals('custom attribute', $picture->getSources('')[0]['data-custom']);
+
+        $this->setExpectedException('InvalidArgumentException');
+
+        $picture->getSources('/path/t');
+    }
+
+    /**
+     * Creates a picture instance helper.
      *
      * @param ImageInterface $image
      * @param string         $path
@@ -42,60 +149,5 @@ class PictureTest extends \PHPUnit_Framework_TestCase
             ['src' => $image, 'srcset' => [[$image, '1x']], 'data-custom' => 'custom attribute'],
             [['srcset' => [[$image, '1x']], 'data-custom' => 'custom attribute']]
         );
-    }
-
-    /**
-     * Tests the object instantiation.
-     */
-    public function testInstantiation()
-    {
-        $this->assertInstanceOf('Contao\Image\Picture', $this->createPicture());
-        $this->assertInstanceOf('Contao\Image\PictureInterface', $this->createPicture());
-    }
-
-    /**
-     * Tests the getImg() method.
-     */
-    public function testGetImg()
-    {
-        $picture = $this->createPicture(null, '/path/to/a/filename with special&<>"\'chars.jpeg');
-
-        $this->assertInstanceOf('Contao\Image\ImageInterface', $picture->getImg()['src']);
-        $this->assertEquals('path/to/a/filename%20with%20special%26%3C%3E%22%27chars.jpeg', $picture->getImg('')['src']);
-        $this->assertEquals('to/a/filename%20with%20special%26%3C%3E%22%27chars.jpeg', $picture->getImg('/path')['src']);
-        $this->assertEquals('a/filename%20with%20special%26%3C%3E%22%27chars.jpeg', $picture->getImg('/path/to')['src']);
-        $this->assertEquals('filename%20with%20special%26%3C%3E%22%27chars.jpeg', $picture->getImg('/path/to/a')['src']);
-
-        $this->assertInstanceOf('Contao\Image\ImageInterface', $picture->getImg()['srcset'][0][0]);
-        $this->assertEquals('path/to/a/filename%20with%20special%26%3C%3E%22%27chars.jpeg 1x', $picture->getImg('')['srcset']);
-        $this->assertEquals('to/a/filename%20with%20special%26%3C%3E%22%27chars.jpeg 1x', $picture->getImg('/path')['srcset']);
-        $this->assertEquals('a/filename%20with%20special%26%3C%3E%22%27chars.jpeg 1x', $picture->getImg('/path/to')['srcset']);
-        $this->assertEquals('filename%20with%20special%26%3C%3E%22%27chars.jpeg 1x', $picture->getImg('/path/to/a')['srcset']);
-
-        $this->assertEquals('custom attribute', $picture->getImg()['data-custom']);
-        $this->assertEquals('custom attribute', $picture->getImg('')['data-custom']);
-
-        $this->setExpectedException('InvalidArgumentException');
-        $picture->getImg('/path/t');
-    }
-
-    /**
-     * Tests the getSources() method.
-     */
-    public function testGetSources()
-    {
-        $picture = $this->createPicture(null, '/path/to/a/filename with special&<>"\'chars.jpeg');
-
-        $this->assertInstanceOf('Contao\Image\ImageInterface', $picture->getSources()[0]['srcset'][0][0]);
-        $this->assertEquals('path/to/a/filename%20with%20special%26%3C%3E%22%27chars.jpeg 1x', $picture->getSources('')[0]['srcset']);
-        $this->assertEquals('to/a/filename%20with%20special%26%3C%3E%22%27chars.jpeg 1x', $picture->getSources('/path')[0]['srcset']);
-        $this->assertEquals('a/filename%20with%20special%26%3C%3E%22%27chars.jpeg 1x', $picture->getSources('/path/to')[0]['srcset']);
-        $this->assertEquals('filename%20with%20special%26%3C%3E%22%27chars.jpeg 1x', $picture->getSources('/path/to/a')[0]['srcset']);
-
-        $this->assertEquals('custom attribute', $picture->getSources()[0]['data-custom']);
-        $this->assertEquals('custom attribute', $picture->getSources('')[0]['data-custom']);
-
-        $this->setExpectedException('InvalidArgumentException');
-        $picture->getSources('/path/t');
     }
 }

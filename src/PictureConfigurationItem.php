@@ -3,7 +3,7 @@
 /*
  * This file is part of Contao.
  *
- * Copyright (c) 2005-2015 Leo Feyer
+ * Copyright (c) 2005-2016 Leo Feyer
  *
  * @license LGPL-3.0+
  */
@@ -11,7 +11,7 @@
 namespace Contao\Image;
 
 /**
- * Picture resize configuration item used by PictureConfiguration.
+ * Picture configuration item class.
  *
  * @author Martin Auswöger <martin@auswoeger.com>
  */

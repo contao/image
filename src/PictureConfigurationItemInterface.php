@@ -3,7 +3,7 @@
 /*
  * This file is part of Contao.
  *
- * Copyright (c) 2005-2015 Leo Feyer
+ * Copyright (c) 2005-2016 Leo Feyer
  *
  * @license LGPL-3.0+
  */
@@ -11,14 +11,14 @@
 namespace Contao\Image;
 
 /**
- * Picture resize configuration item used by PictureConfiguration.
+ * Picture configuration item interface.
  *
  * @author Martin Auswöger <martin@auswoeger.com>
  */
 interface PictureConfigurationItemInterface
 {
     /**
-     * Gets the resize configuration.
+     * Returns the resize configuration.
      *
      * @return ResizeConfigurationInterface
      */
@@ -27,14 +27,14 @@ interface PictureConfigurationItemInterface
     /**
      * Sets the resize configuration.
      *
-     * @param ResizeConfigurationInterface $resizeConfig the resize configuration
+     * @param ResizeConfigurationInterface $resizeConfig
      *
      * @return self
      */
     public function setResizeConfig(ResizeConfigurationInterface $resizeConfig);
 
     /**
-     * Gets the sizes.
+     * Returns the sizes.
      *
      * @return string
      */
@@ -43,14 +43,14 @@ interface PictureConfigurationItemInterface
     /**
      * Sets the sizes.
      *
-     * @param string $sizes the sizes
+     * @param string $sizes
      *
      * @return self
      */
     public function setSizes($sizes);
 
     /**
-     * Gets the densities.
+     * Returns the densities.
      *
      * @return string
      */
@@ -59,14 +59,14 @@ interface PictureConfigurationItemInterface
     /**
      * Sets the densities.
      *
-     * @param string $densities the densities
+     * @param string $densities
      *
      * @return self
      */
     public function setDensities($densities);
 
     /**
-     * Gets the media.
+     * Returns the media.
      *
      * @return string
      */
@@ -75,7 +75,7 @@ interface PictureConfigurationItemInterface
     /**
      * Sets the media.
      *
-     * @param string $media the media
+     * @param string $media
      *
      * @return self
      */

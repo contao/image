@@ -3,7 +3,7 @@
 /*
  * This file is part of Contao.
  *
- * Copyright (c) 2005-2015 Leo Feyer
+ * Copyright (c) 2005-2016 Leo Feyer
  *
  * @license LGPL-3.0+
  */
@@ -34,16 +34,18 @@ class ResizeCalculator implements ResizeCalculatorInterface
 
         // If both dimensions are present, use the mode specific calculations
         if ($config->getWidth() && $config->getHeight()) {
-            return $this->{[
-                ResizeConfigurationInterface::MODE_CROP => 'calculateCrop',
-                ResizeConfigurationInterface::MODE_PROPORTIONAL => 'calculateProportional',
-                ResizeConfigurationInterface::MODE_BOX => 'calculateBox',
-            ][$config->getMode()]}(
-                [$config->getWidth(), $config->getHeight()],
-                $dimensions,
-                $importantPart,
-                $zoom
-            );
+            $widthHeight = [$config->getWidth(), $config->getHeight()];
+
+            switch ($config->getMode()) {
+                case ResizeConfigurationInterface::MODE_CROP:
+                    return $this->calculateCrop($widthHeight, $dimensions, $importantPart, $zoom);
+
+                case ResizeConfigurationInterface::MODE_PROPORTIONAL:
+                    return $this->calculateProportional($widthHeight, $dimensions, $importantPart, $zoom);
+
+                case ResizeConfigurationInterface::MODE_BOX:
+                    return $this->calculateBox($widthHeight, $dimensions, $importantPart, $zoom);
+            }
         }
 
         // If no dimensions are specified, use the zoomed important part
@@ -67,7 +69,7 @@ class ResizeCalculator implements ResizeCalculatorInterface
     }
 
     /**
-     * Calculate resize coordinates for mode crop.
+     * Calculates resize coordinates for mode crop.
      *
      * @param array                    $size
      * @param ImageDimensionsInterface $original
@@ -99,6 +101,7 @@ class ResizeCalculator implements ResizeCalculatorInterface
 
         // Apply zoom
         $zoomedImportantPart = [];
+
         foreach (['x', 'y', 'width', 'height'] as $key) {
             $zoomedImportantPart[$key] = ($mostZoomed[$key] * $zoom) + ($leastZoomed[$key] * (1 - $zoom));
         }
@@ -108,16 +111,11 @@ class ResizeCalculator implements ResizeCalculatorInterface
         $targetWidth = $original->getSize()->getWidth() * $size[0] / $zoomedImportantPart['width'];
         $targetHeight = $original->getSize()->getHeight() * $size[1] / $zoomedImportantPart['height'];
 
-        return $this->buildCoordinates(
-            [$targetWidth, $targetHeight],
-            [$targetX, $targetY],
-            $size,
-            $original
-        );
+        return $this->buildCoordinates([$targetWidth, $targetHeight], [$targetX, $targetY], $size, $original);
     }
 
     /**
-     * Calculate resize coordinates for mode proportional.
+     * Calculates resize coordinates for mode proportional.
      *
      * @param array                    $size
      * @param ImageDimensionsInterface $original
@@ -136,15 +134,11 @@ class ResizeCalculator implements ResizeCalculatorInterface
             $size[0] = 0;
         }
 
-        return $this->calculateSingleDimension(
-            $size,
-            $original,
-            $importantPart
-        );
+        return $this->calculateSingleDimension($size, $original, $importantPart);
     }
 
     /**
-     * Calculate resize coordinates for mode box.
+     * Calculates resize coordinates for mode box.
      *
      * @param array                    $size
      * @param ImageDimensionsInterface $original
@@ -163,15 +157,11 @@ class ResizeCalculator implements ResizeCalculatorInterface
             $size[0] = 0;
         }
 
-        return $this->calculateSingleDimension(
-            $size,
-            $original,
-            $importantPart
-        );
+        return $this->calculateSingleDimension($size, $original, $importantPart);
     }
 
     /**
-     * Calculate resize coordinates for single dimension size.
+     * Calculates resize coordinates for single dimension size.
      *
      * @param array                    $size
      * @param ImageDimensionsInterface $original
@@ -197,16 +187,11 @@ class ResizeCalculator implements ResizeCalculatorInterface
         $targetX = $importantPart['x'] * $targetWidth / $original->getSize()->getWidth();
         $targetY = $importantPart['y'] * $targetHeight / $original->getSize()->getHeight();
 
-        return $this->buildCoordinates(
-            [$targetWidth, $targetHeight],
-            [$targetX, $targetY],
-            $size,
-            $original
-        );
+        return $this->buildCoordinates([$targetWidth, $targetHeight], [$targetX, $targetY], $size, $original);
     }
 
     /**
-     * Convert an important part to an x, y, width and height array.
+     * Converts an important part to an x, y, width and height array.
      *
      * @param ImportantPartInterface|null $importantPart
      * @param ImageDimensionsInterface    $dimensions
@@ -218,10 +203,7 @@ class ResizeCalculator implements ResizeCalculatorInterface
         ImportantPartInterface $importantPart = null
     ) {
         if (null === $importantPart) {
-            $importantPart = new ImportantPart(
-                new Point(0, 0),
-                clone $dimensions->getSize()
-            );
+            $importantPart = new ImportantPart(new Point(0, 0), clone $dimensions->getSize());
         }
 
         return [
@@ -233,7 +215,7 @@ class ResizeCalculator implements ResizeCalculatorInterface
     }
 
     /**
-     * Zoom an important part by the specified zoom level.
+     * Zooms an important part by the specified zoom level.
      *
      * @param array        $importantPart
      * @param float        $zoom
@@ -246,17 +228,17 @@ class ResizeCalculator implements ResizeCalculatorInterface
         return [
             'x' => $importantPart['x'] * $zoom,
             'y' => $importantPart['y'] * $zoom,
-            'width' => $origSize->getWidth() - ((
-                $origSize->getWidth() - $importantPart['width'] - $importantPart['x']
-            ) * $zoom) - ($importantPart['x'] * $zoom),
-            'height' => $origSize->getHeight() - ((
-                $origSize->getHeight() - $importantPart['height'] - $importantPart['y']
-            ) * $zoom) - ($importantPart['y'] * $zoom),
+            'width' => $origSize->getWidth()
+                - (($origSize->getWidth() - $importantPart['width'] - $importantPart['x']) * $zoom)
+                - ($importantPart['x'] * $zoom),
+            'height' => $origSize->getHeight()
+                - (($origSize->getHeight() - $importantPart['height'] - $importantPart['y']) * $zoom)
+                - ($importantPart['y'] * $zoom),
         ];
     }
 
     /**
-     * Build resize coordinates object.
+     * Builds a resize coordinates object.
      *
      * @param array                    $size
      * @param array                    $cropStart
@@ -290,7 +272,7 @@ class ResizeCalculator implements ResizeCalculatorInterface
     }
 
     /**
-     * Calculate the least zoomed crop possible.
+     * Calculates the least zoomed crop possible.
      *
      * @param array        $size     Target size
      * @param BoxInterface $origSize Original size
@@ -311,8 +293,10 @@ class ResizeCalculator implements ResizeCalculatorInterface
             $zoomed['width'] = $origSize->getHeight() * $size[0] / $size[1];
 
             if ($zoomed['width'] > $part['width']) {
-                $zoomed['x'] = ($origSize->getWidth() - $zoomed['width']) * $part['x'] /
-                    ($origSize->getWidth() - $part['width']);
+                $zoomed['x'] = ($origSize->getWidth() - $zoomed['width'])
+                    * $part['x']
+                    / ($origSize->getWidth() - $part['width'])
+                ;
             } else {
                 $zoomed['x'] = $part['x'] + (($part['width'] - $zoomed['width']) / 2);
             }
@@ -320,8 +304,10 @@ class ResizeCalculator implements ResizeCalculatorInterface
             $zoomed['height'] = $origSize->getWidth() * $size[1] / $size[0];
 
             if ($zoomed['height'] > $part['height']) {
-                $zoomed['y'] = ($origSize->getHeight() - $zoomed['height']) * $part['y'] /
-                    ($origSize->getHeight() - $part['height']);
+                $zoomed['y'] = ($origSize->getHeight() - $zoomed['height'])
+                    * $part['y']
+                    / ($origSize->getHeight() - $part['height'])
+                ;
             } else {
                 $zoomed['y'] = $part['y'] + (($part['height'] - $zoomed['height']) / 2);
             }
@@ -331,7 +317,7 @@ class ResizeCalculator implements ResizeCalculatorInterface
     }
 
     /**
-     * Calculate the most zoomed crop possible.
+     * Calculates the most zoomed crop possible.
      *
      * @param array        $size     Target size
      * @param BoxInterface $origSize Original size
@@ -347,15 +333,19 @@ class ResizeCalculator implements ResizeCalculatorInterface
             $zoomed['height'] = $size[1] * $part['width'] / $size[0];
 
             if ($origSize->getHeight() > $part['height']) {
-                $zoomed['y'] -= ($zoomed['height'] - $part['height']) * $part['y'] /
-                    ($origSize->getHeight() - $part['height']);
+                $zoomed['y'] -= ($zoomed['height'] - $part['height'])
+                    * $part['y']
+                    / ($origSize->getHeight() - $part['height'])
+                ;
             }
         } else {
             $zoomed['width'] = $size[0] * $zoomed['height'] / $size[1];
 
             if ($origSize->getWidth() > $part['width']) {
-                $zoomed['x'] -= ($zoomed['width'] - $part['width']) * $part['x'] /
-                    ($origSize->getWidth() - $part['width']);
+                $zoomed['x'] -= ($zoomed['width'] - $part['width'])
+                    * $part['x']
+                    / ($origSize->getWidth() - $part['width'])
+                ;
             }
         }
 

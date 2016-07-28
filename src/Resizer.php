@@ -3,7 +3,7 @@
 /*
  * This file is part of Contao.
  *
- * Copyright (c) 2005-2015 Leo Feyer
+ * Copyright (c) 2005-2016 Leo Feyer
  *
  * @license LGPL-3.0+
  */
@@ -13,7 +13,7 @@ namespace Contao\Image;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
- * Resizes Image objects.
+ * Resizer class.
  *
  * @author Martin Auswöger <martin@auswoeger.com>
  */
@@ -37,11 +37,8 @@ class Resizer implements ResizerInterface
     /**
      * {@inheritdoc}
      */
-    public function __construct(
-        ResizeCalculatorInterface $calculator,
-        Filesystem $filesystem,
-        $path
-    ) {
+    public function __construct(ResizeCalculatorInterface $calculator, Filesystem $filesystem, $path)
+    {
         $this->calculator = $calculator;
         $this->filesystem = $filesystem;
         $this->path = (string) $path;
@@ -50,8 +47,11 @@ class Resizer implements ResizerInterface
     /**
      * {@inheritdoc}
      */
-    public function resize(ImageInterface $image, ResizeConfigurationInterface $config, ResizeOptionsInterface $options)
-    {
+    public function resize(
+        ImageInterface $image,
+        ResizeConfigurationInterface $config,
+        ResizeOptionsInterface $options
+    ) {
         if ($image->getDimensions()->isUndefined() || $config->isEmpty()) {
             $image = $this->createImage($image, $image->getPath());
         } else {
@@ -75,13 +75,12 @@ class Resizer implements ResizerInterface
      *
      * @return ImageInterface
      */
-    protected function processResize(ImageInterface $image, ResizeConfigurationInterface $config, ResizeOptionsInterface $options)
-    {
-        $coordinates = $this->calculator->calculate(
-            $config,
-            $image->getDimensions(),
-            $image->getImportantPart()
-        );
+    private function processResize(
+        ImageInterface $image,
+        ResizeConfigurationInterface $config,
+        ResizeOptionsInterface $options
+    ) {
+        $coordinates = $this->calculator->calculate($config, $image->getDimensions(), $image->getImportantPart());
 
         // Skip resizing if it would have no effect
         if (
@@ -91,7 +90,7 @@ class Resizer implements ResizerInterface
             return $this->createImage($image, $image->getPath());
         }
 
-        $cachePath = $this->path . '/' . $this->createCachePath($image->getPath(), $coordinates);
+        $cachePath = $this->path.'/'.$this->createCachePath($image->getPath(), $coordinates);
 
         if ($this->filesystem->exists($cachePath) && !$options->getBypassCache()) {
             return $this->createImage($image, $cachePath);
@@ -110,8 +109,12 @@ class Resizer implements ResizerInterface
      *
      * @return ImageInterface
      */
-    protected function executeResize(ImageInterface $image, ResizeCoordinatesInterface $coordinates, $path, array $imagineOptions)
-    {
+    private function executeResize(
+        ImageInterface $image,
+        ResizeCoordinatesInterface $coordinates,
+        $path,
+        array $imagineOptions
+    ) {
         if (!$this->filesystem->exists(dirname($path))) {
             $this->filesystem->mkdir(dirname($path));
         }
@@ -143,24 +146,16 @@ class Resizer implements ResizerInterface
     /**
      * Creates the target cache path.
      *
-     * @param string                     $path        The source image path
-     * @param ResizeCoordinatesInterface $coordinates The resize coordinates
+     * @param string                     $path
+     * @param ResizeCoordinatesInterface $coordinates
      *
      * @return string The realtive target path
      */
     protected function createCachePath($path, ResizeCoordinatesInterface $coordinates)
     {
-        $hash = substr(md5(implode('|', [
-            $path,
-            filemtime($path),
-            $coordinates->getHash(),
-        ])), 0, 9);
-
         $pathinfo = pathinfo($path);
+        $hash = substr(md5(implode('|', [$path, filemtime($path), $coordinates->getHash()])), 0, 9);
 
-        return substr($hash, 0, 1)
-            . '/' . $pathinfo['filename']
-            . '-' . substr($hash, 1)
-            . '.' . $pathinfo['extension'];
+        return substr($hash, 0, 1).'/'.$pathinfo['filename'].'-'.substr($hash, 1).'.'.$pathinfo['extension'];
     }
 }

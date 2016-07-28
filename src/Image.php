@@ -3,7 +3,7 @@
 /*
  * This file is part of Contao.
  *
- * Copyright (c) 2005-2015 Leo Feyer
+ * Copyright (c) 2005-2016 Leo Feyer
  *
  * @license LGPL-3.0+
  */
@@ -16,7 +16,7 @@ use Imagine\Image\Point;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
- * Image data.
+ * Image class.
  *
  * @author Martin Auswöger <martin@auswoeger.com>
  */
@@ -50,16 +50,14 @@ class Image implements ImageInterface
     /**
      * {@inheritdoc}
      */
-    public function __construct(
-        ImagineInterface $imagine,
-        Filesystem $filesystem,
-        $path
-    ) {
+    public function __construct(ImagineInterface $imagine, Filesystem $filesystem, $path)
+    {
         if (!$filesystem->exists($path)) {
-            throw new \InvalidArgumentException($path . ' doesn\'t exist');
+            throw new \InvalidArgumentException($path.' does not exist');
         }
+
         if (is_dir($path)) {
-            throw new \InvalidArgumentException($path . ' is a directory');
+            throw new \InvalidArgumentException($path.' is a directory');
         }
 
         $this->imagine = $imagine;
@@ -89,12 +87,12 @@ class Image implements ImageInterface
     public function getUrl($rootDir)
     {
         if (
-            substr($this->path, 0, strlen($rootDir) + 1) === $rootDir . '/'
-            || substr($this->path, 0, strlen($rootDir) + 1) === $rootDir . '\\'
+            substr($this->path, 0, strlen($rootDir) + 1) === $rootDir.'/'
+            || substr($this->path, 0, strlen($rootDir) + 1) === $rootDir.'\\'
         ) {
             $url = substr($this->path, strlen($rootDir) + 1);
         } else {
-            throw new \InvalidArgumentException('Path "' . $this->path . '" is not inside root directory "' . $rootDir . '"');
+            throw new \InvalidArgumentException('Path "'.$this->path.'" is not inside root directory "'.$rootDir.'"');
         }
 
         $url = str_replace('%2F', '/', rawurlencode($url));
@@ -108,18 +106,12 @@ class Image implements ImageInterface
     public function getDimensions()
     {
         if (null === $this->dimensions) {
+            $size = @getimagesize($this->getPath()); // try native getimagesize() for better performance
 
-            // Try native getimagesize() for better performance
-            $size = @getimagesize($this->getPath());
             if (!empty($size[0]) && !empty($size[1])) {
                 $this->dimensions = new ImageDimensions(new Box($size[0], $size[1]));
-            }
-
-            // Fallback to Imagine
-            else {
-                $this->dimensions = new ImageDimensions(
-                    $this->imagine->open($this->getPath())->getSize()
-                );
+            } else {
+                $this->dimensions = new ImageDimensions($this->imagine->open($this->getPath())->getSize());
             }
         }
 
@@ -132,10 +124,7 @@ class Image implements ImageInterface
     public function getImportantPart()
     {
         if (null === $this->importantPart) {
-            $this->importantPart = new ImportantPart(
-                new Point(0, 0),
-                $this->getDimensions()->getSize()
-            );
+            $this->importantPart = new ImportantPart(new Point(0, 0), $this->getDimensions()->getSize());
         }
 
         return $this->importantPart;

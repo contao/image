@@ -3,7 +3,7 @@
 /*
  * This file is part of Contao.
  *
- * Copyright (c) 2005-2015 Leo Feyer
+ * Copyright (c) 2005-2016 Leo Feyer
  *
  * @license LGPL-3.0+
  */
@@ -14,7 +14,7 @@ use Imagine\Image\BoxInterface;
 use Imagine\Image\PointInterface;
 
 /**
- * Important part used by the ResizeCalculator.
+ * Important part class.
  *
  * @author Martin Auswöger <martin@auswoeger.com>
  */
@@ -33,10 +33,8 @@ class ImportantPart implements ImportantPartInterface
     /**
      * {@inheritdoc}
      */
-    public function __construct(
-        PointInterface $position,
-        BoxInterface $size
-    ) {
+    public function __construct(PointInterface $position, BoxInterface $size)
+    {
         $this->position = $position;
         $this->size = $size;
     }

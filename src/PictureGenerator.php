@@ -3,7 +3,7 @@
 /*
  * This file is part of Contao.
  *
- * Copyright (c) 2005-2015 Leo Feyer
+ * Copyright (c) 2005-2016 Leo Feyer
  *
  * @license LGPL-3.0+
  */
@@ -11,7 +11,7 @@
 namespace Contao\Image;
 
 /**
- * Generates Picture objects.
+ * Generates a Picture object.
  *
  * @author Martin Auswöger <martin@auswoeger.com>
  */
@@ -38,33 +38,43 @@ class PictureGenerator implements PictureGeneratorInterface
     /**
      * {@inheritdoc}
      */
-    public function generate(ImageInterface $image, PictureConfigurationInterface $config, ResizeOptionsInterface $options)
-    {
+    public function generate(
+        ImageInterface $image,
+        PictureConfigurationInterface $config,
+        ResizeOptionsInterface $options
+    ) {
         $this->resizeOptions = clone $options;
         $this->resizeOptions->setTargetPath(null);
 
-        $img = $this->generateSource($image, $config->getSize());
-
         $sources = [];
+
         foreach ($config->getSizeItems() as $sizeItem) {
             $sources[] = $this->generateSource($image, $sizeItem);
         }
 
-        return new Picture($img, $sources);
+        return new Picture($this->generateSource($image, $config->getSize()), $sources);
     }
 
+    /**
+     * Generates the source.
+     *
+     * @param ImageInterface                    $image
+     * @param PictureConfigurationItemInterface $config
+     *
+     * @return array
+     */
     private function generateSource(ImageInterface $image, PictureConfigurationItemInterface $config)
     {
         $densities = [1];
         $sizesAttribute = $config->getSizes();
 
-        if ($config->getDensities() && (
-            $config->getResizeConfig()->getWidth() ||
-            $config->getResizeConfig()->getHeight()
-        )) {
-            if (!$sizesAttribute && strpos($config->getDensities(), 'w') !== false) {
+        if ($config->getDensities()
+            && ($config->getResizeConfig()->getWidth() || $config->getResizeConfig()->getHeight())
+        ) {
+            if (!$sizesAttribute && false !== strpos($config->getDensities(), 'w')) {
                 $sizesAttribute = '100vw';
             }
+
             $densities = $this->parseDensities($image, $config);
         }
 
@@ -84,6 +94,7 @@ class PictureGenerator implements PictureGeneratorInterface
 
             if (empty($attributes['src'])) {
                 $attributes['src'] = $resizedImage;
+
                 if (
                     !$resizedImage->getDimensions()->isRelative() &&
                     !$resizedImage->getDimensions()->isUndefined()
@@ -96,13 +107,10 @@ class PictureGenerator implements PictureGeneratorInterface
             $src = [$resizedImage];
 
             if (count($densities) > 1) {
-                // Use pixel density descriptors if the sizes attribute is empty
                 if (!$sizesAttribute) {
-                    $src[1] = $density . 'x';
-                }
-                // Otherwise use width descriptors
-                else {
-                    $src[1] = $resizedImage->getDimensions()->getSize()->getWidth() . 'w';
+                    $src[1] = $density.'x'; // use pixel density descriptors if the sizes attribute is empty
+                } else {
+                    $src[1] = $resizedImage->getDimensions()->getSize()->getWidth().'w';
                 }
             }
 
@@ -123,7 +131,7 @@ class PictureGenerator implements PictureGeneratorInterface
     }
 
     /**
-     * Parse densities string and return an array of scaling factors.
+     * Parse the densities string and return an array of scaling factors.
      *
      * @param ImageInterface                    $image
      * @param PictureConfigurationItemInterface $config
@@ -134,24 +142,29 @@ class PictureGenerator implements PictureGeneratorInterface
     {
         $width1x = $config->getResizeConfig()->getWidth();
 
-        if (!$width1x && strpos($config->getDensities(), 'w') !== false) {
-            $width1x = $this->resizer->resize(
-                $image,
-                $config->getResizeConfig(),
-                $this->resizeOptions
-            )->getDimensions()->getSize()->getWidth();
+        if (!$width1x && false !== strpos($config->getDensities(), 'w')) {
+            $width1x = $this->resizer
+                ->resize($image, $config->getResizeConfig(), $this->resizeOptions)
+                ->getDimensions()
+                ->getSize()
+                ->getWidth()
+            ;
         }
 
         $densities = explode(',', $config->getDensities());
 
-        $densities = array_map(function ($density) use ($width1x) {
-            $type = substr(trim($density), -1);
-            if ($type === 'w') {
-                return intval($density) / $width1x;
-            } else {
-                return floatval($density);
-            }
-        }, $densities);
+        $densities = array_map(
+            function ($density) use ($width1x) {
+                $type = substr(trim($density), -1);
+
+                if ($type === 'w') {
+                    return intval($density) / $width1x;
+                } else {
+                    return floatval($density);
+                }
+            },
+            $densities
+        );
 
         // Strip empty densities
         $densities = array_filter($densities);
@@ -162,6 +175,6 @@ class PictureGenerator implements PictureGeneratorInterface
         // Strip duplicates
         $densities = array_values(array_unique($densities));
 
-        return  $densities;
+        return $densities;
     }
 }
