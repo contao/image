@@ -13,7 +13,7 @@ namespace Contao\Image;
 use Imagine\Image\BoxInterface;
 
 /**
- * Image Dimensions.
+ * Image dimensions interface.
  *
  * @author Martin Auswöger <martin@auswoeger.com>
  */
@@ -22,32 +22,28 @@ interface ImageDimensionsInterface
     /**
      * Constructor.
      *
-     * @param BoxInterface $size      The size
-     * @param bool|null    $relative  The relative flag
-     * @param bool|null    $undefined The undefined flag
+     * @param BoxInterface $size
+     * @param bool|null    $relative
+     * @param bool|null    $undefined
      */
-    public function __construct(
-        BoxInterface $size,
-        $relative = null,
-        $undefined = null
-    );
+    public function __construct(BoxInterface $size, $relative = null, $undefined = null);
 
     /**
-     * Gets the size.
+     * Returns the size.
      *
      * @return BoxInterface
      */
     public function getSize();
 
     /**
-     * Gets the relative flag.
+     * Returns the relative flag.
      *
      * @return bool
      */
     public function isRelative();
 
     /**
-     * Gets the undefined flag.
+     * Returns the undefined flag.
      *
      * @return bool
      */

@@ -13,7 +13,7 @@ namespace Contao\Image\Test;
 use Contao\Image\ResizeConfiguration;
 
 /**
- * Tests the Picture class.
+ * Tests the ResizeConfiguration class.
  *
  * @author Martin Auswöger <martin@auswoeger.com>
  */
@@ -24,8 +24,10 @@ class ResizeConfigurationTest extends \PHPUnit_Framework_TestCase
      */
     public function testInstantiation()
     {
-        $this->assertInstanceOf('Contao\Image\ResizeConfiguration', new ResizeConfiguration());
-        $this->assertInstanceOf('Contao\Image\ResizeConfigurationInterface', new ResizeConfiguration());
+        $resizeConfig = new ResizeConfiguration();
+
+        $this->assertInstanceOf('Contao\Image\ResizeConfiguration', $resizeConfig);
+        $this->assertInstanceOf('Contao\Image\ResizeConfigurationInterface', $resizeConfig);
     }
 
     /**
@@ -38,27 +40,35 @@ class ResizeConfigurationTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($config->isEmpty());
 
         $config->setMode(ResizeConfiguration::MODE_CROP);
+
         $this->assertTrue($config->isEmpty());
 
         $config->setMode(ResizeConfiguration::MODE_PROPORTIONAL);
+
         $this->assertTrue($config->isEmpty());
 
         $config->setMode(ResizeConfiguration::MODE_BOX);
+
         $this->assertTrue($config->isEmpty());
 
         $config->setWidth(100);
+
         $this->assertFalse($config->isEmpty());
 
         $config->setWidth(0)->setHeight(100);
+
         $this->assertFalse($config->isEmpty());
 
         $config->setHeight(0)->setZoomLevel(100);
+
         $this->assertFalse($config->isEmpty());
 
         $config->setWidth(100)->setHeight(100)->setZoomLevel(100);
+
         $this->assertFalse($config->isEmpty());
 
         $config->setWidth(0)->setHeight(0)->setZoomLevel(0);
+
         $this->assertTrue($config->isEmpty());
     }
 
@@ -75,6 +85,7 @@ class ResizeConfigurationTest extends \PHPUnit_Framework_TestCase
         $this->assertInternalType('int', $config->getWidth());
 
         $this->setExpectedException('\InvalidArgumentException');
+
         $config->setWidth(-1);
     }
 
@@ -91,6 +102,7 @@ class ResizeConfigurationTest extends \PHPUnit_Framework_TestCase
         $this->assertInternalType('int', $config->getHeight());
 
         $this->setExpectedException('\InvalidArgumentException');
+
         $config->setHeight(-1);
     }
 
@@ -106,6 +118,7 @@ class ResizeConfigurationTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(ResizeConfiguration::MODE_BOX, $config->getMode());
 
         $this->setExpectedException('\InvalidArgumentException');
+
         $config->setMode('invalid');
     }
 
@@ -122,17 +135,18 @@ class ResizeConfigurationTest extends \PHPUnit_Framework_TestCase
         $this->assertInternalType('int', $config->getZoomLevel());
 
         $this->setExpectedException('\InvalidArgumentException');
+
         $config->setZoomLevel(-1);
     }
 
     /**
      * Tests the setZoomLevel() method.
+     *
+     * @expectedException \InvalidArgumentException
      */
     public function testSetZoomLevelTooHigh()
     {
         $config = new ResizeConfiguration();
-
-        $this->setExpectedException('\InvalidArgumentException');
         $config->setZoomLevel(101);
     }
 }

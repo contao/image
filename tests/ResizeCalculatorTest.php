@@ -39,8 +39,8 @@ class ResizeCalculatorTest extends \PHPUnit_Framework_TestCase
     /**
      * Tests the calculate() method without an important part.
      *
-     * @param array $arguments      The arguments
-     * @param array $expectedResult The expected result
+     * @param array $arguments
+     * @param array $expectedResult
      *
      * @dataProvider getCalculateDataWithoutImportantPart
      */
@@ -54,30 +54,30 @@ class ResizeCalculatorTest extends \PHPUnit_Framework_TestCase
             new Box($expectedResult['width'], $expectedResult['height'])
         );
 
-        $config = (new ResizeConfiguration())
-            ->setWidth($arguments[0])
-            ->setHeight($arguments[1]);
-
+        $config = (new ResizeConfiguration())->setWidth($arguments[0])->setHeight($arguments[1]);
         $dimensions = new ImageDimensions(new Box($arguments[2], $arguments[3]), !empty($arguments[5]));
-
         $importantPart = null;
+
         if ($arguments[4] && substr_count($arguments[4], '_') === 1) {
             $importantPart = ['x' => 0, 'y' => 0, 'width' => $arguments[2], 'height' => $arguments[3]];
             $mode = explode('_', $arguments[4]);
-            if ($mode[0] === 'left') {
+
+            if ('left' === $mode[0]) {
                 $importantPart['width'] = 1;
-            } elseif ($mode[0] === 'right') {
+            } elseif ('right' === $mode[0]) {
                 $importantPart['x'] = $arguments[2] - 1;
                 $importantPart['width'] = 1;
             }
 
-            if ($mode[1] === 'top') {
+            if ('top' === $mode[1]) {
                 $importantPart['height'] = 1;
-            } elseif ($mode[1] === 'bottom') {
+            } elseif ('bottom' === $mode[1]) {
                 $importantPart['y'] = $arguments[3] - 1;
                 $importantPart['height'] = 1;
             }
+
             $arguments[4] = 'crop';
+
             $importantPart = new ImportantPart(
                 new Point($importantPart['x'], $importantPart['y']),
                 new Box($importantPart['width'], $importantPart['height'])
@@ -88,12 +88,9 @@ class ResizeCalculatorTest extends \PHPUnit_Framework_TestCase
             $config->setMode($arguments[4]);
         }
 
-        $this->assertEquals(
-            $expected,
-            $calculator->calculate($config, $dimensions, $importantPart)
-        );
+        $this->assertEquals($expected, $calculator->calculate($config, $dimensions, $importantPart));
 
-        if ($importantPart !== null) {
+        if (null !== $importantPart) {
             return;
         }
 
@@ -133,7 +130,7 @@ class ResizeCalculatorTest extends \PHPUnit_Framework_TestCase
     /**
      * Provides the data for the testCalculateWithoutImportantPart() method.
      *
-     * @return array The data
+     * @return array
      */
     public function getCalculateDataWithoutImportantPart()
     {
@@ -529,8 +526,8 @@ class ResizeCalculatorTest extends \PHPUnit_Framework_TestCase
     /**
      * Tests the calculate() method with an important part.
      *
-     * @param array $arguments      The arguments
-     * @param array $expectedResult The expected result
+     * @param array $arguments
+     * @param array $expectedResult
      *
      * @dataProvider getCalculateDataWithImportantPart
      */
@@ -547,7 +544,8 @@ class ResizeCalculatorTest extends \PHPUnit_Framework_TestCase
         $config = (new ResizeConfiguration())
             ->setWidth($arguments[0])
             ->setHeight($arguments[1])
-            ->setZoomLevel($arguments[5]);
+            ->setZoomLevel($arguments[5])
+        ;
 
         if ($arguments[4]) {
             $config->setMode($arguments[4]);
@@ -560,10 +558,7 @@ class ResizeCalculatorTest extends \PHPUnit_Framework_TestCase
 
         $dimensions = new ImageDimensions(new Box($arguments[2], $arguments[3]), !empty($arguments[7]));
 
-        $this->assertEquals(
-            $expected,
-            $calculator->calculate($config, $dimensions, $importantPart)
-        );
+        $this->assertEquals($expected, $calculator->calculate($config, $dimensions, $importantPart));
 
         $dimensions = new ImageDimensions(new Box($arguments[2], $arguments[3]));
 

@@ -11,7 +11,7 @@
 namespace Contao\Image;
 
 /**
- * Generates Picture objects.
+ * Picture generator interface.
  *
  * @author Martin Auswöger <martin@auswoeger.com>
  */
@@ -20,18 +20,22 @@ interface PictureGeneratorInterface
     /**
      * Constructor.
      *
-     * @param ResizerInterface $resizer The resizer object
+     * @param ResizerInterface $resizer
      */
     public function __construct(ResizerInterface $resizer);
 
     /**
      * Generates a Picture object.
      *
-     * @param ImageInterface                $image   The Image object
-     * @param PictureConfigurationInterface $config  The configuration
-     * @param ResizeOptionsInterface        $options The options for Resizer resize
+     * @param ImageInterface                $image
+     * @param PictureConfigurationInterface $config
+     * @param ResizeOptionsInterface        $options
      *
-     * @return PictureInterface The generated Picture object
+     * @return PictureInterface
      */
-    public function generate(ImageInterface $image, PictureConfigurationInterface $config, ResizeOptionsInterface $options);
+    public function generate(
+        ImageInterface $image,
+        PictureConfigurationInterface $config,
+        ResizeOptionsInterface $options
+    );
 }

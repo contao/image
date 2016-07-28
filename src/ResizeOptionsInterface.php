@@ -11,21 +11,21 @@
 namespace Contao\Image;
 
 /**
- * Resize options used by the Resizer.
+ * Resize options interface.
  *
  * @author Martin Auswöger <martin@auswoeger.com>
  */
 interface ResizeOptionsInterface
 {
     /**
-     * Gets the imagine options.
+     * Returns the imagine options.
      *
      * @return array
      */
     public function getImagineOptions();
 
     /**
-     * Sets the imagine options.
+     * Returns the imagine options.
      *
      * @param array $imagineOptions
      *
@@ -34,7 +34,7 @@ interface ResizeOptionsInterface
     public function setImagineOptions(array $imagineOptions);
 
     /**
-     * Gets the target path.
+     * Returns the target path.
      *
      * @return string
      */
@@ -50,7 +50,7 @@ interface ResizeOptionsInterface
     public function setTargetPath($targetPath);
 
     /**
-     * Gets the bypass cache flag.
+     * Returns the bypass cache flag.
      *
      * @return string
      */

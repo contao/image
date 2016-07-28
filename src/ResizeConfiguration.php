@@ -11,7 +11,7 @@
 namespace Contao\Image;
 
 /**
- * Resize configuration used by the ResizeCalculator.
+ * Resize configuration class.
  *
  * @author Martin Auswöger <martin@auswoeger.com>
  */
@@ -42,9 +42,7 @@ class ResizeConfiguration implements ResizeConfigurationInterface
      */
     public function isEmpty()
     {
-        return 0 === $this->width &&
-            0 === $this->height &&
-            0 === $this->zoomLevel;
+        return 0 === $this->width && 0 === $this->height && 0 === $this->zoomLevel;
     }
 
     /**
@@ -108,11 +106,7 @@ class ResizeConfiguration implements ResizeConfigurationInterface
      */
     public function setMode($mode)
     {
-        if (!in_array($mode, [
-            self::MODE_CROP,
-            self::MODE_BOX,
-            self::MODE_PROPORTIONAL,
-        ], true)) {
+        if (!in_array($mode, [self::MODE_CROP, self::MODE_BOX, self::MODE_PROPORTIONAL], true)) {
             throw new \InvalidArgumentException('Mode must be one of the '.__CLASS__.'::MODE_* constants');
         }
 

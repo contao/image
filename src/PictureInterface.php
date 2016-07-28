@@ -11,7 +11,7 @@
 namespace Contao\Image;
 
 /**
- * Picture element data.
+ * Picture element interface.
  *
  * @author Martin Auswöger <martin@auswoeger.com>
  */
@@ -20,24 +20,24 @@ interface PictureInterface
     /**
      * Constructor.
      *
-     * @param array $img     The image tag attributes
-     * @param array $sources The source tags attributes
+     * @param array $img
+     * @param array $sources
      */
     public function __construct(array $img, array $sources);
 
     /**
-     * Gets the image tag attributes.
+     * Returns the image tag attributes.
      *
-     * @param string|null $rootDir Directory to which the URLs should be relative to
+     * @param string|null $rootDir
      *
      * @return array
      */
     public function getImg($rootDir = null);
 
     /**
-     * Gets the source tags attributes.
+     * Returns the source tags attributes.
      *
-     * @param string|null $rootDir Directory to which the URLs should be relative to
+     * @param string|null $rootDir
      *
      * @return array
      */

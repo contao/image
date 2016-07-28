@@ -16,7 +16,7 @@ use Imagine\Image\Point;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
- * Image data.
+ * Image class.
  *
  * @author Martin Auswöger <martin@auswoeger.com>
  */
@@ -50,14 +50,12 @@ class Image implements ImageInterface
     /**
      * {@inheritdoc}
      */
-    public function __construct(
-        ImagineInterface $imagine,
-        Filesystem $filesystem,
-        $path
-    ) {
+    public function __construct(ImagineInterface $imagine, Filesystem $filesystem, $path)
+    {
         if (!$filesystem->exists($path)) {
-            throw new \InvalidArgumentException($path.' doesn\'t exist');
+            throw new \InvalidArgumentException($path.' does not exist');
         }
+
         if (is_dir($path)) {
             throw new \InvalidArgumentException($path.' is a directory');
         }
@@ -108,18 +106,12 @@ class Image implements ImageInterface
     public function getDimensions()
     {
         if (null === $this->dimensions) {
+            $size = @getimagesize($this->getPath()); // try native getimagesize() for better performance
 
-            // Try native getimagesize() for better performance
-            $size = @getimagesize($this->getPath());
             if (!empty($size[0]) && !empty($size[1])) {
                 $this->dimensions = new ImageDimensions(new Box($size[0], $size[1]));
-            }
-
-            // Fallback to Imagine
-            else {
-                $this->dimensions = new ImageDimensions(
-                    $this->imagine->open($this->getPath())->getSize()
-                );
+            } else {
+                $this->dimensions = new ImageDimensions($this->imagine->open($this->getPath())->getSize());
             }
         }
 
@@ -132,10 +124,7 @@ class Image implements ImageInterface
     public function getImportantPart()
     {
         if (null === $this->importantPart) {
-            $this->importantPart = new ImportantPart(
-                new Point(0, 0),
-                $this->getDimensions()->getSize()
-            );
+            $this->importantPart = new ImportantPart(new Point(0, 0), $this->getDimensions()->getSize());
         }
 
         return $this->importantPart;

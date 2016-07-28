@@ -11,7 +11,7 @@
 namespace Contao\Image;
 
 /**
- * Picture resize configuration item used by PictureConfiguration.
+ * Picture configuration item class.
  *
  * @author Martin Auswöger <martin@auswoeger.com>
  */

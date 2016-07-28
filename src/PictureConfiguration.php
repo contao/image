@@ -11,7 +11,7 @@
 namespace Contao\Image;
 
 /**
- * Picture resize configuration used by the PictureGenerator.
+ * Picture configuration class.
  *
  * @author Martin Auswöger <martin@auswoeger.com>
  */
@@ -64,7 +64,9 @@ class PictureConfiguration implements PictureConfigurationInterface
     {
         foreach ($sizeItems as $sizeItem) {
             if (!$sizeItem instanceof PictureConfigurationItemInterface) {
-                throw new \InvalidArgumentException('$sizeItems must be an array of PictureConfigurationItemInterface objects');
+                throw new \InvalidArgumentException(
+                    '$sizeItems must be an array of PictureConfigurationItemInterface objects'
+                );
             }
         }
 

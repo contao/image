@@ -14,7 +14,9 @@ use Contao\Image\Image;
 use Contao\Image\ImageDimensions;
 use Contao\Image\ImportantPart;
 use Imagine\Image\Box;
+use Imagine\Image\ImagineInterface;
 use Imagine\Image\Point;
+use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * Tests the Image class.
@@ -24,46 +26,29 @@ use Imagine\Image\Point;
 class ImageTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * Create an image instance helper.
-     *
-     * @param ImagineInterface $imagine
-     * @param Filesystem       $filesystem
-     * @param string           $path
-     *
-     * @return Image
-     */
-    private function createImage($imagine = null, $filesystem = null, $path = 'dummy.jpg')
-    {
-        if (null === $imagine) {
-            $imagine = $this->getMock('Imagine\Image\ImagineInterface');
-        }
-
-        if (null === $filesystem) {
-            $filesystem = $this->getMock('Symfony\Component\Filesystem\Filesystem');
-            $filesystem->method('exists')->willReturn(true);
-        }
-
-        return new Image($imagine, $filesystem, $path);
-    }
-
-    /**
      * Tests the object instantiation.
      */
     public function testInstantiation()
     {
-        $this->assertInstanceOf('Contao\Image\Image', $this->createImage());
-        $this->assertInstanceOf('Contao\Image\ImageInterface', $this->createImage());
+        $image = $this->createImage();
+
+        $this->assertInstanceOf('Contao\Image\Image', $image);
+        $this->assertInstanceOf('Contao\Image\ImageInterface', $image);
     }
 
     /**
      * Tests the object instantiation with a missing image.
      *
-     * @expectedException InvalidArgumentException
+     * @expectedException \InvalidArgumentException
      */
     public function testInstantiationMissingFiles()
     {
         $filesystem = $this->getMock('Symfony\Component\Filesystem\Filesystem');
-        $filesystem->method('exists')->willReturn(false);
+
+        $filesystem
+            ->method('exists')
+            ->willReturn(false)
+        ;
 
         $this->createImage(null, $filesystem);
     }
@@ -91,6 +76,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('filename%20with%20special%26%3C%3E%22%27chars.jpeg', $image->getUrl('/path/to/a'));
 
         $this->setExpectedException('InvalidArgumentException');
+
         $image->getUrl('/path/t');
     }
 
@@ -101,15 +87,20 @@ class ImageTest extends \PHPUnit_Framework_TestCase
     {
         $imagine = $this->getMock('Imagine\Image\ImagineInterface');
         $imagineImage = $this->getMock('Imagine\Image\ImageInterface');
-        $imagine->method('open')->willReturn($imagineImage);
-        $imagineImage->method('getSize')->willReturn(new Box(100, 100));
+
+        $imagine
+            ->method('open')
+            ->willReturn($imagineImage)
+        ;
+
+        $imagineImage
+            ->method('getSize')
+            ->willReturn(new Box(100, 100))
+        ;
 
         $image = $this->createImage($imagine);
 
-        $this->assertEquals(
-            new ImageDimensions(new Box(100, 100)),
-            $image->getDimensions()
-        );
+        $this->assertEquals(new ImageDimensions(new Box(100, 100)), $image->getDimensions());
     }
 
     /**
@@ -119,23 +110,50 @@ class ImageTest extends \PHPUnit_Framework_TestCase
     {
         $imagine = $this->getMock('Imagine\Image\ImagineInterface');
         $imagineImage = $this->getMock('Imagine\Image\ImageInterface');
-        $imagine->method('open')->willReturn($imagineImage);
-        $imagineImage->method('getSize')->willReturn(new Box(100, 100));
+
+        $imagine
+            ->method('open')
+            ->willReturn($imagineImage)
+        ;
+
+        $imagineImage
+            ->method('getSize')
+            ->willReturn(new Box(100, 100))
+        ;
 
         $image = $this->createImage($imagine);
 
-        $this->assertEquals(
-            new ImportantPart(new Point(0, 0), new Box(100, 100)),
-            $image->getImportantPart()
-        );
+        $this->assertEquals(new ImportantPart(new Point(0, 0), new Box(100, 100)), $image->getImportantPart());
 
-        $image->setImportantPart(
-            new ImportantPart(new Point(10, 10), new Box(80, 80))
-        );
+        $image->setImportantPart(new ImportantPart(new Point(10, 10), new Box(80, 80)));
 
-        $this->assertEquals(
-            new ImportantPart(new Point(10, 10), new Box(80, 80)),
-            $image->getImportantPart()
-        );
+        $this->assertEquals(new ImportantPart(new Point(10, 10), new Box(80, 80)), $image->getImportantPart());
+    }
+
+    /**
+     * Creates an image instance helper.
+     *
+     * @param ImagineInterface $imagine
+     * @param Filesystem       $filesystem
+     * @param string           $path
+     *
+     * @return Image
+     */
+    private function createImage($imagine = null, $filesystem = null, $path = 'dummy.jpg')
+    {
+        if (null === $imagine) {
+            $imagine = $this->getMock('Imagine\Image\ImagineInterface');
+        }
+
+        if (null === $filesystem) {
+            $filesystem = $this->getMock('Symfony\Component\Filesystem\Filesystem');
+
+            $filesystem
+                ->method('exists')
+                ->willReturn(true)
+            ;
+        }
+
+        return new Image($imagine, $filesystem, $path);
     }
 }

@@ -15,7 +15,7 @@ use Contao\ImagineSvg\RelativeBoxInterface;
 use Contao\ImagineSvg\UndefinedBoxInterface;
 
 /**
- * Image Dimensions.
+ * Image dimensions class.
  *
  * @author Martin Auswöger <martin@auswoeger.com>
  */
@@ -39,11 +39,8 @@ class ImageDimensions implements ImageDimensionsInterface
     /**
      * {@inheritdoc}
      */
-    public function __construct(
-        BoxInterface $size,
-        $relative = null,
-        $undefined = null
-    ) {
+    public function __construct(BoxInterface $size, $relative = null, $undefined = null)
+    {
         if ($relative === null && $size instanceof RelativeBoxInterface) {
             $relative = true;
         }

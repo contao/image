@@ -14,7 +14,7 @@ use Imagine\Image\ImagineInterface;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
- * Image data.
+ * Image interface.
  *
  * @author Martin Auswöger <martin@auswoeger.com>
  */
@@ -23,32 +23,28 @@ interface ImageInterface
     /**
      * Constructor.
      *
-     * @param ImagineInterface $imagine    The imagine object
-     * @param Filesystem       $filesystem The filesystem object
-     * @param string           $path       The path to the file
+     * @param ImagineInterface $imagine
+     * @param Filesystem       $filesystem
+     * @param string           $path
      */
-    public function __construct(
-        ImagineInterface $imagine,
-        Filesystem $filesystem,
-        $path
-    );
+    public function __construct(ImagineInterface $imagine, Filesystem $filesystem, $path);
 
     /**
-     * Gets the imagine instance.
+     * Returns the imagine instance.
      *
      * @return ImagineInterface
      */
     public function getImagine();
 
     /**
-     * Gets the path.
+     * Returns the path.
      *
      * @return string
      */
     public function getPath();
 
     /**
-     * Gets the URL relative to the specified root directory.
+     * Returns the URL relative to the specified root directory.
      *
      * @param string $rootDir
      *
@@ -57,14 +53,14 @@ interface ImageInterface
     public function getUrl($rootDir);
 
     /**
-     * Gets the dimensions.
+     * Returns the dimensions.
      *
      * @return ImageDimensionsInterface
      */
     public function getDimensions();
 
     /**
-     * Gets the important part.
+     * Returns the important part.
      *
      * @return ImportantPartInterface
      */
@@ -73,7 +69,7 @@ interface ImageInterface
     /**
      * Sets the important part.
      *
-     * @param ImportantPartInterface $importantPart The important part
+     * @param ImportantPartInterface|null $importantPart
      *
      * @return self
      */
