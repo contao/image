@@ -8,7 +8,7 @@
  * @license LGPL-3.0+
  */
 
-namespace Contao\Image\Resize;
+namespace Contao\Image;
 
 use Imagine\Image\BoxInterface;
 use Imagine\Image\PointInterface;
@@ -60,7 +60,7 @@ interface ResizeCoordinatesInterface
     /**
      * Compares the coordinates with another ResizeCoordinates or Box object.
      *
-     * @param ResizeCoordinatesInterface|BoxInterface $coordinates
+     * @param self|BoxInterface $coordinates
      *
      * @return bool
      */

@@ -8,7 +8,7 @@
  * @license LGPL-3.0+
  */
 
-namespace Contao\Image\Resize;
+namespace Contao\Image;
 
 use Symfony\Component\Filesystem\Filesystem;
 

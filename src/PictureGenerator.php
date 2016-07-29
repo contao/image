@@ -8,11 +8,7 @@
  * @license LGPL-3.0+
  */
 
-namespace Contao\Image\Picture;
-
-use Contao\Image\Image\ImageInterface;
-use Contao\Image\Resize\ResizeOptionsInterface;
-use Contao\Image\Resize\ResizerInterface;
+namespace Contao\Image;
 
 /**
  * Generates a Picture object.

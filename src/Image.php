@@ -8,7 +8,7 @@
  * @license LGPL-3.0+
  */
 
-namespace Contao\Image\Image;
+namespace Contao\Image;
 
 use Imagine\Image\Box;
 use Imagine\Image\ImagineInterface;

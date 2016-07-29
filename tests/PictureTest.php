@@ -10,9 +10,9 @@
 
 namespace Contao\Image\Test;
 
-use Contao\Image\Image\Image;
-use Contao\Image\Image\ImageInterface;
-use Contao\Image\Picture\Picture;
+use Contao\Image\Image;
+use Contao\Image\ImageInterface;
+use Contao\Image\Picture;
 
 /**
  * Tests the Picture class.
@@ -28,8 +28,8 @@ class PictureTest extends \PHPUnit_Framework_TestCase
     {
         $picture = $this->createPicture();
 
-        $this->assertInstanceOf('Contao\Image\Picture\Picture', $picture);
-        $this->assertInstanceOf('Contao\Image\Picture\PictureInterface', $picture);
+        $this->assertInstanceOf('Contao\Image\Picture', $picture);
+        $this->assertInstanceOf('Contao\Image\PictureInterface', $picture);
     }
 
     /**
@@ -39,7 +39,7 @@ class PictureTest extends \PHPUnit_Framework_TestCase
     {
         $picture = $this->createPicture(null, '/path/to/a/filename with special&<>"\'chars.jpeg');
 
-        $this->assertInstanceOf('Contao\Image\Image\ImageInterface', $picture->getImg()['src']);
+        $this->assertInstanceOf('Contao\Image\ImageInterface', $picture->getImg()['src']);
 
         $this->assertEquals(
             'path/to/a/filename%20with%20special%26%3C%3E%22%27chars.jpeg',
@@ -61,7 +61,7 @@ class PictureTest extends \PHPUnit_Framework_TestCase
             $picture->getImg('/path/to/a')['src'])
         ;
 
-        $this->assertInstanceOf('Contao\Image\Image\ImageInterface', $picture->getImg()['srcset'][0][0]);
+        $this->assertInstanceOf('Contao\Image\ImageInterface', $picture->getImg()['srcset'][0][0]);
 
         $this->assertEquals(
             'path/to/a/filename%20with%20special%26%3C%3E%22%27chars.jpeg 1x',
@@ -98,7 +98,7 @@ class PictureTest extends \PHPUnit_Framework_TestCase
     {
         $picture = $this->createPicture(null, '/path/to/a/filename with special&<>"\'chars.jpeg');
 
-        $this->assertInstanceOf('Contao\Image\Image\ImageInterface', $picture->getSources()[0]['srcset'][0][0]);
+        $this->assertInstanceOf('Contao\Image\ImageInterface', $picture->getSources()[0]['srcset'][0][0]);
 
         $this->assertEquals(
             'path/to/a/filename%20with%20special%26%3C%3E%22%27chars.jpeg 1x',

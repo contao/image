@@ -8,10 +8,7 @@
  * @license LGPL-3.0+
  */
 
-namespace Contao\Image\Resize;
-
-use Contao\Image\Image\ImageDimensionsInterface;
-use Contao\Image\Image\ImportantPartInterface;
+namespace Contao\Image;
 
 /**
  * Resize calculator interface.
