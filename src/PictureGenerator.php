@@ -163,7 +163,7 @@ class PictureGenerator implements PictureGeneratorInterface
     }
 
     /**
-     * Generate a srcset item
+     * Generates a srcset item.
      *
      * @param ImageInterface                    $image
      * @param PictureConfigurationItemInterface $config

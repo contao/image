@@ -101,6 +101,7 @@ class ResizeCoordinates implements ResizeCoordinatesInterface
             ));
         }
 
+        /* @var ResizeCoordinatesInterface $coordinates */
         return $this->cropStart->getX() === $coordinates->getCropStart()->getX()
             && $this->cropStart->getY() === $coordinates->getCropStart()->getY()
             && $this->cropSize->getWidth() === $coordinates->getCropSize()->getWidth()
