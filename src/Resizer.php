@@ -75,7 +75,7 @@ class Resizer implements ResizerInterface
      *
      * @return ImageInterface
      */
-    protected function processResize(
+    private function processResize(
         ImageInterface $image,
         ResizeConfigurationInterface $config,
         ResizeOptionsInterface $options
@@ -109,7 +109,7 @@ class Resizer implements ResizerInterface
      *
      * @return ImageInterface
      */
-    protected function executeResize(
+    private function executeResize(
         ImageInterface $image,
         ResizeCoordinatesInterface $coordinates,
         $path,
@@ -138,7 +138,7 @@ class Resizer implements ResizerInterface
      *
      * @return ImageInterface
      */
-    protected function createImage(ImageInterface $image, $path)
+    private function createImage(ImageInterface $image, $path)
     {
         return new Image($image->getImagine(), $this->filesystem, $path);
     }
@@ -151,7 +151,7 @@ class Resizer implements ResizerInterface
      *
      * @return string The realtive target path
      */
-    protected function createCachePath($path, ResizeCoordinatesInterface $coordinates)
+    private function createCachePath($path, ResizeCoordinatesInterface $coordinates)
     {
         $pathinfo = pathinfo($path);
         $hash = substr(md5(implode('|', [$path, filemtime($path), $coordinates->getHash()])), 0, 9);
