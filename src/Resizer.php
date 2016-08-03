@@ -10,6 +10,9 @@
 
 namespace Contao\Image;
 
+use Contao\Image\Event\ContaoImageEvents;
+use Contao\Image\Event\ResizeImageEvent;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
@@ -35,13 +38,23 @@ class Resizer implements ResizerInterface
     private $path;
 
     /**
+     * @var EventDispatcher
+     */
+    private $eventDispatcher;
+
+    /**
      * {@inheritdoc}
      */
-    public function __construct(ResizeCalculatorInterface $calculator, Filesystem $filesystem, $path)
-    {
+    public function __construct(
+        ResizeCalculatorInterface $calculator,
+        Filesystem $filesystem,
+        $path,
+        EventDispatcher $eventDispatcher
+    ) {
         $this->calculator = $calculator;
         $this->filesystem = $filesystem;
         $this->path = (string) $path;
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     /**
@@ -117,6 +130,13 @@ class Resizer implements ResizerInterface
     ) {
         if (!$this->filesystem->exists(dirname($path))) {
             $this->filesystem->mkdir(dirname($path));
+        }
+
+        $event = new ResizeImageEvent($image, $coordinates, $path, $imagineOptions);
+        $this->eventDispatcher->dispatch(ContaoImageEvents::RESIZE_IMAGE, $event);
+
+        if (null !== ($resizedImage = $event->getResizedImage())) {
+            return $resizedImage;
         }
 
         $image

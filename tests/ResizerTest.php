@@ -10,6 +10,7 @@
 
 namespace Contao\Image\Test;
 
+use Contao\Image\Event\ResizeImageEvent;
 use Contao\Image\Image;
 use Contao\Image\ResizeCalculatorInterface;
 use Contao\Image\Resizer;
@@ -18,6 +19,7 @@ use Contao\Image\ImageDimensions;
 use Contao\Image\ResizeCoordinates;
 use Contao\ImagineSvg\Imagine as SvgImagine;
 use Contao\ImagineSvg\UndefinedBox;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\Filesystem\Filesystem;
 use Imagine\Gd\Imagine as GdImagine;
 use Imagine\Image\Box;
@@ -207,7 +209,7 @@ class ResizerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Tests the resize() method.
+     * Tests the resize() method with a cached file.
      */
     public function testResizeCache()
     {
@@ -285,7 +287,7 @@ class ResizerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Tests the resize() method.
+     * Tests the resize() method with an undefined size.
      */
     public function testResizeUndefinedSize()
     {
@@ -326,7 +328,7 @@ class ResizerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Tests the resize() method.
+     * Tests the resize() method with an empty configuration.
      */
     public function testResizeEmptyConfig()
     {
@@ -375,7 +377,7 @@ class ResizerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Tests the resize() method.
+     * Tests the resize() method with the same dimensions.
      */
     public function testResizeSameDimensions()
     {
@@ -437,7 +439,7 @@ class ResizerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Tests the resize() method.
+     * Tests the resize() method with the same relative dimensions.
      */
     public function testResizeSameDimensionsRelative()
     {
@@ -492,15 +494,88 @@ class ResizerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Tests the resize() method with an event listener.
+     */
+    public function testResizeWithEventListener()
+    {
+        if (!is_dir($this->rootDir)) {
+            mkdir($this->rootDir, 0777, true);
+        }
+
+        (new GdImagine())
+            ->create(new Box(100, 100))
+            ->save($this->rootDir.'/dummy.jpg')
+        ;
+
+        $calculator = $this->getMock('Contao\Image\ResizeCalculatorInterface');
+
+        $calculator
+            ->method('calculate')
+            ->willReturn(new ResizeCoordinates(new Box(100, 100), new Point(0, 0), new Box(100, 100)))
+        ;
+
+        $customImage = $this
+            ->getMockBuilder('Contao\Image\Image')
+            ->disableOriginalConstructor()
+            ->getMock()
+        ;
+
+        $eventDispatcher = $this
+            ->getMockBuilder('Symfony\Component\EventDispatcher\EventDispatcher')
+            ->setMethods(['dispatch'])
+            ->disableOriginalConstructor()
+            ->getMock()
+        ;
+
+        $eventDispatcher
+            ->method('dispatch')
+            ->willReturnCallback(
+                function ($name, ResizeImageEvent $event) use ($customImage) {
+                    $event->setResizedImage($customImage);
+                }
+            )
+        ;
+
+        $resizer = $this->createResizer($calculator, null, null, $eventDispatcher);
+
+        $image = $this
+            ->getMockBuilder('Contao\Image\Image')
+            ->disableOriginalConstructor()
+            ->getMock()
+        ;
+
+        $image
+            ->method('getDimensions')
+            ->willReturn(new ImageDimensions(new Box(200, 200)))
+        ;
+
+        $image
+            ->method('getPath')
+            ->willReturn($this->rootDir.'/dummy.jpg')
+        ;
+
+        $image
+            ->method('getImagine')
+            ->willReturn(new GdImagine())
+        ;
+
+        $configuration = $this->getMock('Contao\Image\ResizeConfigurationInterface');
+        $resizedImage = $resizer->resize($image, $configuration, new ResizeOptions());
+
+        $this->assertEquals($resizedImage, $customImage);
+    }
+
+    /**
      * Creates a resizer instance helper.
      *
      * @param ResizeCalculatorInterface $calculator
      * @param Filesystem                $filesystem
      * @param string                    $path
+     * @param EventDispatcher           $eventDispatcher
      *
      * @return Resizer
      */
-    private function createResizer($calculator = null, $filesystem = null, $path = null)
+    private function createResizer($calculator = null, $filesystem = null, $path = null, $eventDispatcher = null)
     {
         if (null === $calculator) {
             $calculator = $this->getMock('Contao\Image\ResizeCalculatorInterface');
@@ -514,6 +589,10 @@ class ResizerTest extends \PHPUnit_Framework_TestCase
             $path = $this->rootDir;
         }
 
-        return new Resizer($calculator, $filesystem, $path);
+        if (null === $eventDispatcher) {
+            $eventDispatcher = $this->getMock('Symfony\Component\EventDispatcher\EventDispatcher');
+        }
+
+        return new Resizer($calculator, $filesystem, $path, $eventDispatcher);
     }
 }
