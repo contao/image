@@ -116,8 +116,10 @@ class Resizer implements ResizerInterface
      * @param ResizeOptionsInterface     $options
      *
      * @return ImageInterface
+     *
+     * @internal Do not call this method in your code. It will be made private in a future version.
      */
-    private function executeResize(
+    protected function executeResize(
         ImageInterface $image,
         ResizeCoordinatesInterface $coordinates,
         $path,
@@ -145,8 +147,10 @@ class Resizer implements ResizerInterface
      * @param string         $path
      *
      * @return ImageInterface
+     *
+     * @internal Do not call this method in your code. It will be made private in a future version.
      */
-    private function createImage(ImageInterface $image, $path)
+    protected function createImage(ImageInterface $image, $path)
     {
         return new Image($path, $image->getImagine(), $this->filesystem);
     }
