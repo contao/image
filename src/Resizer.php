@@ -10,6 +10,9 @@
 
 namespace Contao\Image;
 
+use Contao\Image\Event\ContaoImageEvents;
+use Contao\Image\Event\ResizeImageEvent;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
@@ -35,13 +38,23 @@ class Resizer implements ResizerInterface
     private $path;
 
     /**
+     * @var EventDispatcherInterface
+     */
+    private $eventDispatcher;
+
+    /**
      * {@inheritdoc}
      */
-    public function __construct(ResizeCalculatorInterface $calculator, Filesystem $filesystem, $path)
-    {
+    public function __construct(
+        ResizeCalculatorInterface $calculator,
+        Filesystem $filesystem,
+        $path,
+        EventDispatcherInterface $eventDispatcher = null
+    ) {
         $this->calculator = $calculator;
         $this->filesystem = $filesystem;
         $this->path = (string) $path;
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     /**
@@ -75,7 +88,7 @@ class Resizer implements ResizerInterface
      *
      * @return ImageInterface
      */
-    protected function processResize(
+    private function processResize(
         ImageInterface $image,
         ResizeConfigurationInterface $config,
         ResizeOptionsInterface $options
@@ -109,12 +122,18 @@ class Resizer implements ResizerInterface
      *
      * @return ImageInterface
      */
-    protected function executeResize(
+    private function executeResize(
         ImageInterface $image,
         ResizeCoordinatesInterface $coordinates,
         $path,
         array $imagineOptions
     ) {
+        $resizedImage = $this->getResizedImageFromEvent($image, $coordinates, $path, $imagineOptions);
+
+        if (null !== $resizedImage) {
+            return $resizedImage;
+        }
+
         if (!$this->filesystem->exists(dirname($path))) {
             $this->filesystem->mkdir(dirname($path));
         }
@@ -138,7 +157,7 @@ class Resizer implements ResizerInterface
      *
      * @return ImageInterface
      */
-    protected function createImage(ImageInterface $image, $path)
+    private function createImage(ImageInterface $image, $path)
     {
         return new Image($image->getImagine(), $this->filesystem, $path);
     }
@@ -151,11 +170,37 @@ class Resizer implements ResizerInterface
      *
      * @return string The realtive target path
      */
-    protected function createCachePath($path, ResizeCoordinatesInterface $coordinates)
+    private function createCachePath($path, ResizeCoordinatesInterface $coordinates)
     {
         $pathinfo = pathinfo($path);
         $hash = substr(md5(implode('|', [$path, filemtime($path), $coordinates->getHash()])), 0, 9);
 
         return substr($hash, 0, 1).'/'.$pathinfo['filename'].'-'.substr($hash, 1).'.'.$pathinfo['extension'];
+    }
+
+    /**
+     * Returns a resized image from an event.
+     *
+     * @param ImageInterface             $image
+     * @param ResizeCoordinatesInterface $coordinates
+     * @param string                     $path
+     * @param array                      $imagineOptions
+     *
+     * @return ImageInterface|null
+     */
+    private function getResizedImageFromEvent(
+        ImageInterface $image,
+        ResizeCoordinatesInterface $coordinates,
+        $path,
+        array $imagineOptions
+    ) {
+        if (null === $this->eventDispatcher) {
+            return null;
+        }
+
+        $event = new ResizeImageEvent($image, $coordinates, $path, $imagineOptions);
+        $this->eventDispatcher->dispatch(ContaoImageEvents::RESIZE_IMAGE, $event);
+
+        return $event->getResizedImage();
     }
 }

@@ -48,7 +48,7 @@ class Picture implements PictureInterface
      */
     public function getImg($rootDir = null)
     {
-        if ($rootDir === null) {
+        if (null === $rootDir) {
             return $this->img;
         }
 
@@ -60,7 +60,7 @@ class Picture implements PictureInterface
      */
     public function getSources($rootDir = null)
     {
-        if ($rootDir === null) {
+        if (null === $rootDir) {
             return $this->sources;
         }
 
