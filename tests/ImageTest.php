@@ -141,7 +141,6 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      */
     private function createImage($path = null, $imagine = null, $filesystem = null)
     {
-
         if (null === $path) {
             $path = 'dummy.jpg';
         }
