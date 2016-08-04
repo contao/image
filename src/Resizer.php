@@ -114,7 +114,7 @@ class Resizer implements ResizerInterface
             return $this->createImage($image, $cachePath);
         }
 
-        return $this->executeResize($image, $coordinates, $cachePath, $options->getImagineOptions());
+        return $this->executeResize($image, $coordinates, $cachePath, $options);
     }
 
     /**
@@ -123,7 +123,7 @@ class Resizer implements ResizerInterface
      * @param ImageInterface             $image
      * @param ResizeCoordinatesInterface $coordinates
      * @param string                     $path
-     * @param array                      $imagineOptions
+     * @param ResizeOptionsInterface     $options
      *
      * @return ImageInterface
      */
@@ -131,9 +131,9 @@ class Resizer implements ResizerInterface
         ImageInterface $image,
         ResizeCoordinatesInterface $coordinates,
         $path,
-        array $imagineOptions
+        ResizeOptionsInterface $options
     ) {
-        $resizedImage = $this->getResizedImageFromEvent($image, $coordinates, $path, $imagineOptions);
+        $resizedImage = $this->getResizedImageFromEvent($image, $coordinates, $path, $options);
 
         if (null !== $resizedImage) {
             return $resizedImage;
@@ -148,7 +148,7 @@ class Resizer implements ResizerInterface
             ->open($image->getPath())
             ->resize($coordinates->getSize())
             ->crop($coordinates->getCropStart(), $coordinates->getCropSize())
-            ->save($path, $imagineOptions)
+            ->save($path, $options->getImagineOptions())
         ;
 
         return $this->createImage($image, $path);
@@ -189,7 +189,7 @@ class Resizer implements ResizerInterface
      * @param ImageInterface             $image
      * @param ResizeCoordinatesInterface $coordinates
      * @param string                     $path
-     * @param array                      $imagineOptions
+     * @param ResizeOptionsInterface     $options
      *
      * @return ImageInterface|null
      */
@@ -197,13 +197,13 @@ class Resizer implements ResizerInterface
         ImageInterface $image,
         ResizeCoordinatesInterface $coordinates,
         $path,
-        array $imagineOptions
+        ResizeOptionsInterface $options
     ) {
         if (null === $this->eventDispatcher) {
             return null;
         }
 
-        $event = new ResizeImageEvent($image, $coordinates, $path, $imagineOptions);
+        $event = new ResizeImageEvent($image, $coordinates, $path, $options);
         $this->eventDispatcher->dispatch(ContaoImageEvents::RESIZE_IMAGE, $event);
 
         return $event->getResizedImage();
