@@ -50,8 +50,12 @@ class Image implements ImageInterface
     /**
      * {@inheritdoc}
      */
-    public function __construct(ImagineInterface $imagine, Filesystem $filesystem, $path)
+    public function __construct($path, ImagineInterface $imagine, Filesystem $filesystem = null)
     {
+        if (null === $filesystem) {
+            $filesystem = new Filesystem();
+        }
+
         if (!$filesystem->exists($path)) {
             throw new \InvalidArgumentException($path.' does not exist');
         }
@@ -60,9 +64,9 @@ class Image implements ImageInterface
             throw new \InvalidArgumentException($path.' is a directory');
         }
 
+        $this->path = (string) $path;
         $this->imagine = $imagine;
         $this->filesystem = $filesystem;
-        $this->path = (string) $path;
     }
 
     /**

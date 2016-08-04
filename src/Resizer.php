@@ -32,16 +32,27 @@ class Resizer implements ResizerInterface
     /**
      * @var string
      */
-    private $path;
+    private $cacheDir;
 
     /**
      * {@inheritdoc}
      */
-    public function __construct(ResizeCalculatorInterface $calculator, Filesystem $filesystem, $path)
-    {
+    public function __construct(
+        $cacheDir,
+        ResizeCalculatorInterface $calculator = null,
+        Filesystem $filesystem = null
+    ) {
+        if (null === $calculator) {
+            $calculator = new ResizeCalculator();
+        }
+
+        if (null === $filesystem) {
+            $filesystem = new Filesystem();
+        }
+
+        $this->cacheDir = (string) $cacheDir;
         $this->calculator = $calculator;
         $this->filesystem = $filesystem;
-        $this->path = (string) $path;
     }
 
     /**
@@ -75,7 +86,7 @@ class Resizer implements ResizerInterface
      *
      * @return ImageInterface
      */
-    protected function processResize(
+    private function processResize(
         ImageInterface $image,
         ResizeConfigurationInterface $config,
         ResizeOptionsInterface $options
@@ -83,20 +94,17 @@ class Resizer implements ResizerInterface
         $coordinates = $this->calculator->calculate($config, $image->getDimensions(), $image->getImportantPart());
 
         // Skip resizing if it would have no effect
-        if (
-            $coordinates->isEqualTo($image->getDimensions()->getSize()) &&
-            !$image->getDimensions()->isRelative()
-        ) {
+        if ($coordinates->isEqualTo($image->getDimensions()->getSize()) && !$image->getDimensions()->isRelative()) {
             return $this->createImage($image, $image->getPath());
         }
 
-        $cachePath = $this->path.'/'.$this->createCachePath($image->getPath(), $coordinates);
+        $cachePath = $this->cacheDir.'/'.$this->createCachePath($image->getPath(), $coordinates);
 
         if ($this->filesystem->exists($cachePath) && !$options->getBypassCache()) {
             return $this->createImage($image, $cachePath);
         }
 
-        return $this->executeResize($image, $coordinates, $cachePath, $options->getImagineOptions());
+        return $this->executeResize($image, $coordinates, $cachePath, $options);
     }
 
     /**
@@ -105,15 +113,17 @@ class Resizer implements ResizerInterface
      * @param ImageInterface             $image
      * @param ResizeCoordinatesInterface $coordinates
      * @param string                     $path
-     * @param array                      $imagineOptions
+     * @param ResizeOptionsInterface     $options
      *
      * @return ImageInterface
+     *
+     * @internal Do not call this method in your code. It will be made private in a future version.
      */
     protected function executeResize(
         ImageInterface $image,
         ResizeCoordinatesInterface $coordinates,
         $path,
-        array $imagineOptions
+        ResizeOptionsInterface $options
     ) {
         if (!$this->filesystem->exists(dirname($path))) {
             $this->filesystem->mkdir(dirname($path));
@@ -124,7 +134,7 @@ class Resizer implements ResizerInterface
             ->open($image->getPath())
             ->resize($coordinates->getSize())
             ->crop($coordinates->getCropStart(), $coordinates->getCropSize())
-            ->save($path, $imagineOptions)
+            ->save($path, $options->getImagineOptions())
         ;
 
         return $this->createImage($image, $path);
@@ -137,10 +147,12 @@ class Resizer implements ResizerInterface
      * @param string         $path
      *
      * @return ImageInterface
+     *
+     * @internal Do not call this method in your code. It will be made private in a future version.
      */
     protected function createImage(ImageInterface $image, $path)
     {
-        return new Image($image->getImagine(), $this->filesystem, $path);
+        return new Image($path, $image->getImagine(), $this->filesystem);
     }
 
     /**
@@ -151,7 +163,7 @@ class Resizer implements ResizerInterface
      *
      * @return string The realtive target path
      */
-    protected function createCachePath($path, ResizeCoordinatesInterface $coordinates)
+    private function createCachePath($path, ResizeCoordinatesInterface $coordinates)
     {
         $pathinfo = pathinfo($path);
         $hash = substr(md5(implode('|', [$path, filemtime($path), $coordinates->getHash()])), 0, 9);

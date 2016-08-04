@@ -22,11 +22,15 @@ interface ResizerInterface
     /**
      * Constructor.
      *
-     * @param ResizeCalculatorInterface $calculator
-     * @param Filesystem                $filesystem
-     * @param string                    $path
+     * @param string                         $cacheDir
+     * @param ResizeCalculatorInterface|null $calculator
+     * @param Filesystem|null                $filesystem
      */
-    public function __construct(ResizeCalculatorInterface $calculator, Filesystem $filesystem, $path);
+    public function __construct(
+        $cacheDir,
+        ResizeCalculatorInterface $calculator = null,
+        Filesystem $filesystem = null
+    );
 
     /**
      * Resizes an Image object.
