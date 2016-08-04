@@ -10,7 +10,6 @@
 
 namespace Contao\Image;
 
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
@@ -26,13 +25,11 @@ interface ResizerInterface
      * @param string                         $path
      * @param ResizeCalculatorInterface|null $calculator
      * @param Filesystem|null                $filesystem
-     * @param EventDispatcherInterface|null  $eventDispatcher
      */
     public function __construct(
         $path,
         ResizeCalculatorInterface $calculator = null,
-        Filesystem $filesystem = null,
-        EventDispatcherInterface $eventDispatcher = null
+        Filesystem $filesystem = null
     );
 
     /**

@@ -10,9 +10,6 @@
 
 namespace Contao\Image;
 
-use Contao\Image\Event\ContaoImageEvents;
-use Contao\Image\Event\ResizeImageEvent;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
@@ -38,18 +35,12 @@ class Resizer implements ResizerInterface
     private $path;
 
     /**
-     * @var EventDispatcherInterface
-     */
-    private $eventDispatcher;
-
-    /**
      * {@inheritdoc}
      */
     public function __construct(
         $path,
         ResizeCalculatorInterface $calculator = null,
-        Filesystem $filesystem = null,
-        EventDispatcherInterface $eventDispatcher = null
+        Filesystem $filesystem = null
     ) {
         if (null === $calculator) {
             $calculator = new ResizeCalculator();
@@ -62,7 +53,6 @@ class Resizer implements ResizerInterface
         $this->path = (string) $path;
         $this->calculator = $calculator;
         $this->filesystem = $filesystem;
-        $this->eventDispatcher = $eventDispatcher;
     }
 
     /**
@@ -133,12 +123,6 @@ class Resizer implements ResizerInterface
         $path,
         ResizeOptionsInterface $options
     ) {
-        $resizedImage = $this->getResizedImageFromEvent($image, $coordinates, $path, $options);
-
-        if (null !== $resizedImage) {
-            return $resizedImage;
-        }
-
         if (!$this->filesystem->exists(dirname($path))) {
             $this->filesystem->mkdir(dirname($path));
         }
@@ -181,31 +165,5 @@ class Resizer implements ResizerInterface
         $hash = substr(md5(implode('|', [$path, filemtime($path), $coordinates->getHash()])), 0, 9);
 
         return substr($hash, 0, 1).'/'.$pathinfo['filename'].'-'.substr($hash, 1).'.'.$pathinfo['extension'];
-    }
-
-    /**
-     * Returns a resized image from an event.
-     *
-     * @param ImageInterface             $image
-     * @param ResizeCoordinatesInterface $coordinates
-     * @param string                     $path
-     * @param ResizeOptionsInterface     $options
-     *
-     * @return ImageInterface|null
-     */
-    private function getResizedImageFromEvent(
-        ImageInterface $image,
-        ResizeCoordinatesInterface $coordinates,
-        $path,
-        ResizeOptionsInterface $options
-    ) {
-        if (null === $this->eventDispatcher) {
-            return null;
-        }
-
-        $event = new ResizeImageEvent($image, $coordinates, $path, $options);
-        $this->eventDispatcher->dispatch(ContaoImageEvents::RESIZE_IMAGE, $event);
-
-        return $event->getResizedImage();
     }
 }
