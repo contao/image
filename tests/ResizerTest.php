@@ -494,22 +494,22 @@ class ResizerTest extends \PHPUnit_Framework_TestCase
     /**
      * Creates a resizer instance helper.
      *
-     * @param string                    $path
+     * @param string                    $cacheDir
      * @param ResizeCalculatorInterface $calculator
      * @param Filesystem                $filesystem
      *
      * @return Resizer
      */
-    private function createResizer($path = null, $calculator = null, $filesystem = null)
+    private function createResizer($cacheDir = null, $calculator = null, $filesystem = null)
     {
-        if (null === $path) {
-            $path = $this->rootDir;
+        if (null === $cacheDir) {
+            $cacheDir = $this->rootDir;
         }
 
         if (null === $calculator) {
             $calculator = $this->getMock('Contao\Image\ResizeCalculatorInterface');
         }
 
-        return new Resizer($path, $calculator, $filesystem);
+        return new Resizer($cacheDir, $calculator, $filesystem);
     }
 }

@@ -32,13 +32,13 @@ class Resizer implements ResizerInterface
     /**
      * @var string
      */
-    private $path;
+    private $cacheDir;
 
     /**
      * {@inheritdoc}
      */
     public function __construct(
-        $path,
+        $cacheDir,
         ResizeCalculatorInterface $calculator = null,
         Filesystem $filesystem = null
     ) {
@@ -50,7 +50,7 @@ class Resizer implements ResizerInterface
             $filesystem = new Filesystem();
         }
 
-        $this->path = (string) $path;
+        $this->cacheDir = (string) $cacheDir;
         $this->calculator = $calculator;
         $this->filesystem = $filesystem;
     }
@@ -98,7 +98,7 @@ class Resizer implements ResizerInterface
             return $this->createImage($image, $image->getPath());
         }
 
-        $cachePath = $this->path.'/'.$this->createCachePath($image->getPath(), $coordinates);
+        $cachePath = $this->cacheDir.'/'.$this->createCachePath($image->getPath(), $coordinates);
 
         if ($this->filesystem->exists($cachePath) && !$options->getBypassCache()) {
             return $this->createImage($image, $cachePath);
