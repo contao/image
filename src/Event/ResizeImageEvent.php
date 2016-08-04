@@ -11,6 +11,7 @@
 namespace Contao\Image\Event;
 
 use Contao\Image\ImageInterface;
+use Contao\Image\ResizeConfigurationInterface;
 use Contao\Image\ResizeCoordinatesInterface;
 use Contao\Image\ResizeOptionsInterface;
 use Symfony\Component\EventDispatcher\Event;
@@ -38,6 +39,11 @@ class ResizeImageEvent extends Event
     private $path;
 
     /**
+     * @var ResizeConfigurationInterface
+     */
+    private $config;
+
+    /**
      * @var ResizeOptionsInterface
      */
     private $options;
@@ -50,20 +56,23 @@ class ResizeImageEvent extends Event
     /**
      * Constructor.
      *
-     * @param ImageInterface             $image
-     * @param ResizeCoordinatesInterface $coordinates
-     * @param string                     $path
-     * @param ResizeOptionsInterface     $options
+     * @param ImageInterface               $image
+     * @param ResizeCoordinatesInterface   $coordinates
+     * @param string                       $path
+     * @param ResizeConfigurationInterface $config
+     * @param ResizeOptionsInterface       $options
      */
     public function __construct(
         ImageInterface $image,
         ResizeCoordinatesInterface $coordinates,
         $path,
+        ResizeConfigurationInterface $config,
         ResizeOptionsInterface $options
     ) {
         $this->image = $image;
         $this->coordinates = $coordinates;
         $this->path = $path;
+        $this->config = $config;
         $this->options = $options;
     }
 
@@ -105,6 +114,16 @@ class ResizeImageEvent extends Event
     public function getOptions()
     {
         return $this->options;
+    }
+
+    /**
+     * Returns the configuration.
+     *
+     * @return ResizeConfigurationInterface
+     */
+    public function getConfiguration()
+    {
+        return $this->config;
     }
 
     /**

@@ -114,33 +114,14 @@ class Resizer implements ResizerInterface
             return $this->createImage($image, $cachePath);
         }
 
-        return $this->executeResize($image, $coordinates, $cachePath, $options);
-    }
-
-    /**
-     * Executes the resize operation via Imagine.
-     *
-     * @param ImageInterface             $image
-     * @param ResizeCoordinatesInterface $coordinates
-     * @param string                     $path
-     * @param ResizeOptionsInterface     $options
-     *
-     * @return ImageInterface
-     */
-    private function executeResize(
-        ImageInterface $image,
-        ResizeCoordinatesInterface $coordinates,
-        $path,
-        ResizeOptionsInterface $options
-    ) {
-        $resizedImage = $this->getResizedImageFromEvent($image, $coordinates, $path, $options);
+        $resizedImage = $this->getResizedImageFromEvent($image, $coordinates, $cachePath, $config, $options);
 
         if (null !== $resizedImage) {
             return $resizedImage;
         }
 
-        if (!$this->filesystem->exists(dirname($path))) {
-            $this->filesystem->mkdir(dirname($path));
+        if (!$this->filesystem->exists(dirname($cachePath))) {
+            $this->filesystem->mkdir(dirname($cachePath));
         }
 
         $image
@@ -148,10 +129,10 @@ class Resizer implements ResizerInterface
             ->open($image->getPath())
             ->resize($coordinates->getSize())
             ->crop($coordinates->getCropStart(), $coordinates->getCropSize())
-            ->save($path, $options->getImagineOptions())
+            ->save($cachePath, $options->getImagineOptions())
         ;
 
-        return $this->createImage($image, $path);
+        return $this->createImage($image, $cachePath);
     }
 
     /**
@@ -186,10 +167,11 @@ class Resizer implements ResizerInterface
     /**
      * Returns a resized image from an event.
      *
-     * @param ImageInterface             $image
-     * @param ResizeCoordinatesInterface $coordinates
-     * @param string                     $path
-     * @param ResizeOptionsInterface     $options
+     * @param ImageInterface               $image
+     * @param ResizeCoordinatesInterface   $coordinates
+     * @param string                       $path
+     * @param ResizeConfigurationInterface $config
+     * @param ResizeOptionsInterface       $options
      *
      * @return ImageInterface|null
      */
@@ -197,13 +179,14 @@ class Resizer implements ResizerInterface
         ImageInterface $image,
         ResizeCoordinatesInterface $coordinates,
         $path,
+        ResizeConfigurationInterface $config,
         ResizeOptionsInterface $options
     ) {
         if (null === $this->eventDispatcher) {
             return null;
         }
 
-        $event = new ResizeImageEvent($image, $coordinates, $path, $options);
+        $event = new ResizeImageEvent($image, $coordinates, $path, $config, $options);
         $this->eventDispatcher->dispatch(ContaoImageEvents::RESIZE_IMAGE, $event);
 
         return $event->getResizedImage();
