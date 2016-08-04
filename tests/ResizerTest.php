@@ -562,7 +562,7 @@ class ResizerTest extends \PHPUnit_Framework_TestCase
         $configuration = $this->getMock('Contao\Image\ResizeConfigurationInterface');
         $resizedImage = $resizer->resize($image, $configuration, new ResizeOptions());
 
-        $this->assertEquals($resizedImage, $customImage);
+        $this->assertSame($resizedImage, $customImage);
     }
 
     /**

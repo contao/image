@@ -119,9 +119,9 @@ class ResizeImageEvent extends Event
     /**
      * Sets the resized image.
      *
-     * @param ImageInterface $image
+     * @param ImageInterface|null $image
      */
-    public function setResizedImage(ImageInterface $image)
+    public function setResizedImage(ImageInterface $image = null)
     {
         $this->resizedImage = $image;
     }
