@@ -83,10 +83,7 @@ class Resizer implements ResizerInterface
         $coordinates = $this->calculator->calculate($config, $image->getDimensions(), $image->getImportantPart());
 
         // Skip resizing if it would have no effect
-        if (
-            $coordinates->isEqualTo($image->getDimensions()->getSize()) &&
-            !$image->getDimensions()->isRelative()
-        ) {
+        if ($coordinates->isEqualTo($image->getDimensions()->getSize()) && !$image->getDimensions()->isRelative()) {
             return $this->createImage($image, $image->getPath());
         }
 
