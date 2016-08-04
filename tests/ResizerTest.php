@@ -78,7 +78,7 @@ class ResizerTest extends \PHPUnit_Framework_TestCase
             ->willReturn(new ResizeCoordinates(new Box(100, 100), new Point(0, 0), new Box(100, 100)))
         ;
 
-        $resizer = $this->createResizer($calculator);
+        $resizer = $this->createResizer(null, $calculator);
 
         if (!is_dir($this->rootDir)) {
             mkdir($this->rootDir, 0777, true);
@@ -165,7 +165,7 @@ class ResizerTest extends \PHPUnit_Framework_TestCase
             ->willReturn(new ResizeCoordinates(new Box(100, 100), new Point(0, 0), new Box(100, 100)))
         ;
 
-        $resizer = $this->createResizer($calculator);
+        $resizer = $this->createResizer(null, $calculator);
 
         $image = $this
             ->getMockBuilder('Contao\Image\Image')
@@ -220,7 +220,7 @@ class ResizerTest extends \PHPUnit_Framework_TestCase
             ->willReturn(new ResizeCoordinates(new Box(100, 100), new Point(0, 0), new Box(100, 100)))
         ;
 
-        $resizer = $this->createResizer($calculator);
+        $resizer = $this->createResizer(null, $calculator);
 
         if (!is_dir($this->rootDir)) {
             mkdir($this->rootDir, 0777, true);
@@ -390,7 +390,7 @@ class ResizerTest extends \PHPUnit_Framework_TestCase
             ->willReturn(new ResizeCoordinates(new Box(100, 100), new Point(0, 0), new Box(100, 100)))
         ;
 
-        $resizer = $this->createResizer($calculator);
+        $resizer = $this->createResizer(null, $calculator);
 
         if (!is_dir($this->rootDir)) {
             mkdir($this->rootDir, 0777, true);
@@ -459,7 +459,7 @@ class ResizerTest extends \PHPUnit_Framework_TestCase
             ->willReturn(new ResizeCoordinates(new Box(100, 100), new Point(0, 0), new Box(100, 100)))
         ;
 
-        $resizer = $this->createResizer($calculator);
+        $resizer = $this->createResizer(null, $calculator);
 
         $image = $this
             ->getMockBuilder('Contao\Image\Image')
@@ -536,7 +536,7 @@ class ResizerTest extends \PHPUnit_Framework_TestCase
             )
         ;
 
-        $resizer = $this->createResizer($calculator, null, null, $eventDispatcher);
+        $resizer = $this->createResizer(null, $calculator, null, $eventDispatcher);
 
         $image = $this
             ->getMockBuilder('Contao\Image\Image')
@@ -568,31 +568,27 @@ class ResizerTest extends \PHPUnit_Framework_TestCase
     /**
      * Creates a resizer instance helper.
      *
+     * @param string                    $path
      * @param ResizeCalculatorInterface $calculator
      * @param Filesystem                $filesystem
-     * @param string                    $path
      * @param EventDispatcher           $eventDispatcher
      *
      * @return Resizer
      */
-    private function createResizer($calculator = null, $filesystem = null, $path = null, $eventDispatcher = null)
+    private function createResizer($path = null, $calculator = null, $filesystem = null, $eventDispatcher = null)
     {
-        if (null === $calculator) {
-            $calculator = $this->getMock('Contao\Image\ResizeCalculatorInterface');
-        }
-
-        if (null === $filesystem) {
-            $filesystem = new Filesystem();
-        }
-
         if (null === $path) {
             $path = $this->rootDir;
+        }
+
+        if (null === $calculator) {
+            $calculator = $this->getMock('Contao\Image\ResizeCalculatorInterface');
         }
 
         if (null === $eventDispatcher) {
             $eventDispatcher = $this->getMock('Symfony\Component\EventDispatcher\EventDispatcher');
         }
 
-        return new Resizer($calculator, $filesystem, $path, $eventDispatcher);
+        return new Resizer($path, $calculator, $filesystem, $eventDispatcher);
     }
 }

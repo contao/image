@@ -142,7 +142,7 @@ class PictureTest extends \PHPUnit_Framework_TestCase
             $imagine = $this->getMock('Imagine\Image\ImagineInterface');
             $filesystem = $this->getMock('Symfony\Component\Filesystem\Filesystem');
             $filesystem->method('exists')->willReturn(true);
-            $image = new Image($imagine, $filesystem, $path);
+            $image = new Image($path, $imagine, $filesystem);
         }
 
         return new Picture(

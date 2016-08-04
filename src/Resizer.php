@@ -46,14 +46,22 @@ class Resizer implements ResizerInterface
      * {@inheritdoc}
      */
     public function __construct(
-        ResizeCalculatorInterface $calculator,
-        Filesystem $filesystem,
         $path,
+        ResizeCalculatorInterface $calculator = null,
+        Filesystem $filesystem = null,
         EventDispatcherInterface $eventDispatcher = null
     ) {
+        if (null === $calculator) {
+            $calculator = new ResizeCalculator();
+        }
+
+        if (null === $filesystem) {
+            $filesystem = new Filesystem();
+        }
+
+        $this->path = (string) $path;
         $this->calculator = $calculator;
         $this->filesystem = $filesystem;
-        $this->path = (string) $path;
         $this->eventDispatcher = $eventDispatcher;
     }
 
@@ -156,7 +164,7 @@ class Resizer implements ResizerInterface
      */
     private function createImage(ImageInterface $image, $path)
     {
-        return new Image($image->getImagine(), $this->filesystem, $path);
+        return new Image($path, $image->getImagine(), $this->filesystem);
     }
 
     /**

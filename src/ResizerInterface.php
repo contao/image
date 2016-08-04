@@ -23,15 +23,15 @@ interface ResizerInterface
     /**
      * Constructor.
      *
-     * @param ResizeCalculatorInterface     $calculator
-     * @param Filesystem                    $filesystem
-     * @param string                        $path
-     * @param EventDispatcherInterface|null $eventDispatcher
+     * @param string                         $path
+     * @param ResizeCalculatorInterface|null $calculator
+     * @param Filesystem|null                $filesystem
+     * @param EventDispatcherInterface|null  $eventDispatcher
      */
     public function __construct(
-        ResizeCalculatorInterface $calculator,
-        Filesystem $filesystem,
         $path,
+        ResizeCalculatorInterface $calculator = null,
+        Filesystem $filesystem = null,
         EventDispatcherInterface $eventDispatcher = null
     );
 

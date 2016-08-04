@@ -23,12 +23,10 @@ Usage
 
 ```php
 $imagine = new \Imagine\Gd\Imagine();
-$filesystem = new \Symfony\Component\Filesystem\Filesystem();
 
-$calculator = new ResizeCalculator();
-$resizer = new Resizer($calculator, $filesystem, '/path/to/cache/dir');
+$resizer = new Resizer('/path/to/cache/dir');
 
-$image = new Image($imagine, $filesystem, '/path/to/image.jpg');
+$image = new Image('/path/to/image.jpg', $imagine);
 
 $config = (new ResizeConfiguration())
     ->setWidth(100)
@@ -52,13 +50,11 @@ $resizedImage->getUrl('/custom/target'); // path.jpg
 
 ```php
 $imagine = new \Imagine\Gd\Imagine();
-$filesystem = new \Symfony\Component\Filesystem\Filesystem();
 
-$calculator = new ResizeCalculator();
-$resizer = new Resizer($calculator, $filesystem, '/path/to/cache/dir');
+$resizer = new Resizer('/path/to/cache/dir');
 $pictureGenerator = new PictureGenerator($resizer);
 
-$image = new Image($imagine, $filesystem, '/path/to/image.jpg');
+$image = new Image('/path/to/image.jpg', $imagine);
 
 $config = (new PictureConfiguration())
     ->setSize((new PictureConfigurationItem())

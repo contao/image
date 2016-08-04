@@ -50,7 +50,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
             ->willReturn(false)
         ;
 
-        $this->createImage(null, $filesystem);
+        $this->createImage(null, null, $filesystem);
     }
 
     /**
@@ -58,7 +58,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetPath()
     {
-        $image = $this->createImage(null, null, '/path/filename.jpeg');
+        $image = $this->createImage('/path/filename.jpeg');
 
         $this->assertEquals('/path/filename.jpeg', $image->getPath());
     }
@@ -68,7 +68,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetUrl()
     {
-        $image = $this->createImage(null, null, '/path/to/a/filename with special&<>"\'chars.jpeg');
+        $image = $this->createImage('/path/to/a/filename with special&<>"\'chars.jpeg');
 
         $this->assertEquals('path/to/a/filename%20with%20special%26%3C%3E%22%27chars.jpeg', $image->getUrl(''));
         $this->assertEquals('to/a/filename%20with%20special%26%3C%3E%22%27chars.jpeg', $image->getUrl('/path'));
@@ -98,7 +98,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
             ->willReturn(new Box(100, 100))
         ;
 
-        $image = $this->createImage($imagine);
+        $image = $this->createImage(null, $imagine);
 
         $this->assertEquals(new ImageDimensions(new Box(100, 100)), $image->getDimensions());
     }
@@ -121,7 +121,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
             ->willReturn(new Box(100, 100))
         ;
 
-        $image = $this->createImage($imagine);
+        $image = $this->createImage(null, $imagine);
 
         $this->assertEquals(new ImportantPart(new Point(0, 0), new Box(100, 100)), $image->getImportantPart());
 
@@ -133,14 +133,19 @@ class ImageTest extends \PHPUnit_Framework_TestCase
     /**
      * Creates an image instance helper.
      *
+     * @param string           $path
      * @param ImagineInterface $imagine
      * @param Filesystem       $filesystem
-     * @param string           $path
      *
      * @return Image
      */
-    private function createImage($imagine = null, $filesystem = null, $path = 'dummy.jpg')
+    private function createImage($path = null, $imagine = null, $filesystem = null)
     {
+
+        if (null === $path) {
+            $path = 'dummy.jpg';
+        }
+
         if (null === $imagine) {
             $imagine = $this->getMock('Imagine\Image\ImagineInterface');
         }
@@ -154,6 +159,6 @@ class ImageTest extends \PHPUnit_Framework_TestCase
             ;
         }
 
-        return new Image($imagine, $filesystem, $path);
+        return new Image($path, $imagine, $filesystem);
     }
 }
