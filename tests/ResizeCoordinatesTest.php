@@ -91,5 +91,8 @@ class ResizeCoordinatesTest extends \PHPUnit_Framework_TestCase
 
         $coordinates = new ResizeCoordinates(new Box(100, 100), new Point(0, 0), new Box(100, 100));
         $this->assertTrue($coordinates->isEqualTo(new Box(100, 100)));
+
+        $this->setExpectedException('InvalidArgumentException');
+        $coordinates->isEqualTo(new \stdClass);
     }
 }
