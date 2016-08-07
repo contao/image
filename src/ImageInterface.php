@@ -11,7 +11,6 @@
 namespace Contao\Image;
 
 use Imagine\Image\ImagineInterface;
-use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * Image interface.
