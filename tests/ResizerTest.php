@@ -506,10 +506,6 @@ class ResizerTest extends \PHPUnit_Framework_TestCase
             $cacheDir = $this->rootDir;
         }
 
-        if (null === $calculator) {
-            $calculator = $this->getMock('Contao\Image\ResizeCalculatorInterface');
-        }
-
         return new Resizer($cacheDir, $calculator, $filesystem);
     }
 }

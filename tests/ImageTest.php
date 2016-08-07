@@ -37,6 +37,26 @@ class ImageTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Tests the constructor with a non existent path.
+     */
+    public function testConstructorNonExistentPath()
+    {
+        $this->setExpectedException('InvalidArgumentException', '/path/to/non/existent/file.jpg does not exist');
+
+        $image = new Image('/path/to/non/existent/file.jpg', $this->getMock('Imagine\Image\ImagineInterface'));
+    }
+
+    /**
+     * Tests the constructor with a directory as path.
+     */
+    public function testConstructorDirPath()
+    {
+        $this->setExpectedException('InvalidArgumentException', __DIR__.' is a directory');
+
+        $this->createImage(__DIR__);
+    }
+
+    /**
      * Tests the object instantiation with a missing image.
      *
      * @expectedException \InvalidArgumentException

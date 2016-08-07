@@ -133,7 +133,7 @@ class Picture implements PictureInterface
 
         foreach ($img['srcset'] as $src) {
             if (!($src[0] instanceof ImageInterface)) {
-                throw new \InvalidArgumentException('Srcets must be of type ImageInterface');
+                throw new \InvalidArgumentException('Srcsets must be of type ImageInterface');
             }
         }
     }

@@ -129,6 +129,48 @@ class PictureTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Tests the constructor with a missing src attribute.
+     */
+    public function testMissingSrc()
+    {
+        $this->setExpectedException('InvalidArgumentException', 'Missing src attribute');
+
+        $picture = new Picture(['srcset' => []], []);
+    }
+
+    /**
+     * Tests the constructor with an invalid src attribute.
+     */
+    public function testInvalidSrc()
+    {
+        $this->setExpectedException('InvalidArgumentException', 'Src must be of type ImageInterface');
+
+        $picture = new Picture(['src' => new \stdClass(), 'srcset' => []], []);
+    }
+
+    /**
+     * Tests the constructor with a missing srcset attribute.
+     */
+    public function testMissingSrcset()
+    {
+        $image = $this->getMock('Contao\Image\ImageInterface');
+        $this->setExpectedException('InvalidArgumentException', 'Missing srcset attribute');
+
+        $picture = new Picture(['src' => $image], []);
+    }
+
+    /**
+     * Tests the constructor with an invalid srcset attribute.
+     */
+    public function testInvalidSrcset()
+    {
+        $image = $this->getMock('Contao\Image\ImageInterface');
+        $this->setExpectedException('InvalidArgumentException', 'Srcsets must be of type ImageInterface');
+
+        $picture = new Picture(['src' => $image, 'srcset' => [[$image, '1x'], [new \stdClass(), '2x']]], []);
+    }
+
+    /**
      * Creates a picture instance helper.
      *
      * @param ImageInterface $image
