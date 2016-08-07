@@ -46,6 +46,8 @@ class ResizeCalculator implements ResizeCalculatorInterface
                 case ResizeConfigurationInterface::MODE_BOX:
                     return $this->calculateBox($widthHeight, $dimensions, $importantPart, $zoom);
             }
+
+            throw new \InvalidArgumentException(sprintf('Unsupported resize mode "%s"', $config->getMode()));
         }
 
         // If no dimensions are specified, use the zoomed important part
