@@ -28,7 +28,9 @@ class PictureGenerator implements PictureGeneratorInterface
     private $resizeOptions;
 
     /**
-     * {@inheritdoc}
+     * Constructor.
+     *
+     * @param ResizerInterface $resizer
      */
     public function __construct(ResizerInterface $resizer)
     {

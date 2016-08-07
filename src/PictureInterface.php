@@ -18,14 +18,6 @@ namespace Contao\Image;
 interface PictureInterface
 {
     /**
-     * Constructor.
-     *
-     * @param array $img
-     * @param array $sources
-     */
-    public function __construct(array $img, array $sources);
-
-    /**
      * Returns the image tag attributes.
      *
      * @param string|null $rootDir

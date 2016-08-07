@@ -20,15 +20,6 @@ use Imagine\Image\BoxInterface;
 interface ImageDimensionsInterface
 {
     /**
-     * Constructor.
-     *
-     * @param BoxInterface $size
-     * @param bool|null    $relative
-     * @param bool|null    $undefined
-     */
-    public function __construct(BoxInterface $size, $relative = null, $undefined = null);
-
-    /**
      * Returns the size.
      *
      * @return BoxInterface

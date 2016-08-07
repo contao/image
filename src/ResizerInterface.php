@@ -20,19 +20,6 @@ use Symfony\Component\Filesystem\Filesystem;
 interface ResizerInterface
 {
     /**
-     * Constructor.
-     *
-     * @param string                         $cacheDir
-     * @param ResizeCalculatorInterface|null $calculator
-     * @param Filesystem|null                $filesystem
-     */
-    public function __construct(
-        $cacheDir,
-        ResizeCalculatorInterface $calculator = null,
-        Filesystem $filesystem = null
-    );
-
-    /**
      * Resizes an Image object.
      *
      * @param ImageInterface               $image

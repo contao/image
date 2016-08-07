@@ -28,7 +28,10 @@ class Picture implements PictureInterface
     private $sources = [];
 
     /**
-     * {@inheritdoc}
+     * Constructor.
+     *
+     * @param array $img
+     * @param array $sources
      */
     public function __construct(array $img, array $sources)
     {

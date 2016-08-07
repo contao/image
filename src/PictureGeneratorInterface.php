@@ -18,13 +18,6 @@ namespace Contao\Image;
 interface PictureGeneratorInterface
 {
     /**
-     * Constructor.
-     *
-     * @param ResizerInterface $resizer
-     */
-    public function __construct(ResizerInterface $resizer);
-
-    /**
      * Generates a Picture object.
      *
      * @param ImageInterface                $image

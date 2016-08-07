@@ -21,14 +21,6 @@ use Imagine\Image\PointInterface;
 interface ImportantPartInterface
 {
     /**
-     * Constructor.
-     *
-     * @param PointInterface $position
-     * @param BoxInterface   $size
-     */
-    public function __construct(PointInterface $position, BoxInterface $size);
-
-    /**
      * Returns the position.
      *
      * @return PointInterface

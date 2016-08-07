@@ -31,7 +31,10 @@ class ImportantPart implements ImportantPartInterface
     private $size;
 
     /**
-     * {@inheritdoc}
+     * Constructor.
+     *
+     * @param PointInterface $position
+     * @param BoxInterface   $size
      */
     public function __construct(PointInterface $position, BoxInterface $size)
     {
