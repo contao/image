@@ -48,7 +48,11 @@ class Image implements ImageInterface
     private $importantPart;
 
     /**
-     * {@inheritdoc}
+     * Constructor.
+     *
+     * @param string           $path
+     * @param ImagineInterface $imagine
+     * @param Filesystem|null  $filesystem
      */
     public function __construct($path, ImagineInterface $imagine, Filesystem $filesystem = null)
     {

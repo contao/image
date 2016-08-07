@@ -21,15 +21,6 @@ use Symfony\Component\Filesystem\Filesystem;
 interface ImageInterface
 {
     /**
-     * Constructor.
-     *
-     * @param string           $path
-     * @param ImagineInterface $imagine
-     * @param Filesystem|null  $filesystem
-     */
-    public function __construct($path, ImagineInterface $imagine, Filesystem $filesystem = null);
-
-    /**
      * Returns the imagine instance.
      *
      * @return ImagineInterface

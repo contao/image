@@ -35,7 +35,11 @@ class Resizer implements ResizerInterface
     private $cacheDir;
 
     /**
-     * {@inheritdoc}
+     * Constructor.
+     *
+     * @param string                         $cacheDir
+     * @param ResizeCalculatorInterface|null $calculator
+     * @param Filesystem|null                $filesystem
      */
     public function __construct(
         $cacheDir,

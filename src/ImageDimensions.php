@@ -37,7 +37,11 @@ class ImageDimensions implements ImageDimensionsInterface
     private $undefined;
 
     /**
-     * {@inheritdoc}
+     * Constructor.
+     *
+     * @param BoxInterface $size
+     * @param bool|null    $relative
+     * @param bool|null    $undefined
      */
     public function __construct(BoxInterface $size, $relative = null, $undefined = null)
     {

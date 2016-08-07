@@ -21,15 +21,6 @@ use Imagine\Image\PointInterface;
 interface ResizeCoordinatesInterface
 {
     /**
-     * Constructor.
-     *
-     * @param BoxInterface   $size
-     * @param PointInterface $cropStart
-     * @param BoxInterface   $cropSize
-     */
-    public function __construct(BoxInterface $size, PointInterface $cropStart, BoxInterface $cropSize);
-
-    /**
      * Returns the size.
      *
      * @return BoxInterface

@@ -37,7 +37,11 @@ class ResizeCoordinates implements ResizeCoordinatesInterface
     private $cropSize;
 
     /**
-     * {@inheritdoc}
+     * Constructor.
+     *
+     * @param BoxInterface   $size
+     * @param PointInterface $cropStart
+     * @param BoxInterface   $cropSize
      */
     public function __construct(BoxInterface $size, PointInterface $cropStart, BoxInterface $cropSize)
     {
