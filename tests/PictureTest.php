@@ -135,7 +135,7 @@ class PictureTest extends \PHPUnit_Framework_TestCase
     {
         $this->setExpectedException('InvalidArgumentException', 'Missing src attribute');
 
-        $picture = new Picture(['srcset' => []], []);
+        new Picture(['srcset' => []], []);
     }
 
     /**
@@ -145,7 +145,7 @@ class PictureTest extends \PHPUnit_Framework_TestCase
     {
         $this->setExpectedException('InvalidArgumentException', 'Src must be of type ImageInterface');
 
-        $picture = new Picture(['src' => new \stdClass(), 'srcset' => []], []);
+        new Picture(['src' => new \stdClass(), 'srcset' => []], []);
     }
 
     /**
@@ -156,7 +156,7 @@ class PictureTest extends \PHPUnit_Framework_TestCase
         $image = $this->getMock('Contao\Image\ImageInterface');
         $this->setExpectedException('InvalidArgumentException', 'Missing srcset attribute');
 
-        $picture = new Picture(['src' => $image], []);
+        new Picture(['src' => $image], []);
     }
 
     /**
@@ -167,7 +167,7 @@ class PictureTest extends \PHPUnit_Framework_TestCase
         $image = $this->getMock('Contao\Image\ImageInterface');
         $this->setExpectedException('InvalidArgumentException', 'Srcsets must be of type ImageInterface');
 
-        $picture = new Picture(['src' => $image, 'srcset' => [[$image, '1x'], [new \stdClass(), '2x']]], []);
+        new Picture(['src' => $image, 'srcset' => [[$image, '1x'], [new \stdClass(), '2x']]], []);
     }
 
     /**

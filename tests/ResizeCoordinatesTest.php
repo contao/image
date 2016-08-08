@@ -79,13 +79,13 @@ class ResizeCoordinatesTest extends \PHPUnit_Framework_TestCase
     {
         $coordinates = new ResizeCoordinates(new Box(200, 200), new Point(50, 50), new Box(100, 100));
 
-        $this->assertTrue($coordinates->isEqualTo(
-            new ResizeCoordinates(new Box(200, 200), new Point(50, 50), new Box(100, 100))
-        ));
+        $this->assertTrue(
+            $coordinates->isEqualTo(new ResizeCoordinates(new Box(200, 200), new Point(50, 50), new Box(100, 100)))
+        );
 
-        $this->assertFalse($coordinates->isEqualTo(
-            new ResizeCoordinates(new Box(200, 200), new Point(51, 50), new Box(100, 100))
-        ));
+        $this->assertFalse(
+            $coordinates->isEqualTo(new ResizeCoordinates(new Box(200, 200), new Point(51, 50), new Box(100, 100)))
+        );
 
         $this->assertFalse($coordinates->isEqualTo(new Box(200, 200)));
 
@@ -93,6 +93,6 @@ class ResizeCoordinatesTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($coordinates->isEqualTo(new Box(100, 100)));
 
         $this->setExpectedException('InvalidArgumentException');
-        $coordinates->isEqualTo(new \stdClass);
+        $coordinates->isEqualTo(new \stdClass());
     }
 }
