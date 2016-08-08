@@ -58,7 +58,7 @@ class ResizeCalculatorTest extends \PHPUnit_Framework_TestCase
         $dimensions = new ImageDimensions(new Box($arguments[2], $arguments[3]), !empty($arguments[5]));
         $importantPart = null;
 
-        if (1 === $arguments[4] && substr_count($arguments[4], '_')) {
+        if ($arguments[4] && substr_count($arguments[4], '_') === 1) {
             $importantPart = ['x' => 0, 'y' => 0, 'width' => $arguments[2], 'height' => $arguments[3]];
             $mode = explode('_', $arguments[4]);
 
