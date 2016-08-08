@@ -55,6 +55,7 @@ class PictureConfigurationItemTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('(min-width: 900px) 50vw, 100vw', $config->getSizes());
 
         $config->setSizes(100);
+
         $this->assertInternalType('string', $config->getSizes());
     }
 
@@ -70,6 +71,7 @@ class PictureConfigurationItemTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('1x, 2x, 200w, 400w', $config->getDensities());
 
         $config->setDensities(100);
+
         $this->assertInternalType('string', $config->getDensities());
     }
 
@@ -85,6 +87,7 @@ class PictureConfigurationItemTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('(max-width: 900px)', $config->getMedia());
 
         $config->setMedia(100);
+
         $this->assertInternalType('string', $config->getMedia());
     }
 }

@@ -43,7 +43,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
     {
         $this->setExpectedException('InvalidArgumentException', '/path/to/non/existent/file.jpg does not exist');
 
-        $image = new Image('/path/to/non/existent/file.jpg', $this->getMock('Imagine\Image\ImagineInterface'));
+        new Image('/path/to/non/existent/file.jpg', $this->getMock('Imagine\Image\ImagineInterface'));
     }
 
     /**

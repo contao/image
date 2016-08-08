@@ -47,19 +47,21 @@ class ImageDimensionsTest extends \PHPUnit_Framework_TestCase
     public function testIsRelative()
     {
         $size = $this->getMock('Imagine\Image\BoxInterface');
-
         $dimensions = new ImageDimensions($size);
+
         $this->assertFalse($dimensions->isRelative());
 
         $dimensions = new ImageDimensions($size, true);
+
         $this->assertTrue($dimensions->isRelative());
 
         $size = $this->getMock('Contao\ImagineSvg\RelativeBoxInterface');
-
         $dimensions = new ImageDimensions($size);
+
         $this->assertTrue($dimensions->isRelative());
 
         $dimensions = new ImageDimensions($size, false);
+
         $this->assertFalse($dimensions->isRelative());
     }
 
@@ -69,19 +71,21 @@ class ImageDimensionsTest extends \PHPUnit_Framework_TestCase
     public function testIsUndefined()
     {
         $size = $this->getMock('Imagine\Image\BoxInterface');
-
         $dimensions = new ImageDimensions($size);
+
         $this->assertFalse($dimensions->isUndefined());
 
         $dimensions = new ImageDimensions($size, null, true);
+
         $this->assertTrue($dimensions->isUndefined());
 
         $size = $this->getMock('Contao\ImagineSvg\UndefinedBoxInterface');
-
         $dimensions = new ImageDimensions($size);
+
         $this->assertTrue($dimensions->isUndefined());
 
         $dimensions = new ImageDimensions($size, null, false);
+
         $this->assertFalse($dimensions->isUndefined());
     }
 }

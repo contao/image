@@ -51,7 +51,7 @@ interface ResizeCoordinatesInterface
     /**
      * Compares the coordinates with another ResizeCoordinates or Box object.
      *
-     * @param self|BoxInterface $coordinates
+     * @param ResizeCoordinatesInterface|BoxInterface $coordinates
      *
      * @return bool
      */
