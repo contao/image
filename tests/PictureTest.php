@@ -154,7 +154,6 @@ class PictureTest extends \PHPUnit_Framework_TestCase
     public function testMissingSrcset()
     {
         $image = $this->getMock('Contao\Image\ImageInterface');
-
         $this->setExpectedException('InvalidArgumentException', 'Missing srcset attribute');
 
         new Picture(['src' => $image], []);
@@ -166,7 +165,6 @@ class PictureTest extends \PHPUnit_Framework_TestCase
     public function testInvalidSrcset()
     {
         $image = $this->getMock('Contao\Image\ImageInterface');
-
         $this->setExpectedException('InvalidArgumentException', 'Srcsets must be of type ImageInterface');
 
         new Picture(['src' => $image, 'srcset' => [[$image, '1x'], [new \stdClass(), '2x']]], []);

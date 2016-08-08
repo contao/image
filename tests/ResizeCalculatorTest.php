@@ -726,6 +726,7 @@ class ResizeCalculatorTest extends \PHPUnit_Framework_TestCase
     public function testCalculateWithInvalidResizeMode()
     {
         $calculator = new ResizeCalculator();
+
         $config = $this->getMock('Contao\Image\ResizeConfigurationInterface');
 
         $config

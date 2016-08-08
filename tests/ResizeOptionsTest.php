@@ -54,8 +54,8 @@ class ResizeOptionsTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('/target/path', $options->getTargetPath());
 
         $options->setTargetPath(null);
-
         $this->assertEquals(null, $options->getTargetPath());
+
         $this->setExpectedException('InvalidArgumentException');
 
         $options->setTargetPath('invalid/relative/path');
