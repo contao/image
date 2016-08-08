@@ -143,7 +143,7 @@ class PictureGenerator implements PictureGeneratorInterface
             function ($density) use ($width1x) {
                 $type = substr(trim($density), -1);
 
-                if ($type === 'w') {
+                if ('w' === $type) {
                     return intval($density) / $width1x;
                 } else {
                     return floatval($density);
