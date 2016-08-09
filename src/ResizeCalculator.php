@@ -24,11 +24,8 @@ class ResizeCalculator implements ResizeCalculatorInterface
     /**
      * {@inheritdoc}
      */
-    public function calculate(
-        ResizeConfigurationInterface $config,
-        ImageDimensionsInterface $dimensions,
-        ImportantPartInterface $importantPart = null
-    ) {
+    public function calculate(ResizeConfigurationInterface $config, ImageDimensionsInterface $dimensions, ImportantPartInterface $importantPart = null)
+    {
         $zoom = max(0, min(1, (int) $config->getZoomLevel() / 100));
         $importantPart = $this->importantPartAsArray($dimensions, $importantPart);
 
@@ -200,10 +197,8 @@ class ResizeCalculator implements ResizeCalculatorInterface
      *
      * @return array<string,integer>
      */
-    private function importantPartAsArray(
-        ImageDimensionsInterface $dimensions,
-        ImportantPartInterface $importantPart = null
-    ) {
+    private function importantPartAsArray(ImageDimensionsInterface $dimensions, ImportantPartInterface $importantPart = null)
+    {
         if (null === $importantPart) {
             $importantPart = new ImportantPart(new Point(0, 0), clone $dimensions->getSize());
         }

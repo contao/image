@@ -26,9 +26,5 @@ interface ResizerInterface
      *
      * @return ImageInterface
      */
-    public function resize(
-        ImageInterface $image,
-        ResizeConfigurationInterface $config,
-        ResizeOptionsInterface $options
-    );
+    public function resize(ImageInterface $image, ResizeConfigurationInterface $config, ResizeOptionsInterface $options);
 }
