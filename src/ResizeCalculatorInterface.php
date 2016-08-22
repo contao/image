@@ -26,9 +26,5 @@ interface ResizeCalculatorInterface
      *
      * @return ResizeCoordinatesInterface
      */
-    public function calculate(
-        ResizeConfigurationInterface $config,
-        ImageDimensionsInterface $dimensions,
-        ImportantPartInterface $importantPart = null
-    );
+    public function calculate(ResizeConfigurationInterface $config, ImageDimensionsInterface $dimensions, ImportantPartInterface $importantPart = null);
 }

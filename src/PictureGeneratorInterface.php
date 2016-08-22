@@ -26,9 +26,5 @@ interface PictureGeneratorInterface
      *
      * @return PictureInterface
      */
-    public function generate(
-        ImageInterface $image,
-        PictureConfigurationInterface $config,
-        ResizeOptionsInterface $options
-    );
+    public function generate(ImageInterface $image, PictureConfigurationInterface $config, ResizeOptionsInterface $options);
 }

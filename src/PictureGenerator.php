@@ -40,11 +40,8 @@ class PictureGenerator implements PictureGeneratorInterface
     /**
      * {@inheritdoc}
      */
-    public function generate(
-        ImageInterface $image,
-        PictureConfigurationInterface $config,
-        ResizeOptionsInterface $options
-    ) {
+    public function generate(ImageInterface $image, PictureConfigurationInterface $config, ResizeOptionsInterface $options)
+    {
         $this->resizeOptions = clone $options;
         $this->resizeOptions->setTargetPath(null);
 
@@ -174,12 +171,8 @@ class PictureGenerator implements PictureGeneratorInterface
      *
      * @return array Array containing an ImageInterface and an optional descriptor string
      */
-    private function generateSrcsetItem(
-        ImageInterface $image,
-        PictureConfigurationItemInterface $config,
-        $density,
-        $descriptorType
-    ) {
+    private function generateSrcsetItem(ImageInterface $image, PictureConfigurationItemInterface $config, $density, $descriptorType)
+    {
         $resizeConfig = clone $config->getResizeConfig();
         $resizeConfig->setWidth($resizeConfig->getWidth() * $density);
         $resizeConfig->setHeight($resizeConfig->getHeight() * $density);
