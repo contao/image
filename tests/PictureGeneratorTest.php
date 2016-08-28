@@ -69,13 +69,16 @@ class PictureGeneratorTest extends \PHPUnit_Framework_TestCase
                      $imageMock
                          ->expects($this->any())
                          ->method('getDimensions')
-                         ->willReturn(new ImageDimensions(new Box($config->getWidth(), $config->getHeight())))
+                         ->willReturn(new ImageDimensions(new Box(
+                            min(200, $config->getWidth()),
+                            min(200, $config->getHeight())
+                        )))
                      ;
 
                      $imageMock
                          ->expects($this->any())
                          ->method('getUrl')
-                         ->willReturn('image-'.$config->getWidth().'.jpg')
+                         ->willReturn('image-'.min(200, $config->getWidth()).'.jpg')
                      ;
 
                      return $imageMock;
@@ -115,6 +118,13 @@ class PictureGeneratorTest extends \PHPUnit_Framework_TestCase
                             ->setWidth(50)
                             ->setHeight(25)
                         ),
+                    (new PictureConfigurationItem())
+                        ->setMedia('(min-width: 200px)')
+                        ->setDensities('1x, 2x')
+                        ->setResizeConfig((new ResizeConfiguration())
+                            ->setWidth(160)
+                            ->setHeight(160)
+                        ),
                 ]
             )
         ;
@@ -147,6 +157,13 @@ class PictureGeneratorTest extends \PHPUnit_Framework_TestCase
                     'height' => '25',
                     'srcset' => 'image-50.jpg',
                     'media' => '(min-width: 300px)',
+                ],
+                [
+                    'src' => 'image-160.jpg',
+                    'width' => '160',
+                    'height' => '160',
+                    'srcset' => 'image-160.jpg 1x, image-200.jpg 1.25x',
+                    'media' => '(min-width: 200px)',
                 ],
             ],
             $picture->getSources('/root/dir')
