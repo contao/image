@@ -719,4 +719,38 @@ class ResizeCalculatorTest extends \PHPUnit_Framework_TestCase
             ],
         ];
     }
+
+    /**
+     * Tests the calculate() method with an invalid resize mode.
+     */
+    public function testCalculateWithInvalidResizeMode()
+    {
+        $calculator = new ResizeCalculator();
+
+        $config = $this->getMock('Contao\Image\ResizeConfigurationInterface');
+
+        $config
+            ->expects($this->any())
+            ->method('getWidth')
+            ->willReturn(200)
+        ;
+
+        $config
+            ->expects($this->any())
+            ->method('getHeight')
+            ->willReturn(200)
+        ;
+
+        $config
+            ->expects($this->any())
+            ->method('getMode')
+            ->willReturn('invalid')
+        ;
+
+        $dimensions = new ImageDimensions(new Box(100, 100));
+
+        $this->setExpectedException('InvalidArgumentException', 'Unsupported resize mode "invalid"');
+
+        $calculator->calculate($config, $dimensions);
+    }
 }

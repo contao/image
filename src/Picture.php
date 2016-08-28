@@ -28,7 +28,10 @@ class Picture implements PictureInterface
     private $sources = [];
 
     /**
-     * {@inheritdoc}
+     * Constructor.
+     *
+     * @param array $img
+     * @param array $sources
      */
     public function __construct(array $img, array $sources)
     {
@@ -46,27 +49,39 @@ class Picture implements PictureInterface
     /**
      * {@inheritdoc}
      */
-    public function getImg($rootDir = null)
+    public function getImg($rootDir = null, $prefix = '')
     {
         if (null === $rootDir) {
+            if ('' !== $prefix) {
+                throw new \InvalidArgumentException(
+                    sprintf('Prefix must no be specified if rootDir is null, given "%s"', $prefix)
+                );
+            }
+
             return $this->img;
         }
 
-        return $this->buildUrls($this->img, $rootDir);
+        return $this->buildUrls($this->img, $rootDir, $prefix);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getSources($rootDir = null)
+    public function getSources($rootDir = null, $prefix = '')
     {
         if (null === $rootDir) {
+            if ('' !== $prefix) {
+                throw new \InvalidArgumentException(
+                    sprintf('Prefix must no be specified if rootDir is null, given "%s"', $prefix)
+                );
+            }
+
             return $this->sources;
         }
 
         return array_map(
-            function ($source) use ($rootDir) {
-                return $this->buildUrls($source, $rootDir);
+            function ($source) use ($rootDir, $prefix) {
+                return $this->buildUrls($source, $rootDir, $prefix);
             },
             $this->sources
         );
@@ -77,18 +92,19 @@ class Picture implements PictureInterface
      *
      * @param array  $img
      * @param string $rootDir
+     * @param string $prefix
      *
      * @return array
      */
-    private function buildUrls($img, $rootDir)
+    private function buildUrls($img, $rootDir, $prefix)
     {
         if (isset($img['src'])) {
-            $img['src'] = $img['src']->getUrl($rootDir);
+            $img['src'] = $img['src']->getUrl($rootDir, $prefix);
         }
 
         $img['srcset'] = array_map(
-            function ($src) use ($rootDir) {
-                $src[0] = $src[0]->getUrl($rootDir);
+            function ($src) use ($rootDir, $prefix) {
+                $src[0] = $src[0]->getUrl($rootDir, $prefix);
 
                 return implode(' ', $src);
             },
@@ -133,7 +149,7 @@ class Picture implements PictureInterface
 
         foreach ($img['srcset'] as $src) {
             if (!($src[0] instanceof ImageInterface)) {
-                throw new \InvalidArgumentException('Srcets must be of type ImageInterface');
+                throw new \InvalidArgumentException('Srcsets must be of type ImageInterface');
             }
         }
     }

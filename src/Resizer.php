@@ -35,13 +35,14 @@ class Resizer implements ResizerInterface
     private $cacheDir;
 
     /**
-     * {@inheritdoc}
+     * Constructor.
+     *
+     * @param string                         $cacheDir
+     * @param ResizeCalculatorInterface|null $calculator
+     * @param Filesystem|null                $filesystem
      */
-    public function __construct(
-        $cacheDir,
-        ResizeCalculatorInterface $calculator = null,
-        Filesystem $filesystem = null
-    ) {
+    public function __construct($cacheDir, ResizeCalculatorInterface $calculator = null, Filesystem $filesystem = null)
+    {
         if (null === $calculator) {
             $calculator = new ResizeCalculator();
         }
@@ -58,11 +59,8 @@ class Resizer implements ResizerInterface
     /**
      * {@inheritdoc}
      */
-    public function resize(
-        ImageInterface $image,
-        ResizeConfigurationInterface $config,
-        ResizeOptionsInterface $options
-    ) {
+    public function resize(ImageInterface $image, ResizeConfigurationInterface $config, ResizeOptionsInterface $options)
+    {
         if ($image->getDimensions()->isUndefined() || $config->isEmpty()) {
             $image = $this->createImage($image, $image->getPath());
         } else {
@@ -86,11 +84,8 @@ class Resizer implements ResizerInterface
      *
      * @return ImageInterface
      */
-    private function processResize(
-        ImageInterface $image,
-        ResizeConfigurationInterface $config,
-        ResizeOptionsInterface $options
-    ) {
+    private function processResize(ImageInterface $image, ResizeConfigurationInterface $config, ResizeOptionsInterface $options)
+    {
         $coordinates = $this->calculator->calculate($config, $image->getDimensions(), $image->getImportantPart());
 
         // Skip resizing if it would have no effect
@@ -119,12 +114,8 @@ class Resizer implements ResizerInterface
      *
      * @internal Do not call this method in your code. It will be made private in a future version.
      */
-    protected function executeResize(
-        ImageInterface $image,
-        ResizeCoordinatesInterface $coordinates,
-        $path,
-        ResizeOptionsInterface $options
-    ) {
+    protected function executeResize(ImageInterface $image, ResizeCoordinatesInterface $coordinates, $path, ResizeOptionsInterface $options)
+    {
         if (!$this->filesystem->exists(dirname($path))) {
             $this->filesystem->mkdir(dirname($path));
         }

@@ -11,7 +11,6 @@
 namespace Contao\Image;
 
 use Imagine\Image\ImagineInterface;
-use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * Image interface.
@@ -20,15 +19,6 @@ use Symfony\Component\Filesystem\Filesystem;
  */
 interface ImageInterface
 {
-    /**
-     * Constructor.
-     *
-     * @param string           $path
-     * @param ImagineInterface $imagine
-     * @param Filesystem|null  $filesystem
-     */
-    public function __construct($path, ImagineInterface $imagine, Filesystem $filesystem = null);
-
     /**
      * Returns the imagine instance.
      *
@@ -44,13 +34,15 @@ interface ImageInterface
     public function getPath();
 
     /**
-     * Returns the URL relative to the specified root directory.
+     * Returns the URL relative to the specified root directory,
+     * optionally prefixed with the specified URL prefix.
      *
      * @param string $rootDir
+     * @param string $prefix
      *
      * @return string
      */
-    public function getUrl($rootDir);
+    public function getUrl($rootDir, $prefix = '');
 
     /**
      * Returns the dimensions.

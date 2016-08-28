@@ -14,6 +14,7 @@ use Imagine\Image\Box;
 use Imagine\Image\ImagineInterface;
 use Imagine\Image\Point;
 use Symfony\Component\Filesystem\Filesystem;
+use Webmozart\PathUtil\Path;
 
 /**
  * Image class.
@@ -48,7 +49,11 @@ class Image implements ImageInterface
     private $importantPart;
 
     /**
-     * {@inheritdoc}
+     * Constructor.
+     *
+     * @param string           $path
+     * @param ImagineInterface $imagine
+     * @param Filesystem|null  $filesystem
      */
     public function __construct($path, ImagineInterface $imagine, Filesystem $filesystem = null)
     {
@@ -88,20 +93,17 @@ class Image implements ImageInterface
     /**
      * {@inheritdoc}
      */
-    public function getUrl($rootDir)
+    public function getUrl($rootDir, $prefix = '')
     {
-        if (
-            substr($this->path, 0, strlen($rootDir) + 1) === $rootDir.'/'
-            || substr($this->path, 0, strlen($rootDir) + 1) === $rootDir.'\\'
-        ) {
-            $url = substr($this->path, strlen($rootDir) + 1);
-        } else {
-            throw new \InvalidArgumentException('Path "'.$this->path.'" is not inside root directory "'.$rootDir.'"');
+        if (!Path::isBasePath($rootDir, $this->path)) {
+            throw new \InvalidArgumentException(sprintf('Path "%s" is not inside root directory "%s"', $this->path, $rootDir));
         }
+
+        $url = Path::makeRelative($this->path, $rootDir);
 
         $url = str_replace('%2F', '/', rawurlencode($url));
 
-        return $url;
+        return $prefix . $url;
     }
 
     /**

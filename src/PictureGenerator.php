@@ -28,7 +28,9 @@ class PictureGenerator implements PictureGeneratorInterface
     private $resizeOptions;
 
     /**
-     * {@inheritdoc}
+     * Constructor.
+     *
+     * @param ResizerInterface $resizer
      */
     public function __construct(ResizerInterface $resizer)
     {
@@ -38,11 +40,8 @@ class PictureGenerator implements PictureGeneratorInterface
     /**
      * {@inheritdoc}
      */
-    public function generate(
-        ImageInterface $image,
-        PictureConfigurationInterface $config,
-        ResizeOptionsInterface $options
-    ) {
+    public function generate(ImageInterface $image, PictureConfigurationInterface $config, ResizeOptionsInterface $options)
+    {
         $this->resizeOptions = clone $options;
         $this->resizeOptions->setTargetPath(null);
 
@@ -68,6 +67,13 @@ class PictureGenerator implements PictureGeneratorInterface
         $densities = [1];
         $sizesAttribute = $config->getSizes();
 
+        $width1x = $this->resizer
+            ->resize($image, $config->getResizeConfig(), $this->resizeOptions)
+            ->getDimensions()
+            ->getSize()
+            ->getWidth()
+        ;
+
         if ($config->getDensities()
             && ($config->getResizeConfig()->getWidth() || $config->getResizeConfig()->getHeight())
         ) {
@@ -75,7 +81,7 @@ class PictureGenerator implements PictureGeneratorInterface
                 $sizesAttribute = '100vw';
             }
 
-            $densities = $this->parseDensities($image, $config);
+            $densities = $this->parseDensities($config->getDensities(), $width1x);
         }
 
         $attributes = [];
@@ -88,7 +94,7 @@ class PictureGenerator implements PictureGeneratorInterface
         }
 
         foreach ($densities as $density) {
-            $srcset[] = $this->generateSrcsetItem($image, $config, $density, $descriptorType);
+            $srcset[] = $this->generateSrcsetItem($image, $config, $density, $descriptorType, $width1x);
         }
 
         $attributes['srcset'] = $srcset;
@@ -117,31 +123,20 @@ class PictureGenerator implements PictureGeneratorInterface
     /**
      * Parse the densities string and return an array of scaling factors.
      *
-     * @param ImageInterface                    $image
-     * @param PictureConfigurationItemInterface $config
+     * @param string $densities
+     * @param int    $width1x
      *
      * @return array<integer,float>
      */
-    private function parseDensities(ImageInterface $image, PictureConfigurationItemInterface $config)
+    private function parseDensities($densities, $width1x)
     {
-        $width1x = $config->getResizeConfig()->getWidth();
-
-        if (!$width1x && false !== strpos($config->getDensities(), 'w')) {
-            $width1x = $this->resizer
-                ->resize($image, $config->getResizeConfig(), $this->resizeOptions)
-                ->getDimensions()
-                ->getSize()
-                ->getWidth()
-            ;
-        }
-
-        $densities = explode(',', $config->getDensities());
+        $densities = explode(',', $densities);
 
         $densities = array_map(
             function ($density) use ($width1x) {
                 $type = substr(trim($density), -1);
 
-                if ($type === 'w') {
+                if ('w' === $type) {
                     return intval($density) / $width1x;
                 } else {
                     return floatval($density);
@@ -169,15 +164,12 @@ class PictureGenerator implements PictureGeneratorInterface
      * @param PictureConfigurationItemInterface $config
      * @param float                             $density
      * @param string                            $descriptorType x, w or the empty string
+     * @param int                               $width1x
      *
      * @return array Array containing an ImageInterface and an optional descriptor string
      */
-    private function generateSrcsetItem(
-        ImageInterface $image,
-        PictureConfigurationItemInterface $config,
-        $density,
-        $descriptorType
-    ) {
+    private function generateSrcsetItem(ImageInterface $image, PictureConfigurationItemInterface $config, $density, $descriptorType, $width1x)
+    {
         $resizeConfig = clone $config->getResizeConfig();
         $resizeConfig->setWidth($resizeConfig->getWidth() * $density);
         $resizeConfig->setHeight($resizeConfig->getHeight() * $density);
@@ -187,7 +179,7 @@ class PictureGenerator implements PictureGeneratorInterface
         $src = [$resizedImage];
 
         if ('x' === $descriptorType) {
-            $src[1] = $density.'x';
+            $src[1] = round($resizedImage->getDimensions()->getSize()->getWidth() / $width1x, 3).'x';
         } elseif ('w' === $descriptorType) {
             $src[1] = $resizedImage->getDimensions()->getSize()->getWidth().'w';
         }

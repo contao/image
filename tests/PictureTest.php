@@ -43,29 +43,34 @@ class PictureTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(
             'path/to/a/filename%20with%20special%26%3C%3E%22%27chars.jpeg',
-            $picture->getImg('')['src']
+            $picture->getImg('/')['src']
         );
 
         $this->assertEquals(
             'to/a/filename%20with%20special%26%3C%3E%22%27chars.jpeg',
-            $picture->getImg('/path')['src'])
-        ;
+            $picture->getImg('/path')['src']
+        );
 
         $this->assertEquals(
             'a/filename%20with%20special%26%3C%3E%22%27chars.jpeg',
-            $picture->getImg('/path/to')['src'])
-        ;
+            $picture->getImg('/path/to')['src']
+        );
 
         $this->assertEquals(
             'filename%20with%20special%26%3C%3E%22%27chars.jpeg',
-            $picture->getImg('/path/to/a')['src'])
-        ;
+            $picture->getImg('/path/to/a')['src']
+        );
+
+        $this->assertEquals(
+            'https://example.com/images/a/filename%20with%20special%26%3C%3E%22%27chars.jpeg',
+            $picture->getImg('/path/to', 'https://example.com/images/')['src']
+        );
 
         $this->assertInstanceOf('Contao\Image\ImageInterface', $picture->getImg()['srcset'][0][0]);
 
         $this->assertEquals(
             'path/to/a/filename%20with%20special%26%3C%3E%22%27chars.jpeg 1x',
-            $picture->getImg('')['srcset']
+            $picture->getImg('/')['srcset']
         );
 
         $this->assertEquals(
@@ -83,12 +88,17 @@ class PictureTest extends \PHPUnit_Framework_TestCase
             $picture->getImg('/path/to/a')['srcset']
         );
 
+        $this->assertEquals(
+            'https://example.com/images/a/filename%20with%20special%26%3C%3E%22%27chars.jpeg 1x',
+            $picture->getImg('/path/to', 'https://example.com/images/')['srcset']
+        );
+
         $this->assertEquals('custom attribute', $picture->getImg()['data-custom']);
-        $this->assertEquals('custom attribute', $picture->getImg('')['data-custom']);
+        $this->assertEquals('custom attribute', $picture->getImg('/')['data-custom']);
 
-        $this->setExpectedException('InvalidArgumentException');
+        $this->setExpectedException('InvalidArgumentException', 'Prefix must no be specified if rootDir is null');
 
-        $picture->getImg('/path/t');
+        $picture->getImg(null, 'https://example.com/images/');
     }
 
     /**
@@ -102,7 +112,7 @@ class PictureTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(
             'path/to/a/filename%20with%20special%26%3C%3E%22%27chars.jpeg 1x',
-            $picture->getSources('')[0]['srcset']
+            $picture->getSources('/')[0]['srcset']
         );
 
         $this->assertEquals(
@@ -120,12 +130,59 @@ class PictureTest extends \PHPUnit_Framework_TestCase
             $picture->getSources('/path/to/a')[0]['srcset']
         );
 
+        $this->assertEquals(
+            'https://example.com/images/a/filename%20with%20special%26%3C%3E%22%27chars.jpeg 1x',
+            $picture->getSources('/path/to', 'https://example.com/images/')[0]['srcset']
+        );
+
         $this->assertEquals('custom attribute', $picture->getSources()[0]['data-custom']);
-        $this->assertEquals('custom attribute', $picture->getSources('')[0]['data-custom']);
+        $this->assertEquals('custom attribute', $picture->getSources('/')[0]['data-custom']);
 
-        $this->setExpectedException('InvalidArgumentException');
+        $this->setExpectedException('InvalidArgumentException', 'Prefix must no be specified if rootDir is null');
 
-        $picture->getSources('/path/t');
+        $picture->getSources(null, 'https://example.com/images/');
+    }
+
+    /**
+     * Tests the constructor with a missing src attribute.
+     */
+    public function testMissingSrc()
+    {
+        $this->setExpectedException('InvalidArgumentException', 'Missing src attribute');
+
+        new Picture(['srcset' => []], []);
+    }
+
+    /**
+     * Tests the constructor with an invalid src attribute.
+     */
+    public function testInvalidSrc()
+    {
+        $this->setExpectedException('InvalidArgumentException', 'Src must be of type ImageInterface');
+
+        new Picture(['src' => new \stdClass(), 'srcset' => []], []);
+    }
+
+    /**
+     * Tests the constructor with a missing srcset attribute.
+     */
+    public function testMissingSrcset()
+    {
+        $image = $this->getMock('Contao\Image\ImageInterface');
+        $this->setExpectedException('InvalidArgumentException', 'Missing srcset attribute');
+
+        new Picture(['src' => $image], []);
+    }
+
+    /**
+     * Tests the constructor with an invalid srcset attribute.
+     */
+    public function testInvalidSrcset()
+    {
+        $image = $this->getMock('Contao\Image\ImageInterface');
+        $this->setExpectedException('InvalidArgumentException', 'Srcsets must be of type ImageInterface');
+
+        new Picture(['src' => $image, 'srcset' => [[$image, '1x'], [new \stdClass(), '2x']]], []);
     }
 
     /**
