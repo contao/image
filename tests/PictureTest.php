@@ -48,18 +48,18 @@ class PictureTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(
             'to/a/filename%20with%20special%26%3C%3E%22%27chars.jpeg',
-            $picture->getImg('/path')['src'])
-        ;
+            $picture->getImg('/path')['src']
+        );
 
         $this->assertEquals(
             'a/filename%20with%20special%26%3C%3E%22%27chars.jpeg',
-            $picture->getImg('/path/to')['src'])
-        ;
+            $picture->getImg('/path/to')['src']
+        );
 
         $this->assertEquals(
             'filename%20with%20special%26%3C%3E%22%27chars.jpeg',
-            $picture->getImg('/path/to/a')['src'])
-        ;
+            $picture->getImg('/path/to/a')['src']
+        );
 
         $this->assertEquals(
             'https://example.com/images/a/filename%20with%20special%26%3C%3E%22%27chars.jpeg',
