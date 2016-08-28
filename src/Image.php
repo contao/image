@@ -93,7 +93,7 @@ class Image implements ImageInterface
     /**
      * {@inheritdoc}
      */
-    public function getUrl($rootDir)
+    public function getUrl($rootDir, $prefix = '')
     {
         if (!Path::isBasePath($rootDir, $this->path)) {
             throw new \InvalidArgumentException(sprintf('Path "%s" is not inside root directory "%s"', $this->path, $rootDir));
@@ -103,7 +103,7 @@ class Image implements ImageInterface
 
         $url = str_replace('%2F', '/', rawurlencode($url));
 
-        return $url;
+        return $prefix . $url;
     }
 
     /**

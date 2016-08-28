@@ -44,6 +44,7 @@ $resizedImage = $resizer->resize($image, $config, $options);
 
 $resizedImage->getPath(); // /custom/target/path.jpg
 $resizedImage->getUrl('/custom/target'); // path.jpg
+$resizedImage->getUrl('/custom/target', 'https://example.com/'); // https://example.com/path.jpg
 ```
 
 ### Responsive image:
@@ -91,13 +92,13 @@ $picture->getImg('/path/to');
     'sizes' => '100vw',
 ] */
 
-$picture->getSources('/path/to');
+$picture->getSources('/path/to', 'https://example.com/');
 /* [
     [
-        'src' => 'cache/dir/c/image-996db4cf.jpg',
+        'src' => 'https://example.com/cache/dir/c/image-996db4cf.jpg',
         'width' => 400,
         'height' => 200,
-        'srcset' => 'cache/dir/c/image-996db4cf.jpg 0w, cache/dir/2/image-457dc5e0.jpg 800w',
+        'srcset' => 'https://example.com/cache/dir/c/image-996db4cf.jpg 400w, https://example.com/cache/dir/2/image-457dc5e0.jpg 800w',
         'sizes' => '100vw',
         'media' => '(min-width: 900px)',
     ],

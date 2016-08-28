@@ -21,17 +21,19 @@ interface PictureInterface
      * Returns the image tag attributes.
      *
      * @param string|null $rootDir
+     * @param string      $prefix
      *
      * @return array
      */
-    public function getImg($rootDir = null);
+    public function getImg($rootDir = null, $prefix = '');
 
     /**
      * Returns the source tags attributes.
      *
      * @param string|null $rootDir
+     * @param string      $prefix
      *
      * @return array
      */
-    public function getSources($rootDir = null);
+    public function getSources($rootDir = null, $prefix = '');
 }

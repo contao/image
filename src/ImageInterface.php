@@ -34,13 +34,15 @@ interface ImageInterface
     public function getPath();
 
     /**
-     * Returns the URL relative to the specified root directory.
+     * Returns the URL relative to the specified root directory,
+     * optionally prefixed with the specified URL prefix.
      *
      * @param string $rootDir
+     * @param string $prefix
      *
      * @return string
      */
-    public function getUrl($rootDir);
+    public function getUrl($rootDir, $prefix = '');
 
     /**
      * Returns the dimensions.

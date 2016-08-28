@@ -125,6 +125,10 @@ class ImageTest extends \PHPUnit_Framework_TestCase
             $this->assertEquals('file.png', $image->getUrl('/path/to/a/subdir/..'));
             $this->assertEquals('file.png', $image->getUrl('/path/to/subdir/../a'));
             $this->assertEquals('file.png', $image->getUrl('/path/subdir/../to/a'));
+            $this->assertEquals(
+                'https://example.com/images/to/a/file.png',
+                $image->getUrl('/path', 'https://example.com/images/')
+            );
         }
 
         foreach ([
@@ -143,6 +147,10 @@ class ImageTest extends \PHPUnit_Framework_TestCase
             $this->assertEquals('file.png', $image->getUrl('C:\path\to\subdir\..\a'));
             $this->assertEquals('file.png', $image->getUrl('C:\path\subdir\..\to\a'));
             $this->assertEquals('file.png', $image->getUrl('C:\path\subdir/../to\a'));
+            $this->assertEquals(
+                'https://example.com/images/to/a/file.png',
+                $image->getUrl('C:\path', 'https://example.com/images/')
+            );
         }
 
         $image = $this->createImage('C:\path/subdir\..\to\a/file.png');
