@@ -43,7 +43,7 @@ class PictureTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(
             'path/to/a/filename%20with%20special%26%3C%3E%22%27chars.jpeg',
-            $picture->getImg('')['src']
+            $picture->getImg('/')['src']
         );
 
         $this->assertEquals(
@@ -65,7 +65,7 @@ class PictureTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(
             'path/to/a/filename%20with%20special%26%3C%3E%22%27chars.jpeg 1x',
-            $picture->getImg('')['srcset']
+            $picture->getImg('/')['srcset']
         );
 
         $this->assertEquals(
@@ -84,7 +84,7 @@ class PictureTest extends \PHPUnit_Framework_TestCase
         );
 
         $this->assertEquals('custom attribute', $picture->getImg()['data-custom']);
-        $this->assertEquals('custom attribute', $picture->getImg('')['data-custom']);
+        $this->assertEquals('custom attribute', $picture->getImg('/')['data-custom']);
 
         $this->setExpectedException('InvalidArgumentException');
 
@@ -102,7 +102,7 @@ class PictureTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(
             'path/to/a/filename%20with%20special%26%3C%3E%22%27chars.jpeg 1x',
-            $picture->getSources('')[0]['srcset']
+            $picture->getSources('/')[0]['srcset']
         );
 
         $this->assertEquals(
@@ -121,7 +121,7 @@ class PictureTest extends \PHPUnit_Framework_TestCase
         );
 
         $this->assertEquals('custom attribute', $picture->getSources()[0]['data-custom']);
-        $this->assertEquals('custom attribute', $picture->getSources('')[0]['data-custom']);
+        $this->assertEquals('custom attribute', $picture->getSources('/')[0]['data-custom']);
 
         $this->setExpectedException('InvalidArgumentException');
 

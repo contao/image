@@ -88,16 +88,68 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetUrl()
     {
-        $image = $this->createImage('/path/to/a/filename with special&<>"\'chars.jpeg');
+        $image = $this->createImage('C:\path\to\a\filename with special&<>"\'%2Fchars.jpeg');
 
-        $this->assertEquals('path/to/a/filename%20with%20special%26%3C%3E%22%27chars.jpeg', $image->getUrl(''));
-        $this->assertEquals('to/a/filename%20with%20special%26%3C%3E%22%27chars.jpeg', $image->getUrl('/path'));
-        $this->assertEquals('a/filename%20with%20special%26%3C%3E%22%27chars.jpeg', $image->getUrl('/path/to'));
-        $this->assertEquals('filename%20with%20special%26%3C%3E%22%27chars.jpeg', $image->getUrl('/path/to/a'));
+        $this->assertEquals('path/to/a/filename%20with%20special%26%3C%3E%22%27%252Fchars.jpeg', $image->getUrl('C:/'));
+        $this->assertEquals('to/a/filename%20with%20special%26%3C%3E%22%27%252Fchars.jpeg', $image->getUrl('C:/path'));
+        $this->assertEquals('a/filename%20with%20special%26%3C%3E%22%27%252Fchars.jpeg', $image->getUrl('C:/path/to'));
+        $this->assertEquals('filename%20with%20special%26%3C%3E%22%27%252Fchars.jpeg', $image->getUrl('C:/path/to/a'));
+
+        $image = $this->createImage('/path/to/a/filename with special&<>"\'%2Fchars.jpeg');
+
+        $this->assertEquals('path/to/a/filename%20with%20special%26%3C%3E%22%27%252Fchars.jpeg', $image->getUrl('/'));
+        $this->assertEquals('to/a/filename%20with%20special%26%3C%3E%22%27%252Fchars.jpeg', $image->getUrl('/path'));
+        $this->assertEquals('a/filename%20with%20special%26%3C%3E%22%27%252Fchars.jpeg', $image->getUrl('/path/to'));
+        $this->assertEquals('filename%20with%20special%26%3C%3E%22%27%252Fchars.jpeg', $image->getUrl('/path/to/a'));
 
         $this->setExpectedException('InvalidArgumentException');
 
         $image->getUrl('/path/t');
+    }
+
+    /**
+     * Tests the getUrl() method with relative path components.
+     */
+    public function testGetUrlRealtivePath()
+    {
+        foreach ([
+            '/path/to/a/file.png',
+            '/path/to/a/subdir/../file.png',
+            '/path/subdir/../to/a/file.png',
+        ] as $imagePath) {
+            $image = $this->createImage($imagePath);
+
+            $this->assertEquals('path/to/a/file.png', $image->getUrl('/'));
+            $this->assertEquals('to/a/file.png', $image->getUrl('/path'));
+            $this->assertEquals('file.png', $image->getUrl('/path/to/a'));
+            $this->assertEquals('file.png', $image->getUrl('/path/to/a/subdir/..'));
+            $this->assertEquals('file.png', $image->getUrl('/path/to/subdir/../a'));
+            $this->assertEquals('file.png', $image->getUrl('/path/subdir/../to/a'));
+        }
+
+        foreach ([
+            'C:\path\to\a\file.png',
+            'C:\path\to\a/subdir\..\file.png',
+            'C:\path/subdir\..\to\a/file.png',
+        ] as $imagePath) {
+            $image = $this->createImage($imagePath);
+
+            $this->assertEquals('path/to/a/file.png', $image->getUrl('C:\\'));
+            $this->assertEquals('to/a/file.png', $image->getUrl('C:\path'));
+            $this->assertEquals('to/a/file.png', $image->getUrl('C:/path'));
+            $this->assertEquals('file.png', $image->getUrl('C:\path\to\a'));
+            $this->assertEquals('file.png', $image->getUrl('C:\path/to/a'));
+            $this->assertEquals('file.png', $image->getUrl('C:\path\to\a\subdir\..'));
+            $this->assertEquals('file.png', $image->getUrl('C:\path\to\subdir\..\a'));
+            $this->assertEquals('file.png', $image->getUrl('C:\path\subdir\..\to\a'));
+            $this->assertEquals('file.png', $image->getUrl('C:\path\subdir/../to\a'));
+        }
+
+        $image = $this->createImage('C:\path/subdir\..\to\a/file.png');
+
+        $this->setExpectedException('InvalidArgumentException');
+
+        $image->getUrl('C:\path/subdir');
     }
 
     /**
