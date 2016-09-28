@@ -126,7 +126,7 @@ class PictureGenerator implements PictureGeneratorInterface
      * @param string $densities
      * @param int    $width1x
      *
-     * @return array<integer,float>
+     * @return array<int,float>
      */
     private function parseDensities($densities, $width1x)
     {
