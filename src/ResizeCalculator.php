@@ -195,7 +195,7 @@ class ResizeCalculator implements ResizeCalculatorInterface
      * @param ImageDimensionsInterface    $dimensions
      * @param ImportantPartInterface|null $importantPart
      *
-     * @return array<string,integer>
+     * @return array<string,int>
      */
     private function importantPartAsArray(ImageDimensionsInterface $dimensions, ImportantPartInterface $importantPart = null)
     {
