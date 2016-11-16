@@ -111,14 +111,22 @@ class Image implements ImageInterface
      */
     public function getDimensions()
     {
+        // Try native getimagesize() for better performance
         if (null === $this->dimensions) {
-            $size = @getimagesize($this->getPath()); // try native getimagesize() for better performance
+            $ext = pathinfo($this->getPath(), PATHINFO_EXTENSION);
 
-            if (!empty($size[0]) && !empty($size[1])) {
-                $this->dimensions = new ImageDimensions(new Box($size[0], $size[1]));
-            } else {
-                $this->dimensions = new ImageDimensions($this->imagine->open($this->getPath())->getSize());
+            if (in_array($ext, ['gif', 'jpg', 'jpeg', 'png'])) {
+                $size = @getimagesize($this->getPath());
+
+                if (!empty($size[0]) && !empty($size[1])) {
+                    $this->dimensions = new ImageDimensions(new Box($size[0], $size[1]));
+                }
             }
+        }
+
+        // Fall back to Imagine
+        if (null === $this->dimensions) {
+            $this->dimensions = new ImageDimensions($this->imagine->open($this->getPath())->getSize());
         }
 
         return $this->dimensions;
