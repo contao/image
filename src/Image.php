@@ -176,15 +176,27 @@ class Image implements ImageInterface
      */
     private function getSvgSize()
     {
+        static $zlibSupport;
+
+        if (null === $zlibSupport) {
+            $zlibSupport = in_array('compress.zlib', stream_get_wrappers());
+        }
+
         $size = null;
         $reader = new XMLReader();
+
+        $path = $this->path;
+
+        if ($zlibSupport) {
+            $path = 'compress.zlib://'.$path;
+        }
 
         // Enable the entity loader at first to make XMLReader::open() work
         // see https://bugs.php.net/bug.php?id=73328
         $disableEntities = libxml_disable_entity_loader(false);
         $internalErrors = libxml_use_internal_errors(true);
 
-        if ($reader->open('compress.zlib://'.$this->path, LIBXML_NONET)) {
+        if ($reader->open($path, LIBXML_NONET)) {
 
             // After opening the file disable the entity loader for security reasons
             libxml_disable_entity_loader(true);
