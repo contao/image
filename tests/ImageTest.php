@@ -277,6 +277,114 @@ class ImageTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Tests the getDimensions() method uses the dimenions cache.
+     */
+    public function testGetDimensionsFromCacheHit()
+    {
+        if (!is_dir($this->rootDir)) {
+            mkdir($this->rootDir, 0777, true);
+        }
+
+        file_put_contents($this->rootDir.'/dummy.jpg', '');
+
+        $cache = $this->getMock('Psr\Cache\CacheItemPoolInterface');
+        $cacheItem = $this->getMock('Psr\Cache\CacheItemInterface');
+        $dimensions = $this
+            ->getMockBuilder('Contao\Image\ImageDimensionsInterface')
+            ->disableOriginalConstructor()
+            ->getMock()
+        ;
+
+        $cache
+            ->method('getItem')
+            ->with($this->matchesRegularExpression('/^[a-z0-9_.]{1,64}$/i'))
+            ->willReturn($cacheItem)
+        ;
+
+        $cacheItem
+            ->method('get')
+            ->willReturn($dimensions)
+        ;
+
+        $cacheItem
+            ->expects($this->never())
+            ->method('set')
+            ->willReturn($dimensions)
+        ;
+
+        $cacheItem
+            ->method('isHit')
+            ->willReturn(true)
+        ;
+
+        $image = $this->createImage($this->rootDir.'/dummy.jpg', null, null, $cache);
+
+        $this->assertSame($dimensions, $image->getDimensions());
+    }
+
+    /**
+     * Tests the getDimensions() method uses the dimenions cache.
+     */
+    public function testGetDimensionsFromCacheMiss()
+    {
+        if (!is_dir($this->rootDir)) {
+            mkdir($this->rootDir, 0777, true);
+        }
+
+        file_put_contents($this->rootDir.'/dummy.jpg', '');
+
+        $imagine = $this->getMock('Imagine\Image\ImagineInterface');
+        $imagineImage = $this->getMock('Imagine\Image\ImageInterface');
+        $cache = $this->getMock('Psr\Cache\CacheItemPoolInterface');
+        $cacheItem = $this->getMock('Psr\Cache\CacheItemInterface');
+
+        $imagine
+            ->method('open')
+            ->willReturn($imagineImage)
+        ;
+
+        $imagineImage
+            ->method('getSize')
+            ->willReturn(new Box(100, 100))
+        ;
+
+        $cache
+            ->expects($this->once())
+            ->method('getItem')
+            ->with($this->matchesRegularExpression('/^[a-z0-9_.]{1,64}$/i'))
+            ->willReturn($cacheItem)
+        ;
+
+        $cache
+            ->expects($this->once())
+            ->method('saveDeferred')
+            ->with($cacheItem)
+            ->willReturn(true)
+        ;
+
+        $cacheItem
+            ->method('get')
+            ->willReturn(null)
+        ;
+
+        $cacheItem
+            ->method('isHit')
+            ->willReturn(false)
+        ;
+
+        $cacheItem
+            ->expects($this->once())
+            ->method('set')
+            ->with($this->equalTo(new ImageDimensions(new Box(100, 100))))
+            ->willReturn($cacheItem)
+        ;
+
+        $image = $this->createImage($this->rootDir.'/dummy.jpg', $imagine, null, $cache);
+
+        $this->assertEquals(new ImageDimensions(new Box(100, 100)), $image->getDimensions());
+    }
+
+    /**
      * Tests the getImportantPart() method.
      */
     public function testGetImportantPart()
@@ -312,7 +420,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      *
      * @return Image
      */
-    private function createImage($path = null, $imagine = null, $filesystem = null)
+    private function createImage($path = null, $imagine = null, $filesystem = null, $dimensionsCache = null)
     {
         if (null === $path) {
             $path = 'dummy.jpg';
@@ -331,6 +439,12 @@ class ImageTest extends \PHPUnit_Framework_TestCase
             ;
         }
 
-        return new Image($path, $imagine, $filesystem);
+        $image = new Image($path, $imagine, $filesystem);
+
+        if (null !== $dimensionsCache) {
+            $image->setDimensionsCache($dimensionsCache);
+        }
+
+        return $image;
     }
 }

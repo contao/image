@@ -13,6 +13,7 @@
         "php": ">=5.5.0",
         "contao/imagine-svg": "^0.1",
         "imagine/imagine": "^0.6",
+        "psr/cache": "^1.0",
         "symfony/filesystem": "~2.8|~3.0",
         "webmozart/path-util": "^2.0"
     },
@@ -20,6 +21,9 @@
         "friendsofphp/php-cs-fixer": "~1.8",
         "phpunit/phpunit": "~4.5",
         "satooshi/php-coveralls": "~0.6"
+    },
+    "suggest": {
+        "psr/cache-implementation": "For using an image dimensions cache"
     },
     "autoload": {
         "psr-4": {

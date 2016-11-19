@@ -11,6 +11,7 @@
 namespace Contao\Image;
 
 use Imagine\Image\ImagineInterface;
+use Psr\Cache\CacheItemPoolInterface;
 
 /**
  * Image interface.
@@ -25,6 +26,22 @@ interface ImageInterface
      * @return ImagineInterface
      */
     public function getImagine();
+
+    /**
+     * Sets the dimensions cache used to cache the image dimensions objects.
+     *
+     * @param CacheItemPoolInterface|null $dimensionsCache
+     *
+     * @return self
+     */
+    public function setDimensionsCache(CacheItemPoolInterface $dimensionsCache = null);
+
+    /**
+     * Returns the dimensions cache instance.
+     *
+     * @return CacheItemPoolInterface|null
+     */
+    public function getDimensionsCache();
 
     /**
      * Returns the path.

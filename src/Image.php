@@ -18,6 +18,7 @@ use Imagine\Image\BoxInterface;
 use Imagine\Image\ImagineInterface;
 use Imagine\Image\Metadata\MetadataBag;
 use Imagine\Image\Point;
+use Psr\Cache\CacheItemPoolInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Webmozart\PathUtil\Path;
 use XMLReader;
@@ -38,6 +39,11 @@ class Image implements ImageInterface
      * @var Filesystem
      */
     private $filesystem;
+
+    /**
+     * @var CacheItemPoolInterface
+     */
+    private $dimensionsCache;
 
     /**
      * @var string
@@ -91,6 +97,24 @@ class Image implements ImageInterface
     /**
      * {@inheritdoc}
      */
+    public function setDimensionsCache(CacheItemPoolInterface $dimensionsCache = null)
+    {
+        $this->dimensionsCache = $dimensionsCache;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getDimensionsCache()
+    {
+        return $this->dimensionsCache;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getPath()
     {
         return $this->path;
@@ -117,6 +141,15 @@ class Image implements ImageInterface
      */
     public function getDimensions()
     {
+        $cacheItem = null;
+
+        if (null === $this->dimensions && null !== $this->dimensionsCache) {
+            $cacheItem = $this->dimensionsCache->getItem(sha1($this->path . '|' . filemtime($this->path)));
+            if ($cacheItem->get() instanceof ImageDimensionsInterface) {
+                $this->dimensions = $cacheItem->get();
+            }
+        }
+
         if (null === $this->dimensions) {
 
             // Try getSvgSize() or native getimagesize() for better performance
@@ -139,6 +172,10 @@ class Image implements ImageInterface
                 $this->dimensions = new ImageDimensions($this->imagine->open($this->path)->getSize());
             }
 
+        }
+
+        if ($cacheItem && !$cacheItem->isHit()) {
+            $this->dimensionsCache->saveDeferred($cacheItem->set($this->dimensions));
         }
 
         return $this->dimensions;
