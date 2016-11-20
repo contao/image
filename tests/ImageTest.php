@@ -289,6 +289,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
 
         $cache = $this->getMock('Psr\Cache\CacheItemPoolInterface');
         $cacheItem = $this->getMock('Psr\Cache\CacheItemInterface');
+
         $dimensions = $this
             ->getMockBuilder('Contao\Image\ImageDimensionsInterface')
             ->disableOriginalConstructor()
@@ -414,9 +415,10 @@ class ImageTest extends \PHPUnit_Framework_TestCase
     /**
      * Creates an image instance helper.
      *
-     * @param string           $path
-     * @param ImagineInterface $imagine
-     * @param Filesystem       $filesystem
+     * @param string|null                 $path
+     * @param ImagineInterface|null       $imagine
+     * @param Filesystem|null             $filesystem
+     * @param CacheItemPoolInterface|null $dimensionsCache
      *
      * @return Image
      */
