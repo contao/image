@@ -13,6 +13,7 @@ namespace Contao\Image\Test;
 use Contao\Image\Image;
 use Contao\Image\ImageDimensions;
 use Contao\Image\ImportantPart;
+use Exception;
 use Imagine\Gd\Imagine as GdImagine;
 use Imagine\Image\Box;
 use Imagine\Image\ImagineInterface;
@@ -248,6 +249,31 @@ class ImageTest extends \PHPUnit_Framework_TestCase
         $image = $this->createImage($this->rootDir.'/dummy.svg', $imagine);
 
         $this->assertEquals(new ImageDimensions(new Box(1000, 1000)), $image->getDimensions());
+    }
+
+    /**
+     * Tests the getDimensions() method handles invalid SVG images.
+     */
+    public function testGetDimensionsInvalidSvg()
+    {
+        if (!is_dir($this->rootDir)) {
+            mkdir($this->rootDir, 0777, true);
+        }
+
+        file_put_contents($this->rootDir.'/dummy.svg', '<nosvg width="1000" height="1000"></nosvg>');
+
+        $imagine = $this->getMock('Contao\ImagineSvg\Imagine');
+
+        $imagine
+            ->method('open')
+            ->willThrowException(new Exception)
+        ;
+
+        $image = $this->createImage($this->rootDir.'/dummy.svg', $imagine);
+
+        $this->setExpectedException('Exception');
+
+        $image->getDimensions();
     }
 
     /**
