@@ -109,7 +109,7 @@ $picture->getSources('/path/to', 'https://example.com/');
 
 ### Image dimensions cache
 
-If `ImageInterface::getDimensions()` gets called often in a project it could
+If `ImageInterface::getDimensions()` gets called often in a project, it could
 make sense to use a cache for the dimensions. Any cache that implements
 [PSR-6][2] can be used, for example the Symfony cache component:
 
