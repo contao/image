@@ -10,11 +10,17 @@
 
 namespace Contao\Image;
 
+use Contao\ImagineSvg\Image as SvgImage;
+use Contao\ImagineSvg\Imagine as SvgImagine;
+use DOMDocument;
 use Imagine\Image\Box;
+use Imagine\Image\BoxInterface;
 use Imagine\Image\ImagineInterface;
+use Imagine\Image\Metadata\MetadataBag;
 use Imagine\Image\Point;
 use Symfony\Component\Filesystem\Filesystem;
 use Webmozart\PathUtil\Path;
+use XMLReader;
 
 /**
  * Image class.
@@ -112,13 +118,27 @@ class Image implements ImageInterface
     public function getDimensions()
     {
         if (null === $this->dimensions) {
-            $size = @getimagesize($this->getPath()); // try native getimagesize() for better performance
 
-            if (!empty($size[0]) && !empty($size[1])) {
-                $this->dimensions = new ImageDimensions(new Box($size[0], $size[1]));
+            // Try getSvgSize() or native getimagesize() for better performance
+            if ($this->imagine instanceof SvgImagine) {
+                $size = $this->getSvgSize();
+
+                if (null !== $size) {
+                    $this->dimensions = new ImageDimensions($size);
+                }
             } else {
-                $this->dimensions = new ImageDimensions($this->imagine->open($this->getPath())->getSize());
+                $size = @getimagesize($this->path);
+
+                if (!empty($size[0]) && !empty($size[1])) {
+                    $this->dimensions = new ImageDimensions(new Box($size[0], $size[1]));
+                }
             }
+
+            // Fall back to Imagine
+            if (null === $this->dimensions) {
+                $this->dimensions = new ImageDimensions($this->imagine->open($this->path)->getSize());
+            }
+
         }
 
         return $this->dimensions;
@@ -144,5 +164,84 @@ class Image implements ImageInterface
         $this->importantPart = $importantPart;
 
         return $this;
+    }
+
+    /**
+     * Reads the SVG image file partially and returns the size of it.
+     *
+     * This is faster than reading and parsing the whole SVG file just to get
+     * the size of it, especially for large files.
+     *
+     * @return BoxInterface|null
+     */
+    private function getSvgSize()
+    {
+        static $zlibSupport;
+
+        if (null === $zlibSupport) {
+            $zlibSupport = in_array('compress.zlib', stream_get_wrappers());
+        }
+
+        $size = null;
+        $reader = new XMLReader();
+
+        $path = $this->path;
+
+        if ($zlibSupport) {
+            $path = 'compress.zlib://'.$path;
+        }
+
+        // Enable the entity loader at first to make XMLReader::open() work
+        // see https://bugs.php.net/bug.php?id=73328
+        $disableEntities = libxml_disable_entity_loader(false);
+        $internalErrors = libxml_use_internal_errors(true);
+
+        if ($reader->open($path, LIBXML_NONET)) {
+
+            // After opening the file disable the entity loader for security reasons
+            libxml_disable_entity_loader(true);
+
+            $size = $this->getSvgSizeFromReader($reader);
+
+            $reader->close();
+
+        }
+
+        libxml_use_internal_errors($internalErrors);
+        libxml_disable_entity_loader($disableEntities);
+        libxml_clear_errors();
+
+        return $size;
+    }
+
+    /**
+     * Extracts the SVG image size from the given XMLReader object
+     *
+     * @param XMLReader $reader
+     *
+     * @return BoxInterface|null
+     */
+    private function getSvgSizeFromReader(XMLReader $reader)
+    {
+        // Move the pointer to the first element in the document
+        while ($reader->read() && $reader->nodeType !== XMLReader::ELEMENT);
+
+        if ($reader->nodeType !== XMLReader::ELEMENT || $reader->name !== 'svg') {
+            return null;
+        }
+
+        $document = new DOMDocument();
+        $svg = $document->createElement('svg');
+        $document->appendChild($svg);
+
+        foreach (['width', 'height', 'viewBox'] as $key) {
+            if ($value = $reader->getAttribute($key)) {
+                $svg->setAttribute($key, $value);
+            }
+        }
+
+        $image = new SvgImage($document, new MetadataBag());
+
+        return $image->getSize();
     }
 }

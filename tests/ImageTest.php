@@ -13,6 +13,8 @@ namespace Contao\Image\Test;
 use Contao\Image\Image;
 use Contao\Image\ImageDimensions;
 use Contao\Image\ImportantPart;
+use Exception;
+use Imagine\Gd\Imagine as GdImagine;
 use Imagine\Image\Box;
 use Imagine\Image\ImagineInterface;
 use Imagine\Image\Point;
@@ -25,6 +27,29 @@ use Symfony\Component\Filesystem\Filesystem;
  */
 class ImageTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @var string
+     */
+    private $rootDir;
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setUp()
+    {
+        $this->rootDir = __DIR__.'/tmp';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function tearDown()
+    {
+        if (file_exists($this->rootDir)) {
+            (new Filesystem())->remove($this->rootDir);
+        }
+    }
+
     /**
      * Tests the object instantiation.
      */
@@ -181,6 +206,74 @@ class ImageTest extends \PHPUnit_Framework_TestCase
         $image = $this->createImage(null, $imagine);
 
         $this->assertEquals(new ImageDimensions(new Box(100, 100)), $image->getDimensions());
+    }
+
+    /**
+     * Tests the getDimensions() method determines the dimensions without
+     * Imagine and by only reading the file partially.
+     */
+    public function testGetDimensionsPartialFile()
+    {
+        if (!is_dir($this->rootDir)) {
+            mkdir($this->rootDir, 0777, true);
+        }
+
+        $image = (new GdImagine())
+            ->create(new Box(1000, 1000))
+            ->get('jpg')
+        ;
+
+        // Only store the first 500 bytes of the image
+        file_put_contents($this->rootDir.'/dummy.jpg', substr($image, 0, 500));
+
+        $image = $this->createImage($this->rootDir.'/dummy.jpg');
+
+        $this->assertEquals(new ImageDimensions(new Box(1000, 1000)), $image->getDimensions());
+    }
+
+    /**
+     * Tests the getDimensions() method determines the SVG dimensions without
+     * Imagine and by only reading the file partially.
+     */
+    public function testGetDimensionsPartialFileSvg()
+    {
+        $imagine = $this->getMock('Contao\ImagineSvg\Imagine');
+
+        if (!is_dir($this->rootDir)) {
+            mkdir($this->rootDir, 0777, true);
+        }
+
+        // Only store a partial SVG file without an end tag
+        file_put_contents($this->rootDir.'/dummy.svg', '<svg width="1000" height="1000">');
+
+        $image = $this->createImage($this->rootDir.'/dummy.svg', $imagine);
+
+        $this->assertEquals(new ImageDimensions(new Box(1000, 1000)), $image->getDimensions());
+    }
+
+    /**
+     * Tests the getDimensions() method handles invalid SVG images.
+     */
+    public function testGetDimensionsInvalidSvg()
+    {
+        if (!is_dir($this->rootDir)) {
+            mkdir($this->rootDir, 0777, true);
+        }
+
+        file_put_contents($this->rootDir.'/dummy.svg', '<nosvg width="1000" height="1000"></nosvg>');
+
+        $imagine = $this->getMock('Contao\ImagineSvg\Imagine');
+
+        $imagine
+            ->method('open')
+            ->willThrowException(new Exception)
+        ;
+
+        $image = $this->createImage($this->rootDir.'/dummy.svg', $imagine);
+
+        $this->setExpectedException('Exception');
+
+        $image->getDimensions();
     }
 
     /**
