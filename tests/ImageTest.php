@@ -323,7 +323,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Tests the getDimensions() method uses the dimenions cache.
+     * Tests the getDimensions() method uses the dimensions cache.
      */
     public function testGetDimensionsFromCacheMiss()
     {
