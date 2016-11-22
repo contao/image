@@ -109,7 +109,7 @@ class Image implements ImageInterface
 
         $url = str_replace('%2F', '/', rawurlencode($url));
 
-        return $prefix . $url;
+        return $prefix.$url;
     }
 
     /**
@@ -118,7 +118,6 @@ class Image implements ImageInterface
     public function getDimensions()
     {
         if (null === $this->dimensions) {
-
             // Try getSvgSize() or native getimagesize() for better performance
             if ($this->imagine instanceof SvgImagine) {
                 $size = $this->getSvgSize();
@@ -138,7 +137,6 @@ class Image implements ImageInterface
             if (null === $this->dimensions) {
                 $this->dimensions = new ImageDimensions($this->imagine->open($this->path)->getSize());
             }
-
         }
 
         return $this->dimensions;
@@ -197,14 +195,12 @@ class Image implements ImageInterface
         $internalErrors = libxml_use_internal_errors(true);
 
         if ($reader->open($path, LIBXML_NONET)) {
-
             // After opening the file disable the entity loader for security reasons
             libxml_disable_entity_loader(true);
 
             $size = $this->getSvgSizeFromReader($reader);
 
             $reader->close();
-
         }
 
         libxml_use_internal_errors($internalErrors);
@@ -215,7 +211,7 @@ class Image implements ImageInterface
     }
 
     /**
-     * Extracts the SVG image size from the given XMLReader object
+     * Extracts the SVG image size from the given XMLReader object.
      *
      * @param XMLReader $reader
      *

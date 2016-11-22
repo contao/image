@@ -266,7 +266,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
 
         $imagine
             ->method('open')
-            ->willThrowException(new Exception)
+            ->willThrowException(new Exception())
         ;
 
         $image = $this->createImage($this->rootDir.'/dummy.svg', $imagine);
