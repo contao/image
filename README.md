@@ -37,7 +37,10 @@ $config = (new ResizeConfiguration())
 ;
 
 $options = (new ResizeOptions())
-    ->setImagineOptions(['jpeg_quality' => 95])
+    ->setImagineOptions([
+        'jpeg_quality' => 95,
+        'interlace' => \Imagine\Image\ImageInterface::INTERLACE_PLANE,
+    ])
     ->setBypassCache(true)
     ->setTargetPath('/custom/target/path.jpg')
 ;

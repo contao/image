@@ -10,6 +10,7 @@
 
 namespace Contao\Image;
 
+use Imagine\Exception\RuntimeException as ImagineRuntimeException;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
@@ -112,7 +113,7 @@ class Resizer implements ResizerInterface
      *
      * @return ImageInterface
      *
-     * @internal Do not call this method in your code. It will be made private in a future version.
+     * @internal Do not call this method in your code; it will be made private in a future version
      */
     protected function executeResize(ImageInterface $image, ResizeCoordinatesInterface $coordinates, $path, ResizeOptionsInterface $options)
     {
@@ -120,13 +121,24 @@ class Resizer implements ResizerInterface
             $this->filesystem->mkdir(dirname($path));
         }
 
-        $image
+        $imagineOptions = $options->getImagineOptions();
+
+        $imagineImage = $image
             ->getImagine()
             ->open($image->getPath())
             ->resize($coordinates->getSize())
             ->crop($coordinates->getCropStart(), $coordinates->getCropSize())
-            ->save($path, $options->getImagineOptions())
         ;
+
+        if (isset($imagineOptions['interlace'])) {
+            try {
+                $imagineImage->interlace($imagineOptions['interlace']);
+            } catch (ImagineRuntimeException $e) {
+                // Ignore failed interlacing
+            }
+        }
+
+        $imagineImage->save($path, $imagineOptions);
 
         return $this->createImage($image, $path);
     }
@@ -139,7 +151,7 @@ class Resizer implements ResizerInterface
      *
      * @return ImageInterface
      *
-     * @internal Do not call this method in your code. It will be made private in a future version.
+     * @internal Do not call this method in your code; it will be made private in a future version
      */
     protected function createImage(ImageInterface $image, $path)
     {

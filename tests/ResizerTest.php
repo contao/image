@@ -21,6 +21,7 @@ use Contao\ImagineSvg\UndefinedBox;
 use Symfony\Component\Filesystem\Filesystem;
 use Imagine\Gd\Imagine as GdImagine;
 use Imagine\Image\Box;
+use Imagine\Image\ImageInterface as ImagineImageInterface;
 use Imagine\Image\Point;
 
 /**
@@ -109,7 +110,15 @@ class ResizerTest extends \PHPUnit_Framework_TestCase
         ;
 
         $configuration = $this->getMock('Contao\Image\ResizeConfigurationInterface');
-        $resizedImage = $resizer->resize($image, $configuration, new ResizeOptions());
+        $resizedImage = $resizer->resize(
+            $image,
+            $configuration,
+            (new ResizeOptions())
+                ->setImagineOptions([
+                    'jpeg_quality' => 95,
+                    'interlace' => ImagineImageInterface::INTERLACE_PLANE,
+                ])
+        );
 
         $this->assertEquals(new ImageDimensions(new Box(100, 100)), $resizedImage->getDimensions());
         $this->assertRegExp('(/[0-9a-f]/dummy-[0-9a-f]{8}.jpg$)', $resizedImage->getPath());
@@ -187,7 +196,15 @@ class ResizerTest extends \PHPUnit_Framework_TestCase
         ;
 
         $configuration = $this->getMock('Contao\Image\ResizeConfigurationInterface');
-        $resizedImage = $resizer->resize($image, $configuration, new ResizeOptions());
+        $resizedImage = $resizer->resize(
+            $image,
+            $configuration,
+            (new ResizeOptions())
+                ->setImagineOptions([
+                    'jpeg_quality' => 95,
+                    'interlace' => ImagineImageInterface::INTERLACE_PLANE,
+                ])
+        );
 
         $this->assertEquals(new ImageDimensions(new Box(100, 100)), $resizedImage->getDimensions());
         $this->assertRegExp('(/[0-9a-f]/dummy-[0-9a-f]{8}.svg$)', $resizedImage->getPath());
