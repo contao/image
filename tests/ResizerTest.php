@@ -356,6 +356,8 @@ class ResizerTest extends \PHPUnit_Framework_TestCase
 
         file_put_contents($imagePath, '');
 
+        $cache = $this->getMock('Psr\Cache\CacheItemPoolInterface');
+
         /** @var Image|\PHPUnit_Framework_MockObject_MockObject $image */
         $image = $this
             ->getMockBuilder('Contao\Image\Image')
@@ -366,6 +368,11 @@ class ResizerTest extends \PHPUnit_Framework_TestCase
         $image
             ->method('getDimensions')
             ->willReturn(new ImageDimensions(new Box(100, 100)))
+        ;
+
+        $image
+            ->method('getDimensionsCache')
+            ->willReturn($cache)
         ;
 
         $image
@@ -388,6 +395,7 @@ class ResizerTest extends \PHPUnit_Framework_TestCase
         $resizedImage = $resizer->resize($image, $configuration, new ResizeOptions());
 
         $this->assertEquals($image->getPath(), $resizedImage->getPath());
+        $this->assertSame($cache, $resizedImage->getDimensionsCache());
         $this->assertNotSame($image, $resizedImage);
     }
 

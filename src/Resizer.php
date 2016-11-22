@@ -155,7 +155,9 @@ class Resizer implements ResizerInterface
      */
     protected function createImage(ImageInterface $image, $path)
     {
-        return new Image($path, $image->getImagine(), $this->filesystem);
+        return (new Image($path, $image->getImagine(), $this->filesystem))
+            ->setDimensionsCache($image->getDimensionsCache())
+        ;
     }
 
     /**
