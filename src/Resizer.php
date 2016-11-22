@@ -10,6 +10,7 @@
 
 namespace Contao\Image;
 
+use Imagine\Exception\RuntimeException as ImagineRuntimeException;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
@@ -120,13 +121,24 @@ class Resizer implements ResizerInterface
             $this->filesystem->mkdir(dirname($path));
         }
 
-        $image
+        $imagineOptions = $options->getImagineOptions();
+
+        $imagineImage = $image
             ->getImagine()
             ->open($image->getPath())
             ->resize($coordinates->getSize())
             ->crop($coordinates->getCropStart(), $coordinates->getCropSize())
-            ->save($path, $options->getImagineOptions())
         ;
+
+        if (isset($imagineOptions['interlace'])) {
+            try {
+                $imagineImage->interlace($imagineOptions['interlace']);
+            } catch (ImagineRuntimeException $e) {
+                // Ignore failed interlacing
+            }
+        }
+
+        $imagineImage->save($path, $imagineOptions);
 
         return $this->createImage($image, $path);
     }
