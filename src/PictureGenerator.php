@@ -97,6 +97,8 @@ class PictureGenerator implements PictureGeneratorInterface
             $srcset[] = $this->generateSrcsetItem($image, $config, $density, $descriptorType, $width1x);
         }
 
+        $srcset = $this->removeDuplicateScrsetItems($srcset);
+
         $attributes['srcset'] = $srcset;
 
         $attributes['src'] = $srcset[0][0];
@@ -185,5 +187,29 @@ class PictureGenerator implements PictureGeneratorInterface
         }
 
         return $src;
+    }
+
+    /**
+     * Removes duplicate items from a srcset array.
+     *
+     * @param array $srcset Array containing an ImageInterface and an optional descriptor string
+     *
+     * @return array
+     */
+    private function removeDuplicateScrsetItems(array $srcset)
+    {
+        $srcset = array_filter($srcset, function($item) use (&$usedPaths) {
+            $key = $item[0]->getPath();
+
+            if (isset($usedPaths[$key])) {
+                return false;
+            }
+
+            $usedPaths[$key] = true;
+
+            return true;
+        });
+
+        return array_values($srcset);
     }
 }
