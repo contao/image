@@ -301,11 +301,7 @@ class PictureGeneratorTest extends \PHPUnit_Framework_TestCase
             ->expects($this->any())
             ->method('resize')
             ->will($this->returnCallback(
-                function (
-                    ImageInterface $image,
-                    ResizeConfigurationInterface $config,
-                    ResizeOptionsInterface $options
-                ) {
+                function (ImageInterface $image, ResizeConfigurationInterface $config, ResizeOptionsInterface $options) {
                     $imageMock = $this
                         ->getMockBuilder('Contao\Image\Image')
                         ->disableOriginalConstructor()

@@ -100,7 +100,6 @@ class PictureGenerator implements PictureGeneratorInterface
         $srcset = $this->removeDuplicateScrsetItems($srcset);
 
         $attributes['srcset'] = $srcset;
-
         $attributes['src'] = $srcset[0][0];
 
         if (
