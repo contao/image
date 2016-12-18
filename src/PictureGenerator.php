@@ -180,7 +180,8 @@ class PictureGenerator implements PictureGeneratorInterface
         $src = [$resizedImage];
 
         if ('x' === $descriptorType) {
-            $src[1] = round($resizedImage->getDimensions()->getSize()->getWidth() / $width1x, 3).'x';
+            $srcX = $resizedImage->getDimensions()->getSize()->getWidth() / $width1x;
+            $src[1] = rtrim(sprintf('%.3F', $srcX), '.0').'x';
         } elseif ('w' === $descriptorType) {
             $src[1] = $resizedImage->getDimensions()->getSize()->getWidth().'w';
         }
