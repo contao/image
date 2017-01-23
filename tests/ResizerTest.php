@@ -294,6 +294,12 @@ class ResizerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($targetPath, $resizedImage->getPath());
         $this->assertFileEquals($imagePath, $targetPath, 'Cache file should have been copied');
 
+        // With different imagine options
+        $resizedImage = $resizer->resize($image, $configuration, (new ResizeOptions())->setImagineOptions(['jpeg_quality' => 10]));
+
+        $this->assertNotEquals($imagePath, $resizedImage->getPath());
+        $this->assertEquals(100, getimagesize($resizedImage->getPath())[0], 'New cache file should have been created');
+
         // Without cache
         $resizedImage = $resizer->resize($image, $configuration, (new ResizeOptions())->setBypassCache(true));
 

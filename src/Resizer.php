@@ -94,7 +94,7 @@ class Resizer implements ResizerInterface
             return $this->createImage($image, $image->getPath());
         }
 
-        $cachePath = $this->cacheDir.'/'.$this->createCachePath($image->getPath(), $coordinates);
+        $cachePath = $this->cacheDir.'/'.$this->createCachePath($image->getPath(), $coordinates, $options);
 
         if ($this->filesystem->exists($cachePath) && !$options->getBypassCache()) {
             return $this->createImage($image, $cachePath);
@@ -163,13 +163,21 @@ class Resizer implements ResizerInterface
      *
      * @param string                     $path
      * @param ResizeCoordinatesInterface $coordinates
+     * @param ResizeOptionsInterface     $options
      *
      * @return string The realtive target path
      */
-    private function createCachePath($path, ResizeCoordinatesInterface $coordinates)
+    private function createCachePath($path, ResizeCoordinatesInterface $coordinates, ResizeOptionsInterface $options)
     {
         $pathinfo = pathinfo($path);
-        $hash = substr(md5(implode('|', [$path, filemtime($path), $coordinates->getHash()])), 0, 9);
+        $imagineOptions = $options->getImagineOptions();
+        ksort($imagineOptions);
+
+        $hash = substr(md5(implode('|', array_merge(
+            [$path, filemtime($path), $coordinates->getHash()],
+            array_keys($imagineOptions),
+            array_values($imagineOptions)
+        ))), 0, 9);
 
         return substr($hash, 0, 1).'/'.$pathinfo['filename'].'-'.substr($hash, 1).'.'.$pathinfo['extension'];
     }
