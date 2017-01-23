@@ -172,8 +172,8 @@ class PictureGenerator implements PictureGeneratorInterface
     private function generateSrcsetItem(ImageInterface $image, PictureConfigurationItemInterface $config, $density, $descriptorType, $width1x)
     {
         $resizeConfig = clone $config->getResizeConfig();
-        $resizeConfig->setWidth($resizeConfig->getWidth() * $density);
-        $resizeConfig->setHeight($resizeConfig->getHeight() * $density);
+        $resizeConfig->setWidth(round($resizeConfig->getWidth() * $density));
+        $resizeConfig->setHeight(round($resizeConfig->getHeight() * $density));
 
         $resizedImage = $this->resizer->resize($image, $resizeConfig, $this->resizeOptions);
 

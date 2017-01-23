@@ -102,7 +102,7 @@ class PictureGeneratorTest extends \PHPUnit_Framework_TestCase
 
         $pictureConfig = (new PictureConfiguration())
             ->setSize((new PictureConfigurationItem())
-                ->setDensities('1x, 1.35354x, 2x')
+                ->setDensities('1x, 1.35354x, 1.9999x')
                 ->setResizeConfig((new ResizeConfiguration())
                     ->setWidth(99)
                     ->setHeight(99)
