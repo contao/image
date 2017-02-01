@@ -13,13 +13,13 @@
         "php": ">=5.5.0",
         "contao/imagine-svg": "^0.1",
         "imagine/imagine": "^0.6",
-        "symfony/filesystem": "~2.8|~3.0",
+        "symfony/filesystem": "^2.8|^3.0",
         "webmozart/path-util": "^2.0"
     },
     "require-dev": {
-        "friendsofphp/php-cs-fixer": "~1.8",
-        "phpunit/phpunit": "~4.5",
-        "satooshi/php-coveralls": "~0.6"
+        "friendsofphp/php-cs-fixer": "^1.8",
+        "phpunit/phpunit": "^4.5",
+        "satooshi/php-coveralls": "^0.6"
     },
     "autoload": {
         "psr-4": {
@@ -28,7 +28,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Contao\\Image\\Test\\": "tests/"
+            "Contao\\Image\\Tests\\": "tests/"
         }
     },
     "extra": {

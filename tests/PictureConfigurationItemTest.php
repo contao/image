@@ -8,7 +8,7 @@
  * @license LGPL-3.0+
  */
 
-namespace Contao\Image\Test;
+namespace Contao\Image\Tests;
 
 use Contao\Image\PictureConfigurationItem;
 
