@@ -1,2 +1,3 @@
 # Vendor
 /vendor/
+/composer.lock
