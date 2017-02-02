@@ -12,6 +12,7 @@ namespace Contao\Image;
 
 use Imagine\Exception\RuntimeException as ImagineRuntimeException;
 use Symfony\Component\Filesystem\Filesystem;
+use Webmozart\PathUtil\Path;
 
 /**
  * Resizer class.
@@ -36,19 +37,13 @@ class Resizer implements ResizerInterface
     private $cacheDir;
 
     /**
-     * @var string
-     */
-    private $baseDir;
-
-    /**
      * Constructor.
      *
      * @param string                         $cacheDir
-     * @param string                         $baseDir
      * @param ResizeCalculatorInterface|null $calculator
      * @param Filesystem|null                $filesystem
      */
-    public function __construct($cacheDir, $baseDir = null, ResizeCalculatorInterface $calculator = null, Filesystem $filesystem = null)
+    public function __construct($cacheDir, ResizeCalculatorInterface $calculator = null, Filesystem $filesystem = null)
     {
         if (null === $calculator) {
             $calculator = new ResizeCalculator();
@@ -59,7 +54,6 @@ class Resizer implements ResizerInterface
         }
 
         $this->cacheDir = (string) $cacheDir;
-        $this->baseDir = $baseDir;
         $this->calculator = $calculator;
         $this->filesystem = $filesystem;
     }
@@ -180,13 +174,12 @@ class Resizer implements ResizerInterface
         $imagineOptions = $options->getImagineOptions();
         ksort($imagineOptions);
 
-        $hashPath = $path;
-        if (null !== $this->baseDir) {
-            $hashPath = $this->filesystem->makePathRelative($path, $this->baseDir);
-        }
-
         $hash = substr(md5(implode('|', array_merge(
-            [$hashPath, filemtime($path), $coordinates->getHash()],
+            [
+                Path::makeRelative($path, $this->cacheDir),
+                filemtime($path),
+                $coordinates->getHash()
+            ],
             array_keys($imagineOptions),
             array_values($imagineOptions)
         ))), 0, 9);
