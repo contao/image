@@ -77,7 +77,7 @@ class ResizerTest extends \PHPUnit_Framework_TestCase
             ->willReturn(new ResizeCoordinates(new Box(100, 100), new Point(0, 0), new Box(100, 100)))
         ;
 
-        $resizer = $this->createResizer(null, $calculator);
+        $resizer = $this->createResizer(null, null, $calculator);
 
         if (!is_dir($this->rootDir)) {
             mkdir($this->rootDir, 0777, true);
@@ -172,7 +172,7 @@ class ResizerTest extends \PHPUnit_Framework_TestCase
             ->willReturn(new ResizeCoordinates(new Box(100, 100), new Point(0, 0), new Box(100, 100)))
         ;
 
-        $resizer = $this->createResizer(null, $calculator);
+        $resizer = $this->createResizer(null, null, $calculator);
 
         $image = $this
             ->getMockBuilder('Contao\Image\Image')
@@ -235,7 +235,7 @@ class ResizerTest extends \PHPUnit_Framework_TestCase
             ->willReturn(new ResizeCoordinates(new Box(100, 100), new Point(0, 0), new Box(100, 100)))
         ;
 
-        $resizer = $this->createResizer(null, $calculator);
+        $resizer = $this->createResizer(null, null, $calculator);
 
         if (!is_dir($this->rootDir)) {
             mkdir($this->rootDir, 0777, true);
@@ -411,7 +411,7 @@ class ResizerTest extends \PHPUnit_Framework_TestCase
             ->willReturn(new ResizeCoordinates(new Box(100, 100), new Point(0, 0), new Box(100, 100)))
         ;
 
-        $resizer = $this->createResizer(null, $calculator);
+        $resizer = $this->createResizer(null, null, $calculator);
 
         if (!is_dir($this->rootDir)) {
             mkdir($this->rootDir, 0777, true);
@@ -480,7 +480,7 @@ class ResizerTest extends \PHPUnit_Framework_TestCase
             ->willReturn(new ResizeCoordinates(new Box(100, 100), new Point(0, 0), new Box(100, 100)))
         ;
 
-        $resizer = $this->createResizer(null, $calculator);
+        $resizer = $this->createResizer(null, null, $calculator);
 
         $image = $this
             ->getMockBuilder('Contao\Image\Image')
@@ -518,17 +518,18 @@ class ResizerTest extends \PHPUnit_Framework_TestCase
      * Creates a resizer instance helper.
      *
      * @param string                    $cacheDir
+     * @param string                    $baseDir
      * @param ResizeCalculatorInterface $calculator
      * @param Filesystem                $filesystem
      *
      * @return Resizer
      */
-    private function createResizer($cacheDir = null, $calculator = null, $filesystem = null)
+    private function createResizer($cacheDir = null, $baseDir = null, $calculator = null, $filesystem = null)
     {
         if (null === $cacheDir) {
             $cacheDir = $this->rootDir;
         }
 
-        return new Resizer($cacheDir, $calculator, $filesystem);
+        return new Resizer($cacheDir, $baseDir, $calculator, $filesystem);
     }
 }
