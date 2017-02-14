@@ -3,7 +3,7 @@
 /*
  * This file is part of Contao.
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
@@ -400,7 +400,7 @@ class PictureGeneratorTest extends \PHPUnit_Framework_TestCase
         }
 
         try {
-            $requiredLocales = array('de_DE.UTF-8', 'de_DE.UTF8', 'de_DE.utf-8', 'de_DE.utf8', 'German_Germany.1252');
+            $requiredLocales = ['de_DE.UTF-8', 'de_DE.UTF8', 'de_DE.utf-8', 'de_DE.utf8', 'German_Germany.1252'];
             if (false === setlocale(LC_NUMERIC, $requiredLocales)) {
                 $this->markTestSkipped('Could not set any of required locales: '.implode(', ', $requiredLocales));
             }
