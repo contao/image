@@ -3,12 +3,12 @@
 /*
  * This file is part of Contao.
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
 
-namespace Contao\Image\Test;
+namespace Contao\Image\Tests;
 
 use Contao\Image\ImageInterface;
 use Contao\Image\PictureGenerator;
@@ -102,10 +102,10 @@ class PictureGeneratorTest extends \PHPUnit_Framework_TestCase
 
         $pictureConfig = (new PictureConfiguration())
             ->setSize((new PictureConfigurationItem())
-                ->setDensities('1x, 2x')
+                ->setDensities('1x, 1.35354x, 1.9999x')
                 ->setResizeConfig((new ResizeConfiguration())
-                    ->setWidth(100)
-                    ->setHeight(100)
+                    ->setWidth(99)
+                    ->setHeight(99)
                 )
             )
             ->setSizeItems(
@@ -139,10 +139,10 @@ class PictureGeneratorTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(
             [
-                'src' => 'image-100.jpg',
-                'width' => '100',
-                'height' => '100',
-                'srcset' => 'image-100.jpg 1x, image-200.jpg 2x',
+                'src' => 'image-99.jpg',
+                'width' => '99',
+                'height' => '99',
+                'srcset' => 'image-99.jpg 1x, image-134.jpg 1.354x, image-198.jpg 2x',
             ],
             $picture->getImg('/root/dir')
         );
@@ -386,6 +386,28 @@ class PictureGeneratorTest extends \PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf('Contao\Image\Picture', $picture);
         $this->assertInstanceOf('Contao\Image\PictureInterface', $picture);
+    }
+
+    /**
+     * Tests the generate() method with a de_DE locale for LC_NUMERIC.
+     */
+    public function testGenerateWithLocale()
+    {
+        $locale = setlocale(LC_NUMERIC, 0);
+
+        if (false === $locale) {
+            $this->markTestSkipped('Your platform does not support locales.');
+        }
+
+        try {
+            $requiredLocales = ['de_DE.UTF-8', 'de_DE.UTF8', 'de_DE.utf-8', 'de_DE.utf8', 'German_Germany.1252'];
+            if (false === setlocale(LC_NUMERIC, $requiredLocales)) {
+                $this->markTestSkipped('Could not set any of required locales: '.implode(', ', $requiredLocales));
+            }
+            $this->testGenerate();
+        } finally {
+            setlocale(LC_NUMERIC, $locale);
+        }
     }
 
     /**

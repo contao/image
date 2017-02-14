@@ -3,7 +3,7 @@
 /*
  * This file is part of Contao.
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2017 Leo Feyer
  *
  * @license LGPL-3.0+
  */
@@ -172,15 +172,16 @@ class PictureGenerator implements PictureGeneratorInterface
     private function generateSrcsetItem(ImageInterface $image, PictureConfigurationItemInterface $config, $density, $descriptorType, $width1x)
     {
         $resizeConfig = clone $config->getResizeConfig();
-        $resizeConfig->setWidth($resizeConfig->getWidth() * $density);
-        $resizeConfig->setHeight($resizeConfig->getHeight() * $density);
+        $resizeConfig->setWidth(round($resizeConfig->getWidth() * $density));
+        $resizeConfig->setHeight(round($resizeConfig->getHeight() * $density));
 
         $resizedImage = $this->resizer->resize($image, $resizeConfig, $this->resizeOptions);
 
         $src = [$resizedImage];
 
         if ('x' === $descriptorType) {
-            $src[1] = round($resizedImage->getDimensions()->getSize()->getWidth() / $width1x, 3).'x';
+            $srcX = $resizedImage->getDimensions()->getSize()->getWidth() / $width1x;
+            $src[1] = rtrim(sprintf('%.3F', $srcX), '.0').'x';
         } elseif ('w' === $descriptorType) {
             $src[1] = $resizedImage->getDimensions()->getSize()->getWidth().'w';
         }

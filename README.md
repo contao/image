@@ -25,9 +25,7 @@ Usage
 
 ```php
 $imagine = new \Imagine\Gd\Imagine();
-
 $resizer = new Resizer('/path/to/cache/dir');
-
 $image = new Image('/path/to/image.jpg', $imagine);
 
 $config = (new ResizeConfiguration())
@@ -59,7 +57,6 @@ $imagine = new \Imagine\Gd\Imagine();
 
 $resizer = new Resizer('/path/to/cache/dir');
 $pictureGenerator = new PictureGenerator($resizer);
-
 $image = new Image('/path/to/image.jpg', $imagine);
 
 $config = (new PictureConfiguration())
