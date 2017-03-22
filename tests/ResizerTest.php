@@ -300,6 +300,44 @@ class ResizerTest extends \PHPUnit_Framework_TestCase
         $this->assertNotEquals($imagePath, $resizedImage->getPath());
         $this->assertEquals(100, getimagesize($resizedImage->getPath())[0], 'New cache file should have been created');
 
+        // With different paths, but same relative path
+        $subDir = $this->rootDir.'/sub/dir';
+
+        mkdir($subDir, 0777, true);
+        copy($this->rootDir.'/dummy.jpg', $subDir.'/dummy.jpg');
+        touch($subDir.'/dummy.jpg', filemtime($this->rootDir.'/dummy.jpg'));
+
+        $subResizer = $this->createResizer($subDir, $calculator);
+
+        $subImage = $this
+            ->getMockBuilder('Contao\Image\Image')
+            ->disableOriginalConstructor()
+            ->getMock()
+        ;
+
+        $subImage
+            ->method('getDimensions')
+            ->willReturn(new ImageDimensions(new Box(200, 200)))
+        ;
+
+        $subImage
+            ->method('getPath')
+            ->willReturn($subDir.'/dummy.jpg')
+        ;
+
+        $subImage
+            ->method('getImagine')
+            ->willReturn(new GdImagine())
+        ;
+
+        $resizedImage = $subResizer->resize($subImage, $configuration, (new ResizeOptions())->setBypassCache(true));
+
+        $this->assertEquals(
+            substr($imagePath, strlen($this->rootDir)),
+            substr($resizedImage->getPath(), strlen($subDir)),
+            'The hash should be the same if the image path relative to the cacheDir is the same'
+        );
+
         // Without cache
         $resizedImage = $resizer->resize($image, $configuration, (new ResizeOptions())->setBypassCache(true));
 
