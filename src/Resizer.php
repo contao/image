@@ -178,7 +178,7 @@ class Resizer implements ResizerInterface
             [
                 Path::makeRelative($path, $this->cacheDir),
                 filemtime($path),
-                $coordinates->getHash()
+                $coordinates->getHash(),
             ],
             array_keys($imagineOptions),
             array_values($imagineOptions)
