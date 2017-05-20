@@ -11,6 +11,7 @@
 namespace Contao\Image;
 
 use Imagine\Exception\RuntimeException as ImagineRuntimeException;
+use Imagine\Image\Palette\RGB;
 use Symfony\Component\Filesystem\Filesystem;
 use Webmozart\PathUtil\Path;
 
@@ -129,6 +130,8 @@ class Resizer implements ResizerInterface
             ->open($image->getPath())
             ->resize($coordinates->getSize())
             ->crop($coordinates->getCropStart(), $coordinates->getCropSize())
+            ->usePalette(new RGB())
+            ->strip()
         ;
 
         if (isset($imagineOptions['interlace'])) {
