@@ -199,6 +199,7 @@ class PictureGenerator implements PictureGeneratorInterface
     private function removeDuplicateScrsetItems(array $srcset)
     {
         $srcset = array_filter($srcset, function ($item) use (&$usedPaths) {
+            /** @var ImageInterface[] $item */
             $key = $item[0]->getPath();
 
             if (isset($usedPaths[$key])) {
