@@ -129,7 +129,7 @@ class Picture implements PictureInterface
             throw new \InvalidArgumentException('Missing src attribute');
         }
 
-        if (!($img['src'] instanceof ImageInterface)) {
+        if (!$img['src'] instanceof ImageInterface) {
             throw new \InvalidArgumentException('Src must be of type ImageInterface');
         }
     }
@@ -148,7 +148,7 @@ class Picture implements PictureInterface
         }
 
         foreach ($img['srcset'] as $src) {
-            if (!($src[0] instanceof ImageInterface)) {
+            if (!$src[0] instanceof ImageInterface) {
                 throw new \InvalidArgumentException('Srcsets must be of type ImageInterface');
             }
         }
