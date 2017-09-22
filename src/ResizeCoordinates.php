@@ -11,14 +11,9 @@
 namespace Contao\Image;
 
 use Imagine\Image\BoxInterface;
-use Imagine\Image\PointInterface;
 use Imagine\Image\Point;
+use Imagine\Image\PointInterface;
 
-/**
- * Resize coordinates class.
- *
- * @author Martin Auswöger <martin@auswoeger.com>
- */
 class ResizeCoordinates implements ResizeCoordinatesInterface
 {
     /**
@@ -37,8 +32,6 @@ class ResizeCoordinates implements ResizeCoordinatesInterface
     private $cropSize;
 
     /**
-     * Constructor.
-     *
      * @param BoxInterface   $size
      * @param PointInterface $cropStart
      * @param BoxInterface   $cropSize

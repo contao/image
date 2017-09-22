@@ -12,11 +12,6 @@ namespace Contao\Image;
 
 use Imagine\Image\ImagineInterface;
 
-/**
- * Image interface.
- *
- * @author Martin Auswöger <martin@auswoeger.com>
- */
 interface ImageInterface
 {
     /**

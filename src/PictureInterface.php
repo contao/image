@@ -10,11 +10,6 @@
 
 namespace Contao\Image;
 
-/**
- * Picture element interface.
- *
- * @author Martin Auswöger <martin@auswoeger.com>
- */
 interface PictureInterface
 {
     /**

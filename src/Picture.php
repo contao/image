@@ -10,11 +10,6 @@
 
 namespace Contao\Image;
 
-/**
- * Picture element class.
- *
- * @author Martin Auswöger <martin@auswoeger.com>
- */
 class Picture implements PictureInterface
 {
     /**
@@ -28,8 +23,6 @@ class Picture implements PictureInterface
     private $sources = [];
 
     /**
-     * Constructor.
-     *
      * @param array $img
      * @param array $sources
      */
@@ -103,8 +96,10 @@ class Picture implements PictureInterface
         }
 
         $img['srcset'] = array_map(
-            function ($src) use ($rootDir, $prefix) {
+            function () use ($rootDir, $prefix) {
                 /** @var ImageInterface[] $src */
+                $src = func_get_arg(0);
+
                 $src[0] = $src[0]->getUrl($rootDir, $prefix);
 
                 return implode(' ', $src);

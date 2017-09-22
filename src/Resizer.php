@@ -15,11 +15,6 @@ use Imagine\Image\Palette\RGB;
 use Symfony\Component\Filesystem\Filesystem;
 use Webmozart\PathUtil\Path;
 
-/**
- * Resizer class.
- *
- * @author Martin Auswöger <martin@auswoeger.com>
- */
 class Resizer implements ResizerInterface
 {
     /**
@@ -38,8 +33,6 @@ class Resizer implements ResizerInterface
     private $cacheDir;
 
     /**
-     * Constructor.
-     *
      * @param string                         $cacheDir
      * @param ResizeCalculatorInterface|null $calculator
      * @param Filesystem|null                $filesystem
@@ -76,33 +69,6 @@ class Resizer implements ResizerInterface
         }
 
         return $image;
-    }
-
-    /**
-     * Processes the resize and executes it if not already cached.
-     *
-     * @param ImageInterface               $image
-     * @param ResizeConfigurationInterface $config
-     * @param ResizeOptionsInterface       $options
-     *
-     * @return ImageInterface
-     */
-    private function processResize(ImageInterface $image, ResizeConfigurationInterface $config, ResizeOptionsInterface $options)
-    {
-        $coordinates = $this->calculator->calculate($config, $image->getDimensions(), $image->getImportantPart());
-
-        // Skip resizing if it would have no effect
-        if ($coordinates->isEqualTo($image->getDimensions()->getSize()) && !$image->getDimensions()->isRelative()) {
-            return $this->createImage($image, $image->getPath());
-        }
-
-        $cachePath = $this->cacheDir.'/'.$this->createCachePath($image->getPath(), $coordinates, $options);
-
-        if ($this->filesystem->exists($cachePath) && !$options->getBypassCache()) {
-            return $this->createImage($image, $cachePath);
-        }
-
-        return $this->executeResize($image, $coordinates, $cachePath, $options);
     }
 
     /**
@@ -160,6 +126,33 @@ class Resizer implements ResizerInterface
     protected function createImage(ImageInterface $image, $path)
     {
         return new Image($path, $image->getImagine(), $this->filesystem);
+    }
+
+    /**
+     * Processes the resize and executes it if not already cached.
+     *
+     * @param ImageInterface               $image
+     * @param ResizeConfigurationInterface $config
+     * @param ResizeOptionsInterface       $options
+     *
+     * @return ImageInterface
+     */
+    private function processResize(ImageInterface $image, ResizeConfigurationInterface $config, ResizeOptionsInterface $options)
+    {
+        $coordinates = $this->calculator->calculate($config, $image->getDimensions(), $image->getImportantPart());
+
+        // Skip resizing if it would have no effect
+        if ($coordinates->isEqualTo($image->getDimensions()->getSize()) && !$image->getDimensions()->isRelative()) {
+            return $this->createImage($image, $image->getPath());
+        }
+
+        $cachePath = $this->cacheDir.'/'.$this->createCachePath($image->getPath(), $coordinates, $options);
+
+        if ($this->filesystem->exists($cachePath) && !$options->getBypassCache()) {
+            return $this->createImage($image, $cachePath);
+        }
+
+        return $this->executeResize($image, $coordinates, $cachePath, $options);
     }
 
     /**

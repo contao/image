@@ -11,17 +11,11 @@
 namespace Contao\Image\Tests;
 
 use Contao\Image\PictureConfiguration;
+use Contao\Image\PictureConfigurationItemInterface;
+use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the PictureConfiguration class.
- *
- * @author Martin Auswöger <martin@auswoeger.com>
- */
-class PictureConfigurationTest extends \PHPUnit_Framework_TestCase
+class PictureConfigurationTest extends TestCase
 {
-    /**
-     * Tests the object instantiation.
-     */
     public function testInstantiation()
     {
         $config = new PictureConfiguration();
@@ -30,32 +24,26 @@ class PictureConfigurationTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Contao\Image\PictureConfigurationInterface', $config);
     }
 
-    /**
-     * Tests the setSize() method.
-     */
     public function testSetSize()
     {
         $config = new PictureConfiguration();
-        $configItem = $this->getMock('Contao\Image\PictureConfigurationItemInterface');
+        $configItem = $this->createMock(PictureConfigurationItemInterface::class);
 
         $this->assertInstanceOf('Contao\Image\PictureConfigurationItemInterface', $config->getSize());
         $this->assertSame($config, $config->setSize($configItem));
         $this->assertSame($configItem, $config->getSize());
     }
 
-    /**
-     * Tests the setSizeItems() method.
-     */
     public function testSetSizeItems()
     {
         $config = new PictureConfiguration();
-        $configItem = $this->getMock('Contao\Image\PictureConfigurationItemInterface');
+        $configItem = $this->createMock(PictureConfigurationItemInterface::class);
 
-        $this->assertEquals([], $config->getSizeItems());
+        $this->assertSame([], $config->getSizeItems());
         $this->assertSame($config, $config->setSizeItems([$configItem]));
-        $this->assertEquals([$configItem], $config->getSizeItems());
+        $this->assertSame([$configItem], $config->getSizeItems());
 
-        $this->setExpectedException('InvalidArgumentException');
+        $this->expectException('InvalidArgumentException');
 
         $config->setSizeItems([$configItem, 'not a PictureConfigurationItem']);
     }

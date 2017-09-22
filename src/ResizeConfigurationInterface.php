@@ -10,11 +10,6 @@
 
 namespace Contao\Image;
 
-/**
- * Resize configuration interface.
- *
- * @author Martin Auswöger <martin@auswoeger.com>
- */
 interface ResizeConfigurationInterface
 {
     const MODE_CROP = 'crop';

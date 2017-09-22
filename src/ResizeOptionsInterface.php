@@ -10,11 +10,6 @@
 
 namespace Contao\Image;
 
-/**
- * Resize options interface.
- *
- * @author Martin Auswöger <martin@auswoeger.com>
- */
 interface ResizeOptionsInterface
 {
     /**

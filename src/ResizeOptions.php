@@ -12,11 +12,6 @@ namespace Contao\Image;
 
 use Symfony\Component\Filesystem\Filesystem;
 
-/**
- * Resize options class.
- *
- * @author Martin Auswöger <martin@auswoeger.com>
- */
 class ResizeOptions implements ResizeOptionsInterface
 {
     /**

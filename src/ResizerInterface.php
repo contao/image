@@ -10,11 +10,6 @@
 
 namespace Contao\Image;
 
-/**
- * Resizer interface.
- *
- * @author Martin Auswöger <martin@auswoeger.com>
- */
 interface ResizerInterface
 {
     /**

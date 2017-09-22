@@ -22,11 +22,6 @@ use Symfony\Component\Filesystem\Filesystem;
 use Webmozart\PathUtil\Path;
 use XMLReader;
 
-/**
- * Image class.
- *
- * @author Martin Auswöger <martin@auswoeger.com>
- */
 class Image implements ImageInterface
 {
     /**
@@ -55,8 +50,6 @@ class Image implements ImageInterface
     private $importantPart;
 
     /**
-     * Constructor.
-     *
      * @param string           $path
      * @param ImagineInterface $imagine
      * @param Filesystem|null  $filesystem
@@ -177,7 +170,7 @@ class Image implements ImageInterface
         static $zlibSupport;
 
         if (null === $zlibSupport) {
-            $zlibSupport = in_array('compress.zlib', stream_get_wrappers());
+            $zlibSupport = in_array('compress.zlib', stream_get_wrappers(), true);
         }
 
         $size = null;
@@ -220,9 +213,9 @@ class Image implements ImageInterface
     private function getSvgSizeFromReader(XMLReader $reader)
     {
         // Move the pointer to the first element in the document
-        while ($reader->read() && $reader->nodeType !== XMLReader::ELEMENT);
+        while ($reader->read() && XMLReader::ELEMENT !== $reader->nodeType);
 
-        if ($reader->nodeType !== XMLReader::ELEMENT || $reader->name !== 'svg') {
+        if (XMLReader::ELEMENT !== $reader->nodeType || 'svg' !== $reader->name) {
             return null;
         }
 

@@ -14,11 +14,6 @@ use Imagine\Image\Box;
 use Imagine\Image\BoxInterface;
 use Imagine\Image\Point;
 
-/**
- * Calculates image coordinates for resizing Image objects.
- *
- * @author Martin Auswöger <martin@auswoeger.com>
- */
 class ResizeCalculator implements ResizeCalculatorInterface
 {
     /**

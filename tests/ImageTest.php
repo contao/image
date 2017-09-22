@@ -13,19 +13,17 @@ namespace Contao\Image\Tests;
 use Contao\Image\Image;
 use Contao\Image\ImageDimensions;
 use Contao\Image\ImportantPart;
+use Contao\ImagineSvg\Imagine;
 use Exception;
 use Imagine\Gd\Imagine as GdImagine;
 use Imagine\Image\Box;
+use Imagine\Image\ImageInterface;
 use Imagine\Image\ImagineInterface;
 use Imagine\Image\Point;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
 
-/**
- * Tests the Image class.
- *
- * @author Martin Auswöger <martin@auswoeger.com>
- */
-class ImageTest extends \PHPUnit_Framework_TestCase
+class ImageTest extends TestCase
 {
     /**
      * @var string
@@ -37,6 +35,8 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      */
     public function setUp()
     {
+        parent::setUp();
+
         $this->rootDir = __DIR__.'/tmp';
     }
 
@@ -45,14 +45,13 @@ class ImageTest extends \PHPUnit_Framework_TestCase
      */
     public function tearDown()
     {
+        parent::tearDown();
+
         if (file_exists($this->rootDir)) {
             (new Filesystem())->remove($this->rootDir);
         }
     }
 
-    /**
-     * Tests the object instantiation.
-     */
     public function testInstantiation()
     {
         $image = $this->createImage();
@@ -61,80 +60,60 @@ class ImageTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Contao\Image\ImageInterface', $image);
     }
 
-    /**
-     * Tests the constructor with a non existent path.
-     */
     public function testConstructorNonExistentPath()
     {
-        $this->setExpectedException('InvalidArgumentException', '/path/to/non/existent/file.jpg does not exist');
+        $this->expectException('InvalidArgumentException');
 
-        new Image('/path/to/non/existent/file.jpg', $this->getMock('Imagine\Image\ImagineInterface'));
+        new Image('/path/to/non/existent/file.jpg', $this->createMock(ImagineInterface::class));
     }
 
-    /**
-     * Tests the constructor with a directory as path.
-     */
     public function testConstructorDirPath()
     {
-        $this->setExpectedException('InvalidArgumentException', __DIR__.' is a directory');
-
+        $this->expectException('InvalidArgumentException');
         $this->createImage(__DIR__);
     }
 
-    /**
-     * Tests the object instantiation with a missing image.
-     *
-     * @expectedException \InvalidArgumentException
-     */
     public function testInstantiationMissingFiles()
     {
-        $filesystem = $this->getMock('Symfony\Component\Filesystem\Filesystem');
+        $filesystem = $this->createMock(Filesystem::class);
 
         $filesystem
             ->method('exists')
             ->willReturn(false)
         ;
 
+        $this->expectException('InvalidArgumentException');
         $this->createImage(null, null, $filesystem);
     }
 
-    /**
-     * Tests the getPath() method.
-     */
     public function testGetPath()
     {
         $image = $this->createImage('/path/filename.jpeg');
 
-        $this->assertEquals('/path/filename.jpeg', $image->getPath());
+        $this->assertSame('/path/filename.jpeg', $image->getPath());
     }
 
-    /**
-     * Tests the getUrl() method.
-     */
     public function testGetUrl()
     {
         $image = $this->createImage('C:\path\to\a\filename with special&<>"\'%2Fchars.jpeg');
 
-        $this->assertEquals('path/to/a/filename%20with%20special%26%3C%3E%22%27%252Fchars.jpeg', $image->getUrl('C:/'));
-        $this->assertEquals('to/a/filename%20with%20special%26%3C%3E%22%27%252Fchars.jpeg', $image->getUrl('C:/path'));
-        $this->assertEquals('a/filename%20with%20special%26%3C%3E%22%27%252Fchars.jpeg', $image->getUrl('C:/path/to'));
-        $this->assertEquals('filename%20with%20special%26%3C%3E%22%27%252Fchars.jpeg', $image->getUrl('C:/path/to/a'));
+        $this->assertSame('path/to/a/filename%20with%20special%26%3C%3E%22%27%252Fchars.jpeg', $image->getUrl('C:/'));
+        $this->assertSame('to/a/filename%20with%20special%26%3C%3E%22%27%252Fchars.jpeg', $image->getUrl('C:/path'));
+        $this->assertSame('a/filename%20with%20special%26%3C%3E%22%27%252Fchars.jpeg', $image->getUrl('C:/path/to'));
+        $this->assertSame('filename%20with%20special%26%3C%3E%22%27%252Fchars.jpeg', $image->getUrl('C:/path/to/a'));
 
         $image = $this->createImage('/path/to/a/filename with special&<>"\'%2Fchars.jpeg');
 
-        $this->assertEquals('path/to/a/filename%20with%20special%26%3C%3E%22%27%252Fchars.jpeg', $image->getUrl('/'));
-        $this->assertEquals('to/a/filename%20with%20special%26%3C%3E%22%27%252Fchars.jpeg', $image->getUrl('/path'));
-        $this->assertEquals('a/filename%20with%20special%26%3C%3E%22%27%252Fchars.jpeg', $image->getUrl('/path/to'));
-        $this->assertEquals('filename%20with%20special%26%3C%3E%22%27%252Fchars.jpeg', $image->getUrl('/path/to/a'));
+        $this->assertSame('path/to/a/filename%20with%20special%26%3C%3E%22%27%252Fchars.jpeg', $image->getUrl('/'));
+        $this->assertSame('to/a/filename%20with%20special%26%3C%3E%22%27%252Fchars.jpeg', $image->getUrl('/path'));
+        $this->assertSame('a/filename%20with%20special%26%3C%3E%22%27%252Fchars.jpeg', $image->getUrl('/path/to'));
+        $this->assertSame('filename%20with%20special%26%3C%3E%22%27%252Fchars.jpeg', $image->getUrl('/path/to/a'));
 
-        $this->setExpectedException('InvalidArgumentException');
+        $this->expectException('InvalidArgumentException');
 
         $image->getUrl('/path/t');
     }
 
-    /**
-     * Tests the getUrl() method with relative path components.
-     */
     public function testGetUrlRealtivePath()
     {
         foreach ([
@@ -144,13 +123,13 @@ class ImageTest extends \PHPUnit_Framework_TestCase
         ] as $imagePath) {
             $image = $this->createImage($imagePath);
 
-            $this->assertEquals('path/to/a/file.png', $image->getUrl('/'));
-            $this->assertEquals('to/a/file.png', $image->getUrl('/path'));
-            $this->assertEquals('file.png', $image->getUrl('/path/to/a'));
-            $this->assertEquals('file.png', $image->getUrl('/path/to/a/subdir/..'));
-            $this->assertEquals('file.png', $image->getUrl('/path/to/subdir/../a'));
-            $this->assertEquals('file.png', $image->getUrl('/path/subdir/../to/a'));
-            $this->assertEquals(
+            $this->assertSame('path/to/a/file.png', $image->getUrl('/'));
+            $this->assertSame('to/a/file.png', $image->getUrl('/path'));
+            $this->assertSame('file.png', $image->getUrl('/path/to/a'));
+            $this->assertSame('file.png', $image->getUrl('/path/to/a/subdir/..'));
+            $this->assertSame('file.png', $image->getUrl('/path/to/subdir/../a'));
+            $this->assertSame('file.png', $image->getUrl('/path/subdir/../to/a'));
+            $this->assertSame(
                 'https://example.com/images/to/a/file.png',
                 $image->getUrl('/path', 'https://example.com/images/')
             );
@@ -163,16 +142,16 @@ class ImageTest extends \PHPUnit_Framework_TestCase
         ] as $imagePath) {
             $image = $this->createImage($imagePath);
 
-            $this->assertEquals('path/to/a/file.png', $image->getUrl('C:\\'));
-            $this->assertEquals('to/a/file.png', $image->getUrl('C:\path'));
-            $this->assertEquals('to/a/file.png', $image->getUrl('C:/path'));
-            $this->assertEquals('file.png', $image->getUrl('C:\path\to\a'));
-            $this->assertEquals('file.png', $image->getUrl('C:\path/to/a'));
-            $this->assertEquals('file.png', $image->getUrl('C:\path\to\a\subdir\..'));
-            $this->assertEquals('file.png', $image->getUrl('C:\path\to\subdir\..\a'));
-            $this->assertEquals('file.png', $image->getUrl('C:\path\subdir\..\to\a'));
-            $this->assertEquals('file.png', $image->getUrl('C:\path\subdir/../to\a'));
-            $this->assertEquals(
+            $this->assertSame('path/to/a/file.png', $image->getUrl('C:\\'));
+            $this->assertSame('to/a/file.png', $image->getUrl('C:\path'));
+            $this->assertSame('to/a/file.png', $image->getUrl('C:/path'));
+            $this->assertSame('file.png', $image->getUrl('C:\path\to\a'));
+            $this->assertSame('file.png', $image->getUrl('C:\path/to/a'));
+            $this->assertSame('file.png', $image->getUrl('C:\path\to\a\subdir\..'));
+            $this->assertSame('file.png', $image->getUrl('C:\path\to\subdir\..\a'));
+            $this->assertSame('file.png', $image->getUrl('C:\path\subdir\..\to\a'));
+            $this->assertSame('file.png', $image->getUrl('C:\path\subdir/../to\a'));
+            $this->assertSame(
                 'https://example.com/images/to/a/file.png',
                 $image->getUrl('C:\path', 'https://example.com/images/')
             );
@@ -180,18 +159,15 @@ class ImageTest extends \PHPUnit_Framework_TestCase
 
         $image = $this->createImage('C:\path/subdir\..\to\a/file.png');
 
-        $this->setExpectedException('InvalidArgumentException');
+        $this->expectException('InvalidArgumentException');
 
         $image->getUrl('C:\path/subdir');
     }
 
-    /**
-     * Tests the getDimensions() method.
-     */
     public function testGetDimensions()
     {
-        $imagine = $this->getMock('Imagine\Image\ImagineInterface');
-        $imagineImage = $this->getMock('Imagine\Image\ImageInterface');
+        $imagine = $this->createMock(ImagineInterface::class);
+        $imagineImage = $this->createMock(ImageInterface::class);
 
         $imagine
             ->method('open')
@@ -208,11 +184,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(new ImageDimensions(new Box(100, 100)), $image->getDimensions());
     }
 
-    /**
-     * Tests the getDimensions() method determines the dimensions without
-     * Imagine and by only reading the file partially.
-     */
-    public function testGetDimensionsPartialFile()
+    public function testGetDimensionsFromPartialFile()
     {
         if (!is_dir($this->rootDir)) {
             mkdir($this->rootDir, 0777, true);
@@ -231,13 +203,9 @@ class ImageTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(new ImageDimensions(new Box(1000, 1000)), $image->getDimensions());
     }
 
-    /**
-     * Tests the getDimensions() method determines the SVG dimensions without
-     * Imagine and by only reading the file partially.
-     */
-    public function testGetDimensionsPartialFileSvg()
+    public function testGetDimensionsFromPartialSvgFile()
     {
-        $imagine = $this->getMock('Contao\ImagineSvg\Imagine');
+        $imagine = $this->createMock(Imagine::class);
 
         if (!is_dir($this->rootDir)) {
             mkdir($this->rootDir, 0777, true);
@@ -251,9 +219,6 @@ class ImageTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(new ImageDimensions(new Box(1000, 1000)), $image->getDimensions());
     }
 
-    /**
-     * Tests the getDimensions() method handles invalid SVG images.
-     */
     public function testGetDimensionsInvalidSvg()
     {
         if (!is_dir($this->rootDir)) {
@@ -262,7 +227,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
 
         file_put_contents($this->rootDir.'/dummy.svg', '<nosvg width="1000" height="1000"></nosvg>');
 
-        $imagine = $this->getMock('Contao\ImagineSvg\Imagine');
+        $imagine = $this->createMock(Imagine::class);
 
         $imagine
             ->method('open')
@@ -271,18 +236,14 @@ class ImageTest extends \PHPUnit_Framework_TestCase
 
         $image = $this->createImage($this->rootDir.'/dummy.svg', $imagine);
 
-        $this->setExpectedException('Exception');
-
+        $this->expectException('Exception');
         $image->getDimensions();
     }
 
-    /**
-     * Tests the getImportantPart() method.
-     */
     public function testGetImportantPart()
     {
-        $imagine = $this->getMock('Imagine\Image\ImagineInterface');
-        $imagineImage = $this->getMock('Imagine\Image\ImageInterface');
+        $imagine = $this->createMock(ImagineInterface::class);
+        $imagineImage = $this->createMock(ImageInterface::class);
 
         $imagine
             ->method('open')
@@ -304,7 +265,7 @@ class ImageTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Creates an image instance helper.
+     * Returns an image.
      *
      * @param string           $path
      * @param ImagineInterface $imagine
@@ -319,11 +280,11 @@ class ImageTest extends \PHPUnit_Framework_TestCase
         }
 
         if (null === $imagine) {
-            $imagine = $this->getMock('Imagine\Image\ImagineInterface');
+            $imagine = $this->createMock(ImagineInterface::class);
         }
 
         if (null === $filesystem) {
-            $filesystem = $this->getMock('Symfony\Component\Filesystem\Filesystem');
+            $filesystem = $this->createMock(Filesystem::class);
 
             $filesystem
                 ->method('exists')

@@ -10,11 +10,6 @@
 
 namespace Contao\Image;
 
-/**
- * Picture generator interface.
- *
- * @author Martin Auswöger <martin@auswoeger.com>
- */
 interface PictureGeneratorInterface
 {
     /**

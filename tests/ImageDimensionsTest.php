@@ -11,42 +11,32 @@
 namespace Contao\Image\Tests;
 
 use Contao\Image\ImageDimensions;
+use Contao\ImagineSvg\RelativeBoxInterface;
+use Contao\ImagineSvg\UndefinedBoxInterface;
+use Imagine\Image\BoxInterface;
+use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the ImageDimensions class.
- *
- * @author Martin Auswöger <martin@auswoeger.com>
- */
-class ImageDimensionsTest extends \PHPUnit_Framework_TestCase
+class ImageDimensionsTest extends TestCase
 {
-    /**
-     * Tests the object instantiation.
-     */
     public function testInstantiation()
     {
-        $dimensions = new ImageDimensions($this->getMock('Imagine\Image\BoxInterface'));
+        $dimensions = new ImageDimensions($this->createMock(BoxInterface::class));
 
         $this->assertInstanceOf('Contao\Image\ImageDimensions', $dimensions);
         $this->assertInstanceOf('Contao\Image\ImageDimensionsInterface', $dimensions);
     }
 
-    /**
-     * Tests the getSize() method.
-     */
     public function testGetSize()
     {
-        $size = $this->getMock('Imagine\Image\BoxInterface');
+        $size = $this->createMock(BoxInterface::class);
         $dimensions = new ImageDimensions($size);
 
         $this->assertSame($size, $dimensions->getSize());
     }
 
-    /**
-     * Tests the isRelative() method.
-     */
     public function testIsRelative()
     {
-        $size = $this->getMock('Imagine\Image\BoxInterface');
+        $size = $this->createMock(BoxInterface::class);
 
         $dimensions = new ImageDimensions($size);
         $this->assertFalse($dimensions->isRelative());
@@ -54,7 +44,7 @@ class ImageDimensionsTest extends \PHPUnit_Framework_TestCase
         $dimensions = new ImageDimensions($size, true);
         $this->assertTrue($dimensions->isRelative());
 
-        $size = $this->getMock('Contao\ImagineSvg\RelativeBoxInterface');
+        $size = $this->createMock(RelativeBoxInterface::class);
 
         $dimensions = new ImageDimensions($size);
         $this->assertTrue($dimensions->isRelative());
@@ -63,12 +53,9 @@ class ImageDimensionsTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($dimensions->isRelative());
     }
 
-    /**
-     * Tests the isUndefined() method.
-     */
     public function testIsUndefined()
     {
-        $size = $this->getMock('Imagine\Image\BoxInterface');
+        $size = $this->createMock(BoxInterface::class);
 
         $dimensions = new ImageDimensions($size);
         $this->assertFalse($dimensions->isUndefined());
@@ -76,7 +63,7 @@ class ImageDimensionsTest extends \PHPUnit_Framework_TestCase
         $dimensions = new ImageDimensions($size, null, true);
         $this->assertTrue($dimensions->isUndefined());
 
-        $size = $this->getMock('Contao\ImagineSvg\UndefinedBoxInterface');
+        $size = $this->createMock(UndefinedBoxInterface::class);
 
         $dimensions = new ImageDimensions($size);
         $this->assertTrue($dimensions->isUndefined());

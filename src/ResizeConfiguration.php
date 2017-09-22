@@ -10,11 +10,6 @@
 
 namespace Contao\Image;
 
-/**
- * Resize configuration class.
- *
- * @author Martin Auswöger <martin@auswoeger.com>
- */
 class ResizeConfiguration implements ResizeConfigurationInterface
 {
     /**

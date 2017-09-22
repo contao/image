@@ -13,11 +13,6 @@ namespace Contao\Image;
 use Imagine\Image\BoxInterface;
 use Imagine\Image\PointInterface;
 
-/**
- * Resize coordinates interface.
- *
- * @author Martin Auswöger <martin@auswoeger.com>
- */
 interface ResizeCoordinatesInterface
 {
     /**

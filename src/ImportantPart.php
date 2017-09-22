@@ -13,11 +13,6 @@ namespace Contao\Image;
 use Imagine\Image\BoxInterface;
 use Imagine\Image\PointInterface;
 
-/**
- * Important part class.
- *
- * @author Martin Auswöger <martin@auswoeger.com>
- */
 class ImportantPart implements ImportantPartInterface
 {
     /**
@@ -31,8 +26,6 @@ class ImportantPart implements ImportantPartInterface
     private $size;
 
     /**
-     * Constructor.
-     *
      * @param PointInterface $position
      * @param BoxInterface   $size
      */

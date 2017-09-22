@@ -10,11 +10,6 @@
 
 namespace Contao\Image;
 
-/**
- * Picture configuration interface.
- *
- * @author Martin Auswöger <martin@auswoeger.com>
- */
 interface PictureConfigurationInterface
 {
     /**

@@ -13,17 +13,12 @@ namespace Contao\Image\Tests;
 use Contao\Image\Image;
 use Contao\Image\ImageInterface;
 use Contao\Image\Picture;
+use Imagine\Image\ImagineInterface;
+use PHPUnit\Framework\TestCase;
+use Symfony\Component\Filesystem\Filesystem;
 
-/**
- * Tests the Picture class.
- *
- * @author Martin Auswöger <martin@auswoeger.com>
- */
-class PictureTest extends \PHPUnit_Framework_TestCase
+class PictureTest extends TestCase
 {
-    /**
-     * Tests the object instantiation.
-     */
     public function testInstantiation()
     {
         $picture = $this->createPicture();
@@ -32,161 +27,143 @@ class PictureTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Contao\Image\PictureInterface', $picture);
     }
 
-    /**
-     * Tests the getImg() method.
-     */
     public function testGetImg()
     {
         $picture = $this->createPicture(null, '/path/to/a/filename with special&<>"\'chars.jpeg');
 
         $this->assertInstanceOf('Contao\Image\ImageInterface', $picture->getImg()['src']);
 
-        $this->assertEquals(
+        $this->assertSame(
             'path/to/a/filename%20with%20special%26%3C%3E%22%27chars.jpeg',
             $picture->getImg('/')['src']
         );
 
-        $this->assertEquals(
+        $this->assertSame(
             'to/a/filename%20with%20special%26%3C%3E%22%27chars.jpeg',
             $picture->getImg('/path')['src']
         );
 
-        $this->assertEquals(
+        $this->assertSame(
             'a/filename%20with%20special%26%3C%3E%22%27chars.jpeg',
             $picture->getImg('/path/to')['src']
         );
 
-        $this->assertEquals(
+        $this->assertSame(
             'filename%20with%20special%26%3C%3E%22%27chars.jpeg',
             $picture->getImg('/path/to/a')['src']
         );
 
-        $this->assertEquals(
+        $this->assertSame(
             'https://example.com/images/a/filename%20with%20special%26%3C%3E%22%27chars.jpeg',
             $picture->getImg('/path/to', 'https://example.com/images/')['src']
         );
 
         $this->assertInstanceOf('Contao\Image\ImageInterface', $picture->getImg()['srcset'][0][0]);
 
-        $this->assertEquals(
+        $this->assertSame(
             'path/to/a/filename%20with%20special%26%3C%3E%22%27chars.jpeg 1x',
             $picture->getImg('/')['srcset']
         );
 
-        $this->assertEquals(
+        $this->assertSame(
             'to/a/filename%20with%20special%26%3C%3E%22%27chars.jpeg 1x',
             $picture->getImg('/path')['srcset']
         );
 
-        $this->assertEquals(
+        $this->assertSame(
             'a/filename%20with%20special%26%3C%3E%22%27chars.jpeg 1x',
             $picture->getImg('/path/to')['srcset']
         );
 
-        $this->assertEquals(
+        $this->assertSame(
             'filename%20with%20special%26%3C%3E%22%27chars.jpeg 1x',
             $picture->getImg('/path/to/a')['srcset']
         );
 
-        $this->assertEquals(
+        $this->assertSame(
             'https://example.com/images/a/filename%20with%20special%26%3C%3E%22%27chars.jpeg 1x',
             $picture->getImg('/path/to', 'https://example.com/images/')['srcset']
         );
 
-        $this->assertEquals('custom attribute', $picture->getImg()['data-custom']);
-        $this->assertEquals('custom attribute', $picture->getImg('/')['data-custom']);
+        $this->assertSame('custom attribute', $picture->getImg()['data-custom']);
+        $this->assertSame('custom attribute', $picture->getImg('/')['data-custom']);
 
-        $this->setExpectedException('InvalidArgumentException', 'Prefix must no be specified if rootDir is null');
+        $this->expectException('InvalidArgumentException');
 
         $picture->getImg(null, 'https://example.com/images/');
     }
 
-    /**
-     * Tests the getSources() method.
-     */
     public function testGetSources()
     {
         $picture = $this->createPicture(null, '/path/to/a/filename with special&<>"\'chars.jpeg');
 
         $this->assertInstanceOf('Contao\Image\ImageInterface', $picture->getSources()[0]['srcset'][0][0]);
 
-        $this->assertEquals(
+        $this->assertSame(
             'path/to/a/filename%20with%20special%26%3C%3E%22%27chars.jpeg 1x',
             $picture->getSources('/')[0]['srcset']
         );
 
-        $this->assertEquals(
+        $this->assertSame(
             'to/a/filename%20with%20special%26%3C%3E%22%27chars.jpeg 1x',
             $picture->getSources('/path')[0]['srcset']
         );
 
-        $this->assertEquals(
+        $this->assertSame(
             'a/filename%20with%20special%26%3C%3E%22%27chars.jpeg 1x',
             $picture->getSources('/path/to')[0]['srcset']
         );
 
-        $this->assertEquals(
+        $this->assertSame(
             'filename%20with%20special%26%3C%3E%22%27chars.jpeg 1x',
             $picture->getSources('/path/to/a')[0]['srcset']
         );
 
-        $this->assertEquals(
+        $this->assertSame(
             'https://example.com/images/a/filename%20with%20special%26%3C%3E%22%27chars.jpeg 1x',
             $picture->getSources('/path/to', 'https://example.com/images/')[0]['srcset']
         );
 
-        $this->assertEquals('custom attribute', $picture->getSources()[0]['data-custom']);
-        $this->assertEquals('custom attribute', $picture->getSources('/')[0]['data-custom']);
+        $this->assertSame('custom attribute', $picture->getSources()[0]['data-custom']);
+        $this->assertSame('custom attribute', $picture->getSources('/')[0]['data-custom']);
 
-        $this->setExpectedException('InvalidArgumentException', 'Prefix must no be specified if rootDir is null');
+        $this->expectException('InvalidArgumentException');
 
         $picture->getSources(null, 'https://example.com/images/');
     }
 
-    /**
-     * Tests the constructor with a missing src attribute.
-     */
     public function testMissingSrc()
     {
-        $this->setExpectedException('InvalidArgumentException', 'Missing src attribute');
+        $this->expectException('InvalidArgumentException');
 
         new Picture(['srcset' => []], []);
     }
 
-    /**
-     * Tests the constructor with an invalid src attribute.
-     */
     public function testInvalidSrc()
     {
-        $this->setExpectedException('InvalidArgumentException', 'Src must be of type ImageInterface');
+        $this->expectException('InvalidArgumentException');
 
         new Picture(['src' => new \stdClass(), 'srcset' => []], []);
     }
 
-    /**
-     * Tests the constructor with a missing srcset attribute.
-     */
     public function testMissingSrcset()
     {
-        $image = $this->getMock('Contao\Image\ImageInterface');
-        $this->setExpectedException('InvalidArgumentException', 'Missing srcset attribute');
+        $image = $this->createMock(ImageInterface::class);
+        $this->expectException('InvalidArgumentException');
 
         new Picture(['src' => $image], []);
     }
 
-    /**
-     * Tests the constructor with an invalid srcset attribute.
-     */
     public function testInvalidSrcset()
     {
-        $image = $this->getMock('Contao\Image\ImageInterface');
-        $this->setExpectedException('InvalidArgumentException', 'Srcsets must be of type ImageInterface');
+        $image = $this->createMock(ImageInterface::class);
+        $this->expectException('InvalidArgumentException');
 
         new Picture(['src' => $image, 'srcset' => [[$image, '1x'], [new \stdClass(), '2x']]], []);
     }
 
     /**
-     * Creates a picture instance helper.
+     * Returns a picture.
      *
      * @param ImageInterface $image
      * @param string         $path
@@ -196,9 +173,14 @@ class PictureTest extends \PHPUnit_Framework_TestCase
     private function createPicture($image = null, $path = 'dummy.jpg')
     {
         if (null === $image) {
-            $imagine = $this->getMock('Imagine\Image\ImagineInterface');
-            $filesystem = $this->getMock('Symfony\Component\Filesystem\Filesystem');
-            $filesystem->method('exists')->willReturn(true);
+            $imagine = $this->createMock(ImagineInterface::class);
+            $filesystem = $this->createMock(Filesystem::class);
+
+            $filesystem
+                ->method('exists')
+                ->willReturn(true)
+            ;
+
             $image = new Image($path, $imagine, $filesystem);
         }
 

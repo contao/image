@@ -10,24 +10,18 @@
 
 namespace Contao\Image\Tests;
 
+use Contao\Image\ImageDimensions;
+use Contao\Image\ImportantPart;
 use Contao\Image\ResizeCalculator;
 use Contao\Image\ResizeConfiguration;
-use Contao\Image\ImageDimensions;
+use Contao\Image\ResizeConfigurationInterface;
 use Contao\Image\ResizeCoordinates;
-use Contao\Image\ImportantPart;
 use Imagine\Image\Box;
 use Imagine\Image\Point;
+use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the ResizeCalculator class.
- *
- * @author Martin Auswöger <martin@auswoeger.com>
- */
-class ResizeCalculatorTest extends \PHPUnit_Framework_TestCase
+class ResizeCalculatorTest extends TestCase
 {
-    /**
-     * Tests the object instantiation.
-     */
     public function testInstantiation()
     {
         $calculator = new ResizeCalculator();
@@ -37,8 +31,6 @@ class ResizeCalculatorTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Tests the calculate() method without an important part.
-     *
      * @param array $arguments
      * @param array $expectedResult
      *
@@ -58,7 +50,7 @@ class ResizeCalculatorTest extends \PHPUnit_Framework_TestCase
         $dimensions = new ImageDimensions(new Box($arguments[2], $arguments[3]), !empty($arguments[5]));
         $importantPart = null;
 
-        if ($arguments[4] && substr_count($arguments[4], '_') === 1) {
+        if ($arguments[4] && 1 === substr_count($arguments[4], '_')) {
             $importantPart = ['x' => 0, 'y' => 0, 'width' => $arguments[2], 'height' => $arguments[3]];
             $mode = explode('_', $arguments[4]);
 
@@ -128,8 +120,6 @@ class ResizeCalculatorTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Provides the data for the testCalculateWithoutImportantPart() method.
-     *
      * @return array
      */
     public function getCalculateDataWithoutImportantPart()
@@ -524,8 +514,6 @@ class ResizeCalculatorTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Tests the calculate() method with an important part.
-     *
      * @param array $arguments
      * @param array $expectedResult
      *
@@ -578,8 +566,6 @@ class ResizeCalculatorTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Provides the data for the testCalculateWithImportantPart() method.
-     *
      * @return array The data
      */
     public function getCalculateDataWithImportantPart()
@@ -727,29 +713,26 @@ class ResizeCalculatorTest extends \PHPUnit_Framework_TestCase
     {
         $calculator = new ResizeCalculator();
 
-        $config = $this->getMock('Contao\Image\ResizeConfigurationInterface');
+        $config = $this->createMock(ResizeConfigurationInterface::class);
 
         $config
-            ->expects($this->any())
             ->method('getWidth')
             ->willReturn(200)
         ;
 
         $config
-            ->expects($this->any())
             ->method('getHeight')
             ->willReturn(200)
         ;
 
         $config
-            ->expects($this->any())
             ->method('getMode')
             ->willReturn('invalid')
         ;
 
         $dimensions = new ImageDimensions(new Box(100, 100));
 
-        $this->setExpectedException('InvalidArgumentException', 'Unsupported resize mode "invalid"');
+        $this->expectException('InvalidArgumentException');
 
         $calculator->calculate($config, $dimensions);
     }

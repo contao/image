@@ -10,11 +10,6 @@
 
 namespace Contao\Image;
 
-/**
- * Picture configuration class.
- *
- * @author Martin Auswöger <martin@auswoeger.com>
- */
 class PictureConfiguration implements PictureConfigurationInterface
 {
     /**

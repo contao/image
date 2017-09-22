@@ -10,11 +10,6 @@
 
 namespace Contao\Image;
 
-/**
- * Resize calculator interface.
- *
- * @author Martin Auswöger <martin@auswoeger.com>
- */
 interface ResizeCalculatorInterface
 {
     /**

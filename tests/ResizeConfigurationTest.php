@@ -11,17 +11,10 @@
 namespace Contao\Image\Tests;
 
 use Contao\Image\ResizeConfiguration;
+use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the ResizeConfiguration class.
- *
- * @author Martin Auswöger <martin@auswoeger.com>
- */
-class ResizeConfigurationTest extends \PHPUnit_Framework_TestCase
+class ResizeConfigurationTest extends TestCase
 {
-    /**
-     * Tests the object instantiation.
-     */
     public function testInstantiation()
     {
         $resizeConfig = new ResizeConfiguration();
@@ -30,9 +23,6 @@ class ResizeConfigurationTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Contao\Image\ResizeConfigurationInterface', $resizeConfig);
     }
 
-    /**
-     * Tests the isEmpty() method.
-     */
     public function testIsEmpty()
     {
         $config = new ResizeConfiguration();
@@ -72,83 +62,66 @@ class ResizeConfigurationTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($config->isEmpty());
     }
 
-    /**
-     * Tests the setWidth() method.
-     */
     public function testSetWidth()
     {
         $config = new ResizeConfiguration();
 
-        $this->assertEquals(0, $config->getWidth());
+        $this->assertSame(0, $config->getWidth());
         $this->assertSame($config, $config->setWidth(100.0));
-        $this->assertEquals(100, $config->getWidth());
+        $this->assertSame(100, $config->getWidth());
         $this->assertInternalType('int', $config->getWidth());
 
-        $this->setExpectedException('InvalidArgumentException');
+        $this->expectException('InvalidArgumentException');
 
         $config->setWidth(-1);
     }
 
-    /**
-     * Tests the setHeight() method.
-     */
     public function testSetHeight()
     {
         $config = new ResizeConfiguration();
 
-        $this->assertEquals(0, $config->getHeight());
+        $this->assertSame(0, $config->getHeight());
         $this->assertSame($config, $config->setHeight(100.0));
-        $this->assertEquals(100, $config->getHeight());
+        $this->assertSame(100, $config->getHeight());
         $this->assertInternalType('int', $config->getHeight());
 
-        $this->setExpectedException('InvalidArgumentException');
+        $this->expectException('InvalidArgumentException');
 
         $config->setHeight(-1);
     }
 
-    /**
-     * Tests the setMode() method.
-     */
     public function testSetMode()
     {
         $config = new ResizeConfiguration();
 
-        $this->assertEquals(ResizeConfiguration::MODE_CROP, $config->getMode());
+        $this->assertSame(ResizeConfiguration::MODE_CROP, $config->getMode());
         $this->assertSame($config, $config->setMode(ResizeConfiguration::MODE_BOX));
-        $this->assertEquals(ResizeConfiguration::MODE_BOX, $config->getMode());
+        $this->assertSame(ResizeConfiguration::MODE_BOX, $config->getMode());
 
-        $this->setExpectedException('InvalidArgumentException');
+        $this->expectException('InvalidArgumentException');
 
         $config->setMode('invalid');
     }
 
-    /**
-     * Tests the setZoomLevel() method.
-     */
     public function testSetZoomLevel()
     {
         $config = new ResizeConfiguration();
 
-        $this->assertEquals(0, $config->getZoomLevel());
+        $this->assertSame(0, $config->getZoomLevel());
         $this->assertSame($config, $config->setZoomLevel(100.0));
-        $this->assertEquals(100, $config->getZoomLevel());
+        $this->assertSame(100, $config->getZoomLevel());
         $this->assertInternalType('int', $config->getZoomLevel());
 
-        $this->setExpectedException('InvalidArgumentException');
+        $this->expectException('InvalidArgumentException');
 
         $config->setZoomLevel(-1);
     }
 
-    /**
-     * Tests the setZoomLevel() method.
-     *
-     * @expectedException \InvalidArgumentException
-     */
     public function testSetZoomLevelTooHigh()
     {
         $config = new ResizeConfiguration();
 
-        $this->setExpectedException('InvalidArgumentException');
+        $this->expectException('InvalidArgumentException');
 
         $config->setZoomLevel(101);
     }

@@ -10,11 +10,6 @@
 
 namespace Contao\Image;
 
-/**
- * Generates a Picture object.
- *
- * @author Martin Auswöger <martin@auswoeger.com>
- */
 class PictureGenerator implements PictureGeneratorInterface
 {
     /**
@@ -28,8 +23,6 @@ class PictureGenerator implements PictureGeneratorInterface
     private $resizeOptions;
 
     /**
-     * Constructor.
-     *
      * @param ResizerInterface $resizer
      */
     public function __construct(ResizerInterface $resizer)
@@ -138,10 +131,10 @@ class PictureGenerator implements PictureGeneratorInterface
                 $type = substr(trim($density), -1);
 
                 if ('w' === $type) {
-                    return intval($density) / $width1x;
-                } else {
-                    return floatval($density);
+                    return (int) $density / $width1x;
                 }
+
+                return (float) $density;
             },
             $densities
         );
@@ -198,18 +191,23 @@ class PictureGenerator implements PictureGeneratorInterface
      */
     private function removeDuplicateScrsetItems(array $srcset)
     {
-        $srcset = array_filter($srcset, function ($item) use (&$usedPaths) {
-            /** @var ImageInterface[] $item */
-            $key = $item[0]->getPath();
+        $srcset = array_filter(
+            $srcset,
+            function () use (&$usedPaths) {
+                /** @var ImageInterface[] $item */
+                $item = func_get_arg(0);
 
-            if (isset($usedPaths[$key])) {
-                return false;
+                $key = $item[0]->getPath();
+
+                if (isset($usedPaths[$key])) {
+                    return false;
+                }
+
+                $usedPaths[$key] = true;
+
+                return true;
             }
-
-            $usedPaths[$key] = true;
-
-            return true;
-        });
+        );
 
         return array_values($srcset);
     }

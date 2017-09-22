@@ -12,11 +12,6 @@ namespace Contao\Image;
 
 use Imagine\Image\BoxInterface;
 
-/**
- * Image dimensions interface.
- *
- * @author Martin Auswöger <martin@auswoeger.com>
- */
 interface ImageDimensionsInterface
 {
     /**

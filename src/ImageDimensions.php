@@ -10,15 +10,10 @@
 
 namespace Contao\Image;
 
-use Imagine\Image\BoxInterface;
 use Contao\ImagineSvg\RelativeBoxInterface;
 use Contao\ImagineSvg\UndefinedBoxInterface;
+use Imagine\Image\BoxInterface;
 
-/**
- * Image dimensions class.
- *
- * @author Martin Auswöger <martin@auswoeger.com>
- */
 class ImageDimensions implements ImageDimensionsInterface
 {
     /**
@@ -37,8 +32,6 @@ class ImageDimensions implements ImageDimensionsInterface
     private $undefined;
 
     /**
-     * Constructor.
-     *
      * @param BoxInterface $size
      * @param bool|null    $relative
      * @param bool|null    $undefined

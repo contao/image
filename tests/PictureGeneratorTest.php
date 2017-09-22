@@ -10,28 +10,20 @@
 
 namespace Contao\Image\Tests;
 
-use Contao\Image\ImageInterface;
-use Contao\Image\PictureGenerator;
-use Contao\Image\ResizerInterface;
-use Contao\Image\ResizeOptions;
+use Contao\Image\Image;
 use Contao\Image\ImageDimensions;
-use Contao\Image\ResizeConfiguration;
-use Contao\Image\ResizeConfigurationInterface;
-use Contao\Image\ResizeOptionsInterface;
 use Contao\Image\PictureConfiguration;
 use Contao\Image\PictureConfigurationItem;
+use Contao\Image\PictureGenerator;
+use Contao\Image\ResizeConfiguration;
+use Contao\Image\ResizeConfigurationInterface;
+use Contao\Image\ResizeOptions;
+use Contao\Image\ResizerInterface;
 use Imagine\Image\Box;
+use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the PictureGenerator class.
- *
- * @author Martin Auswöger <martin@auswoeger.com>
- */
-class PictureGeneratorTest extends \PHPUnit_Framework_TestCase
+class PictureGeneratorTest extends TestCase
 {
-    /**
-     * Tests the object instantiation.
-     */
     public function testInstantiation()
     {
         $pictureGenerator = $this->createPictureGenerator();
@@ -40,64 +32,45 @@ class PictureGeneratorTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Contao\Image\PictureGeneratorInterface', $pictureGenerator);
     }
 
-    /**
-     * Tests the create() method.
-     */
     public function testGenerate()
     {
-        $resizer = $this
-            ->getMockBuilder('Contao\Image\ResizerInterface')
-            ->disableOriginalConstructor()
-            ->getMock()
-        ;
+        $resizer = $this->createMock(ResizerInterface::class);
 
         $resizer
-             ->expects($this->any())
-             ->method('resize')
-             ->will($this->returnCallback(
-                 function (
-                     ImageInterface $image,
-                     ResizeConfigurationInterface $config,
-                     ResizeOptionsInterface $options
-                 ) {
-                     $imageMock = $this
-                         ->getMockBuilder('Contao\Image\Image')
-                         ->disableOriginalConstructor()
-                         ->getMock()
-                     ;
+            ->method('resize')
+            ->will($this->returnCallback(
+                function () {
+                    /** @var ResizeConfigurationInterface $config */
+                    $config = func_get_arg(1);
 
-                     $imageMock
-                         ->expects($this->any())
-                         ->method('getDimensions')
-                         ->willReturn(new ImageDimensions(new Box(
+                    $this->assertInstanceOf(ResizeConfigurationInterface::class, $config);
+
+                    $imageMock = $this->createMock(Image::class);
+
+                    $imageMock
+                        ->method('getDimensions')
+                        ->willReturn(new ImageDimensions(new Box(
                             min(200, $config->getWidth()),
                             min(200, $config->getHeight())
                         )))
-                     ;
+                    ;
 
-                     $imageMock
-                         ->expects($this->any())
-                         ->method('getUrl')
-                         ->willReturn('image-'.min(200, $config->getWidth()).'.jpg')
-                     ;
+                    $imageMock
+                        ->method('getUrl')
+                        ->willReturn('image-'.min(200, $config->getWidth()).'.jpg')
+                    ;
 
-                     $imageMock
-                         ->expects($this->any())
-                         ->method('getPath')
-                         ->willReturn('/dir/image-'.min(200, $config->getWidth()).'.jpg')
-                     ;
+                    $imageMock
+                        ->method('getPath')
+                        ->willReturn('/dir/image-'.min(200, $config->getWidth()).'.jpg')
+                    ;
 
-                     return $imageMock;
-                 }
-             ))
+                    return $imageMock;
+                }
+            ))
         ;
 
-        $imageMock = $this
-            ->getMockBuilder('Contao\Image\Image')
-             ->disableOriginalConstructor()
-             ->getMock()
-        ;
-
+        $imageMock = $this->createMock(Image::class);
         $pictureGenerator = $this->createPictureGenerator($resizer);
 
         $pictureConfig = (new PictureConfiguration())
@@ -137,38 +110,38 @@ class PictureGeneratorTest extends \PHPUnit_Framework_TestCase
 
         $picture = $pictureGenerator->generate($imageMock, $pictureConfig, new ResizeOptions());
 
-        $this->assertEquals(
+        $this->assertSame(
             [
-                'src' => 'image-99.jpg',
-                'width' => '99',
-                'height' => '99',
                 'srcset' => 'image-99.jpg 1x, image-134.jpg 1.354x, image-198.jpg 2x',
+                'src' => 'image-99.jpg',
+                'width' => 99,
+                'height' => 99,
             ],
             $picture->getImg('/root/dir')
         );
 
-        $this->assertEquals(
+        $this->assertSame(
             [
                 [
-                    'src' => 'image-100.jpg',
-                    'width' => '100',
-                    'height' => '50',
                     'srcset' => 'image-100.jpg 100w, image-50.jpg 50w',
+                    'src' => 'image-100.jpg',
+                    'width' => 100,
+                    'height' => 50,
                     'sizes' => '50vw',
                     'media' => '(min-width: 600px)',
                 ],
                 [
-                    'src' => 'image-50.jpg',
-                    'width' => '50',
-                    'height' => '25',
                     'srcset' => 'image-50.jpg',
+                    'src' => 'image-50.jpg',
+                    'width' => 50,
+                    'height' => 25,
                     'media' => '(min-width: 300px)',
                 ],
                 [
-                    'src' => 'image-160.jpg',
-                    'width' => '160',
-                    'height' => '160',
                     'srcset' => 'image-160.jpg 1x, image-200.jpg 1.25x',
+                    'src' => 'image-160.jpg',
+                    'width' => 160,
+                    'height' => 160,
                     'media' => '(min-width: 200px)',
                 ],
             ],
@@ -179,46 +152,32 @@ class PictureGeneratorTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Contao\Image\PictureInterface', $picture);
     }
 
-    /**
-     * Tests the create() method.
-     */
     public function testGenerateWDescriptor()
     {
-        $resizer = $this
-            ->getMockBuilder('Contao\Image\ResizerInterface')
-            ->disableOriginalConstructor()
-            ->getMock()
-        ;
+        $resizer = $this->createMock(ResizerInterface::class);
 
         $resizer
-            ->expects($this->any())
             ->method('resize')
             ->will($this->returnCallback(
-                function (
-                    ImageInterface $image,
-                    ResizeConfigurationInterface $config,
-                    ResizeOptionsInterface $options
-                ) {
-                    $imageMock = $this
-                        ->getMockBuilder('Contao\Image\Image')
-                        ->disableOriginalConstructor()
-                        ->getMock()
-                    ;
+                function () {
+                    /** @var ResizeConfigurationInterface $config */
+                    $config = func_get_arg(1);
+
+                    $this->assertInstanceOf(ResizeConfigurationInterface::class, $config);
+
+                    $imageMock = $this->createMock(Image::class);
 
                     $imageMock
-                        ->expects($this->any())
                         ->method('getDimensions')
                         ->willReturn(new ImageDimensions(new Box(($config->getHeight() * 2), $config->getHeight())))
                     ;
 
                     $imageMock
-                        ->expects($this->any())
                         ->method('getUrl')
                         ->willReturn('image-'.($config->getHeight() * 2).'.jpg')
                     ;
 
                     $imageMock
-                        ->expects($this->any())
                         ->method('getPath')
                         ->willReturn('/dir/image-'.($config->getHeight() * 2).'.jpg')
                     ;
@@ -228,12 +187,7 @@ class PictureGeneratorTest extends \PHPUnit_Framework_TestCase
             ))
         ;
 
-        $imageMock = $this
-            ->getMockBuilder('Contao\Image\Image')
-            ->disableOriginalConstructor()
-            ->getMock()
-        ;
-
+        $imageMock = $this->createMock(Image::class);
         $pictureGenerator = $this->createPictureGenerator($resizer);
 
         $pictureConfig = (new PictureConfiguration())
@@ -258,24 +212,24 @@ class PictureGeneratorTest extends \PHPUnit_Framework_TestCase
 
         $picture = $pictureGenerator->generate($imageMock, $pictureConfig, new ResizeOptions());
 
-        $this->assertEquals(
+        $this->assertSame(
             [
-                'src' => 'image-200.jpg',
-                'width' => '200',
-                'height' => '100',
                 'srcset' => 'image-200.jpg 200w, image-400.jpg 400w, image-100.jpg 100w',
+                'src' => 'image-200.jpg',
+                'width' => 200,
+                'height' => 100,
                 'sizes' => '100vw',
             ],
             $picture->getImg('/root/dir')
         );
 
-        $this->assertEquals(
+        $this->assertSame(
             [
                 [
-                    'src' => 'image-100.jpg',
-                    'width' => '100',
-                    'height' => '50',
                     'srcset' => 'image-100.jpg 100w, image-200.jpg 200w, image-50.jpg 50w',
+                    'src' => 'image-100.jpg',
+                    'width' => 100,
+                    'height' => 50,
                     'sizes' => '33vw',
                 ],
             ],
@@ -286,42 +240,32 @@ class PictureGeneratorTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Contao\Image\PictureInterface', $picture);
     }
 
-    /**
-     * Tests the create() method.
-     */
     public function testGenerateDuplicateSrcsetItems()
     {
-        $resizer = $this
-            ->getMockBuilder('Contao\Image\ResizerInterface')
-            ->disableOriginalConstructor()
-            ->getMock()
-        ;
+        $resizer = $this->createMock(ResizerInterface::class);
 
         $resizer
-            ->expects($this->any())
             ->method('resize')
             ->will($this->returnCallback(
-                function (ImageInterface $image, ResizeConfigurationInterface $config, ResizeOptionsInterface $options) {
-                    $imageMock = $this
-                        ->getMockBuilder('Contao\Image\Image')
-                        ->disableOriginalConstructor()
-                        ->getMock()
-                    ;
+                function () {
+                    /** @var ResizeConfigurationInterface $config */
+                    $config = func_get_arg(1);
+
+                    $this->assertInstanceOf(ResizeConfigurationInterface::class, $config);
+
+                    $imageMock = $this->createMock(Image::class);
 
                     $imageMock
-                        ->expects($this->any())
                         ->method('getDimensions')
                         ->willReturn(new ImageDimensions(new Box(min(200, $config->getWidth()), min(200, $config->getHeight()))))
                     ;
 
                     $imageMock
-                        ->expects($this->any())
                         ->method('getUrl')
                         ->willReturn('image-'.min(200, $config->getWidth()).'.jpg')
                     ;
 
                     $imageMock
-                        ->expects($this->any())
                         ->method('getPath')
                         ->willReturn('/dir/image-'.min(200, $config->getWidth()).'.jpg')
                     ;
@@ -331,12 +275,7 @@ class PictureGeneratorTest extends \PHPUnit_Framework_TestCase
             ))
         ;
 
-        $imageMock = $this
-            ->getMockBuilder('Contao\Image\Image')
-            ->disableOriginalConstructor()
-            ->getMock()
-        ;
-
+        $imageMock = $this->createMock(Image::class);
         $pictureGenerator = $this->createPictureGenerator($resizer);
 
         $pictureConfig = (new PictureConfiguration())
@@ -361,24 +300,24 @@ class PictureGeneratorTest extends \PHPUnit_Framework_TestCase
 
         $picture = $pictureGenerator->generate($imageMock, $pictureConfig, new ResizeOptions());
 
-        $this->assertEquals(
+        $this->assertSame(
             [
+                'srcset' => 'image-100.jpg 100w, image-200.jpg 200w, image-50.jpg 50w',
                 'src' => 'image-100.jpg',
                 'width' => 100,
                 'height' => 100,
-                'srcset' => 'image-100.jpg 100w, image-200.jpg 200w, image-50.jpg 50w',
                 'sizes' => '100vw',
             ],
             $picture->getImg('/root/dir')
         );
 
-        $this->assertEquals(
+        $this->assertSame(
             [
                 [
+                    'srcset' => 'image-100.jpg 1x, image-200.jpg 2x, image-50.jpg 0.5x',
                     'src' => 'image-100.jpg',
                     'width' => 100,
                     'height' => 50,
-                    'srcset' => 'image-100.jpg 1x, image-200.jpg 2x, image-50.jpg 0.5x',
                 ],
             ],
             $picture->getSources('/root/dir')
@@ -388,9 +327,6 @@ class PictureGeneratorTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Contao\Image\PictureInterface', $picture);
     }
 
-    /**
-     * Tests the generate() method with a de_DE locale for LC_NUMERIC.
-     */
     public function testGenerateWithLocale()
     {
         $locale = setlocale(LC_NUMERIC, 0);
@@ -411,7 +347,7 @@ class PictureGeneratorTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Creates a PictureGenerator instance helper.
+     * Returns a picture generator.
      *
      * @param ResizerInterface $resizer
      *
@@ -420,9 +356,7 @@ class PictureGeneratorTest extends \PHPUnit_Framework_TestCase
     private function createPictureGenerator($resizer = null)
     {
         if (null === $resizer) {
-            $resizer = $this->getMockBuilder('Contao\Image\ResizerInterface')
-             ->disableOriginalConstructor()
-             ->getMock();
+            $resizer = $this->createMock(ResizerInterface::class);
         }
 
         return new PictureGenerator($resizer);

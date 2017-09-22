@@ -11,17 +11,10 @@
 namespace Contao\Image\Tests;
 
 use Contao\Image\ResizeOptions;
+use PHPUnit\Framework\TestCase;
 
-/**
- * Tests the ResizeOptions class.
- *
- * @author Martin Auswöger <martin@auswoeger.com>
- */
-class ResizeOptionsTest extends \PHPUnit_Framework_TestCase
+class ResizeOptionsTest extends TestCase
 {
-    /**
-     * Tests the object instantiation.
-     */
     public function testInstantiation()
     {
         $options = new ResizeOptions();
@@ -30,47 +23,38 @@ class ResizeOptionsTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Contao\Image\ResizeOptionsInterface', $options);
     }
 
-    /**
-     * Tests the setImagineOptions() method.
-     */
     public function testSetImagineOptions()
     {
         $options = new ResizeOptions();
 
-        $this->assertEquals([], $options->getImagineOptions());
+        $this->assertSame([], $options->getImagineOptions());
         $this->assertSame($options, $options->setImagineOptions(['jpeg_quality' => 95]));
-        $this->assertEquals(['jpeg_quality' => 95], $options->getImagineOptions());
+        $this->assertSame(['jpeg_quality' => 95], $options->getImagineOptions());
     }
 
-    /**
-     * Tests the setTargetPath() method.
-     */
     public function testSetTargetPath()
     {
         $options = new ResizeOptions();
 
-        $this->assertEquals(null, $options->getTargetPath());
+        $this->assertSame(null, $options->getTargetPath());
         $this->assertSame($options, $options->setTargetPath('/target/path'));
-        $this->assertEquals('/target/path', $options->getTargetPath());
+        $this->assertSame('/target/path', $options->getTargetPath());
 
         $options->setTargetPath(null);
-        $this->assertEquals(null, $options->getTargetPath());
+        $this->assertSame(null, $options->getTargetPath());
 
-        $this->setExpectedException('InvalidArgumentException');
+        $this->expectException('InvalidArgumentException');
 
         $options->setTargetPath('invalid/relative/path');
     }
 
-    /**
-     * Tests the setBypassCache() method.
-     */
     public function testSetBypassCache()
     {
         $options = new ResizeOptions();
 
-        $this->assertEquals(false, $options->getBypassCache());
+        $this->assertSame(false, $options->getBypassCache());
         $this->assertSame($options, $options->setBypassCache(1));
-        $this->assertEquals(true, $options->getBypassCache());
+        $this->assertSame(true, $options->getBypassCache());
         $this->assertInternalType('bool', $options->getBypassCache());
     }
 }
