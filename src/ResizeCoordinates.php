@@ -94,7 +94,7 @@ class ResizeCoordinates implements ResizeCoordinatesInterface
         if (!$coordinates instanceof ResizeCoordinatesInterface) {
             throw new \InvalidArgumentException(sprintf(
                 '$coordinates must be an instance of ResizeCoordinatesInterface or BoxInterface, "%s" given',
-                get_class($coordinates)
+                \get_class($coordinates)
             ));
         }
 

@@ -82,7 +82,7 @@ class PictureGenerator implements PictureGeneratorInterface
 
         $descriptorType = '';
 
-        if (count($densities) > 1) {
+        if (\count($densities) > 1) {
             $descriptorType = $sizesAttribute ? 'w' : 'x'; // use pixel density descriptors if the sizes attribute is empty
         }
 

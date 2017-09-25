@@ -85,8 +85,8 @@ class Resizer implements ResizerInterface
      */
     protected function executeResize(ImageInterface $image, ResizeCoordinatesInterface $coordinates, $path, ResizeOptionsInterface $options)
     {
-        if (!$this->filesystem->exists(dirname($path))) {
-            $this->filesystem->mkdir(dirname($path));
+        if (!$this->filesystem->exists(\dirname($path))) {
+            $this->filesystem->mkdir(\dirname($path));
         }
 
         $imagineOptions = $options->getImagineOptions();

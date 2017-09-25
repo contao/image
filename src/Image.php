@@ -170,7 +170,7 @@ class Image implements ImageInterface
         static $zlibSupport;
 
         if (null === $zlibSupport) {
-            $zlibSupport = in_array('compress.zlib', stream_get_wrappers(), true);
+            $zlibSupport = \in_array('compress.zlib', stream_get_wrappers(), true);
         }
 
         $size = null;

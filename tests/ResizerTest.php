@@ -307,8 +307,8 @@ class ResizerTest extends TestCase
         $resizedImage = $subResizer->resize($subImage, $configuration, (new ResizeOptions())->setBypassCache(true));
 
         $this->assertSame(
-            substr($imagePath, strlen($this->rootDir)),
-            substr($resizedImage->getPath(), strlen($subDir)),
+            substr($imagePath, \strlen($this->rootDir)),
+            substr($resizedImage->getPath(), \strlen($subDir)),
             'The hash should be the same if the image path relative to the cacheDir is the same'
         );
 
