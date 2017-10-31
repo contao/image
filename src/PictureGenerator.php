@@ -18,16 +18,27 @@ class PictureGenerator implements PictureGeneratorInterface
     private $resizer;
 
     /**
+     * @var ResizeCalculatorInterface
+     */
+    private $calculator;
+
+    /**
      * @var ResizeOptionsInterface
      */
     private $resizeOptions;
 
     /**
-     * @param ResizerInterface $resizer
+     * @param ResizerInterface               $resizer
+     * @param ResizeCalculatorInterface|null $calculator
      */
-    public function __construct(ResizerInterface $resizer)
+    public function __construct(ResizerInterface $resizer, ResizeCalculatorInterface $calculator = null)
     {
+        if (null === $calculator) {
+            $calculator = new ResizeCalculator();
+        }
+
         $this->resizer = $resizer;
+        $this->calculator = $calculator;
     }
 
     /**
@@ -60,10 +71,13 @@ class PictureGenerator implements PictureGeneratorInterface
         $densities = [1];
         $sizesAttribute = $config->getSizes();
 
-        $width1x = $this->resizer
-            ->resize($image, $config->getResizeConfig(), $this->resizeOptions)
-            ->getDimensions()
-            ->getSize()
+        $width1x = $this->calculator
+            ->calculate(
+                $config->getResizeConfig(),
+                new ImageDimensions($image->getDimensions()->getSize(), true),
+                $image->getImportantPart()
+            )
+            ->getCropSize()
             ->getWidth()
         ;
 
