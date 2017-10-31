@@ -193,10 +193,8 @@ class PictureGenerator implements PictureGeneratorInterface
     {
         $srcset = array_filter(
             $srcset,
-            function () use (&$usedPaths) {
+            function (array $item) use (&$usedPaths) {
                 /** @var ImageInterface[] $item */
-                $item = func_get_arg(0);
-
                 $key = $item[0]->getPath();
 
                 if (isset($usedPaths[$key])) {
