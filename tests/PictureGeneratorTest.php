@@ -12,6 +12,7 @@ namespace Contao\Image\Tests;
 
 use Contao\Image\Image;
 use Contao\Image\ImageDimensions;
+use Contao\Image\ImageInterface;
 use Contao\Image\PictureConfiguration;
 use Contao\Image\PictureConfigurationItem;
 use Contao\Image\PictureGenerator;
@@ -260,12 +261,7 @@ class PictureGeneratorTest extends TestCase
         $resizer
             ->method('resize')
             ->will($this->returnCallback(
-                function () {
-                    /** @var ResizeConfigurationInterface $config */
-                    $config = func_get_arg(1);
-
-                    $this->assertInstanceOf(ResizeConfigurationInterface::class, $config);
-
+                function (ImageInterface $image, ResizeConfigurationInterface $config) {
                     $imageMock = $this->createMock(Image::class);
 
                     $calculator = new ResizeCalculator();
