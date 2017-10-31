@@ -207,6 +207,11 @@ class ImageTest extends TestCase
     {
         $imagine = $this->createMock(Imagine::class);
 
+        $imagine
+            ->expects($this->never())
+            ->method('open')
+        ;
+
         if (!is_dir($this->rootDir)) {
             mkdir($this->rootDir, 0777, true);
         }
@@ -215,6 +220,27 @@ class ImageTest extends TestCase
         file_put_contents($this->rootDir.'/dummy.svg', '<svg width="1000" height="1000">');
 
         $image = $this->createImage($this->rootDir.'/dummy.svg', $imagine);
+
+        $this->assertEquals(new ImageDimensions(new Box(1000, 1000)), $image->getDimensions());
+    }
+
+    public function testGetDimensionsFromPartialSvgzFile()
+    {
+        $imagine = $this->createMock(Imagine::class);
+
+        $imagine
+            ->expects($this->never())
+            ->method('open')
+        ;
+
+        if (!is_dir($this->rootDir)) {
+            mkdir($this->rootDir, 0777, true);
+        }
+
+        // Only store a partial SVG file without an end tag
+        file_put_contents($this->rootDir.'/dummy.svgz', gzencode('<svg width="1000" height="1000">'));
+
+        $image = $this->createImage($this->rootDir.'/dummy.svgz', $imagine);
 
         $this->assertEquals(new ImageDimensions(new Box(1000, 1000)), $image->getDimensions());
     }
