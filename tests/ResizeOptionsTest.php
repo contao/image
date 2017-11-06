@@ -36,12 +36,12 @@ class ResizeOptionsTest extends TestCase
     {
         $options = new ResizeOptions();
 
-        $this->assertSame(null, $options->getTargetPath());
+        $this->assertNull($options->getTargetPath());
         $this->assertSame($options, $options->setTargetPath('/target/path'));
         $this->assertSame('/target/path', $options->getTargetPath());
 
         $options->setTargetPath(null);
-        $this->assertSame(null, $options->getTargetPath());
+        $this->assertNull($options->getTargetPath());
 
         $this->expectException('InvalidArgumentException');
 
@@ -52,9 +52,9 @@ class ResizeOptionsTest extends TestCase
     {
         $options = new ResizeOptions();
 
-        $this->assertSame(false, $options->getBypassCache());
+        $this->assertFalse($options->getBypassCache());
         $this->assertSame($options, $options->setBypassCache(1));
-        $this->assertSame(true, $options->getBypassCache());
+        $this->assertTrue($options->getBypassCache());
         $this->assertInternalType('bool', $options->getBypassCache());
     }
 }

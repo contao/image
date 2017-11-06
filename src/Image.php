@@ -30,11 +30,6 @@ class Image implements ImageInterface
     private $imagine;
 
     /**
-     * @var Filesystem
-     */
-    private $filesystem;
-
-    /**
      * @var string
      */
     private $path;
@@ -70,7 +65,6 @@ class Image implements ImageInterface
 
         $this->path = (string) $path;
         $this->imagine = $imagine;
-        $this->filesystem = $filesystem;
     }
 
     /**
@@ -189,7 +183,7 @@ class Image implements ImageInterface
 
         if ($reader->open($path, LIBXML_NONET)) {
             // After opening the file disable the entity loader for security reasons
-            libxml_disable_entity_loader(true);
+            libxml_disable_entity_loader();
 
             $size = $this->getSvgSizeFromReader($reader);
 

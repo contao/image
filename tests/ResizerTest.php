@@ -491,7 +491,7 @@ class ResizerTest extends TestCase
 
         $this->assertSame(100, $resizedImage->getDimensions()->getSize()->getWidth());
         $this->assertSame(100, $resizedImage->getDimensions()->getSize()->getHeight());
-        $this->assertSame(false, $resizedImage->getDimensions()->isRelative());
+        $this->assertFalse($resizedImage->getDimensions()->isRelative());
         $this->assertRegExp('(/[0-9a-f]/dummy-[0-9a-f]{8}.svg$)', $resizedImage->getPath());
 
         unlink($resizedImage->getPath());

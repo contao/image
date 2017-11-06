@@ -243,7 +243,7 @@ class ResizeCalculator implements ResizeCalculatorInterface
     {
         $scale = 1;
 
-        if (round($size[0]) > $original->getSize()->getWidth() && !$original->isRelative()) {
+        if (!$original->isRelative() && round($size[0]) > $original->getSize()->getWidth()) {
             $scale = $original->getSize()->getWidth() / $size[0];
         }
 

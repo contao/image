@@ -57,7 +57,7 @@ class Resizer implements ResizerInterface
      */
     public function resize(ImageInterface $image, ResizeConfigurationInterface $config, ResizeOptionsInterface $options)
     {
-        if ($image->getDimensions()->isUndefined() || $config->isEmpty()) {
+        if ($config->isEmpty() || $image->getDimensions()->isUndefined()) {
             $image = $this->createImage($image, $image->getPath());
         } else {
             $image = $this->processResize($image, $config, $options);
@@ -142,7 +142,7 @@ class Resizer implements ResizerInterface
         $coordinates = $this->calculator->calculate($config, $image->getDimensions(), $image->getImportantPart());
 
         // Skip resizing if it would have no effect
-        if ($coordinates->isEqualTo($image->getDimensions()->getSize()) && !$image->getDimensions()->isRelative()) {
+        if (!$image->getDimensions()->isRelative() && $coordinates->isEqualTo($image->getDimensions()->getSize())) {
             return $this->createImage($image, $image->getPath());
         }
 
@@ -180,6 +180,6 @@ class Resizer implements ResizerInterface
             array_values($imagineOptions)
         ))), 0, 9);
 
-        return substr($hash, 0, 1).'/'.$pathinfo['filename'].'-'.substr($hash, 1).'.'.$pathinfo['extension'];
+        return $hash[0].'/'.$pathinfo['filename'].'-'.substr($hash, 1).'.'.$pathinfo['extension'];
     }
 }

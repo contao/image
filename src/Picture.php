@@ -15,12 +15,12 @@ class Picture implements PictureInterface
     /**
      * @var array
      */
-    private $img = [];
+    private $img;
 
     /**
      * @var array
      */
-    private $sources = [];
+    private $sources;
 
     /**
      * @param array $img

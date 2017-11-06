@@ -160,7 +160,7 @@ class PictureGeneratorTest extends TestCase
 
                     $imageMock
                         ->method('getDimensions')
-                        ->willReturn(new ImageDimensions(new Box(($config->getHeight() * 2), $config->getHeight())))
+                        ->willReturn(new ImageDimensions(new Box($config->getHeight() * 2, $config->getHeight())))
                     ;
 
                     $imageMock
