@@ -164,7 +164,11 @@ class Image implements ImageInterface
         static $zlibSupport;
 
         if (null === $zlibSupport) {
-            $zlibSupport = \in_array('compress.zlib', stream_get_wrappers(), true);
+            $zlibSupport = \in_array('compress.zlib', stream_get_wrappers(), true)
+                && ($reader = new XMLReader)
+                && @$reader->open('compress.zlib://data:text/xml,<x/>') === true
+                && @$reader->read() === true
+                && @$reader->close() === true;
         }
 
         $size = null;
