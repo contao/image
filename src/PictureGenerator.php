@@ -81,7 +81,8 @@ class PictureGenerator implements PictureGeneratorInterface
             ->getWidth()
         ;
 
-        if ($config->getDensities()
+        if (
+            $config->getDensities()
             && ($config->getResizeConfig()->getWidth() || $config->getResizeConfig()->getHeight())
         ) {
             if (!$sizesAttribute && false !== strpos($config->getDensities(), 'w')) {
@@ -109,10 +110,7 @@ class PictureGenerator implements PictureGeneratorInterface
         $attributes['srcset'] = $srcset;
         $attributes['src'] = $srcset[0][0];
 
-        if (
-            !$attributes['src']->getDimensions()->isRelative() &&
-            !$attributes['src']->getDimensions()->isUndefined()
-        ) {
+        if (!$attributes['src']->getDimensions()->isRelative() && !$attributes['src']->getDimensions()->isUndefined()) {
             $attributes['width'] = $attributes['src']->getDimensions()->getSize()->getWidth();
             $attributes['height'] = $attributes['src']->getDimensions()->getSize()->getHeight();
         }
