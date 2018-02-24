@@ -47,19 +47,19 @@ class PictureGeneratorTest extends TestCase
                     $imageMock
                         ->method('getDimensions')
                         ->willReturn(new ImageDimensions(new Box(
-                            min(200, $config->getWidth()),
-                            min(200, $config->getHeight())
+                            min(1000, $config->getWidth()),
+                            min(1000, $config->getHeight())
                         )))
                     ;
 
                     $imageMock
                         ->method('getUrl')
-                        ->willReturn('image-'.min(200, $config->getWidth()).'.jpg')
+                        ->willReturn('image-'.min(1000, $config->getWidth()).'.jpg')
                     ;
 
                     $imageMock
                         ->method('getPath')
-                        ->willReturn('/dir/image-'.min(200, $config->getWidth()).'.jpg')
+                        ->willReturn('/dir/image-'.min(1000, $config->getWidth()).'.jpg')
                     ;
 
                     return $imageMock;
@@ -71,14 +71,14 @@ class PictureGeneratorTest extends TestCase
 
         $imageMock
             ->method('getDimensions')
-            ->willReturn(new ImageDimensions(new Box(200, 200)))
+            ->willReturn(new ImageDimensions(new Box(1000, 1000)))
         ;
 
         $pictureGenerator = $this->createPictureGenerator($resizer);
 
         $pictureConfig = (new PictureConfiguration())
             ->setSize((new PictureConfigurationItem())
-                ->setDensities('1x, 1.35354x, 1.9999x')
+                ->setDensities('1x, 1.35354x, 1.9999x, 10x')
                 ->setResizeConfig((new ResizeConfiguration())
                     ->setWidth(99)
                     ->setHeight(99)
@@ -102,7 +102,7 @@ class PictureGeneratorTest extends TestCase
                         ),
                     (new PictureConfigurationItem())
                         ->setMedia('(min-width: 200px)')
-                        ->setDensities('1x, 2x')
+                        ->setDensities('1x, 10x')
                         ->setResizeConfig((new ResizeConfiguration())
                             ->setWidth(160)
                             ->setHeight(160)
@@ -115,7 +115,7 @@ class PictureGeneratorTest extends TestCase
 
         $this->assertSame(
             [
-                'srcset' => 'image-99.jpg 1x, image-134.jpg 1.354x, image-198.jpg 2x',
+                'srcset' => 'image-99.jpg 1x, image-134.jpg 1.354x, image-198.jpg 2x, image-990.jpg 10x',
                 'src' => 'image-99.jpg',
                 'width' => 99,
                 'height' => 99,
@@ -141,7 +141,7 @@ class PictureGeneratorTest extends TestCase
                     'media' => '(min-width: 300px)',
                 ],
                 [
-                    'srcset' => 'image-160.jpg 1x, image-200.jpg 1.25x',
+                    'srcset' => 'image-160.jpg 1x, image-1000.jpg 6.25x',
                     'src' => 'image-160.jpg',
                     'width' => 160,
                     'height' => 160,
