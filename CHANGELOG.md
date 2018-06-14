@@ -4,6 +4,9 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+
+## [0.3.7] (2018-06-14)
+
  * Support for version 0.2 of `contao/imagine-svg`.
  * Add contents for the CHANGELOG.md file.
 
@@ -59,7 +62,8 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
  * Initial release
 
-[Unreleased]: https://github.com/contao/image/compare/0.3.6...HEAD
+[Unreleased]: https://github.com/contao/image/compare/0.3.7...HEAD
+[0.3.7]: https://github.com/contao/image/compare/0.3.6...0.3.7
 [0.3.6]: https://github.com/contao/image/compare/0.3.5...0.3.6
 [0.3.5]: https://github.com/contao/image/compare/0.3.4...0.3.5
 [0.3.4]: https://github.com/contao/image/compare/0.3.3...0.3.4
