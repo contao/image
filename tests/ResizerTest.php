@@ -66,7 +66,6 @@ class ResizerTest extends TestCase
     public function testResize()
     {
         $calculator = $this->createMock(ResizeCalculatorInterface::class);
-
         $calculator
             ->method('calculate')
             ->willReturn(new ResizeCoordinates(new Box(100, 100), new Point(0, 0), new Box(100, 100)))
@@ -84,7 +83,6 @@ class ResizerTest extends TestCase
         ;
 
         $image = $this->createMock(Image::class);
-
         $image
             ->method('getDimensions')
             ->willReturn(new ImageDimensions(new Box(200, 200)))
@@ -155,15 +153,14 @@ class ResizerTest extends TestCase
         file_put_contents($this->rootDir.'/dummy.svg', $xml);
 
         $calculator = $this->createMock(ResizeCalculatorInterface::class);
-
         $calculator
             ->method('calculate')
             ->willReturn(new ResizeCoordinates(new Box(100, 100), new Point(0, 0), new Box(100, 100)))
         ;
 
         $resizer = $this->createResizer(null, $calculator);
-        $image = $this->createMock(Image::class);
 
+        $image = $this->createMock(Image::class);
         $image
             ->method('getDimensions')
             ->willReturn(new ImageDimensions(new Box(200, 200)))
@@ -211,7 +208,6 @@ class ResizerTest extends TestCase
     public function testResizeCache()
     {
         $calculator = $this->createMock(ResizeCalculatorInterface::class);
-
         $calculator
             ->method('calculate')
             ->willReturn(new ResizeCoordinates(new Box(100, 100), new Point(0, 0), new Box(100, 100)))
@@ -229,7 +225,6 @@ class ResizerTest extends TestCase
         ;
 
         $image = $this->createMock(Image::class);
-
         $image
             ->method('getDimensions')
             ->willReturn(new ImageDimensions(new Box(200, 200)))
@@ -288,7 +283,6 @@ class ResizerTest extends TestCase
         $subResizer = $this->createResizer($subDir, $calculator);
 
         $subImage = $this->createMock(Image::class);
-
         $subImage
             ->method('getDimensions')
             ->willReturn(new ImageDimensions(new Box(200, 200)))
@@ -331,7 +325,6 @@ class ResizerTest extends TestCase
         file_put_contents($imagePath, '');
 
         $image = $this->createMock(Image::class);
-
         $image
             ->method('getDimensions')
             ->willReturn(new ImageDimensions(new UndefinedBox()))
@@ -365,7 +358,6 @@ class ResizerTest extends TestCase
         file_put_contents($imagePath, '');
 
         $image = $this->createMock(Image::class);
-
         $image
             ->method('getDimensions')
             ->willReturn(new ImageDimensions(new Box(100, 100)))
@@ -382,7 +374,6 @@ class ResizerTest extends TestCase
         ;
 
         $configuration = $this->createMock(ResizeConfigurationInterface::class);
-
         $configuration
             ->method('isEmpty')
             ->willReturn(true)
@@ -399,7 +390,6 @@ class ResizerTest extends TestCase
         $path = $this->rootDir.'/dummy.jpg';
 
         $calculator = $this->createMock(ResizeCalculatorInterface::class);
-
         $calculator
             ->method('calculate')
             ->willReturn(new ResizeCoordinates(new Box(100, 100), new Point(0, 0), new Box(100, 100)))
@@ -417,7 +407,6 @@ class ResizerTest extends TestCase
         ;
 
         $image = $this->createMock(Image::class);
-
         $image
             ->method('getDimensions')
             ->willReturn(new ImageDimensions(new Box(100, 100)))
@@ -461,7 +450,6 @@ class ResizerTest extends TestCase
         file_put_contents($this->rootDir.'/dummy.svg', $xml);
 
         $calculator = $this->createMock(ResizeCalculatorInterface::class);
-
         $calculator
             ->method('calculate')
             ->willReturn(new ResizeCoordinates(new Box(100, 100), new Point(0, 0), new Box(100, 100)))
@@ -470,7 +458,6 @@ class ResizerTest extends TestCase
         $resizer = $this->createResizer(null, $calculator);
 
         $image = $this->createMock(Image::class);
-
         $image
             ->method('getDimensions')
             ->willReturn(new ImageDimensions(new Box(100, 100), true))

@@ -37,13 +37,11 @@ class PictureGeneratorTest extends TestCase
     public function testGenerate()
     {
         $resizer = $this->createMock(ResizerInterface::class);
-
         $resizer
             ->method('resize')
             ->will($this->returnCallback(
                 function (ImageInterface $image, ResizeConfigurationInterface $config) {
                     $imageMock = $this->createMock(Image::class);
-
                     $imageMock
                         ->method('getDimensions')
                         ->willReturn(new ImageDimensions(new Box(
@@ -68,7 +66,6 @@ class PictureGeneratorTest extends TestCase
         ;
 
         $imageMock = $this->createMock(Image::class);
-
         $imageMock
             ->method('getDimensions')
             ->willReturn(new ImageDimensions(new Box(1000, 1000)))
@@ -158,13 +155,11 @@ class PictureGeneratorTest extends TestCase
     public function testGenerateWDescriptor()
     {
         $resizer = $this->createMock(ResizerInterface::class);
-
         $resizer
             ->method('resize')
             ->will($this->returnCallback(
                 function (ImageInterface $image, ResizeConfigurationInterface $config) {
                     $imageMock = $this->createMock(Image::class);
-
                     $imageMock
                         ->method('getDimensions')
                         ->willReturn(new ImageDimensions(new Box($config->getHeight() * 2, $config->getHeight())))
@@ -186,7 +181,6 @@ class PictureGeneratorTest extends TestCase
         ;
 
         $imageMock = $this->createMock(Image::class);
-
         $imageMock
             ->method('getDimensions')
             ->willReturn(new ImageDimensions(new Box(400, 200)))
@@ -247,7 +241,6 @@ class PictureGeneratorTest extends TestCase
     public function testGenerateWDescriptorSmallImage()
     {
         $resizer = $this->createMock(ResizerInterface::class);
-
         $resizer
             ->method('resize')
             ->will($this->returnCallback(
@@ -278,7 +271,6 @@ class PictureGeneratorTest extends TestCase
         ;
 
         $imageMock = $this->createMock(Image::class);
-
         $imageMock
             ->method('getDimensions')
             ->willReturn(new ImageDimensions(new Box(123, 246)))
@@ -361,13 +353,11 @@ class PictureGeneratorTest extends TestCase
     public function testGenerateDuplicateSrcsetItems()
     {
         $resizer = $this->createMock(ResizerInterface::class);
-
         $resizer
             ->method('resize')
             ->will($this->returnCallback(
                 function (ImageInterface $image, ResizeConfigurationInterface $config) {
                     $imageMock = $this->createMock(Image::class);
-
                     $imageMock
                         ->method('getDimensions')
                         ->willReturn(new ImageDimensions(new Box(min(200, $config->getWidth()), min(200, $config->getHeight()))))
@@ -389,7 +379,6 @@ class PictureGeneratorTest extends TestCase
         ;
 
         $imageMock = $this->createMock(Image::class);
-
         $imageMock
             ->method('getDimensions')
             ->willReturn(new ImageDimensions(new Box(200, 200)))

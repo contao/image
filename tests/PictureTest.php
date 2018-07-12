@@ -174,8 +174,8 @@ class PictureTest extends TestCase
     {
         if (null === $image) {
             $imagine = $this->createMock(ImagineInterface::class);
-            $filesystem = $this->createMock(Filesystem::class);
 
+            $filesystem = $this->createMock(Filesystem::class);
             $filesystem
                 ->method('exists')
                 ->willReturn(true)

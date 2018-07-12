@@ -76,7 +76,6 @@ class ImageTest extends TestCase
     public function testInstantiationMissingFiles()
     {
         $filesystem = $this->createMock(Filesystem::class);
-
         $filesystem
             ->method('exists')
             ->willReturn(false)
@@ -206,7 +205,6 @@ class ImageTest extends TestCase
     public function testGetDimensionsFromPartialSvgFile()
     {
         $imagine = $this->createMock(Imagine::class);
-
         $imagine
             ->expects($this->never())
             ->method('open')
@@ -227,7 +225,6 @@ class ImageTest extends TestCase
     public function testGetDimensionsFromPartialSvgzFile()
     {
         $imagine = $this->createMock(Imagine::class);
-
         $imagine
             ->expects($this->never())
             ->method('open')
@@ -254,7 +251,6 @@ class ImageTest extends TestCase
         file_put_contents($this->rootDir.'/dummy.svg', '<nosvg width="1000" height="1000"></nosvg>');
 
         $imagine = $this->createMock(Imagine::class);
-
         $imagine
             ->method('open')
             ->willThrowException(new Exception())
@@ -311,7 +307,6 @@ class ImageTest extends TestCase
 
         if (null === $filesystem) {
             $filesystem = $this->createMock(Filesystem::class);
-
             $filesystem
                 ->method('exists')
                 ->willReturn(true)

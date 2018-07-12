@@ -93,7 +93,6 @@ class Image implements ImageInterface
         }
 
         $url = Path::makeRelative($this->path, $rootDir);
-
         $url = str_replace('%2F', '/', rawurlencode($url));
 
         return $prefix.$url;

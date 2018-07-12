@@ -714,7 +714,6 @@ class ResizeCalculatorTest extends TestCase
         $calculator = new ResizeCalculator();
 
         $config = $this->createMock(ResizeConfigurationInterface::class);
-
         $config
             ->method('getWidth')
             ->willReturn(200)
