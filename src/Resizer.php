@@ -85,8 +85,10 @@ class Resizer implements ResizerInterface
      */
     protected function executeResize(ImageInterface $image, ResizeCoordinatesInterface $coordinates, $path, ResizeOptionsInterface $options)
     {
-        if (!$this->filesystem->exists(\dirname($path))) {
-            $this->filesystem->mkdir(\dirname($path));
+        $dir = \dirname($path);
+
+        if (!$this->filesystem->exists($dir)) {
+            $this->filesystem->mkdir($dir);
         }
 
         $imagineOptions = $options->getImagineOptions();
@@ -108,7 +110,10 @@ class Resizer implements ResizerInterface
             }
         }
 
-        $imagineImage->save($path, $imagineOptions);
+        // Atomic write operation
+        $tmpPath = $this->filesystem->tempnam($dir, 'img');
+        $imagineImage->save($tmpPath, $imagineOptions);
+        $this->filesystem->rename($tmpPath, $path, true);
 
         return $this->createImage($image, $path);
     }
