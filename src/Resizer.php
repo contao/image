@@ -115,7 +115,7 @@ class Resizer implements ResizerInterface
         }
 
         // Atomic write operation
-        $tmpPath = $this->filesystem->tempnam($dir, 'img');
+        $tmpPath = sys_get_temp_dir().'/'.basename($path);
         $imagineImage->save($tmpPath, $imagineOptions);
         $this->filesystem->rename($tmpPath, $path, true);
 
