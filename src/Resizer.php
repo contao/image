@@ -110,6 +110,10 @@ class Resizer implements ResizerInterface
             }
         }
 
+        if (!isset($imagineOptions['format'])) {
+            $imagineOptions['format'] = strtolower(pathinfo($path, PATHINFO_EXTENSION));
+        }
+
         // Atomic write operation
         $tmpPath = $this->filesystem->tempnam($dir, 'img');
         $imagineImage->save($tmpPath, $imagineOptions);
