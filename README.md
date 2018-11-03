@@ -1,7 +1,7 @@
 Contao image library
 ====================
 
-[![](https://img.shields.io/travis/contao/image/master.svg?style=flat-square)](https://travis-ci.org/contao/image/)
+[![](https://img.shields.io/travis/contao/image/master.svg?style=flat-square)](https://travis-ci.com/contao/image/)
 [![](https://img.shields.io/coveralls/contao/image/master.svg?style=flat-square)](https://coveralls.io/github/contao/image)
 [![](https://img.shields.io/packagist/v/contao/image.svg?style=flat-square)](https://packagist.org/packages/contao/image)
 [![](https://img.shields.io/packagist/dt/contao/image.svg?style=flat-square)](https://packagist.org/packages/contao/image)
