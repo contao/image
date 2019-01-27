@@ -6,6 +6,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
  * Use atomic file operations to save images.
  * Compatibility with Imagine 1.0.
+ * Fix bug with `x` descriptor for small source images. [#48]
 
 ## [0.3.7] (2018-06-14)
 
@@ -76,6 +77,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 [0.2.0]: https://github.com/contao/image/compare/0.1.0...0.2.0
 [0.1.0]: https://github.com/contao/image/commits/0.1.0
 
+[#48]: https://github.com/contao/image/issues/48
 [#42]: https://github.com/contao/image/issues/42
 [contao/core-bundle#1103]: https://github.com/contao/core-bundle/issues/1103
 [#41]: https://github.com/contao/image/issues/41

@@ -435,6 +435,91 @@ class PictureGeneratorTest extends TestCase
         $this->assertInstanceOf('Contao\Image\PictureInterface', $picture);
     }
 
+    public function testGenerateSmallSourceImage()
+    {
+        $resizer = $this->createMock(ResizerInterface::class);
+        $resizer
+            ->method('resize')
+            ->will($this->returnCallback(
+                function (ImageInterface $image, ResizeConfigurationInterface $config) {
+                    $imageMock = $this->createMock(Image::class);
+                    $imageMock
+                        ->method('getDimensions')
+                        ->willReturn(new ImageDimensions(new Box(20, 20)))
+                    ;
+
+                    $imageMock
+                        ->method('getUrl')
+                        ->willReturn('image-20.jpg')
+                    ;
+
+                    $imageMock
+                        ->method('getPath')
+                        ->willReturn('/dir/image-20.jpg')
+                    ;
+
+                    return $imageMock;
+                }
+            ))
+        ;
+
+        $imageMock = $this->createMock(Image::class);
+        $imageMock
+            ->method('getDimensions')
+            ->willReturn(new ImageDimensions(new Box(20, 20)))
+        ;
+
+        $pictureGenerator = $this->createPictureGenerator($resizer);
+
+        $pictureConfig = (new PictureConfiguration())
+            ->setSize((new PictureConfigurationItem())
+                ->setDensities('200w, 400w, 600w, 3x, 4x, 0.5x')
+                ->setResizeConfig((new ResizeConfiguration())
+                    ->setWidth(100)
+                    ->setHeight(100)
+                )
+            )
+            ->setSizeItems(
+                [
+                    (new PictureConfigurationItem())
+                        ->setDensities('1x, 2x, 3x, 4x, 0.5x')
+                        ->setResizeConfig((new ResizeConfiguration())
+                            ->setWidth(100)
+                            ->setHeight(100)
+                        ),
+                ]
+            )
+        ;
+
+        $picture = $pictureGenerator->generate($imageMock, $pictureConfig, new ResizeOptions());
+
+        $this->assertSame(
+            [
+                'srcset' => 'image-20.jpg 20w',
+                'src' => 'image-20.jpg',
+                'width' => 20,
+                'height' => 20,
+                'sizes' => '100vw',
+            ],
+            $picture->getImg('/root/dir')
+        );
+
+        $this->assertSame(
+            [
+                [
+                    'srcset' => 'image-20.jpg',
+                    'src' => 'image-20.jpg',
+                    'width' => 20,
+                    'height' => 20,
+                ],
+            ],
+            $picture->getSources('/root/dir')
+        );
+
+        $this->assertInstanceOf('Contao\Image\Picture', $picture);
+        $this->assertInstanceOf('Contao\Image\PictureInterface', $picture);
+    }
+
     public function testGenerateWithLocale()
     {
         $locale = setlocale(LC_NUMERIC, 0);

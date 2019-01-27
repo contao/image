@@ -95,11 +95,7 @@ class PictureGenerator implements PictureGeneratorInterface
         $attributes = [];
         $srcset = [];
 
-        $descriptorType = '';
-
-        if (\count($densities) > 1) {
-            $descriptorType = $sizesAttribute ? 'w' : 'x'; // use pixel density descriptors if the sizes attribute is empty
-        }
+        $descriptorType = $sizesAttribute ? 'w' : 'x'; // use pixel density descriptors if the sizes attribute is empty
 
         foreach ($densities as $density) {
             $srcset[] = $this->generateSrcsetItem($image, $config, $density, $descriptorType, $width1x);
@@ -203,7 +199,7 @@ class PictureGenerator implements PictureGeneratorInterface
      */
     private function removeDuplicateScrsetItems(array $srcset)
     {
-        $srcset = array_filter(
+        $srcset = array_values(array_filter(
             $srcset,
             function (array $item) use (&$usedPaths) {
                 /** @var ImageInterface[] $item */
@@ -217,8 +213,12 @@ class PictureGenerator implements PictureGeneratorInterface
 
                 return true;
             }
-        );
+        ));
 
-        return array_values($srcset);
+        if (1 === \count($srcset) && isset($srcset[0][1]) && 'x' === substr($srcset[0][1], -1)) {
+            unset($srcset[0][1]);
+        }
+
+        return $srcset;
     }
 }
