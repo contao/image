@@ -21,6 +21,7 @@ use Contao\Image\ResizeConfiguration;
 use Contao\Image\ResizeConfigurationInterface;
 use Contao\Image\ResizeOptions;
 use Contao\Image\ResizerInterface;
+use Contao\ImagineSvg\Imagine as ImagineSvg;
 use Imagine\Image\Box;
 use PHPUnit\Framework\TestCase;
 
@@ -511,6 +512,95 @@ class PictureGeneratorTest extends TestCase
                     'src' => 'image-20.jpg',
                     'width' => 20,
                     'height' => 20,
+                ],
+            ],
+            $picture->getSources('/root/dir')
+        );
+
+        $this->assertInstanceOf('Contao\Image\Picture', $picture);
+        $this->assertInstanceOf('Contao\Image\PictureInterface', $picture);
+    }
+
+    public function testGenerateSvgImage()
+    {
+        $resizer = $this->createMock(ResizerInterface::class);
+        $resizer
+            ->method('resize')
+            ->will($this->returnCallback(
+                function (ImageInterface $image, ResizeConfigurationInterface $config) {
+                    $imageMock = $this->createMock(Image::class);
+                    $imageMock
+                        ->method('getDimensions')
+                        ->willReturn(new ImageDimensions(new Box($config->getWidth(), $config->getHeight())))
+                    ;
+
+                    $imageMock
+                        ->method('getUrl')
+                        ->willReturn('image-'.$config->getWidth().'.svg')
+                    ;
+
+                    $imageMock
+                        ->method('getPath')
+                        ->willReturn('/dir/image-'.$config->getWidth().'.svg')
+                    ;
+
+                    return $imageMock;
+                }
+            ))
+        ;
+
+        $imageMock = $this->createMock(Image::class);
+        $imageMock
+            ->method('getDimensions')
+            ->willReturn(new ImageDimensions(new Box(200, 200)))
+        ;
+        $imageMock
+            ->method('getImagine')
+            ->willReturn($this->createMock(ImagineSvg::class))
+        ;
+
+        $pictureGenerator = $this->createPictureGenerator($resizer);
+
+        $pictureConfig = (new PictureConfiguration())
+            ->setSize((new PictureConfigurationItem())
+                ->setDensities('200w, 400w, 600w, 3x, 4x, 0.5x')
+                ->setResizeConfig((new ResizeConfiguration())
+                    ->setWidth(100)
+                    ->setHeight(100)
+                )
+            )
+            ->setSizeItems(
+                [
+                    (new PictureConfigurationItem())
+                        ->setDensities('1x, 2x, 3x, 4x, 0.5x')
+                        ->setResizeConfig((new ResizeConfiguration())
+                            ->setWidth(100)
+                            ->setHeight(50)
+                        ),
+                ]
+            )
+        ;
+
+        $picture = $pictureGenerator->generate($imageMock, $pictureConfig, new ResizeOptions());
+
+        $this->assertSame(
+            [
+                'srcset' => 'image-100.svg 100w',
+                'src' => 'image-100.svg',
+                'width' => 100,
+                'height' => 100,
+                'sizes' => '100vw',
+            ],
+            $picture->getImg('/root/dir')
+        );
+
+        $this->assertSame(
+            [
+                [
+                    'srcset' => 'image-100.svg',
+                    'src' => 'image-100.svg',
+                    'width' => 100,
+                    'height' => 50,
                 ],
             ],
             $picture->getSources('/root/dir')

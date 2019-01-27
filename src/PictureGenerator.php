@@ -10,6 +10,8 @@
 
 namespace Contao\Image;
 
+use Contao\ImagineSvg\Imagine as ImagineSvg;
+
 class PictureGenerator implements PictureGeneratorInterface
 {
     /**
@@ -89,7 +91,9 @@ class PictureGenerator implements PictureGeneratorInterface
                 $sizesAttribute = '100vw';
             }
 
-            $densities = $this->parseDensities($config->getDensities(), $width1x);
+            if (!$image->getImagine() instanceof ImagineSvg) {
+                $densities = $this->parseDensities($config->getDensities(), $width1x);
+            }
         }
 
         $attributes = [];
