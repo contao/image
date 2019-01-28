@@ -100,20 +100,31 @@ class ResizerTest extends TestCase
 
         $configuration = $this->createMock(ResizeConfigurationInterface::class);
 
-        $resizedImage = $resizer->resize(
-            $image,
-            $configuration,
-            (new ResizeOptions())
-                ->setImagineOptions([
-                    'jpeg_quality' => 95,
-                    'interlace' => ImagineImageInterface::INTERLACE_PLANE,
-                ])
-        );
+        $defaultUmask = umask();
 
-        $this->assertEquals(new ImageDimensions(new Box(100, 100)), $resizedImage->getDimensions());
-        $this->assertRegExp('(/[0-9a-f]/dummy-[0-9a-f]{8}.jpg$)', $resizedImage->getPath());
+        try {
+            foreach ([0000, 0002, 0007, 0022, 0027, 0077] as $umask) {
+                umask($umask);
 
-        unlink($resizedImage->getPath());
+                $resizedImage = $resizer->resize(
+                    $image,
+                    $configuration,
+                    (new ResizeOptions())
+                        ->setImagineOptions([
+                            'jpeg_quality' => 95,
+                            'interlace' => ImagineImageInterface::INTERLACE_PLANE,
+                        ])
+                );
+
+                $this->assertEquals(new ImageDimensions(new Box(100, 100)), $resizedImage->getDimensions());
+                $this->assertRegExp('(/[0-9a-f]/dummy-[0-9a-f]{8}.jpg$)', $resizedImage->getPath());
+                $this->assertFilePermissions(0666, $resizedImage->getPath());
+
+                unlink($resizedImage->getPath());
+            }
+        } finally {
+            umask($defaultUmask);
+        }
 
         $resizedImage = $resizer->resize(
             $image,
@@ -123,6 +134,7 @@ class ResizerTest extends TestCase
 
         $this->assertEquals(new ImageDimensions(new Box(100, 100)), $resizedImage->getDimensions());
         $this->assertSame($this->rootDir.'/target-path.jpg', $resizedImage->getPath());
+        $this->assertFilePermissions(0666, $resizedImage->getPath());
 
         // Replace target image with larger image
         (new GdImagine())
@@ -139,6 +151,7 @@ class ResizerTest extends TestCase
 
         $this->assertSame($this->rootDir.'/target-path.jpg', $resizedImage->getPath());
         $this->assertEquals(new ImageDimensions(new Box(100, 100)), $resizedImage->getDimensions());
+        $this->assertFilePermissions(0666, $resizedImage->getPath());
     }
 
     public function testResizeSvg()
@@ -190,6 +203,7 @@ class ResizerTest extends TestCase
 
         $this->assertEquals(new ImageDimensions(new Box(100, 100)), $resizedImage->getDimensions());
         $this->assertRegExp('(/[0-9a-f]/dummy-[0-9a-f]{8}.svg$)', $resizedImage->getPath());
+        $this->assertFilePermissions(0666, $resizedImage->getPath());
 
         unlink($resizedImage->getPath());
 
@@ -201,6 +215,7 @@ class ResizerTest extends TestCase
 
         $this->assertEquals(new ImageDimensions(new Box(100, 100)), $resizedImage->getDimensions());
         $this->assertSame($this->rootDir.'/target-path.svg', $resizedImage->getPath());
+        $this->assertFilePermissions(0666, $resizedImage->getPath());
 
         unlink($resizedImage->getPath());
     }
@@ -245,6 +260,7 @@ class ResizerTest extends TestCase
 
         $this->assertEquals(new ImageDimensions(new Box(100, 100)), $resizedImage->getDimensions());
         $this->assertRegExp('(/[0-9a-f]/dummy-[0-9a-f]{8}.jpg$)', $resizedImage->getPath());
+        $this->assertFilePermissions(0666, $resizedImage->getPath());
 
         $imagePath = $resizedImage->getPath();
 
@@ -500,5 +516,17 @@ class ResizerTest extends TestCase
         }
 
         return new Resizer($cacheDir, $calculator, $filesystem);
+    }
+
+    /**
+     * @param int    $expectedPermissions
+     * @param string $path
+     */
+    private function assertFilePermissions($expectedPermissions, $path)
+    {
+        $this->assertSame(
+            sprintf('%o', $expectedPermissions & ~umask() & 0777),
+            sprintf('%o', fileperms($path) & 0777)
+        );
     }
 }

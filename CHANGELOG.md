@@ -4,6 +4,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+ * Fix bug with wrong file permissions. [#49]
 
 ## [0.3.8] (2019-01-27)
 
@@ -82,6 +83,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 [0.2.0]: https://github.com/contao/image/compare/0.1.0...0.2.0
 [0.1.0]: https://github.com/contao/image/commits/0.1.0
 
+[#49]: https://github.com/contao/image/issues/49
 [#48]: https://github.com/contao/image/issues/48
 [#46]: https://github.com/contao/image/issues/46
 [#42]: https://github.com/contao/image/issues/42
