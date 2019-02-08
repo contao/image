@@ -158,9 +158,7 @@ class PictureGenerator implements PictureGeneratorInterface
         array_unshift($densities, 1);
 
         // Strip duplicates
-        $densities = array_values(array_unique($densities));
-
-        return $densities;
+        return array_values(array_unique($densities));
     }
 
     /**
