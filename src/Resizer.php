@@ -187,7 +187,9 @@ class Resizer implements ResizerInterface
                 $coordinates->getHash(),
             ],
             array_keys($imagineOptions),
-            array_values($imagineOptions)
+            array_map(function($value) {
+                return is_array($value) ? implode(',', $value) : $value;
+            }, array_values($imagineOptions))
         ))), 0, 9);
 
         return $hash[0].'/'.$pathinfo['filename'].'-'.substr($hash, 1).'.'.$pathinfo['extension'];

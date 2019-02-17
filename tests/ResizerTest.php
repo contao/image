@@ -113,6 +113,7 @@ class ResizerTest extends TestCase
                         ->setImagineOptions([
                             'jpeg_quality' => 95,
                             'interlace' => ImagineImageInterface::INTERLACE_PLANE,
+                            'jpeg_sampling_factors' => [2, 1, 1],
                         ])
                 );
 
@@ -198,6 +199,7 @@ class ResizerTest extends TestCase
                 ->setImagineOptions([
                     'jpeg_quality' => 95,
                     'interlace' => ImagineImageInterface::INTERLACE_PLANE,
+                    'jpeg_sampling_factors' => [2, 1, 1],
                 ])
         );
 

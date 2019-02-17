@@ -4,6 +4,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+ * Fix bug with imagine array options.
 
 ## [0.3.9] (2019-01-28)
 
