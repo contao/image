@@ -16,11 +16,6 @@ use Symfony\Component\Filesystem\Filesystem;
 class DeferredImage extends Image implements DeferredImageInterface
 {
     /**
-     * @var string
-     */
-    private $path;
-
-    /**
      * @var ImageDimensionsInterface
      */
     private $dimensions;
@@ -33,14 +28,6 @@ class DeferredImage extends Image implements DeferredImageInterface
     {
         $this->path = $path;
         $this->dimensions = $dimensions;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getPath()
-    {
-        return $this->path;
     }
 
     /**

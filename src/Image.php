@@ -31,8 +31,9 @@ class Image implements ImageInterface
 
     /**
      * @var string
+     * @internal
      */
-    private $path;
+    protected $path;
 
     /**
      * @var ImageDimensionsInterface
