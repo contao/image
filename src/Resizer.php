@@ -24,13 +24,15 @@ class Resizer implements ResizerInterface
 
     /**
      * @var Filesystem
+     * @internal
      */
-    private $filesystem;
+    protected $filesystem;
 
     /**
      * @var string
+     * @internal
      */
-    private $cacheDir;
+    protected $cacheDir;
 
     /**
      * @param string                         $cacheDir

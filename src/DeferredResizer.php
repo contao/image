@@ -20,28 +20,9 @@ use Webmozart\PathUtil\Path;
 
 class DeferredResizer extends Resizer implements DeferredResizerInterface
 {
-    /**
-     * @var Filesystem
-     */
-    private $filesystem;
-
-    /**
-     * {@inheritdoc}
-     */
-    public function __construct($cacheDir, ResizeCalculatorInterface $calculator = null, Filesystem $filesystem = null)
-    {
-        if (null === $filesystem) {
-            $filesystem = new Filesystem();
-        }
-
-        $this->filesystem = $filesystem;
-
-        parent::__construct($cacheDir, $calculator, $filesystem);
-    }
-
     public function resizeDeferredImage($targetPath, ImagineInterface $imagine)
     {
-        $configPath = $targetPath.'.config';
+        $configPath = $this->cacheDir . '/' . $targetPath.'.config';
 
         if (!$handle = fopen($configPath, 'r+') ?: fopen($configPath, 'r')) {
             throw new \RuntimeException(sprintf('Unable to open file "%s".', $configPath));
@@ -75,7 +56,7 @@ class DeferredResizer extends Resizer implements DeferredResizerInterface
 
         $this->storeResizeData($image->getPath(), $path, $coordinates, $options);
 
-        return new DeferredImage($path, new ImageDimensions($coordinates->getSize()));
+        return new DeferredImage($path, new ImageDimensions($coordinates->getCropSize()));
     }
 
     /**
@@ -122,7 +103,7 @@ class DeferredResizer extends Resizer implements DeferredResizerInterface
         return parent::executeResize(
             new Image($sourcePath, $imagine, $this->filesystem),
             $coordinates,
-            $targetPath,
+            $this->cacheDir . '/' . $targetPath,
             $options
         );
     }
