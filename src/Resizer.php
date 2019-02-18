@@ -176,21 +176,26 @@ class Resizer implements ResizerInterface
      */
     private function createCachePath($path, ResizeCoordinatesInterface $coordinates, ResizeOptionsInterface $options)
     {
-        $pathinfo = pathinfo($path);
         $imagineOptions = $options->getImagineOptions();
         ksort($imagineOptions);
 
-        $hash = substr(md5(implode('|', array_merge(
+        $hashData = array_merge(
             [
                 Path::makeRelative($path, $this->cacheDir),
                 filemtime($path),
                 $coordinates->getHash(),
             ],
             array_keys($imagineOptions),
-            array_map(function($value) {
-                return is_array($value) ? implode(',', $value) : $value;
-            }, array_values($imagineOptions))
-        ))), 0, 9);
+            array_map(
+                function ($value) {
+                    return \is_array($value) ? implode(',', $value) : $value;
+                },
+                array_values($imagineOptions)
+            )
+        );
+
+        $hash = substr(md5(implode('|', $hashData)), 0, 9);
+        $pathinfo = pathinfo($path);
 
         return $hash[0].'/'.$pathinfo['filename'].'-'.substr($hash, 1).'.'.$pathinfo['extension'];
     }
