@@ -95,6 +95,11 @@ class DeferredResizer extends Resizer implements DeferredResizerInterface
      */
     protected function executeResize(ImageInterface $image, ResizeCoordinatesInterface $coordinates, $path, ResizeOptionsInterface $options)
     {
+        // Resize the source image if it is deferred
+        if ($image instanceof DeferredImageInterface) {
+            $image = $this->resizeDeferredImage($image);
+        }
+
         if (null !== $options->getTargetPath() || $options->getBypassCache()) {
             return parent::executeResize($image, $coordinates, $path, $options);
         }
