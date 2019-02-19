@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -19,7 +21,7 @@ class ResizeCalculator implements ResizeCalculatorInterface
     /**
      * {@inheritdoc}
      */
-    public function calculate(ResizeConfigurationInterface $config, ImageDimensionsInterface $dimensions, ImportantPartInterface $importantPart = null)
+    public function calculate(ResizeConfigurationInterface $config, ImageDimensionsInterface $dimensions, ImportantPartInterface $importantPart = null): ResizeCoordinatesInterface
     {
         $zoom = max(0, min(1, (int) $config->getZoomLevel() / 100));
         $importantPart = $this->importantPartAsArray($dimensions, $importantPart);
@@ -65,14 +67,9 @@ class ResizeCalculator implements ResizeCalculatorInterface
     /**
      * Calculates resize coordinates for mode crop.
      *
-     * @param int[]                    $size
-     * @param ImageDimensionsInterface $original
-     * @param array                    $importantPart
-     * @param float                    $zoom
-     *
-     * @return ResizeCoordinates
+     * @param int[] $size
      */
-    private function calculateCrop($size, $original, $importantPart, $zoom)
+    private function calculateCrop(array $size, ImageDimensionsInterface $original, array $importantPart, float $zoom): ResizeCoordinatesInterface
     {
         // Calculate the image part for zoom 0
         $leastZoomed = $this->calculateLeastZoomed(
@@ -111,14 +108,9 @@ class ResizeCalculator implements ResizeCalculatorInterface
     /**
      * Calculates resize coordinates for mode proportional.
      *
-     * @param int[]                    $size
-     * @param ImageDimensionsInterface $original
-     * @param array                    $importantPart
-     * @param float                    $zoom
-     *
-     * @return ResizeCoordinates
+     * @param int[] $size
      */
-    private function calculateProportional($size, $original, $importantPart, $zoom)
+    private function calculateProportional(array $size, ImageDimensionsInterface $original, array $importantPart, float $zoom): ResizeCoordinatesInterface
     {
         $importantPart = $this->zoomImportantPart($importantPart, $zoom, $original->getSize());
 
@@ -134,14 +126,9 @@ class ResizeCalculator implements ResizeCalculatorInterface
     /**
      * Calculates resize coordinates for mode box.
      *
-     * @param int[]                    $size
-     * @param ImageDimensionsInterface $original
-     * @param array                    $importantPart
-     * @param float                    $zoom
-     *
-     * @return ResizeCoordinates
+     * @param int[] $size
      */
-    private function calculateBox($size, $original, $importantPart, $zoom)
+    private function calculateBox(array $size, ImageDimensionsInterface $original, array $importantPart, float $zoom)
     {
         $importantPart = $this->zoomImportantPart($importantPart, $zoom, $original->getSize());
 
@@ -157,13 +144,9 @@ class ResizeCalculator implements ResizeCalculatorInterface
     /**
      * Calculates resize coordinates for single dimension size.
      *
-     * @param int[]                    $size
-     * @param ImageDimensionsInterface $original
-     * @param array                    $importantPart
-     *
-     * @return ResizeCoordinates
+     * @param int[] $size
      */
-    private function calculateSingleDimension($size, $original, $importantPart)
+    private function calculateSingleDimension(array $size, ImageDimensionsInterface $original, array $importantPart): ResizeCoordinatesInterface
     {
         // Calculate the height if only the width is given
         if ($size[0]) {
@@ -187,12 +170,9 @@ class ResizeCalculator implements ResizeCalculatorInterface
     /**
      * Converts an important part to an x, y, width and height array.
      *
-     * @param ImageDimensionsInterface    $dimensions
-     * @param ImportantPartInterface|null $importantPart
-     *
      * @return array<string,int>
      */
-    private function importantPartAsArray(ImageDimensionsInterface $dimensions, ImportantPartInterface $importantPart = null)
+    private function importantPartAsArray(ImageDimensionsInterface $dimensions, ImportantPartInterface $importantPart = null): array
     {
         if (null === $importantPart) {
             $importantPart = new ImportantPart(new Point(0, 0), clone $dimensions->getSize());
@@ -209,13 +189,9 @@ class ResizeCalculator implements ResizeCalculatorInterface
     /**
      * Zooms an important part by the specified zoom level.
      *
-     * @param array        $importantPart
-     * @param float        $zoom
-     * @param BoxInterface $origSize
-     *
      * @return array<string,float>
      */
-    private function zoomImportantPart(array $importantPart, $zoom, BoxInterface $origSize)
+    private function zoomImportantPart(array $importantPart, float $zoom, BoxInterface $origSize): array
     {
         return [
             'x' => $importantPart['x'] * $zoom,
@@ -232,14 +208,11 @@ class ResizeCalculator implements ResizeCalculatorInterface
     /**
      * Builds a resize coordinates object.
      *
-     * @param array                    $size
-     * @param array                    $cropStart
-     * @param array                    $cropSize
-     * @param ImageDimensionsInterface $original
-     *
-     * @return ResizeCoordinates
+     * @param int[] $size
+     * @param int[] $cropStart
+     * @param int[] $cropSize
      */
-    private function buildCoordinates($size, $cropStart, $cropSize, $original)
+    private function buildCoordinates(array $size, array $cropStart, array $cropSize, ImageDimensionsInterface $original): ResizeCoordinatesInterface
     {
         $scale = 1;
 
@@ -266,13 +239,13 @@ class ResizeCalculator implements ResizeCalculatorInterface
     /**
      * Calculates the least zoomed crop possible.
      *
-     * @param array        $size     Target size
+     * @param int[]        $size     Target size
      * @param BoxInterface $origSize Original size
      * @param array        $part     Important part
      *
      * @return array<string,float>
      */
-    private function calculateLeastZoomed($size, $origSize, $part)
+    private function calculateLeastZoomed(array $size, BoxInterface $origSize, array $part): array
     {
         $zoomed = [
             'x' => 0,
@@ -311,13 +284,13 @@ class ResizeCalculator implements ResizeCalculatorInterface
     /**
      * Calculates the most zoomed crop possible.
      *
-     * @param array        $size     Target size
+     * @param int[]        $size     Target size
      * @param BoxInterface $origSize Original size
      * @param array        $part     Important part
      *
      * @return array<string,float>
      */
-    private function calculateMostZoomed($size, $origSize, $part)
+    private function calculateMostZoomed(array $size, BoxInterface $origSize, array $part): array
     {
         $zoomed = $part;
 

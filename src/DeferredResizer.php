@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -30,7 +32,7 @@ class DeferredResizer extends Resizer implements DeferredResizerInterface
      *
      * @param $storage DeferredImageStorageInterface
      */
-    public function __construct($cacheDir, ResizeCalculatorInterface $calculator = null, Filesystem $filesystem = null, DeferredImageStorageInterface $storage = null)
+    public function __construct(string $cacheDir, ResizeCalculatorInterface $calculator = null, Filesystem $filesystem = null, DeferredImageStorageInterface $storage = null)
     {
         parent::__construct($cacheDir, $calculator, $filesystem);
 
@@ -39,7 +41,7 @@ class DeferredResizer extends Resizer implements DeferredResizerInterface
         }
     }
 
-    public function getDeferredImage($targetPath, ImagineInterface $imagine)
+    public function getDeferredImage(string $targetPath, ImagineInterface $imagine): DeferredImageInterface
     {
         if (Path::isAbsolute($targetPath)) {
             if (!Path::isBasePath($this->cacheDir, $targetPath)) {
@@ -66,10 +68,7 @@ class DeferredResizer extends Resizer implements DeferredResizerInterface
         );
     }
 
-    /**
-     * @return ImageInterface
-     */
-    public function resizeDeferredImage(DeferredImageInterface $image)
+    public function resizeDeferredImage(DeferredImageInterface $image): ImageInterface
     {
         if (!Path::isBasePath($this->cacheDir, $image->getPath())) {
             throw new \InvalidArgumentException(sprintf('Path "%s" is not inside cache directory "%s"', $image->getPath(), $this->cacheDir));
@@ -90,7 +89,7 @@ class DeferredResizer extends Resizer implements DeferredResizerInterface
         return $resizedImage;
     }
 
-    protected function processResize(ImageInterface $image, ResizeConfigurationInterface $config, ResizeOptionsInterface $options)
+    protected function processResize(ImageInterface $image, ResizeConfigurationInterface $config, ResizeOptionsInterface $options): ImageInterface
     {
         // Resize the source image if it is deferred
         if ($image instanceof DeferredImageInterface) {
@@ -103,7 +102,7 @@ class DeferredResizer extends Resizer implements DeferredResizerInterface
     /**
      * {@inheritdoc}
      */
-    protected function executeResize(ImageInterface $image, ResizeCoordinatesInterface $coordinates, $path, ResizeOptionsInterface $options)
+    protected function executeResize(ImageInterface $image, ResizeCoordinatesInterface $coordinates, string $path, ResizeOptionsInterface $options): ImageInterface
     {
         if (null !== $options->getTargetPath() || $options->getBypassCache()) {
             return parent::executeResize($image, $coordinates, $path, $options);
@@ -114,11 +113,7 @@ class DeferredResizer extends Resizer implements DeferredResizerInterface
         return new DeferredImage($path, $image->getImagine(), new ImageDimensions($coordinates->getCropSize()));
     }
 
-    /**
-     * @param string $sourcePath
-     * @param string $targetPath
-     */
-    private function storeResizeData($sourcePath, $targetPath, ResizeCoordinatesInterface $coordinates, ResizeOptionsInterface $options)
+    private function storeResizeData(string $sourcePath, string $targetPath, ResizeCoordinatesInterface $coordinates, ResizeOptionsInterface $options): void
     {
         $targetPath = Path::makeRelative($targetPath, $this->cacheDir);
         if ($this->storage->has($targetPath)) {
@@ -145,7 +140,7 @@ class DeferredResizer extends Resizer implements DeferredResizerInterface
         ]);
     }
 
-    private function executeDeferredResize($targetPath, $config, ImagineInterface $imagine)
+    private function executeDeferredResize(string $targetPath, array $config, ImagineInterface $imagine): ImageInterface
     {
         $sourcePath = $config['path'];
         $coordinates = new ResizeCoordinates(

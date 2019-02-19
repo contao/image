@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -32,24 +34,20 @@ class DeferredImageStorageFilesystem implements DeferredImageStorageInterface
      */
     private $locks = [];
 
-    /**
-     * @param string          $cacheDir
-     * @param Filesystem|null $filesystem
-     */
-    public function __construct($cacheDir, Filesystem $filesystem = null)
+    public function __construct(string $cacheDir, Filesystem $filesystem = null)
     {
         if (null === $filesystem) {
             $filesystem = new Filesystem();
         }
 
-        $this->cacheDir = (string) $cacheDir;
+        $this->cacheDir = $cacheDir;
         $this->filesystem = $filesystem;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function set($path, array $value)
+    public function set(string $path, array $value): void
     {
         $this->filesystem->dumpFile($this->getConfigPath($path), json_encode($value));
     }
@@ -57,7 +55,7 @@ class DeferredImageStorageFilesystem implements DeferredImageStorageInterface
     /**
      * {@inheritdoc}
      */
-    public function get($path)
+    public function get(string $path): array
     {
         return $this->decode(file_get_contents($this->getConfigPath($path)));
     }
@@ -65,7 +63,7 @@ class DeferredImageStorageFilesystem implements DeferredImageStorageInterface
     /**
      * {@inheritdoc}
      */
-    public function has($path)
+    public function has(string $path): bool
     {
         return $this->filesystem->exists($this->getConfigPath($path));
     }
@@ -73,7 +71,7 @@ class DeferredImageStorageFilesystem implements DeferredImageStorageInterface
     /**
      * {@inheritdoc}
      */
-    public function getLocked($path)
+    public function getLocked(string $path): array
     {
         if (isset($this->locks[$path])) {
             throw new \RuntimeException(sprintf('Lock for "%s" was already acquired.', $path));
@@ -98,7 +96,7 @@ class DeferredImageStorageFilesystem implements DeferredImageStorageInterface
     /**
      * {@inheritdoc}
      */
-    public function releaseLock($path)
+    public function releaseLock(string $path): void
     {
         if (!isset($this->locks[$path])) {
             throw new \RuntimeException(sprintf('No acquired lock for "%s" exists.', $path));
@@ -113,7 +111,7 @@ class DeferredImageStorageFilesystem implements DeferredImageStorageInterface
     /**
      * {@inheritdoc}
      */
-    public function delete($path)
+    public function delete(string $path): void
     {
         $this->filesystem->remove($this->getConfigPath($path));
     }
@@ -121,26 +119,21 @@ class DeferredImageStorageFilesystem implements DeferredImageStorageInterface
     /**
      * {@inheritdoc}
      */
-    public function listPaths($limit = -1)
+    public function listPaths(int $limit = -1): array
     {
         $iterator = new \RecursiveDirectoryIterator($this->cacheDir);
         $iterator = new \RecursiveIteratorIterator($iterator);
         $iterator = new \CallbackFilterIterator($iterator, function ($path) {
-            return substr($path, -\strlen(self::PATH_SUFFIX)) === self::PATH_SUFFIX;
+            return self::PATH_SUFFIX === substr((string) $path, -\strlen(self::PATH_SUFFIX));
         });
         $iterator = new \LimitIterator($iterator, 0, $limit);
 
-        return array_map(function($path) {
+        return array_map(function ($path) {
             return substr(Path::makeRelative((string) $path, $this->cacheDir), 0, -\strlen(self::PATH_SUFFIX));
         }, iterator_to_array($iterator));
     }
 
-    /**
-     * @param string $path
-     *
-     * @return string
-     */
-    private function getConfigPath($path)
+    private function getConfigPath(string $path): string
     {
         if (preg_match('(^/|/$|//|/\.\.|^\.\.)', $path)) {
             throw new \InvalidArgumentException(sprintf('Invalid storage key "%s"', $path));
@@ -151,10 +144,8 @@ class DeferredImageStorageFilesystem implements DeferredImageStorageInterface
 
     /**
      * Decode the contents of a stored configuration.
-     *
-     * @param string $contents
      */
-    private function decode($contents)
+    private function decode(string $contents): array
     {
         return json_decode($contents, true);
     }

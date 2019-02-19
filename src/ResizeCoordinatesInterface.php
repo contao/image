@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -17,38 +19,28 @@ interface ResizeCoordinatesInterface
 {
     /**
      * Returns the size.
-     *
-     * @return BoxInterface
      */
-    public function getSize();
+    public function getSize(): BoxInterface;
 
     /**
      * Returns the crop start coordinate.
-     *
-     * @return PointInterface
      */
-    public function getCropStart();
+    public function getCropStart(): PointInterface;
 
     /**
      * Returns the crop size.
-     *
-     * @return BoxInterface
      */
-    public function getCropSize();
+    public function getCropSize(): BoxInterface;
 
     /**
      * Returns a hash of the coordinates.
-     *
-     * @return string
      */
-    public function getHash();
+    public function getHash(): string;
 
     /**
      * Compares the coordinates with another ResizeCoordinates or Box object.
      *
      * @param ResizeCoordinatesInterface|BoxInterface $coordinates
-     *
-     * @return bool
      */
-    public function isEqualTo($coordinates);
+    public function isEqualTo($coordinates): bool;
 }

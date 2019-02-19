@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -31,12 +33,7 @@ class ImageDimensions implements ImageDimensionsInterface
      */
     private $undefined;
 
-    /**
-     * @param BoxInterface $size
-     * @param bool|null    $relative
-     * @param bool|null    $undefined
-     */
-    public function __construct(BoxInterface $size, $relative = null, $undefined = null)
+    public function __construct(BoxInterface $size, bool $relative = null, bool $undefined = null)
     {
         if (null === $relative && $size instanceof RelativeBoxInterface) {
             $relative = true;
@@ -54,7 +51,7 @@ class ImageDimensions implements ImageDimensionsInterface
     /**
      * {@inheritdoc}
      */
-    public function getSize()
+    public function getSize(): BoxInterface
     {
         return $this->size;
     }
@@ -62,7 +59,7 @@ class ImageDimensions implements ImageDimensionsInterface
     /**
      * {@inheritdoc}
      */
-    public function isRelative()
+    public function isRelative(): bool
     {
         return $this->relative;
     }
@@ -70,7 +67,7 @@ class ImageDimensions implements ImageDimensionsInterface
     /**
      * {@inheritdoc}
      */
-    public function isUndefined()
+    public function isUndefined(): bool
     {
         return $this->undefined;
     }

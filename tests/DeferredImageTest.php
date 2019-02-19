@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -17,7 +19,7 @@ use PHPUnit\Framework\TestCase;
 
 class DeferredImageTest extends TestCase
 {
-    public function testInstantiation()
+    public function testInstantiation(): void
     {
         $path = '/path/to/image.jpg';
         $imagine = $this->createMock(ImagineInterface::class);

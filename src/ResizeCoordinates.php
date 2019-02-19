@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -31,11 +33,6 @@ class ResizeCoordinates implements ResizeCoordinatesInterface
      */
     private $cropSize;
 
-    /**
-     * @param BoxInterface   $size
-     * @param PointInterface $cropStart
-     * @param BoxInterface   $cropSize
-     */
     public function __construct(BoxInterface $size, PointInterface $cropStart, BoxInterface $cropSize)
     {
         $this->size = $size;
@@ -46,7 +43,7 @@ class ResizeCoordinates implements ResizeCoordinatesInterface
     /**
      * {@inheritdoc}
      */
-    public function getSize()
+    public function getSize(): BoxInterface
     {
         return $this->size;
     }
@@ -54,7 +51,7 @@ class ResizeCoordinates implements ResizeCoordinatesInterface
     /**
      * {@inheritdoc}
      */
-    public function getCropStart()
+    public function getCropStart(): PointInterface
     {
         return $this->cropStart;
     }
@@ -62,7 +59,7 @@ class ResizeCoordinates implements ResizeCoordinatesInterface
     /**
      * {@inheritdoc}
      */
-    public function getCropSize()
+    public function getCropSize(): BoxInterface
     {
         return $this->cropSize;
     }
@@ -70,7 +67,7 @@ class ResizeCoordinates implements ResizeCoordinatesInterface
     /**
      * {@inheritdoc}
      */
-    public function getHash()
+    public function getHash(): string
     {
         return md5(implode(',', [
             (int) $this->size->getWidth(),
@@ -85,7 +82,7 @@ class ResizeCoordinates implements ResizeCoordinatesInterface
     /**
      * {@inheritdoc}
      */
-    public function isEqualTo($coordinates)
+    public function isEqualTo($coordinates): bool
     {
         if ($coordinates instanceof BoxInterface) {
             $coordinates = new static($coordinates, new Point(0, 0), $coordinates);

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -14,65 +16,41 @@ interface PictureConfigurationItemInterface
 {
     /**
      * Returns the resize configuration.
-     *
-     * @return ResizeConfigurationInterface
      */
-    public function getResizeConfig();
+    public function getResizeConfig(): ResizeConfigurationInterface;
 
     /**
      * Sets the resize configuration.
-     *
-     * @param ResizeConfigurationInterface $resizeConfig
-     *
-     * @return self
      */
-    public function setResizeConfig(ResizeConfigurationInterface $resizeConfig);
+    public function setResizeConfig(ResizeConfigurationInterface $resizeConfig): self;
 
     /**
      * Returns the sizes.
-     *
-     * @return string
      */
-    public function getSizes();
+    public function getSizes(): string;
 
     /**
      * Sets the sizes.
-     *
-     * @param string $sizes
-     *
-     * @return self
      */
-    public function setSizes($sizes);
+    public function setSizes(string $sizes): self;
 
     /**
      * Returns the densities.
-     *
-     * @return string
      */
-    public function getDensities();
+    public function getDensities(): string;
 
     /**
      * Sets the densities.
-     *
-     * @param string $densities
-     *
-     * @return self
      */
-    public function setDensities($densities);
+    public function setDensities(string $densities): self;
 
     /**
      * Returns the media.
-     *
-     * @return string
      */
-    public function getMedia();
+    public function getMedia(): string;
 
     /**
      * Sets the media.
-     *
-     * @param string $media
-     *
-     * @return self
      */
-    public function setMedia($media);
+    public function setMedia(string $media): self;
 }

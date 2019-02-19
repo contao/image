@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -16,49 +18,32 @@ interface ImageInterface
 {
     /**
      * Returns the imagine instance.
-     *
-     * @return ImagineInterface
      */
-    public function getImagine();
+    public function getImagine(): ImagineInterface;
 
     /**
      * Returns the path.
-     *
-     * @return string
      */
-    public function getPath();
+    public function getPath(): string;
 
     /**
      * Returns the URL relative to the specified root directory,
      * optionally prefixed with the specified URL prefix.
-     *
-     * @param string $rootDir
-     * @param string $prefix
-     *
-     * @return string
      */
-    public function getUrl($rootDir, $prefix = '');
+    public function getUrl(string $rootDir, string $prefix = ''): string;
 
     /**
      * Returns the dimensions.
-     *
-     * @return ImageDimensionsInterface
      */
-    public function getDimensions();
+    public function getDimensions(): ImageDimensionsInterface;
 
     /**
      * Returns the important part.
-     *
-     * @return ImportantPartInterface
      */
-    public function getImportantPart();
+    public function getImportantPart(): ImportantPartInterface;
 
     /**
      * Sets the important part.
-     *
-     * @param ImportantPartInterface|null $importantPart
-     *
-     * @return self
      */
-    public function setImportantPart(ImportantPartInterface $importantPart = null);
+    public function setImportantPart(ImportantPartInterface $importantPart = null): self;
 }

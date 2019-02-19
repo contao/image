@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -19,7 +21,7 @@ use Symfony\Component\Filesystem\Filesystem;
 
 class PictureTest extends TestCase
 {
-    public function testInstantiation()
+    public function testInstantiation(): void
     {
         $picture = $this->createPicture();
 
@@ -27,7 +29,7 @@ class PictureTest extends TestCase
         $this->assertInstanceOf('Contao\Image\PictureInterface', $picture);
     }
 
-    public function testGetImg()
+    public function testGetImg(): void
     {
         $picture = $this->createPicture(null, '/path/to/a/filename with special&<>"\'chars.jpeg');
 
@@ -93,7 +95,7 @@ class PictureTest extends TestCase
         $picture->getImg(null, 'https://example.com/images/');
     }
 
-    public function testGetSources()
+    public function testGetSources(): void
     {
         $picture = $this->createPicture(null, '/path/to/a/filename with special&<>"\'chars.jpeg');
 
@@ -132,21 +134,21 @@ class PictureTest extends TestCase
         $picture->getSources(null, 'https://example.com/images/');
     }
 
-    public function testMissingSrc()
+    public function testMissingSrc(): void
     {
         $this->expectException('InvalidArgumentException');
 
         new Picture(['srcset' => []], []);
     }
 
-    public function testInvalidSrc()
+    public function testInvalidSrc(): void
     {
         $this->expectException('InvalidArgumentException');
 
         new Picture(['src' => new \stdClass(), 'srcset' => []], []);
     }
 
-    public function testMissingSrcset()
+    public function testMissingSrcset(): void
     {
         $image = $this->createMock(ImageInterface::class);
         $this->expectException('InvalidArgumentException');
@@ -154,7 +156,7 @@ class PictureTest extends TestCase
         new Picture(['src' => $image], []);
     }
 
-    public function testInvalidSrcset()
+    public function testInvalidSrcset(): void
     {
         $image = $this->createMock(ImageInterface::class);
         $this->expectException('InvalidArgumentException');

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -25,10 +27,6 @@ class ImportantPart implements ImportantPartInterface
      */
     private $size;
 
-    /**
-     * @param PointInterface $position
-     * @param BoxInterface   $size
-     */
     public function __construct(PointInterface $position, BoxInterface $size)
     {
         $this->position = $position;
@@ -38,7 +36,7 @@ class ImportantPart implements ImportantPartInterface
     /**
      * {@inheritdoc}
      */
-    public function getPosition()
+    public function getPosition(): PointInterface
     {
         return $this->position;
     }
@@ -46,7 +44,7 @@ class ImportantPart implements ImportantPartInterface
     /**
      * {@inheritdoc}
      */
-    public function getSize()
+    public function getSize(): BoxInterface
     {
         return $this->size;
     }

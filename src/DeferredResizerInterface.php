@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -16,19 +18,11 @@ interface DeferredResizerInterface extends ResizerInterface
 {
     /**
      * Get a deferred image object for a not yet resized image.
-     *
-     * @param string $targetPath
-     *
-     * @return DeferredImageInterface
      */
-    public function getDeferredImage($targetPath, ImagineInterface $imagine);
+    public function getDeferredImage(string $targetPath, ImagineInterface $imagine): DeferredImageInterface;
 
     /**
      * Resizes a deferred image.
-     *
-     * @param string $targetPath
-     *
-     * @return ImageInterface
      */
-    public function resizeDeferredImage(DeferredImageInterface $image);
+    public function resizeDeferredImage(DeferredImageInterface $image): ImageInterface;
 }

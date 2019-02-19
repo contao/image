@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -13,6 +15,7 @@ namespace Contao\Image\Tests;
 use Contao\Image\Image;
 use Contao\Image\ImageDimensions;
 use Contao\Image\ImageInterface;
+use Contao\Image\ImportantPart;
 use Contao\Image\PictureConfiguration;
 use Contao\Image\PictureConfigurationItem;
 use Contao\Image\PictureGenerator;
@@ -23,11 +26,12 @@ use Contao\Image\ResizeOptions;
 use Contao\Image\ResizerInterface;
 use Contao\ImagineSvg\Imagine as ImagineSvg;
 use Imagine\Image\Box;
+use Imagine\Image\Point;
 use PHPUnit\Framework\TestCase;
 
 class PictureGeneratorTest extends TestCase
 {
-    public function testInstantiation()
+    public function testInstantiation(): void
     {
         $pictureGenerator = $this->createPictureGenerator();
 
@@ -35,7 +39,7 @@ class PictureGeneratorTest extends TestCase
         $this->assertInstanceOf('Contao\Image\PictureGeneratorInterface', $pictureGenerator);
     }
 
-    public function testGenerate()
+    public function testGenerate(): void
     {
         $resizer = $this->createMock(ResizerInterface::class);
         $resizer
@@ -70,6 +74,10 @@ class PictureGeneratorTest extends TestCase
         $imageMock
             ->method('getDimensions')
             ->willReturn(new ImageDimensions(new Box(1000, 1000)))
+        ;
+        $imageMock
+            ->method('getImportantPart')
+            ->willReturn(new ImportantPart(new Point(0, 0), new Box(1000, 1000)))
         ;
 
         $pictureGenerator = $this->createPictureGenerator($resizer);
@@ -153,7 +161,7 @@ class PictureGeneratorTest extends TestCase
         $this->assertInstanceOf('Contao\Image\PictureInterface', $picture);
     }
 
-    public function testGenerateWDescriptor()
+    public function testGenerateWDescriptor(): void
     {
         $resizer = $this->createMock(ResizerInterface::class);
         $resizer
@@ -185,6 +193,10 @@ class PictureGeneratorTest extends TestCase
         $imageMock
             ->method('getDimensions')
             ->willReturn(new ImageDimensions(new Box(400, 200)))
+        ;
+        $imageMock
+            ->method('getImportantPart')
+            ->willReturn(new ImportantPart(new Point(0, 0), new Box(400, 200)))
         ;
 
         $pictureGenerator = $this->createPictureGenerator($resizer);
@@ -239,7 +251,7 @@ class PictureGeneratorTest extends TestCase
         $this->assertInstanceOf('Contao\Image\PictureInterface', $picture);
     }
 
-    public function testGenerateWDescriptorSmallImage()
+    public function testGenerateWDescriptorSmallImage(): void
     {
         $resizer = $this->createMock(ResizerInterface::class);
         $resizer
@@ -275,6 +287,10 @@ class PictureGeneratorTest extends TestCase
         $imageMock
             ->method('getDimensions')
             ->willReturn(new ImageDimensions(new Box(123, 246)))
+        ;
+        $imageMock
+            ->method('getImportantPart')
+            ->willReturn(new ImportantPart(new Point(0, 0), new Box(123, 246)))
         ;
 
         $pictureGenerator = $this->createPictureGenerator($resizer);
@@ -351,7 +367,7 @@ class PictureGeneratorTest extends TestCase
         $this->assertInstanceOf('Contao\Image\PictureInterface', $picture);
     }
 
-    public function testGenerateDuplicateSrcsetItems()
+    public function testGenerateDuplicateSrcsetItems(): void
     {
         $resizer = $this->createMock(ResizerInterface::class);
         $resizer
@@ -383,6 +399,10 @@ class PictureGeneratorTest extends TestCase
         $imageMock
             ->method('getDimensions')
             ->willReturn(new ImageDimensions(new Box(200, 200)))
+        ;
+        $imageMock
+            ->method('getImportantPart')
+            ->willReturn(new ImportantPart(new Point(0, 0), new Box(200, 200)))
         ;
 
         $pictureGenerator = $this->createPictureGenerator($resizer);
@@ -436,7 +456,7 @@ class PictureGeneratorTest extends TestCase
         $this->assertInstanceOf('Contao\Image\PictureInterface', $picture);
     }
 
-    public function testGenerateSmallSourceImage()
+    public function testGenerateSmallSourceImage(): void
     {
         $resizer = $this->createMock(ResizerInterface::class);
         $resizer
@@ -468,6 +488,10 @@ class PictureGeneratorTest extends TestCase
         $imageMock
             ->method('getDimensions')
             ->willReturn(new ImageDimensions(new Box(20, 20)))
+        ;
+        $imageMock
+            ->method('getImportantPart')
+            ->willReturn(new ImportantPart(new Point(0, 0), new Box(20, 20)))
         ;
 
         $pictureGenerator = $this->createPictureGenerator($resizer);
@@ -521,7 +545,7 @@ class PictureGeneratorTest extends TestCase
         $this->assertInstanceOf('Contao\Image\PictureInterface', $picture);
     }
 
-    public function testGenerateSvgImage()
+    public function testGenerateSvgImage(): void
     {
         $resizer = $this->createMock(ResizerInterface::class);
         $resizer
@@ -557,6 +581,10 @@ class PictureGeneratorTest extends TestCase
         $imageMock
             ->method('getImagine')
             ->willReturn($this->createMock(ImagineSvg::class))
+        ;
+        $imageMock
+            ->method('getImportantPart')
+            ->willReturn(new ImportantPart(new Point(0, 0), new Box(200, 200)))
         ;
 
         $pictureGenerator = $this->createPictureGenerator($resizer);
@@ -610,7 +638,7 @@ class PictureGeneratorTest extends TestCase
         $this->assertInstanceOf('Contao\Image\PictureInterface', $picture);
     }
 
-    public function testGenerateWithLocale()
+    public function testGenerateWithLocale(): void
     {
         $locale = setlocale(LC_NUMERIC, 0);
 

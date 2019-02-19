@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -14,12 +16,6 @@ interface PictureGeneratorInterface
 {
     /**
      * Generates a Picture object.
-     *
-     * @param ImageInterface                $image
-     * @param PictureConfigurationInterface $config
-     * @param ResizeOptionsInterface        $options
-     *
-     * @return PictureInterface
      */
-    public function generate(ImageInterface $image, PictureConfigurationInterface $config, ResizeOptionsInterface $options);
+    public function generate(ImageInterface $image, PictureConfigurationInterface $config, ResizeOptionsInterface $options): PictureInterface;
 }

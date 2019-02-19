@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -10,15 +12,13 @@
 
 namespace Contao\Image;
 
+use Imagine\Image\ImagineInterface;
+
 class DeferredImage extends Image implements DeferredImageInterface
 {
-    /**
-     * @param string                   $path
-     * @param ImageDimensionsInterface $dimensions
-     */
-    public function __construct($path, $imagine, ImageDimensionsInterface $dimensions)
+    public function __construct(string $path, ImagineInterface $imagine, ImageDimensionsInterface $dimensions)
     {
-        $this->path = (string) $path;
+        $this->path = $path;
         $this->imagine = $imagine;
         $this->dimensions = $dimensions;
     }

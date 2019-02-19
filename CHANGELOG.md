@@ -5,6 +5,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 ## [Unreleased]
 
  * Add deferred image resizing. [#50]
+ * Increase PHP requirement to 7.1.
  * Fix bug with imagine array options.
 
 ## [0.3.9] (2019-01-28)

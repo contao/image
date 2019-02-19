@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -14,26 +16,20 @@ interface PictureConfigurationInterface
 {
     /**
      * Returns the size.
-     *
-     * @return PictureConfigurationItemInterface
      */
-    public function getSize();
+    public function getSize(): PictureConfigurationItemInterface;
 
     /**
      * Sets the size.
-     *
-     * @param PictureConfigurationItemInterface $size
-     *
-     * @return self
      */
-    public function setSize(PictureConfigurationItemInterface $size);
+    public function setSize(PictureConfigurationItemInterface $size): self;
 
     /**
      * Returns the size items.
      *
      * @return PictureConfigurationItemInterface[]
      */
-    public function getSizeItems();
+    public function getSizeItems(): array;
 
     /**
      * Sets the size items.

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -15,7 +17,7 @@ use PHPUnit\Framework\TestCase;
 
 class ResizeOptionsTest extends TestCase
 {
-    public function testInstantiation()
+    public function testInstantiation(): void
     {
         $options = new ResizeOptions();
 
@@ -23,7 +25,7 @@ class ResizeOptionsTest extends TestCase
         $this->assertInstanceOf('Contao\Image\ResizeOptionsInterface', $options);
     }
 
-    public function testSetImagineOptions()
+    public function testSetImagineOptions(): void
     {
         $options = new ResizeOptions();
 
@@ -32,7 +34,7 @@ class ResizeOptionsTest extends TestCase
         $this->assertSame(['jpeg_quality' => 95], $options->getImagineOptions());
     }
 
-    public function testSetTargetPath()
+    public function testSetTargetPath(): void
     {
         $options = new ResizeOptions();
 
@@ -48,13 +50,12 @@ class ResizeOptionsTest extends TestCase
         $options->setTargetPath('invalid/relative/path');
     }
 
-    public function testSetBypassCache()
+    public function testSetBypassCache(): void
     {
         $options = new ResizeOptions();
 
         $this->assertFalse($options->getBypassCache());
-        $this->assertSame($options, $options->setBypassCache(1));
+        $this->assertSame($options, $options->setBypassCache(true));
         $this->assertTrue($options->getBypassCache());
-        $this->assertInternalType('bool', $options->getBypassCache());
     }
 }

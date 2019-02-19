@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -14,12 +16,6 @@ interface ResizeCalculatorInterface
 {
     /**
      * Resizes an Image object.
-     *
-     * @param ResizeConfigurationInterface $config
-     * @param ImageDimensionsInterface     $dimensions
-     * @param ImportantPartInterface|null  $importantPart
-     *
-     * @return ResizeCoordinatesInterface
      */
-    public function calculate(ResizeConfigurationInterface $config, ImageDimensionsInterface $dimensions, ImportantPartInterface $importantPart = null);
+    public function calculate(ResizeConfigurationInterface $config, ImageDimensionsInterface $dimensions, ImportantPartInterface $importantPart = null): ResizeCoordinatesInterface;
 }

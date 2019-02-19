@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -16,7 +18,7 @@ use PHPUnit\Framework\TestCase;
 
 class PictureConfigurationItemTest extends TestCase
 {
-    public function testInstantiation()
+    public function testInstantiation(): void
     {
         $resizeConfig = new PictureConfigurationItem();
 
@@ -24,7 +26,7 @@ class PictureConfigurationItemTest extends TestCase
         $this->assertInstanceOf('Contao\Image\PictureConfigurationItemInterface', $resizeConfig);
     }
 
-    public function testSetResizeConfig()
+    public function testSetResizeConfig(): void
     {
         $config = new PictureConfigurationItem();
         $resizeConfig = $this->createMock(ResizeConfigurationInterface::class);
@@ -34,39 +36,30 @@ class PictureConfigurationItemTest extends TestCase
         $this->assertSame($resizeConfig, $config->getResizeConfig());
     }
 
-    public function testSetSizes()
+    public function testSetSizes(): void
     {
         $config = new PictureConfigurationItem();
 
         $this->assertSame('', $config->getSizes());
         $this->assertSame($config, $config->setSizes('(min-width: 900px) 50vw, 100vw'));
         $this->assertSame('(min-width: 900px) 50vw, 100vw', $config->getSizes());
-
-        $config->setSizes(100);
-        $this->assertInternalType('string', $config->getSizes());
     }
 
-    public function testSetDensities()
+    public function testSetDensities(): void
     {
         $config = new PictureConfigurationItem();
 
         $this->assertSame('', $config->getDensities());
         $this->assertSame($config, $config->setDensities('1x, 2x, 200w, 400w'));
         $this->assertSame('1x, 2x, 200w, 400w', $config->getDensities());
-
-        $config->setDensities(100);
-        $this->assertInternalType('string', $config->getDensities());
     }
 
-    public function testSetMedia()
+    public function testSetMedia(): void
     {
         $config = new PictureConfigurationItem();
 
         $this->assertSame('', $config->getMedia());
         $this->assertSame($config, $config->setMedia('(max-width: 900px)'));
         $this->assertSame('(max-width: 900px)', $config->getMedia());
-
-        $config->setMedia(100);
-        $this->assertInternalType('string', $config->getMedia());
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -12,46 +14,20 @@ namespace Contao\Image;
 
 interface DeferredImageStorageInterface
 {
-    /**
-     * @param string $path
-     */
-    public function set($path, array $value);
+    public function set(string $path, array $value): void;
+
+    public function get(string $path): array;
+
+    public function getLocked(string $path): array;
+
+    public function releaseLock(string $path): void;
+
+    public function delete(string $path): void;
+
+    public function has(string $path): bool;
 
     /**
-     * @param string $path
-     *
-     * @return array
+     * @return string[]
      */
-    public function get($path);
-
-    /**
-     * @param string $path
-     *
-     * @return array
-     */
-    public function getLocked($path);
-
-    /**
-     * @param string $path
-     */
-    public function releaseLock($path);
-
-    /**
-     * @param string $path
-     */
-    public function delete($path);
-
-    /**
-     * @param string $path
-     *
-     * @return bool
-     */
-    public function has($path);
-
-    /**
-     * @param int $limit
-     *
-     * @return bool
-     */
-    public function listPaths($limit = -1);
+    public function listPaths(int $limit = -1): array;
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -16,22 +18,16 @@ interface ImageDimensionsInterface
 {
     /**
      * Returns the size.
-     *
-     * @return BoxInterface
      */
-    public function getSize();
+    public function getSize(): BoxInterface;
 
     /**
      * Returns the relative flag.
-     *
-     * @return bool
      */
-    public function isRelative();
+    public function isRelative(): bool;
 
     /**
      * Returns the undefined flag.
-     *
-     * @return bool
      */
-    public function isUndefined();
+    public function isUndefined(): bool;
 }

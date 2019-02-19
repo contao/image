@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -10,23 +12,9 @@
 
 namespace Contao\Image\Tests;
 
-use Contao\Image\DeferredImageInterface;
 use Contao\Image\DeferredImageStorageFilesystem;
-use Contao\Image\DeferredResizer;
-use Contao\Image\Image;
-use Contao\Image\ImageDimensions;
-use Contao\Image\ResizeCalculatorInterface;
-use Contao\Image\ResizeConfigurationInterface;
-use Contao\Image\ResizeCoordinates;
-use Contao\Image\ResizeOptions;
-use Contao\Image\Resizer;
-use Imagine\Gd\Imagine as GdImagine;
-use Imagine\Image\Box;
-use Imagine\Image\ImageInterface as ImagineImageInterface;
-use Imagine\Image\Point;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
-use Webmozart\PathUtil\Path;
 
 class DeferredImageStorageFilesystemTest extends TestCase
 {
@@ -38,7 +26,7 @@ class DeferredImageStorageFilesystemTest extends TestCase
     /**
      * {@inheritdoc}
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -48,7 +36,7 @@ class DeferredImageStorageFilesystemTest extends TestCase
     /**
      * {@inheritdoc}
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         parent::tearDown();
 
@@ -57,7 +45,7 @@ class DeferredImageStorageFilesystemTest extends TestCase
         }
     }
 
-    public function testInstantiation()
+    public function testInstantiation(): void
     {
         $storage = new DeferredImageStorageFilesystem($this->rootDir);
 
@@ -68,7 +56,7 @@ class DeferredImageStorageFilesystemTest extends TestCase
     /**
      * @dataProvider getValues
      */
-    public function testHasSetGetDelete(string $key, array $value)
+    public function testHasSetGetDelete(string $key, array $value): void
     {
         $key = 'foo/bar.baz';
         $value = ['foo' => 'bar'];
@@ -90,7 +78,7 @@ class DeferredImageStorageFilesystemTest extends TestCase
     /**
      * @dataProvider getValues
      */
-    public function testGetLocked(string $key, array $value)
+    public function testGetLocked(string $key, array $value): void
     {
         $storage = new DeferredImageStorageFilesystem($this->rootDir);
 
@@ -118,7 +106,7 @@ class DeferredImageStorageFilesystemTest extends TestCase
     /**
      * @dataProvider invalidKeys
      */
-    public function testSetInvalidKeyThrows($key)
+    public function testSetInvalidKeyThrows($key): void
     {
         $storage = new DeferredImageStorageFilesystem($this->rootDir);
 
@@ -127,7 +115,7 @@ class DeferredImageStorageFilesystemTest extends TestCase
         $storage->set($key, []);
     }
 
-    public function testListPaths()
+    public function testListPaths(): void
     {
         $originalPaths = [
             'foo1.jpg',

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -36,7 +38,7 @@ class ResizerTest extends TestCase
     /**
      * {@inheritdoc}
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -46,7 +48,7 @@ class ResizerTest extends TestCase
     /**
      * {@inheritdoc}
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         parent::tearDown();
 
@@ -55,7 +57,7 @@ class ResizerTest extends TestCase
         }
     }
 
-    public function testInstantiation()
+    public function testInstantiation(): void
     {
         $resizer = $this->createResizer();
 
@@ -63,7 +65,7 @@ class ResizerTest extends TestCase
         $this->assertInstanceOf('Contao\Image\ResizerInterface', $resizer);
     }
 
-    public function testResize()
+    public function testResize(): void
     {
         $calculator = $this->createMock(ResizeCalculatorInterface::class);
         $calculator
@@ -155,7 +157,7 @@ class ResizerTest extends TestCase
         $this->assertFilePermissions(0666, $resizedImage->getPath());
     }
 
-    public function testResizeSvg()
+    public function testResizeSvg(): void
     {
         $xml = '<?xml version="1.0"?>'
             .'<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="100" height="100"></svg>';
@@ -222,7 +224,7 @@ class ResizerTest extends TestCase
         unlink($resizedImage->getPath());
     }
 
-    public function testResizeCache()
+    public function testResizeCache(): void
     {
         $calculator = $this->createMock(ResizeCalculatorInterface::class);
         $calculator
@@ -331,7 +333,7 @@ class ResizerTest extends TestCase
         $this->assertSame(100, getimagesize($imagePath)[0]);
     }
 
-    public function testResizeUndefinedSize()
+    public function testResizeUndefinedSize(): void
     {
         $imagePath = $this->rootDir.'/dummy.jpg';
         $resizer = $this->createResizer();
@@ -364,7 +366,7 @@ class ResizerTest extends TestCase
         $this->assertSame($imagePath, $resizedImage->getPath());
     }
 
-    public function testResizeEmptyConfig()
+    public function testResizeEmptyConfig(): void
     {
         $imagePath = $this->rootDir.'/dummy.jpg';
         $resizer = $this->createResizer();
@@ -403,7 +405,7 @@ class ResizerTest extends TestCase
         $this->assertNotSame($image, $resizedImage);
     }
 
-    public function testResizeSameDimensions()
+    public function testResizeSameDimensions(): void
     {
         $path = $this->rootDir.'/dummy.jpg';
 
@@ -456,7 +458,7 @@ class ResizerTest extends TestCase
         $this->assertSame($this->rootDir.'/target-path.jpg', $resizedImage->getPath());
     }
 
-    public function testResizeSameDimensionsRelative()
+    public function testResizeSameDimensionsRelative(): void
     {
         $xml = '<?xml version="1.0"?>'.
             '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 100 100"></svg>';
@@ -524,7 +526,7 @@ class ResizerTest extends TestCase
      * @param int    $expectedPermissions
      * @param string $path
      */
-    private function assertFilePermissions($expectedPermissions, $path)
+    private function assertFilePermissions($expectedPermissions, $path): void
     {
         $this->assertSame(
             sprintf('%o', $expectedPermissions & ~umask() & 0777),

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -14,21 +16,11 @@ interface PictureInterface
 {
     /**
      * Returns the image tag attributes.
-     *
-     * @param string|null $rootDir
-     * @param string      $prefix
-     *
-     * @return array
      */
-    public function getImg($rootDir = null, $prefix = '');
+    public function getImg(string $rootDir = null, string $prefix = ''): array;
 
     /**
      * Returns the source tags attributes.
-     *
-     * @param string|null $rootDir
-     * @param string      $prefix
-     *
-     * @return array
      */
-    public function getSources($rootDir = null, $prefix = '');
+    public function getSources(string $rootDir = null, string $prefix = ''): array;
 }

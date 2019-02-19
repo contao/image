@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -19,7 +21,7 @@ use PHPUnit\Framework\TestCase;
 
 class ResizeCoordinatesTest extends TestCase
 {
-    public function testInstantiation()
+    public function testInstantiation(): void
     {
         $coordinates = new ResizeCoordinates(
             $this->createMock(BoxInterface::class),
@@ -31,7 +33,7 @@ class ResizeCoordinatesTest extends TestCase
         $this->assertInstanceOf('Contao\Image\ResizeCoordinatesInterface', $coordinates);
     }
 
-    public function testGetter()
+    public function testGetter(): void
     {
         $size = $this->createMock(BoxInterface::class);
         $cropStart = $this->createMock(PointInterface::class);
@@ -43,7 +45,7 @@ class ResizeCoordinatesTest extends TestCase
         $this->assertSame($cropSize, $coordinates->getCropSize());
     }
 
-    public function testGetHash()
+    public function testGetHash(): void
     {
         $coordinates1 = new ResizeCoordinates(new Box(200, 200), new Point(50, 50), new Box(100, 100));
         $coordinates2 = new ResizeCoordinates(new Box(200.1, 200.1), new Point(50.1, 50.1), new Box(100.1, 100.1));
@@ -53,15 +55,15 @@ class ResizeCoordinatesTest extends TestCase
         $hash2 = $coordinates2->getHash();
         $hash3 = $coordinates3->getHash();
 
-        $this->assertInternalType('string', $hash1);
-        $this->assertInternalType('string', $hash2);
-        $this->assertInternalType('string', $hash3);
+        $this->assertIsString($hash1);
+        $this->assertIsString($hash2);
+        $this->assertIsString($hash3);
 
         $this->assertSame($hash1, $hash2);
         $this->assertNotSame($hash1, $hash3);
     }
 
-    public function testIsEqualTo()
+    public function testIsEqualTo(): void
     {
         $coordinates = new ResizeCoordinates(new Box(200, 200), new Point(50, 50), new Box(100, 100));
 

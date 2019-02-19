@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -18,7 +20,7 @@ use PHPUnit\Framework\TestCase;
 
 class ImageDimensionsTest extends TestCase
 {
-    public function testInstantiation()
+    public function testInstantiation(): void
     {
         $dimensions = new ImageDimensions($this->createMock(BoxInterface::class));
 
@@ -26,7 +28,7 @@ class ImageDimensionsTest extends TestCase
         $this->assertInstanceOf('Contao\Image\ImageDimensionsInterface', $dimensions);
     }
 
-    public function testGetSize()
+    public function testGetSize(): void
     {
         $size = $this->createMock(BoxInterface::class);
         $dimensions = new ImageDimensions($size);
@@ -34,7 +36,7 @@ class ImageDimensionsTest extends TestCase
         $this->assertSame($size, $dimensions->getSize());
     }
 
-    public function testIsRelative()
+    public function testIsRelative(): void
     {
         $size = $this->createMock(BoxInterface::class);
 
@@ -53,7 +55,7 @@ class ImageDimensionsTest extends TestCase
         $this->assertFalse($dimensions->isRelative());
     }
 
-    public function testIsUndefined()
+    public function testIsUndefined(): void
     {
         $size = $this->createMock(BoxInterface::class);
 

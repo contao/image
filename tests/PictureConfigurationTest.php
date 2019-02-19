@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -16,7 +18,7 @@ use PHPUnit\Framework\TestCase;
 
 class PictureConfigurationTest extends TestCase
 {
-    public function testInstantiation()
+    public function testInstantiation(): void
     {
         $config = new PictureConfiguration();
 
@@ -24,7 +26,7 @@ class PictureConfigurationTest extends TestCase
         $this->assertInstanceOf('Contao\Image\PictureConfigurationInterface', $config);
     }
 
-    public function testSetSize()
+    public function testSetSize(): void
     {
         $config = new PictureConfiguration();
         $configItem = $this->createMock(PictureConfigurationItemInterface::class);
@@ -34,7 +36,7 @@ class PictureConfigurationTest extends TestCase
         $this->assertSame($configItem, $config->getSize());
     }
 
-    public function testSetSizeItems()
+    public function testSetSizeItems(): void
     {
         $config = new PictureConfiguration();
         $configItem = $this->createMock(PictureConfigurationItemInterface::class);

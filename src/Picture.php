@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -22,10 +24,6 @@ class Picture implements PictureInterface
      */
     private $sources;
 
-    /**
-     * @param array $img
-     * @param array $sources
-     */
     public function __construct(array $img, array $sources)
     {
         $this->validateSrcAttribute($img);
@@ -42,7 +40,7 @@ class Picture implements PictureInterface
     /**
      * {@inheritdoc}
      */
-    public function getImg($rootDir = null, $prefix = '')
+    public function getImg(string $rootDir = null, string $prefix = ''): array
     {
         if (null === $rootDir) {
             if ('' !== $prefix) {
@@ -60,7 +58,7 @@ class Picture implements PictureInterface
     /**
      * {@inheritdoc}
      */
-    public function getSources($rootDir = null, $prefix = '')
+    public function getSources(string $rootDir = null, string $prefix = ''): array
     {
         if (null === $rootDir) {
             if ('' !== $prefix) {
@@ -82,14 +80,8 @@ class Picture implements PictureInterface
 
     /**
      * Converts image objects in an attributes array to URLs.
-     *
-     * @param array  $img
-     * @param string $rootDir
-     * @param string $prefix
-     *
-     * @return array
      */
-    private function buildUrls($img, $rootDir, $prefix)
+    private function buildUrls(array $img, string $rootDir, string $prefix): array
     {
         if (isset($img['src'])) {
             $img['src'] = $img['src']->getUrl($rootDir, $prefix);
@@ -113,11 +105,9 @@ class Picture implements PictureInterface
     /**
      * Validates the src attribute.
      *
-     * @param array $img
-     *
      * @throws \InvalidArgumentException
      */
-    private function validateSrcAttribute(array $img)
+    private function validateSrcAttribute(array $img): void
     {
         if (!isset($img['src'])) {
             throw new \InvalidArgumentException('Missing src attribute');
@@ -131,11 +121,9 @@ class Picture implements PictureInterface
     /**
      * Validates the srcset attribute.
      *
-     * @param array $img
-     *
      * @throws \InvalidArgumentException
      */
-    private function validateSrcsetAttribute(array $img)
+    private function validateSrcsetAttribute(array $img): void
     {
         if (!isset($img['srcset'])) {
             throw new \InvalidArgumentException('Missing srcset attribute');

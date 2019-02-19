@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -15,7 +17,7 @@ use PHPUnit\Framework\TestCase;
 
 class ResizeConfigurationTest extends TestCase
 {
-    public function testInstantiation()
+    public function testInstantiation(): void
     {
         $resizeConfig = new ResizeConfiguration();
 
@@ -23,7 +25,7 @@ class ResizeConfigurationTest extends TestCase
         $this->assertInstanceOf('Contao\Image\ResizeConfigurationInterface', $resizeConfig);
     }
 
-    public function testIsEmpty()
+    public function testIsEmpty(): void
     {
         $config = new ResizeConfiguration();
 
@@ -62,35 +64,33 @@ class ResizeConfigurationTest extends TestCase
         $this->assertTrue($config->isEmpty());
     }
 
-    public function testSetWidth()
+    public function testSetWidth(): void
     {
         $config = new ResizeConfiguration();
 
         $this->assertSame(0, $config->getWidth());
-        $this->assertSame($config, $config->setWidth(100.0));
+        $this->assertSame($config, $config->setWidth(100));
         $this->assertSame(100, $config->getWidth());
-        $this->assertInternalType('int', $config->getWidth());
 
         $this->expectException('InvalidArgumentException');
 
         $config->setWidth(-1);
     }
 
-    public function testSetHeight()
+    public function testSetHeight(): void
     {
         $config = new ResizeConfiguration();
 
         $this->assertSame(0, $config->getHeight());
-        $this->assertSame($config, $config->setHeight(100.0));
+        $this->assertSame($config, $config->setHeight(100));
         $this->assertSame(100, $config->getHeight());
-        $this->assertInternalType('int', $config->getHeight());
 
         $this->expectException('InvalidArgumentException');
 
         $config->setHeight(-1);
     }
 
-    public function testSetMode()
+    public function testSetMode(): void
     {
         $config = new ResizeConfiguration();
 
@@ -103,21 +103,20 @@ class ResizeConfigurationTest extends TestCase
         $config->setMode('invalid');
     }
 
-    public function testSetZoomLevel()
+    public function testSetZoomLevel(): void
     {
         $config = new ResizeConfiguration();
 
         $this->assertSame(0, $config->getZoomLevel());
-        $this->assertSame($config, $config->setZoomLevel(100.0));
+        $this->assertSame($config, $config->setZoomLevel(100));
         $this->assertSame(100, $config->getZoomLevel());
-        $this->assertInternalType('int', $config->getZoomLevel());
 
         $this->expectException('InvalidArgumentException');
 
         $config->setZoomLevel(-1);
     }
 
-    public function testSetZoomLevelTooHigh()
+    public function testSetZoomLevelTooHigh(): void
     {
         $config = new ResizeConfiguration();
 

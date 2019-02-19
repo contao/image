@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -33,7 +35,7 @@ class ImageTest extends TestCase
     /**
      * {@inheritdoc}
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -43,7 +45,7 @@ class ImageTest extends TestCase
     /**
      * {@inheritdoc}
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         parent::tearDown();
 
@@ -52,7 +54,7 @@ class ImageTest extends TestCase
         }
     }
 
-    public function testInstantiation()
+    public function testInstantiation(): void
     {
         $image = $this->createImage();
 
@@ -60,20 +62,20 @@ class ImageTest extends TestCase
         $this->assertInstanceOf('Contao\Image\ImageInterface', $image);
     }
 
-    public function testConstructorNonExistentPath()
+    public function testConstructorNonExistentPath(): void
     {
         $this->expectException('InvalidArgumentException');
 
         new Image('/path/to/non/existent/file.jpg', $this->createMock(ImagineInterface::class));
     }
 
-    public function testConstructorDirPath()
+    public function testConstructorDirPath(): void
     {
         $this->expectException('InvalidArgumentException');
         $this->createImage(__DIR__);
     }
 
-    public function testInstantiationMissingFiles()
+    public function testInstantiationMissingFiles(): void
     {
         $filesystem = $this->createMock(Filesystem::class);
         $filesystem
@@ -85,14 +87,14 @@ class ImageTest extends TestCase
         $this->createImage(null, null, $filesystem);
     }
 
-    public function testGetPath()
+    public function testGetPath(): void
     {
         $image = $this->createImage('/path/filename.jpeg');
 
         $this->assertSame('/path/filename.jpeg', $image->getPath());
     }
 
-    public function testGetUrl()
+    public function testGetUrl(): void
     {
         $image = $this->createImage('C:\path\to\a\filename with special&<>"\'%2Fchars.jpeg');
 
@@ -113,7 +115,7 @@ class ImageTest extends TestCase
         $image->getUrl('/path/t');
     }
 
-    public function testGetUrlRealtivePath()
+    public function testGetUrlRealtivePath(): void
     {
         foreach ([
             '/path/to/a/file.png',
@@ -163,7 +165,7 @@ class ImageTest extends TestCase
         $image->getUrl('C:\path/subdir');
     }
 
-    public function testGetDimensions()
+    public function testGetDimensions(): void
     {
         $imagine = $this->createMock(ImagineInterface::class);
         $imagineImage = $this->createMock(ImageInterface::class);
@@ -183,7 +185,7 @@ class ImageTest extends TestCase
         $this->assertEquals(new ImageDimensions(new Box(100, 100)), $image->getDimensions());
     }
 
-    public function testGetDimensionsFromPartialFile()
+    public function testGetDimensionsFromPartialFile(): void
     {
         if (!is_dir($this->rootDir)) {
             mkdir($this->rootDir, 0777, true);
@@ -202,7 +204,7 @@ class ImageTest extends TestCase
         $this->assertEquals(new ImageDimensions(new Box(1000, 1000)), $image->getDimensions());
     }
 
-    public function testGetDimensionsFromPartialSvgFile()
+    public function testGetDimensionsFromPartialSvgFile(): void
     {
         $imagine = $this->createMock(Imagine::class);
         $imagine
@@ -222,7 +224,7 @@ class ImageTest extends TestCase
         $this->assertEquals(new ImageDimensions(new Box(1000, 1000)), $image->getDimensions());
     }
 
-    public function testGetDimensionsFromPartialSvgzFile()
+    public function testGetDimensionsFromPartialSvgzFile(): void
     {
         $imagine = $this->createMock(Imagine::class);
         $imagine
@@ -242,7 +244,7 @@ class ImageTest extends TestCase
         $this->assertEquals(new ImageDimensions(new Box(1000, 1000)), $image->getDimensions());
     }
 
-    public function testGetDimensionsInvalidSvg()
+    public function testGetDimensionsInvalidSvg(): void
     {
         if (!is_dir($this->rootDir)) {
             mkdir($this->rootDir, 0777, true);
@@ -262,7 +264,7 @@ class ImageTest extends TestCase
         $image->getDimensions();
     }
 
-    public function testGetImportantPart()
+    public function testGetImportantPart(): void
     {
         $imagine = $this->createMock(ImagineInterface::class);
         $imagineImage = $this->createMock(ImageInterface::class);

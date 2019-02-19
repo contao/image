@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -22,7 +24,7 @@ use PHPUnit\Framework\TestCase;
 
 class ResizeCalculatorTest extends TestCase
 {
-    public function testInstantiation()
+    public function testInstantiation(): void
     {
         $calculator = new ResizeCalculator();
 
@@ -31,12 +33,9 @@ class ResizeCalculatorTest extends TestCase
     }
 
     /**
-     * @param array $arguments
-     * @param array $expectedResult
-     *
      * @dataProvider getCalculateDataWithoutImportantPart
      */
-    public function testCalculateWithoutImportantPart(array $arguments, array $expectedResult)
+    public function testCalculateWithoutImportantPart(array $arguments, array $expectedResult): void
     {
         $calculator = new ResizeCalculator();
 
@@ -46,7 +45,7 @@ class ResizeCalculatorTest extends TestCase
             new Box($expectedResult['width'], $expectedResult['height'])
         );
 
-        $config = (new ResizeConfiguration())->setWidth($arguments[0])->setHeight($arguments[1]);
+        $config = (new ResizeConfiguration())->setWidth((int) $arguments[0])->setHeight((int) $arguments[1]);
         $dimensions = new ImageDimensions(new Box($arguments[2], $arguments[3]), !empty($arguments[5]));
         $importantPart = null;
 
@@ -499,27 +498,13 @@ class ResizeCalculatorTest extends TestCase
                     'target_height' => 200,
                 ],
             ],
-            'Float values' => [
-                [100.4, 100.4, 50, 50, null, true],
-                [
-                    'width' => 100,
-                    'height' => 100,
-                    'target_x' => 0,
-                    'target_y' => 0,
-                    'target_width' => 100,
-                    'target_height' => 100,
-                ],
-            ],
         ];
     }
 
     /**
-     * @param array $arguments
-     * @param array $expectedResult
-     *
      * @dataProvider getCalculateDataWithImportantPart
      */
-    public function testCalculateWithImportantPart(array $arguments, array $expectedResult)
+    public function testCalculateWithImportantPart(array $arguments, array $expectedResult): void
     {
         $calculator = new ResizeCalculator();
 
@@ -529,13 +514,18 @@ class ResizeCalculatorTest extends TestCase
             new Box($expectedResult['width'], $expectedResult['height'])
         );
 
-        $config = (new ResizeConfiguration())
-            ->setWidth($arguments[0])
-            ->setHeight($arguments[1])
-            ->setZoomLevel($arguments[5])
-        ;
+        $config = new ResizeConfiguration();
 
-        if ($arguments[4]) {
+        if (null !== $arguments[0]) {
+            $config->setWidth($arguments[0]);
+        }
+        if (null !== $arguments[1]) {
+            $config->setHeight($arguments[1]);
+        }
+        if (null !== $arguments[5]) {
+            $config->setZoomLevel($arguments[5]);
+        }
+        if (null !== $arguments[4]) {
             $config->setMode($arguments[4]);
         }
 
@@ -709,7 +699,7 @@ class ResizeCalculatorTest extends TestCase
     /**
      * Tests the calculate() method with an invalid resize mode.
      */
-    public function testCalculateWithInvalidResizeMode()
+    public function testCalculateWithInvalidResizeMode(): void
     {
         $calculator = new ResizeCalculator();
 

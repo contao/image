@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -12,78 +14,60 @@ namespace Contao\Image;
 
 interface ResizeConfigurationInterface
 {
-    const MODE_CROP = 'crop';
-    const MODE_BOX = 'box';
-    const MODE_PROPORTIONAL = 'proportional';
+    public const MODE_CROP = 'crop';
+    public const MODE_BOX = 'box';
+    public const MODE_PROPORTIONAL = 'proportional';
 
     /**
      * Returns true if the resize would have no effect.
-     *
-     * @return bool
      */
-    public function isEmpty();
+    public function isEmpty(): bool;
 
     /**
      * Returns the width.
-     *
-     * @return int
      */
-    public function getWidth();
+    public function getWidth(): int;
 
     /**
      * Sets the width.
      *
      * @param int $width the width
-     *
-     * @return self
      */
-    public function setWidth($width);
+    public function setWidth(int $width): self;
 
     /**
      * Returns the height.
-     *
-     * @return int
      */
-    public function getHeight();
+    public function getHeight(): int;
 
     /**
      * Sets the height.
      *
      * @param int $height the height
-     *
-     * @return self
      */
-    public function setHeight($height);
+    public function setHeight(int $height): self;
 
     /**
      * Returns the mode.
-     *
-     * @return string
      */
-    public function getMode();
+    public function getMode(): string;
 
     /**
      * Sets the mode.
      *
      * @param string $mode the mode
-     *
-     * @return self
      */
-    public function setMode($mode);
+    public function setMode(string $mode): self;
 
     /**
      * Returns the zoom level.
-     *
-     * @return int
      */
-    public function getZoomLevel();
+    public function getZoomLevel(): int;
 
     /**
      * Sets the zoom level.
      *
      * @param int $zoomLevel the zoom level
-     *
-     * @return self
      */
-    public function setZoomLevel($zoomLevel);
+    public function setZoomLevel(int $zoomLevel): self;
 }

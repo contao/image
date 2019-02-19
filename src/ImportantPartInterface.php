@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -17,15 +19,11 @@ interface ImportantPartInterface
 {
     /**
      * Returns the position.
-     *
-     * @return PointInterface
      */
-    public function getPosition();
+    public function getPosition(): PointInterface;
 
     /**
      * Returns the size.
-     *
-     * @return BoxInterface
      */
-    public function getSize();
+    public function getSize(): BoxInterface;
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -14,49 +16,31 @@ interface ResizeOptionsInterface
 {
     /**
      * Returns the imagine options.
-     *
-     * @return array
      */
-    public function getImagineOptions();
+    public function getImagineOptions(): array;
 
     /**
      * Returns the imagine options.
-     *
-     * @param array $imagineOptions
-     *
-     * @return self
      */
-    public function setImagineOptions(array $imagineOptions);
+    public function setImagineOptions(array $imagineOptions): self;
 
     /**
      * Returns the target path.
-     *
-     * @return string
      */
-    public function getTargetPath();
+    public function getTargetPath(): ?string;
 
     /**
      * Sets the target path.
-     *
-     * @param string|null $targetPath
-     *
-     * @return self
      */
-    public function setTargetPath($targetPath);
+    public function setTargetPath(?string $targetPath): self;
 
     /**
      * Returns the bypass cache flag.
-     *
-     * @return string
      */
-    public function getBypassCache();
+    public function getBypassCache(): bool;
 
     /**
      * Sets the bypass cache flag.
-     *
-     * @param bool $bypassCache
-     *
-     * @return self
      */
-    public function setBypassCache($bypassCache);
+    public function setBypassCache(bool $bypassCache): self;
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -29,10 +31,6 @@ class PictureGenerator implements PictureGeneratorInterface
      */
     private $resizeOptions;
 
-    /**
-     * @param ResizerInterface               $resizer
-     * @param ResizeCalculatorInterface|null $calculator
-     */
     public function __construct(ResizerInterface $resizer, ResizeCalculatorInterface $calculator = null)
     {
         if (null === $calculator) {
@@ -46,7 +44,7 @@ class PictureGenerator implements PictureGeneratorInterface
     /**
      * {@inheritdoc}
      */
-    public function generate(ImageInterface $image, PictureConfigurationInterface $config, ResizeOptionsInterface $options)
+    public function generate(ImageInterface $image, PictureConfigurationInterface $config, ResizeOptionsInterface $options): PictureInterface
     {
         $this->resizeOptions = clone $options;
         $this->resizeOptions->setTargetPath(null);
@@ -62,13 +60,8 @@ class PictureGenerator implements PictureGeneratorInterface
 
     /**
      * Generates the source.
-     *
-     * @param ImageInterface                    $image
-     * @param PictureConfigurationItemInterface $config
-     *
-     * @return array
      */
-    private function generateSource(ImageInterface $image, PictureConfigurationItemInterface $config)
+    private function generateSource(ImageInterface $image, PictureConfigurationItemInterface $config): array
     {
         $densities = [1];
         $sizesAttribute = $config->getSizes();
@@ -129,12 +122,9 @@ class PictureGenerator implements PictureGeneratorInterface
     /**
      * Parse the densities string and return an array of scaling factors.
      *
-     * @param string $densities
-     * @param int    $width1x
-     *
      * @return array<int,float>
      */
-    private function parseDensities($densities, $width1x)
+    private function parseDensities(string $densities, int $width1x): array
     {
         $densities = explode(',', $densities);
 
@@ -164,19 +154,15 @@ class PictureGenerator implements PictureGeneratorInterface
     /**
      * Generates a srcset item.
      *
-     * @param ImageInterface                    $image
-     * @param PictureConfigurationItemInterface $config
-     * @param float                             $density
-     * @param string                            $descriptorType x, w or the empty string
-     * @param int                               $width1x
+     * @param string $descriptorType x, w or the empty string
      *
      * @return array Array containing an ImageInterface and an optional descriptor string
      */
-    private function generateSrcsetItem(ImageInterface $image, PictureConfigurationItemInterface $config, $density, $descriptorType, $width1x)
+    private function generateSrcsetItem(ImageInterface $image, PictureConfigurationItemInterface $config, float $density, string $descriptorType, int $width1x): array
     {
         $resizeConfig = clone $config->getResizeConfig();
-        $resizeConfig->setWidth(round($resizeConfig->getWidth() * $density));
-        $resizeConfig->setHeight(round($resizeConfig->getHeight() * $density));
+        $resizeConfig->setWidth((int) round($resizeConfig->getWidth() * $density));
+        $resizeConfig->setHeight((int) round($resizeConfig->getHeight() * $density));
 
         $resizedImage = $this->resizer->resize($image, $resizeConfig, $this->resizeOptions);
 
@@ -196,10 +182,8 @@ class PictureGenerator implements PictureGeneratorInterface
      * Removes duplicate items from a srcset array.
      *
      * @param array $srcset Array containing an ImageInterface and an optional descriptor string
-     *
-     * @return array
      */
-    private function removeDuplicateScrsetItems(array $srcset)
+    private function removeDuplicateScrsetItems(array $srcset): array
     {
         $srcset = array_values(array_filter(
             $srcset,

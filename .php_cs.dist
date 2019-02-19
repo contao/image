@@ -1,6 +1,6 @@
 <?php
 
-$header = <<<EOF
+$header = <<<'EOF'
 This file is part of Contao.
 
 (c) Leo Feyer
@@ -16,7 +16,9 @@ return PhpCsFixer\Config::create()
     ->setRules([
         '@Symfony' => true,
         '@Symfony:risky' => true,
-        '@PHPUnit57Migration:risky' => true,
+        '@PHP71Migration' => true,
+        '@PHP71Migration:risky' => true,
+        '@PHPUnit60Migration:risky' => true,
         'align_multiline_comment' => true,
         'array_syntax' => ['syntax' => 'short'],
         'combine_consecutive_issets' => true,
@@ -46,6 +48,7 @@ return PhpCsFixer\Config::create()
         'no_binary_string' => true,
         'no_null_property_initialization' => true,
         'no_superfluous_elseif' => true,
+        'no_superfluous_phpdoc_tags' => true,
         'no_unreachable_default_argument_value' => true,
         'no_useless_else' => true,
         'no_useless_return' => true,
@@ -62,6 +65,7 @@ return PhpCsFixer\Config::create()
         'strict_comparison' => true,
         'strict_param' => true,
         'string_line_ending' => true,
+        'void_return' => true,
     ])
     ->setFinder($finder)
     ->setRiskyAllowed(true)

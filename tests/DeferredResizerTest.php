@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -40,7 +42,7 @@ class DeferredResizerTest extends TestCase
     /**
      * {@inheritdoc}
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -50,7 +52,7 @@ class DeferredResizerTest extends TestCase
     /**
      * {@inheritdoc}
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         parent::tearDown();
 
@@ -59,7 +61,7 @@ class DeferredResizerTest extends TestCase
         }
     }
 
-    public function testInstantiation()
+    public function testInstantiation(): void
     {
         $resizer = $this->createResizer();
 
@@ -68,12 +70,12 @@ class DeferredResizerTest extends TestCase
         $this->assertInstanceOf('Contao\Image\ResizerInterface', $resizer);
     }
 
-    public function testResize()
+    public function testResize(): void
     {
         $calculator = $this->createMock(ResizeCalculatorInterface::class);
         $calculator
             ->method('calculate')
-            ->willReturnCallback(function(ResizeConfigurationInterface $config, ImageDimensionsInterface $dimensions, ImportantPartInterface $importantPart = null) {
+            ->willReturnCallback(function (ResizeConfigurationInterface $config, ImageDimensionsInterface $dimensions, ImportantPartInterface $importantPart = null) {
                 return new ResizeCoordinates(new Box($config->getWidth(), $config->getHeight()), new Point(0, 0), new Box($config->getWidth(), $config->getHeight()));
             })
         ;
@@ -184,7 +186,7 @@ class DeferredResizerTest extends TestCase
      * @param int    $expectedPermissions
      * @param string $path
      */
-    private function assertFilePermissions($expectedPermissions, $path)
+    private function assertFilePermissions($expectedPermissions, $path): void
     {
         $this->assertSame(
             sprintf('%o', $expectedPermissions & ~umask() & 0777),

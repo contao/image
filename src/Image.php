@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -50,12 +52,7 @@ class Image implements ImageInterface
      */
     private $importantPart;
 
-    /**
-     * @param string           $path
-     * @param ImagineInterface $imagine
-     * @param Filesystem|null  $filesystem
-     */
-    public function __construct($path, ImagineInterface $imagine, Filesystem $filesystem = null)
+    public function __construct(string $path, ImagineInterface $imagine, Filesystem $filesystem = null)
     {
         if (null === $filesystem) {
             $filesystem = new Filesystem();
@@ -69,14 +66,14 @@ class Image implements ImageInterface
             throw new \InvalidArgumentException($path.' is a directory');
         }
 
-        $this->path = (string) $path;
+        $this->path = $path;
         $this->imagine = $imagine;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getImagine()
+    public function getImagine(): ImagineInterface
     {
         return $this->imagine;
     }
@@ -84,7 +81,7 @@ class Image implements ImageInterface
     /**
      * {@inheritdoc}
      */
-    public function getPath()
+    public function getPath(): string
     {
         return $this->path;
     }
@@ -92,7 +89,7 @@ class Image implements ImageInterface
     /**
      * {@inheritdoc}
      */
-    public function getUrl($rootDir, $prefix = '')
+    public function getUrl(string $rootDir, string $prefix = ''): string
     {
         if (!Path::isBasePath($rootDir, $this->path)) {
             throw new \InvalidArgumentException(sprintf('Path "%s" is not inside root directory "%s"', $this->path, $rootDir));
@@ -107,7 +104,7 @@ class Image implements ImageInterface
     /**
      * {@inheritdoc}
      */
-    public function getDimensions()
+    public function getDimensions(): ImageDimensionsInterface
     {
         if (null === $this->dimensions) {
             // Try getSvgSize() or native getimagesize() for better performance
@@ -137,7 +134,7 @@ class Image implements ImageInterface
     /**
      * {@inheritdoc}
      */
-    public function getImportantPart()
+    public function getImportantPart(): ImportantPartInterface
     {
         if (null === $this->importantPart) {
             $this->importantPart = new ImportantPart(new Point(0, 0), $this->getDimensions()->getSize());
@@ -149,7 +146,7 @@ class Image implements ImageInterface
     /**
      * {@inheritdoc}
      */
-    public function setImportantPart(ImportantPartInterface $importantPart = null)
+    public function setImportantPart(ImportantPartInterface $importantPart = null): ImageInterface
     {
         $this->importantPart = $importantPart;
 
@@ -161,10 +158,8 @@ class Image implements ImageInterface
      *
      * This is faster than reading and parsing the whole SVG file just to get
      * the size of it, especially for large files.
-     *
-     * @return BoxInterface|null
      */
-    private function getSvgSize()
+    private function getSvgSize(): ?BoxInterface
     {
         static $zlibSupport;
 
@@ -190,7 +185,7 @@ class Image implements ImageInterface
         $disableEntities = libxml_disable_entity_loader(false);
         $internalErrors = libxml_use_internal_errors(true);
 
-        if ($reader->open($path, LIBXML_NONET)) {
+        if ($reader->open($path, null, LIBXML_NONET)) {
             // After opening the file disable the entity loader for security reasons
             libxml_disable_entity_loader();
 
@@ -208,12 +203,8 @@ class Image implements ImageInterface
 
     /**
      * Extracts the SVG image size from the given XMLReader object.
-     *
-     * @param XMLReader $reader
-     *
-     * @return BoxInterface|null
      */
-    private function getSvgSizeFromReader(XMLReader $reader)
+    private function getSvgSizeFromReader(XMLReader $reader): ?BoxInterface
     {
         // Move the pointer to the first element in the document
         while ($reader->read() && XMLReader::ELEMENT !== $reader->nodeType);

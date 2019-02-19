@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -20,7 +22,7 @@ class ResizeOptions implements ResizeOptionsInterface
     private $imagineOptions = [];
 
     /**
-     * @var string
+     * @var ?string
      */
     private $targetPath;
 
@@ -32,7 +34,7 @@ class ResizeOptions implements ResizeOptionsInterface
     /**
      * {@inheritdoc}
      */
-    public function getImagineOptions()
+    public function getImagineOptions(): array
     {
         return $this->imagineOptions;
     }
@@ -40,7 +42,7 @@ class ResizeOptions implements ResizeOptionsInterface
     /**
      * {@inheritdoc}
      */
-    public function setImagineOptions(array $imagineOptions)
+    public function setImagineOptions(array $imagineOptions): ResizeOptionsInterface
     {
         $this->imagineOptions = $imagineOptions;
 
@@ -50,7 +52,7 @@ class ResizeOptions implements ResizeOptionsInterface
     /**
      * {@inheritdoc}
      */
-    public function getTargetPath()
+    public function getTargetPath(): ?string
     {
         return $this->targetPath;
     }
@@ -58,10 +60,10 @@ class ResizeOptions implements ResizeOptionsInterface
     /**
      * {@inheritdoc}
      */
-    public function setTargetPath($targetPath)
+    public function setTargetPath(?string $targetPath): ResizeOptionsInterface
     {
         if (null !== $targetPath) {
-            $targetPath = (string) $targetPath;
+            $targetPath = $targetPath;
 
             if (!(new Filesystem())->isAbsolutePath($targetPath)) {
                 throw new \InvalidArgumentException('"'.$targetPath.'" is not an absolute target path');
@@ -76,7 +78,7 @@ class ResizeOptions implements ResizeOptionsInterface
     /**
      * {@inheritdoc}
      */
-    public function getBypassCache()
+    public function getBypassCache(): bool
     {
         return $this->bypassCache;
     }
@@ -84,9 +86,9 @@ class ResizeOptions implements ResizeOptionsInterface
     /**
      * {@inheritdoc}
      */
-    public function setBypassCache($bypassCache)
+    public function setBypassCache(bool $bypassCache): ResizeOptionsInterface
     {
-        $this->bypassCache = (bool) $bypassCache;
+        $this->bypassCache = $bypassCache;
 
         return $this;
     }

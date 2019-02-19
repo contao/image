@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -35,7 +37,7 @@ class PictureConfigurationItem implements PictureConfigurationItemInterface
     /**
      * {@inheritdoc}
      */
-    public function getResizeConfig()
+    public function getResizeConfig(): ResizeConfigurationInterface
     {
         if (null === $this->resizeConfig) {
             $this->setResizeConfig(new ResizeConfiguration());
@@ -47,7 +49,7 @@ class PictureConfigurationItem implements PictureConfigurationItemInterface
     /**
      * {@inheritdoc}
      */
-    public function setResizeConfig(ResizeConfigurationInterface $resizeConfig)
+    public function setResizeConfig(ResizeConfigurationInterface $resizeConfig): PictureConfigurationItemInterface
     {
         $this->resizeConfig = $resizeConfig;
 
@@ -57,7 +59,7 @@ class PictureConfigurationItem implements PictureConfigurationItemInterface
     /**
      * {@inheritdoc}
      */
-    public function getSizes()
+    public function getSizes(): string
     {
         return $this->sizes;
     }
@@ -65,9 +67,9 @@ class PictureConfigurationItem implements PictureConfigurationItemInterface
     /**
      * {@inheritdoc}
      */
-    public function setSizes($sizes)
+    public function setSizes(string $sizes): PictureConfigurationItemInterface
     {
-        $this->sizes = (string) $sizes;
+        $this->sizes = $sizes;
 
         return $this;
     }
@@ -75,7 +77,7 @@ class PictureConfigurationItem implements PictureConfigurationItemInterface
     /**
      * {@inheritdoc}
      */
-    public function getDensities()
+    public function getDensities(): string
     {
         return $this->densities;
     }
@@ -83,9 +85,9 @@ class PictureConfigurationItem implements PictureConfigurationItemInterface
     /**
      * {@inheritdoc}
      */
-    public function setDensities($densities)
+    public function setDensities(string $densities): PictureConfigurationItemInterface
     {
-        $this->densities = (string) $densities;
+        $this->densities = $densities;
 
         return $this;
     }
@@ -93,7 +95,7 @@ class PictureConfigurationItem implements PictureConfigurationItemInterface
     /**
      * {@inheritdoc}
      */
-    public function getMedia()
+    public function getMedia(): string
     {
         return $this->media;
     }
@@ -101,9 +103,9 @@ class PictureConfigurationItem implements PictureConfigurationItemInterface
     /**
      * {@inheritdoc}
      */
-    public function setMedia($media)
+    public function setMedia(string $media): PictureConfigurationItemInterface
     {
-        $this->media = (string) $media;
+        $this->media = $media;
 
         return $this;
     }

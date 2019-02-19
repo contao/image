@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -36,12 +38,7 @@ class Resizer implements ResizerInterface
      */
     private $calculator;
 
-    /**
-     * @param string                         $cacheDir
-     * @param ResizeCalculatorInterface|null $calculator
-     * @param Filesystem|null                $filesystem
-     */
-    public function __construct($cacheDir, ResizeCalculatorInterface $calculator = null, Filesystem $filesystem = null)
+    public function __construct(string $cacheDir, ResizeCalculatorInterface $calculator = null, Filesystem $filesystem = null)
     {
         if (null === $calculator) {
             $calculator = new ResizeCalculator();
@@ -59,7 +56,7 @@ class Resizer implements ResizerInterface
     /**
      * {@inheritdoc}
      */
-    public function resize(ImageInterface $image, ResizeConfigurationInterface $config, ResizeOptionsInterface $options)
+    public function resize(ImageInterface $image, ResizeConfigurationInterface $config, ResizeOptionsInterface $options): ImageInterface
     {
         if ($config->isEmpty() || $image->getDimensions()->isUndefined()) {
             $image = $this->createImage($image, $image->getPath());
@@ -78,16 +75,9 @@ class Resizer implements ResizerInterface
     /**
      * Executes the resize operation via Imagine.
      *
-     * @param ImageInterface             $image
-     * @param ResizeCoordinatesInterface $coordinates
-     * @param string                     $path
-     * @param ResizeOptionsInterface     $options
-     *
-     * @return ImageInterface
-     *
      * @internal Do not call this method in your code; it will be made private in a future version
      */
-    protected function executeResize(ImageInterface $image, ResizeCoordinatesInterface $coordinates, $path, ResizeOptionsInterface $options)
+    protected function executeResize(ImageInterface $image, ResizeCoordinatesInterface $coordinates, string $path, ResizeOptionsInterface $options): ImageInterface
     {
         $dir = \dirname($path);
 
@@ -130,14 +120,9 @@ class Resizer implements ResizerInterface
     /**
      * Creates a new image instance for the specified path.
      *
-     * @param ImageInterface $image
-     * @param string         $path
-     *
-     * @return ImageInterface
-     *
      * @internal Do not call this method in your code; it will be made private in a future version
      */
-    protected function createImage(ImageInterface $image, $path)
+    protected function createImage(ImageInterface $image, string $path): ImageInterface
     {
         return new Image($path, $image->getImagine(), $this->filesystem);
     }
@@ -145,15 +130,9 @@ class Resizer implements ResizerInterface
     /**
      * Processes the resize and executes it if not already cached.
      *
-     * @param ImageInterface               $image
-     * @param ResizeConfigurationInterface $config
-     * @param ResizeOptionsInterface       $options
-     *
-     * @return ImageInterface
-     *
      * @internal
      */
-    protected function processResize(ImageInterface $image, ResizeConfigurationInterface $config, ResizeOptionsInterface $options)
+    protected function processResize(ImageInterface $image, ResizeConfigurationInterface $config, ResizeOptionsInterface $options): ImageInterface
     {
         $coordinates = $this->calculator->calculate($config, $image->getDimensions(), $image->getImportantPart());
 
@@ -174,13 +153,9 @@ class Resizer implements ResizerInterface
     /**
      * Creates the target cache path.
      *
-     * @param string                     $path
-     * @param ResizeCoordinatesInterface $coordinates
-     * @param ResizeOptionsInterface     $options
-     *
      * @return string The relative target path
      */
-    private function createCachePath($path, ResizeCoordinatesInterface $coordinates, ResizeOptionsInterface $options)
+    private function createCachePath(string $path, ResizeCoordinatesInterface $coordinates, ResizeOptionsInterface $options): string
     {
         $imagineOptions = $options->getImagineOptions();
         ksort($imagineOptions);

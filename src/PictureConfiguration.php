@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Contao.
  *
@@ -25,7 +27,7 @@ class PictureConfiguration implements PictureConfigurationInterface
     /**
      * {@inheritdoc}
      */
-    public function getSize()
+    public function getSize(): PictureConfigurationItemInterface
     {
         if (null === $this->size) {
             $this->setSize(new PictureConfigurationItem());
@@ -37,7 +39,7 @@ class PictureConfiguration implements PictureConfigurationInterface
     /**
      * {@inheritdoc}
      */
-    public function setSize(PictureConfigurationItemInterface $size)
+    public function setSize(PictureConfigurationItemInterface $size): PictureConfigurationInterface
     {
         $this->size = $size;
 
@@ -47,7 +49,7 @@ class PictureConfiguration implements PictureConfigurationInterface
     /**
      * {@inheritdoc}
      */
-    public function getSizeItems()
+    public function getSizeItems(): array
     {
         return $this->sizeItems;
     }
@@ -55,7 +57,7 @@ class PictureConfiguration implements PictureConfigurationInterface
     /**
      * {@inheritdoc}
      */
-    public function setSizeItems(array $sizeItems)
+    public function setSizeItems(array $sizeItems): PictureConfigurationInterface
     {
         foreach ($sizeItems as $sizeItem) {
             if (!$sizeItem instanceof PictureConfigurationItemInterface) {
