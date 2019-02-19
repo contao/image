@@ -11,6 +11,7 @@
 namespace Contao\Image;
 
 use Symfony\Component\Filesystem\Filesystem;
+use Webmozart\PathUtil\Path;
 
 class DeferredImageStorageFilesystem implements DeferredImageStorageInterface
 {
@@ -115,6 +116,19 @@ class DeferredImageStorageFilesystem implements DeferredImageStorageInterface
     public function delete($path)
     {
         $this->filesystem->remove($this->getConfigPath($path));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function listPaths($limit = -1)
+    {
+        return array_map(
+            function($path) {
+                return substr(Path::makeRelative($path, $this->cacheDir), 0, -\strlen(self::PATH_SUFFIX));
+            },
+            glob($this->cacheDir.'/**/*'.self::PATH_SUFFIX)
+        );
     }
 
     /**
