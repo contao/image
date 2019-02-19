@@ -14,7 +14,10 @@ use Contao\Image\DeferredImageInterface;
 use Contao\Image\DeferredResizer;
 use Contao\Image\Image;
 use Contao\Image\ImageDimensions;
+use Contao\Image\ImageDimensionsInterface;
+use Contao\Image\ImportantPartInterface;
 use Contao\Image\ResizeCalculatorInterface;
+use Contao\Image\ResizeConfiguration;
 use Contao\Image\ResizeConfigurationInterface;
 use Contao\Image\ResizeCoordinates;
 use Contao\Image\ResizeOptions;
@@ -70,7 +73,9 @@ class DeferredResizerTest extends TestCase
         $calculator = $this->createMock(ResizeCalculatorInterface::class);
         $calculator
             ->method('calculate')
-            ->willReturn(new ResizeCoordinates(new Box(100, 100), new Point(0, 0), new Box(100, 100)))
+            ->willReturnCallback(function(ResizeConfigurationInterface $config, ImageDimensionsInterface $dimensions, ImportantPartInterface $importantPart = null) {
+                return new ResizeCoordinates(new Box($config->getWidth(), $config->getHeight()), new Point(0, 0), new Box($config->getWidth(), $config->getHeight()));
+            })
         ;
 
         $resizer = $this->createResizer(null, $calculator);
@@ -100,13 +105,13 @@ class DeferredResizerTest extends TestCase
             ->willReturn(new GdImagine())
         ;
 
-        $configuration = $this->createMock(ResizeConfigurationInterface::class);
-
         $defaultUmask = umask();
 
         $deferredImage = $resizer->resize(
             $image,
-            $configuration,
+            (new ResizeConfiguration())
+                ->setWidth(100)
+                ->setHeight(100),
             (new ResizeOptions())
                 ->setImagineOptions([
                     'jpeg_quality' => 95,
@@ -121,17 +126,33 @@ class DeferredResizerTest extends TestCase
         $this->assertFileNotExists($deferredImage->getPath());
         $this->assertFileExists($deferredImage->getPath().'.config');
 
-        $resizedImage = $resizer->resizeDeferredImage($deferredImage);
+        $deferredImage2 = $resizer->resize(
+            $deferredImage,
+            (new ResizeConfiguration())
+                ->setWidth(50)
+                ->setHeight(50),
+            (new ResizeOptions())
+                ->setImagineOptions([
+                    'jpeg_quality' => 95,
+                    'interlace' => ImagineImageInterface::INTERLACE_PLANE,
+                    'jpeg_sampling_factors' => [2, 1, 1],
+                ])
+        );
+
+        $this->assertFileExists($deferredImage->getPath());
+
+        $resizedImage = $resizer->resizeDeferredImage($deferredImage2);
 
         $this->assertNotInstanceOf(DeferredImageInterface::class, $resizedImage);
-        $this->assertEquals(new ImageDimensions(new Box(100, 100)), $resizedImage->getDimensions());
-        $this->assertSame($deferredImage->getPath(), $resizedImage->getPath());
+        $this->assertEquals(new ImageDimensions(new Box(50, 50)), $resizedImage->getDimensions());
         $this->assertFileExists($resizedImage->getPath());
         $this->assertFileNotExists($resizedImage->getPath().'.config');
 
         $resizedImage = $resizer->resize(
             $image,
-            $configuration,
+            (new ResizeConfiguration())
+                ->setWidth(100)
+                ->setHeight(100),
             (new ResizeOptions())->setTargetPath($this->rootDir.'/target-path.jpg')
         );
 

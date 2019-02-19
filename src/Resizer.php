@@ -150,8 +150,10 @@ class Resizer implements ResizerInterface
      * @param ResizeOptionsInterface       $options
      *
      * @return ImageInterface
+     *
+     * @internal
      */
-    private function processResize(ImageInterface $image, ResizeConfigurationInterface $config, ResizeOptionsInterface $options)
+    protected function processResize(ImageInterface $image, ResizeConfigurationInterface $config, ResizeOptionsInterface $options)
     {
         $coordinates = $this->calculator->calculate($config, $image->getDimensions(), $image->getImportantPart());
 
