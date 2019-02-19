@@ -10,16 +10,8 @@
 
 namespace Contao\Image;
 
-use Imagine\Image\ImagineInterface;
-use Symfony\Component\Filesystem\Filesystem;
-
 class DeferredImage extends Image implements DeferredImageInterface
 {
-    /**
-     * @var ImageDimensionsInterface
-     */
-    private $dimensions;
-
     /**
      * @param string                   $path
      * @param ImageDimensionsInterface $dimensions
@@ -28,14 +20,6 @@ class DeferredImage extends Image implements DeferredImageInterface
     {
         $this->path = $path;
         $this->dimensions = $dimensions;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getDimensions()
-    {
-        return $this->dimensions;
     }
 
     /**

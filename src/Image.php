@@ -25,20 +25,23 @@ use XMLReader;
 class Image implements ImageInterface
 {
     /**
-     * @var ImagineInterface
-     */
-    private $imagine;
-
-    /**
      * @var string
+     *
      * @internal
      */
     protected $path;
 
     /**
-     * @var ImageDimensionsInterface
+     * @var ImagineInterface
      */
-    private $dimensions;
+    private $imagine;
+
+    /**
+     * @var ImageDimensionsInterface
+     *
+     * @internal
+     */
+    protected $dimensions;
 
     /**
      * @var ImportantPartInterface

@@ -19,8 +19,6 @@ use Contao\Image\ResizeConfigurationInterface;
 use Contao\Image\ResizeCoordinates;
 use Contao\Image\ResizeOptions;
 use Contao\Image\Resizer;
-use Contao\ImagineSvg\Imagine as SvgImagine;
-use Contao\ImagineSvg\UndefinedBox;
 use Imagine\Gd\Imagine as GdImagine;
 use Imagine\Image\Box;
 use Imagine\Image\ImageInterface as ImagineImageInterface;
@@ -121,7 +119,7 @@ class DeferredResizerTest extends TestCase
         $this->assertEquals(new ImageDimensions(new Box(100, 100)), $deferredImage->getDimensions());
         $this->assertRegExp('(/[0-9a-f]/dummy-[0-9a-f]{8}.jpg$)', $deferredImage->getPath());
         $this->assertFileNotExists($deferredImage->getPath());
-        $this->assertFileExists($deferredImage->getPath() . '.config');
+        $this->assertFileExists($deferredImage->getPath().'.config');
 
         $resizedImage = $resizer->resizeDeferredImage(Path::makeRelative($deferredImage->getPath(), $this->rootDir), new GdImagine());
 
@@ -129,7 +127,7 @@ class DeferredResizerTest extends TestCase
         $this->assertEquals(new ImageDimensions(new Box(100, 100)), $resizedImage->getDimensions());
         $this->assertSame($deferredImage->getPath(), $resizedImage->getPath());
         $this->assertFileExists($resizedImage->getPath());
-        $this->assertFileNotExists($resizedImage->getPath() . '.config');
+        $this->assertFileNotExists($resizedImage->getPath().'.config');
 
         $resizedImage = $resizer->resize(
             $image,

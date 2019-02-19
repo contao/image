@@ -18,21 +18,23 @@ use Webmozart\PathUtil\Path;
 class Resizer implements ResizerInterface
 {
     /**
-     * @var ResizeCalculatorInterface
-     */
-    private $calculator;
-
-    /**
      * @var Filesystem
+     *
      * @internal
      */
     protected $filesystem;
 
     /**
      * @var string
+     *
      * @internal
      */
     protected $cacheDir;
+
+    /**
+     * @var ResizeCalculatorInterface
+     */
+    private $calculator;
 
     /**
      * @param string                         $cacheDir

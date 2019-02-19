@@ -17,12 +17,16 @@ interface DeferredResizerInterface extends ResizerInterface
     /**
      * Get a deferred image object for a not yet resized image.
      *
+     * @param string $targetPath
+     *
      * @return DeferredImageInterface
      */
     public function getDeferredImage($targetPath);
 
     /**
      * Resizes a deferred image.
+     *
+     * @param string $targetPath
      *
      * @return ImageInterface
      */
