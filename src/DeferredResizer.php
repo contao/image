@@ -39,8 +39,15 @@ class DeferredResizer extends Resizer implements DeferredResizerInterface
         }
     }
 
-    public function getDeferredImage($targetPath)
+    public function getDeferredImage($targetPath, ImagineInterface $imagine)
     {
+        if (Path::isAbsolute($targetPath)) {
+            if (!Path::isBasePath($this->cacheDir, $targetPath)) {
+                return null;
+            }
+            $targetPath = Path::makeRelative($targetPath, $this->cacheDir);
+        }
+
         if (!$this->storage->has($targetPath)) {
             return null;
         }
@@ -49,6 +56,7 @@ class DeferredResizer extends Resizer implements DeferredResizerInterface
 
         return new DeferredImage(
             $this->cacheDir.'/'.$targetPath,
+            $imagine,
             new ImageDimensions(
                 new Box(
                     $config['coordinates']['crop']['width'],
@@ -58,19 +66,28 @@ class DeferredResizer extends Resizer implements DeferredResizerInterface
         );
     }
 
-    public function resizeDeferredImage($targetPath, ImagineInterface $imagine)
+    /**
+     * @return ImageInterface
+     */
+    public function resizeDeferredImage(DeferredImageInterface $image)
     {
+        if (!Path::isBasePath($this->cacheDir, $image->getPath())) {
+            throw new \InvalidArgumentException(sprintf('Path "%s" is not inside cache directory "%s"', $image->getPath(), $this->cacheDir));
+        }
+
+        $targetPath = Path::makeRelative($image->getPath(), $this->cacheDir);
+
         $config = $this->storage->getLocked($targetPath);
 
         try {
-            $image = $this->executeDeferredResize($targetPath, $config, $imagine);
+            $resizedImage = $this->executeDeferredResize($targetPath, $config, $image->getImagine());
         } finally {
             $this->storage->releaseLock($targetPath);
         }
 
         $this->storage->delete($targetPath);
 
-        return $image;
+        return $resizedImage;
     }
 
     /**
@@ -84,7 +101,7 @@ class DeferredResizer extends Resizer implements DeferredResizerInterface
 
         $this->storeResizeData($image->getPath(), $path, $coordinates, $options);
 
-        return new DeferredImage($path, new ImageDimensions($coordinates->getCropSize()));
+        return new DeferredImage($path, $image->getImagine(), new ImageDimensions($coordinates->getCropSize()));
     }
 
     /**

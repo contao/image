@@ -16,17 +16,10 @@ class DeferredImage extends Image implements DeferredImageInterface
      * @param string                   $path
      * @param ImageDimensionsInterface $dimensions
      */
-    public function __construct($path, ImageDimensionsInterface $dimensions)
+    public function __construct($path, $imagine, ImageDimensionsInterface $dimensions)
     {
-        $this->path = $path;
+        $this->path = (string) $path;
+        $this->imagine = $imagine;
         $this->dimensions = $dimensions;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getImagine()
-    {
-        throw new \RuntimeException('Cannot get Imagine for deferred image.');
     }
 }

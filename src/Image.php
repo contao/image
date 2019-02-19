@@ -40,8 +40,10 @@ class Image implements ImageInterface
 
     /**
      * @var ImagineInterface
+     *
+     * @internal
      */
-    private $imagine;
+    protected $imagine;
 
     /**
      * @var ImportantPartInterface

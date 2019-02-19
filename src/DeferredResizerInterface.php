@@ -21,7 +21,7 @@ interface DeferredResizerInterface extends ResizerInterface
      *
      * @return DeferredImageInterface
      */
-    public function getDeferredImage($targetPath);
+    public function getDeferredImage($targetPath, ImagineInterface $imagine);
 
     /**
      * Resizes a deferred image.
@@ -30,5 +30,5 @@ interface DeferredResizerInterface extends ResizerInterface
      *
      * @return ImageInterface
      */
-    public function resizeDeferredImage($targetPath, ImagineInterface $imagine);
+    public function resizeDeferredImage(DeferredImageInterface $image);
 }

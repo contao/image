@@ -121,7 +121,7 @@ class DeferredResizerTest extends TestCase
         $this->assertFileNotExists($deferredImage->getPath());
         $this->assertFileExists($deferredImage->getPath().'.config');
 
-        $resizedImage = $resizer->resizeDeferredImage(Path::makeRelative($deferredImage->getPath(), $this->rootDir), new GdImagine());
+        $resizedImage = $resizer->resizeDeferredImage($deferredImage);
 
         $this->assertNotInstanceOf(DeferredImageInterface::class, $resizedImage);
         $this->assertEquals(new ImageDimensions(new Box(100, 100)), $resizedImage->getDimensions());
