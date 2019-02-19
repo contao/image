@@ -20,6 +20,28 @@ use Webmozart\PathUtil\Path;
 
 class DeferredResizer extends Resizer implements DeferredResizerInterface
 {
+    public function getDeferredImage($targetPath)
+    {
+        $imagePath = $this->cacheDir . '/' . $targetPath;
+        $configPath = $imagePath.'.config';
+
+        if (!$this->filesystem->exists($configPath)) {
+            return null;
+        }
+
+        $config = json_decode(file_get_contents($configPath), true);
+
+        return new DeferredImage(
+            $imagePath,
+            new ImageDimensions(
+                new Box(
+                    $config['coordinates']['crop']['width'],
+                    $config['coordinates']['crop']['height']
+                )
+            )
+        );
+    }
+
     public function resizeDeferredImage($targetPath, ImagineInterface $imagine)
     {
         $configPath = $this->cacheDir . '/' . $targetPath.'.config';

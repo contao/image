@@ -15,7 +15,14 @@ use Imagine\Image\ImagineInterface;
 interface DeferredResizerInterface extends ResizerInterface
 {
     /**
-     * Resizes an Image object.
+     * Get a deferred image object for a not yet resized image.
+     *
+     * @return DeferredImageInterface
+     */
+    public function getDeferredImage($targetPath);
+
+    /**
+     * Resizes a deferred image.
      *
      * @return ImageInterface
      */
