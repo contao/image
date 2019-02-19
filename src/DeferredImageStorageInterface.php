@@ -49,7 +49,6 @@ interface DeferredImageStorageInterface
     public function has($path);
 
     /**
-     * @param string $path
      * @param int $limit
      *
      * @return bool
