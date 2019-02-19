@@ -32,16 +32,16 @@ class Image implements ImageInterface
     protected $path;
 
     /**
-     * @var ImagineInterface
-     */
-    private $imagine;
-
-    /**
      * @var ImageDimensionsInterface
      *
      * @internal
      */
     protected $dimensions;
+
+    /**
+     * @var ImagineInterface
+     */
+    private $imagine;
 
     /**
      * @var ImportantPartInterface

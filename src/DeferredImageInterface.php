@@ -10,6 +10,9 @@
 
 namespace Contao\Image;
 
+/**
+ * Represents an image that is not yet resized.
+ */
 interface DeferredImageInterface extends ImageInterface
 {
 }

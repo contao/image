@@ -117,6 +117,11 @@ class DeferredImageStorageFilesystem implements DeferredImageStorageInterface
         $this->filesystem->remove($this->getConfigPath($path));
     }
 
+    /**
+     * @param string $path
+     *
+     * @return string
+     */
     private function getConfigPath($path)
     {
         return $this->cacheDir.'/'.$path.self::PATH_SUFFIX;
