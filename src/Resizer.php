@@ -18,19 +18,23 @@ use Webmozart\PathUtil\Path;
 class Resizer implements ResizerInterface
 {
     /**
-     * @var ResizeCalculatorInterface
-     */
-    private $calculator;
-
-    /**
      * @var Filesystem
+     *
+     * @internal
      */
-    private $filesystem;
+    protected $filesystem;
 
     /**
      * @var string
+     *
+     * @internal
      */
-    private $cacheDir;
+    protected $cacheDir;
+
+    /**
+     * @var ResizeCalculatorInterface
+     */
+    private $calculator;
 
     /**
      * @param string                         $cacheDir
@@ -146,8 +150,10 @@ class Resizer implements ResizerInterface
      * @param ResizeOptionsInterface       $options
      *
      * @return ImageInterface
+     *
+     * @internal
      */
-    private function processResize(ImageInterface $image, ResizeConfigurationInterface $config, ResizeOptionsInterface $options)
+    protected function processResize(ImageInterface $image, ResizeConfigurationInterface $config, ResizeOptionsInterface $options)
     {
         $coordinates = $this->calculator->calculate($config, $image->getDimensions(), $image->getImportantPart());
 
