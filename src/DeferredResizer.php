@@ -10,29 +10,45 @@
 
 namespace Contao\Image;
 
-use Imagine\Exception\RuntimeException as ImagineRuntimeException;
 use Imagine\Image\Box;
 use Imagine\Image\ImagineInterface;
-use Imagine\Image\Palette\RGB;
 use Imagine\Image\Point;
 use Symfony\Component\Filesystem\Filesystem;
 use Webmozart\PathUtil\Path;
 
 class DeferredResizer extends Resizer implements DeferredResizerInterface
 {
+    /**
+     * @var DeferredImageStorageInterface
+     *
+     * @internal
+     */
+    private $storage;
+
+    /**
+     * {@inheritdoc}
+     *
+     * @param $storage DeferredImageStorageInterface
+     */
+    public function __construct($cacheDir, ResizeCalculatorInterface $calculator = null, Filesystem $filesystem = null, DeferredImageStorageInterface $storage = null)
+    {
+        parent::__construct($cacheDir, $calculator, $filesystem);
+
+        if (null === $storage) {
+            $this->storage = new DeferredImageStorageFilesystem($cacheDir);
+        }
+    }
+
     public function getDeferredImage($targetPath)
     {
-        $imagePath = $this->cacheDir . '/' . $targetPath;
-        $configPath = $imagePath.'.config';
-
-        if (!$this->filesystem->exists($configPath)) {
+        if (!$this->storage->has($targetPath)) {
             return null;
         }
 
-        $config = json_decode(file_get_contents($configPath), true);
+        $config = $this->storage->get($targetPath);
 
         return new DeferredImage(
-            $imagePath,
+            $this->cacheDir.'/'.$targetPath,
             new ImageDimensions(
                 new Box(
                     $config['coordinates']['crop']['width'],
@@ -44,25 +60,15 @@ class DeferredResizer extends Resizer implements DeferredResizerInterface
 
     public function resizeDeferredImage($targetPath, ImagineInterface $imagine)
     {
-        $configPath = $this->cacheDir . '/' . $targetPath.'.config';
-
-        if (!$handle = fopen($configPath, 'r+') ?: fopen($configPath, 'r')) {
-            throw new \RuntimeException(sprintf('Unable to open file "%s".', $configPath));
-        }
-
-        if (!flock($handle, LOCK_EX)) {
-            fclose($handle);
-            throw new \RuntimeException(sprintf('Unable to acquire lock for file "%s".', $configPath));
-        }
+        $config = $this->storage->getLocked($targetPath);
 
         try {
-            $image = $this->executeDeferredResize($targetPath, json_decode(stream_get_contents($handle), true), $imagine);
+            $image = $this->executeDeferredResize($targetPath, $config, $imagine);
         } finally {
-            flock($handle, LOCK_UN | LOCK_NB);
-            fclose($handle);
+            $this->storage->releaseLock($targetPath);
         }
 
-        $this->filesystem->remove($configPath);
+        $this->storage->delete($targetPath);
 
         return $image;
     }
@@ -72,7 +78,7 @@ class DeferredResizer extends Resizer implements DeferredResizerInterface
      */
     protected function executeResize(ImageInterface $image, ResizeCoordinatesInterface $coordinates, $path, ResizeOptionsInterface $options)
     {
-        if (null !== $options->getTargetPath()) {
+        if (null !== $options->getTargetPath() || $options->getBypassCache()) {
             return parent::executeResize($image, $coordinates, $path, $options);
         }
 
@@ -82,16 +88,17 @@ class DeferredResizer extends Resizer implements DeferredResizerInterface
     }
 
     /**
-     *
+     * @param string $sourcePath
+     * @param string $targetPath
      */
     private function storeResizeData($sourcePath, $targetPath, ResizeCoordinatesInterface $coordinates, ResizeOptionsInterface $options)
     {
-        $configPath = $targetPath.'.config';
-        if ($this->filesystem->exists($configPath)) {
+        $targetPath = Path::makeRelative($targetPath, $this->cacheDir);
+        if ($this->storage->has($targetPath)) {
             return;
         }
 
-        $this->filesystem->dumpFile($configPath, json_encode([
+        $this->storage->set($targetPath, [
             'path' => $sourcePath,
             'coordinates' => [
                 'size' => [
@@ -108,7 +115,7 @@ class DeferredResizer extends Resizer implements DeferredResizerInterface
             'options' => [
                 'imagine_options' => $options->getImagineOptions(),
             ],
-        ]));
+        ]);
     }
 
     private function executeDeferredResize($targetPath, $config, ImagineInterface $imagine)
@@ -125,7 +132,7 @@ class DeferredResizer extends Resizer implements DeferredResizerInterface
         return parent::executeResize(
             new Image($sourcePath, $imagine, $this->filesystem),
             $coordinates,
-            $this->cacheDir . '/' . $targetPath,
+            $this->cacheDir.'/'.$targetPath,
             $options
         );
     }
