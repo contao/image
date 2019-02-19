@@ -123,12 +123,16 @@ class DeferredImageStorageFilesystem implements DeferredImageStorageInterface
      */
     public function listPaths($limit = -1)
     {
-        return array_map(
-            function($path) {
-                return substr(Path::makeRelative($path, $this->cacheDir), 0, -\strlen(self::PATH_SUFFIX));
-            },
-            glob($this->cacheDir.'/**/*'.self::PATH_SUFFIX)
-        );
+        $iterator = new \RecursiveDirectoryIterator($this->cacheDir);
+        $iterator = new \RecursiveIteratorIterator($iterator);
+        $iterator = new \CallbackFilterIterator($iterator, function ($path) {
+            return substr($path, -\strlen(self::PATH_SUFFIX)) === self::PATH_SUFFIX;
+        });
+        $iterator = new \LimitIterator($iterator, 0, $limit);
+
+        return array_map(function($path) {
+            return substr(Path::makeRelative((string) $path, $this->cacheDir), 0, -\strlen(self::PATH_SUFFIX));
+        }, iterator_to_array($iterator));
     }
 
     /**

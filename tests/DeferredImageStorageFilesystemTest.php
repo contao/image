@@ -127,6 +127,34 @@ class DeferredImageStorageFilesystemTest extends TestCase
         $storage->set($key, []);
     }
 
+    public function testListPaths()
+    {
+        $originalPaths = [
+            'foo1.jpg',
+            'foo2.jpg',
+            'foo/bar/baz/3.jpg',
+            'foo4.jpg',
+            'foo5.jpg',
+        ];
+
+        $storage = new DeferredImageStorageFilesystem($this->rootDir);
+
+        foreach ($originalPaths as $path) {
+            $storage->set($path, []);
+        }
+
+        $this->assertCount(1, $storage->listPaths(1));
+        $this->assertCount(2, $storage->listPaths(2));
+        $this->assertCount(3, $storage->listPaths(3));
+
+        $paths = $storage->listPaths();
+
+        sort($originalPaths);
+        sort($paths);
+
+        $this->assertEquals($originalPaths, $paths);
+    }
+
     public function getValues()
     {
         yield ['foo', ['foo' => 'bar']];
