@@ -138,6 +138,10 @@ class DeferredImageStorageFilesystem implements DeferredImageStorageInterface
      */
     private function getConfigPath($path)
     {
+        if (preg_match('(^/|/$|//|/\.\.|^\.\.)', $path)) {
+            throw new \InvalidArgumentException(sprintf('Invalid storage key "%s"', $path));
+        }
+
         return $this->cacheDir.'/'.$path.self::PATH_SUFFIX;
     }
 

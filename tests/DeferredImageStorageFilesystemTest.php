@@ -64,4 +64,82 @@ class DeferredImageStorageFilesystemTest extends TestCase
         $this->assertInstanceOf('Contao\Image\DeferredImageStorageFilesystem', $storage);
         $this->assertInstanceOf('Contao\Image\DeferredImageStorageInterface', $storage);
     }
+
+    /**
+     * @dataProvider getValues
+     */
+    public function testHasSetGetDelete(string $key, array $value)
+    {
+        $key = 'foo/bar.baz';
+        $value = ['foo' => 'bar'];
+
+        $storage = new DeferredImageStorageFilesystem($this->rootDir);
+
+        $this->assertFalse($storage->has($key));
+
+        $storage->set($key, $value);
+
+        $this->assertTrue($storage->has($key));
+        $this->assertEquals($value, $storage->get($key));
+
+        $storage->delete($key);
+
+        $this->assertFalse($storage->has($key));
+    }
+
+    /**
+     * @dataProvider getValues
+     */
+    public function testGetLocked(string $key, array $value)
+    {
+        $storage = new DeferredImageStorageFilesystem($this->rootDir);
+
+        $storage->set($key, $value);
+
+        $this->assertEquals($value, $storage->getLocked($key));
+
+        $dataPath = $this->rootDir.'/'.$key.'.config';
+        $handle = fopen($dataPath, 'r+');
+
+        $this->assertFalse(flock($handle, LOCK_EX | LOCK_NB), 'Data file should be locked');
+
+        $storage->releaseLock($key);
+
+        $this->assertTrue(flock($handle, LOCK_EX | LOCK_NB), 'Data file should be locked');
+
+        flock($handle, LOCK_UN | LOCK_NB);
+        fclose($handle);
+
+        $this->expectException('RuntimeException');
+
+        $storage->releaseLock($key);
+    }
+
+    /**
+     * @dataProvider invalidKeys
+     */
+    public function testSetInvalidKeyThrows($key)
+    {
+        $storage = new DeferredImageStorageFilesystem($this->rootDir);
+
+        $this->expectException('InvalidArgumentException');
+
+        $storage->set($key, []);
+    }
+
+    public function getValues()
+    {
+        yield ['foo', ['foo' => 'bar']];
+        yield ['foo/bar.baz', ['foo' => ['nested' => ['array', 0, false]]]];
+        yield ['foo/bar/baz/nested/path.jpg', ['foo' => 'bar']];
+        yield ['foo.config', ['foo' => 'bar']];
+    }
+
+    public function invalidKeys()
+    {
+        yield ['/foo'];
+        yield ['foo/'];
+        yield ['foo//bar'];
+        yield ['../foo'];
+    }
 }
