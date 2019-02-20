@@ -70,7 +70,7 @@ class PictureGeneratorTest extends TestCase
 
         $imageMock
             ->method('getImportantPart')
-            ->willReturn(new ImportantPart(new Point(0, 0), new Box(1000, 1000)))
+            ->willReturn(new ImportantPart(0, 0, 1, 1))
         ;
 
         $pictureGenerator = $this->createPictureGenerator($resizer);
@@ -187,7 +187,7 @@ class PictureGeneratorTest extends TestCase
 
         $imageMock
             ->method('getImportantPart')
-            ->willReturn(new ImportantPart(new Point(0, 0), new Box(400, 200)))
+            ->willReturn(new ImportantPart(0, 0, 1, 1))
         ;
 
         $pictureGenerator = $this->createPictureGenerator($resizer);
@@ -279,7 +279,7 @@ class PictureGeneratorTest extends TestCase
 
         $imageMock
             ->method('getImportantPart')
-            ->willReturn(new ImportantPart(new Point(0, 0), new Box(123, 246)))
+            ->willReturn(new ImportantPart(0, 0, 1, 1))
         ;
 
         $pictureGenerator = $this->createPictureGenerator($resizer);
@@ -389,7 +389,7 @@ class PictureGeneratorTest extends TestCase
 
         $imageMock
             ->method('getImportantPart')
-            ->willReturn(new ImportantPart(new Point(0, 0), new Box(200, 200)))
+            ->willReturn(new ImportantPart(0, 0, 1, 1))
         ;
 
         $pictureGenerator = $this->createPictureGenerator($resizer);
@@ -476,7 +476,7 @@ class PictureGeneratorTest extends TestCase
 
         $imageMock
             ->method('getImportantPart')
-            ->willReturn(new ImportantPart(new Point(0, 0), new Box(20, 20)))
+            ->willReturn(new ImportantPart(0, 0, 1, 1))
         ;
 
         $pictureGenerator = $this->createPictureGenerator($resizer);
@@ -568,7 +568,7 @@ class PictureGeneratorTest extends TestCase
 
         $imageMock
             ->method('getImportantPart')
-            ->willReturn(new ImportantPart(new Point(0, 0), new Box(200, 200)))
+            ->willReturn(new ImportantPart(0, 0, 1, 1))
         ;
 
         $pictureGenerator = $this->createPictureGenerator($resizer);

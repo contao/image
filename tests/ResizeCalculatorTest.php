@@ -42,28 +42,30 @@ class ResizeCalculatorTest extends TestCase
         $importantPart = null;
 
         if ($arguments[4] && 1 === substr_count($arguments[4], '_')) {
-            $importantPart = ['x' => 0, 'y' => 0, 'width' => $arguments[2], 'height' => $arguments[3]];
+            $importantPart = ['x' => 0, 'y' => 0, 'width' => 1, 'height' => 1];
             $mode = explode('_', $arguments[4]);
 
             if ('left' === $mode[0]) {
-                $importantPart['width'] = 1;
+                $importantPart['width'] = 0;
             } elseif ('right' === $mode[0]) {
-                $importantPart['x'] = $arguments[2] - 1;
-                $importantPart['width'] = 1;
+                $importantPart['x'] = 1;
+                $importantPart['width'] = 0;
             }
 
             if ('top' === $mode[1]) {
-                $importantPart['height'] = 1;
+                $importantPart['height'] = 0;
             } elseif ('bottom' === $mode[1]) {
-                $importantPart['y'] = $arguments[3] - 1;
-                $importantPart['height'] = 1;
+                $importantPart['y'] = 1;
+                $importantPart['height'] = 0;
             }
 
             $arguments[4] = 'crop';
 
             $importantPart = new ImportantPart(
-                new Point($importantPart['x'], $importantPart['y']),
-                new Box($importantPart['width'], $importantPart['height'])
+                $importantPart['x'],
+                $importantPart['y'],
+                $importantPart['width'],
+                $importantPart['height']
             );
         }
 
@@ -553,8 +555,10 @@ class ResizeCalculatorTest extends TestCase
         }
 
         $importantPart = new ImportantPart(
-            new Point($arguments[6]['x'], $arguments[6]['y']),
-            new Box($arguments[6]['width'], $arguments[6]['height'])
+            $arguments[6]['x'] / $arguments[2],
+            $arguments[6]['y'] / $arguments[3],
+            $arguments[6]['width'] / $arguments[2],
+            $arguments[6]['height'] / $arguments[3]
         );
 
         $dimensions = new ImageDimensions(new Box($arguments[2], $arguments[3]), !empty($arguments[7]));

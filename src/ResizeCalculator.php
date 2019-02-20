@@ -173,15 +173,21 @@ class ResizeCalculator implements ResizeCalculatorInterface
     private function importantPartAsArray(ImageDimensionsInterface $dimensions, ImportantPartInterface $importantPart = null): array
     {
         if (null === $importantPart) {
-            $importantPart = new ImportantPart(new Point(0, 0), clone $dimensions->getSize());
+            $importantPart = new ImportantPart(0, 0, 1, 1);
         }
 
-        return [
-            'x' => $importantPart->getPosition()->getX(),
-            'y' => $importantPart->getPosition()->getY(),
-            'width' => $importantPart->getSize()->getWidth(),
-            'height' => $importantPart->getSize()->getHeight(),
+        $imageWidth = $dimensions->getSize()->getWidth();
+        $imageHeight = $dimensions->getSize()->getHeight();
+
+        $part = [
+            'x' => min($imageWidth - 1, round($importantPart->getX() * $imageWidth)),
+            'y' => min($imageHeight - 1, round($importantPart->getY() * $imageHeight)),
         ];
+
+        $part['width'] = max(1, min($imageWidth - $part['x'], round($importantPart->getWidth() * $imageWidth)));
+        $part['height'] = max(1, min($imageHeight - $part['y'], round($importantPart->getHeight() * $imageHeight)));
+
+        return $part;
     }
 
     /**

@@ -137,7 +137,7 @@ class Image implements ImageInterface
     public function getImportantPart(): ImportantPartInterface
     {
         if (null === $this->importantPart) {
-            $this->importantPart = new ImportantPart(new Point(0, 0), $this->getDimensions()->getSize());
+            $this->importantPart = new ImportantPart(0, 0, 1, 1);
         }
 
         return $this->importantPart;

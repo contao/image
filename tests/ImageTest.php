@@ -272,11 +272,11 @@ class ImageTest extends TestCase
 
         $image = $this->createImage(null, $imagine);
 
-        $this->assertEquals(new ImportantPart(new Point(0, 0), new Box(100, 100)), $image->getImportantPart());
+        $this->assertEquals(new ImportantPart(0, 0, 1, 1), $image->getImportantPart());
 
-        $image->setImportantPart(new ImportantPart(new Point(10, 10), new Box(80, 80)));
+        $image->setImportantPart(new ImportantPart(0.1, 0.1, 0.8, 0.8));
 
-        $this->assertEquals(new ImportantPart(new Point(10, 10), new Box(80, 80)), $image->getImportantPart());
+        $this->assertEquals(new ImportantPart(0.1, 0.1, 0.8, 0.8), $image->getImportantPart());
     }
 
     private function createImage(string $path = null, ImagineInterface $imagine = null, Filesystem $filesystem = null): Image
