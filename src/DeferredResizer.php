@@ -29,8 +29,6 @@ class DeferredResizer extends Resizer implements DeferredResizerInterface
 
     /**
      * {@inheritdoc}
-     *
-     * @param $storage DeferredImageStorageInterface
      */
     public function __construct(string $cacheDir, ResizeCalculatorInterface $calculator = null, Filesystem $filesystem = null, DeferredImageStorageInterface $storage = null)
     {
@@ -41,7 +39,7 @@ class DeferredResizer extends Resizer implements DeferredResizerInterface
         }
     }
 
-    public function getDeferredImage(string $targetPath, ImagineInterface $imagine): DeferredImageInterface
+    public function getDeferredImage(string $targetPath, ImagineInterface $imagine): ?DeferredImageInterface
     {
         if (Path::isAbsolute($targetPath)) {
             if (!Path::isBasePath($this->cacheDir, $targetPath)) {

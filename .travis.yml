@@ -20,6 +20,7 @@ jobs:
         - composer update --prefer-lowest --prefer-stable --no-interaction --no-suggest
       script:
         - php vendor/bin/phpunit
+        - php vendor/bin/phpstan analyze src tests --level=3
 
     - stage: test
       php: 7.1
@@ -28,6 +29,7 @@ jobs:
         - composer update --no-interaction --no-suggest
       script:
         - php vendor/bin/phpunit
+        - php vendor/bin/phpstan analyze src tests --level=3
 
     - stage: test
       php: 7.2
@@ -36,6 +38,7 @@ jobs:
         - composer update --no-interaction --no-suggest
       script:
         - php vendor/bin/phpunit
+        - php vendor/bin/phpstan analyze src tests --level=3
 
     # PHP-CS-Fixer is not yet compatible with PHP 7.3
     - stage: test
@@ -45,17 +48,31 @@ jobs:
         - composer update --ignore-platform-reqs --no-interaction --no-suggest
       script:
         - phpdbg -qrr vendor/bin/phpunit --coverage-clover=coverage.xml
+        - php vendor/bin/phpstan analyze src tests --level=3
       after_script:
         - php vendor/bin/php-coveralls -o coveralls-upload.json -x coverage.xml
 
     # Ignore the platform requirements for the upcoming PHP version
     - stage: test
+      if: 'type = cron'
+      php: 7.4snapshot
+      install:
+        - phpenv config-rm xdebug.ini || true
+        - composer update --ignore-platform-reqs --no-interaction --no-suggest
+      script:
+        - php vendor/bin/phpunit
+        - php vendor/bin/phpstan analyze src tests --level=3
+
+    - stage: test
+      if: 'type = cron'
       php: nightly
       install:
         - phpenv config-rm xdebug.ini || true
         - composer update --ignore-platform-reqs --no-interaction --no-suggest
       script:
         - php vendor/bin/phpunit
+        - php vendor/bin/phpstan analyze src tests --level=3
 
   allow_failures:
+    - php: 7.4snapshot
     - php: nightly

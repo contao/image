@@ -25,6 +25,7 @@ use Imagine\Gd\Imagine as GdImagine;
 use Imagine\Image\Box;
 use Imagine\Image\ImageInterface as ImagineImageInterface;
 use Imagine\Image\Point;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -368,6 +369,7 @@ class ResizerTest extends TestCase
 
         file_put_contents($imagePath, '');
 
+        /** @var Image|MockObject $image */
         $image = $this->createMock(Image::class);
         $image
             ->method('getDimensions')
