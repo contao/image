@@ -20,14 +20,6 @@ use PHPUnit\Framework\TestCase;
 
 class ImageDimensionsTest extends TestCase
 {
-    public function testInstantiation(): void
-    {
-        $dimensions = new ImageDimensions($this->createMock(BoxInterface::class));
-
-        $this->assertInstanceOf('Contao\Image\ImageDimensions', $dimensions);
-        $this->assertInstanceOf('Contao\Image\ImageDimensionsInterface', $dimensions);
-    }
-
     public function testGetSize(): void
     {
         $size = $this->createMock(BoxInterface::class);
@@ -39,38 +31,42 @@ class ImageDimensionsTest extends TestCase
     public function testIsRelative(): void
     {
         $size = $this->createMock(BoxInterface::class);
-
         $dimensions = new ImageDimensions($size);
+
         $this->assertFalse($dimensions->isRelative());
 
         $dimensions = new ImageDimensions($size, true);
+
         $this->assertTrue($dimensions->isRelative());
 
         $size = $this->createMock(RelativeBoxInterface::class);
-
         $dimensions = new ImageDimensions($size);
+
         $this->assertTrue($dimensions->isRelative());
 
         $dimensions = new ImageDimensions($size, false);
+
         $this->assertFalse($dimensions->isRelative());
     }
 
     public function testIsUndefined(): void
     {
         $size = $this->createMock(BoxInterface::class);
-
         $dimensions = new ImageDimensions($size);
+
         $this->assertFalse($dimensions->isUndefined());
 
         $dimensions = new ImageDimensions($size, null, true);
+
         $this->assertTrue($dimensions->isUndefined());
 
         $size = $this->createMock(UndefinedBoxInterface::class);
-
         $dimensions = new ImageDimensions($size);
+
         $this->assertTrue($dimensions->isUndefined());
 
         $dimensions = new ImageDimensions($size, null, false);
+
         $this->assertFalse($dimensions->isUndefined());
     }
 }

@@ -21,19 +21,11 @@ use Symfony\Component\Filesystem\Filesystem;
 
 class PictureTest extends TestCase
 {
-    public function testInstantiation(): void
-    {
-        $picture = $this->createPicture();
-
-        $this->assertInstanceOf('Contao\Image\Picture', $picture);
-        $this->assertInstanceOf('Contao\Image\PictureInterface', $picture);
-    }
-
     public function testGetImg(): void
     {
         $picture = $this->createPicture(null, '/path/to/a/filename with special&<>"\'chars.jpeg');
 
-        $this->assertInstanceOf('Contao\Image\ImageInterface', $picture->getImg()['src']);
+        $this->assertInstanceOf(ImageInterface::class, $picture->getImg()['src']);
 
         $this->assertSame(
             'path/to/a/filename%20with%20special%26%3C%3E%22%27chars.jpeg',
@@ -60,7 +52,7 @@ class PictureTest extends TestCase
             $picture->getImg('/path/to', 'https://example.com/images/')['src']
         );
 
-        $this->assertInstanceOf('Contao\Image\ImageInterface', $picture->getImg()['srcset'][0][0]);
+        $this->assertInstanceOf(ImageInterface::class, $picture->getImg()['srcset'][0][0]);
 
         $this->assertSame(
             'path/to/a/filename%20with%20special%26%3C%3E%22%27chars.jpeg 1x',
@@ -99,7 +91,7 @@ class PictureTest extends TestCase
     {
         $picture = $this->createPicture(null, '/path/to/a/filename with special&<>"\'chars.jpeg');
 
-        $this->assertInstanceOf('Contao\Image\ImageInterface', $picture->getSources()[0]['srcset'][0][0]);
+        $this->assertInstanceOf(ImageInterface::class, $picture->getSources()[0]['srcset'][0][0]);
 
         $this->assertSame(
             'path/to/a/filename%20with%20special%26%3C%3E%22%27chars.jpeg 1x',
@@ -151,6 +143,7 @@ class PictureTest extends TestCase
     public function testMissingSrcset(): void
     {
         $image = $this->createMock(ImageInterface::class);
+
         $this->expectException('InvalidArgumentException');
 
         new Picture(['src' => $image], []);
@@ -159,20 +152,13 @@ class PictureTest extends TestCase
     public function testInvalidSrcset(): void
     {
         $image = $this->createMock(ImageInterface::class);
+
         $this->expectException('InvalidArgumentException');
 
         new Picture(['src' => $image, 'srcset' => [[$image, '1x'], [new \stdClass(), '2x']]], []);
     }
 
-    /**
-     * Returns a picture.
-     *
-     * @param ImageInterface $image
-     * @param string         $path
-     *
-     * @return Picture
-     */
-    private function createPicture($image = null, $path = 'dummy.jpg')
+    private function createPicture(ImageInterface $image = null, string $path = 'dummy.jpg'): Picture
     {
         if (null === $image) {
             $imagine = $this->createMock(ImagineInterface::class);

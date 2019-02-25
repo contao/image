@@ -47,6 +47,7 @@ class DeferredResizer extends Resizer implements DeferredResizerInterface
             if (!Path::isBasePath($this->cacheDir, $targetPath)) {
                 return null;
             }
+
             $targetPath = Path::makeRelative($targetPath, $this->cacheDir);
         }
 
@@ -75,7 +76,6 @@ class DeferredResizer extends Resizer implements DeferredResizerInterface
         }
 
         $targetPath = Path::makeRelative($image->getPath(), $this->cacheDir);
-
         $config = $this->storage->getLocked($targetPath);
 
         try {
@@ -116,6 +116,7 @@ class DeferredResizer extends Resizer implements DeferredResizerInterface
     private function storeResizeData(string $sourcePath, string $targetPath, ResizeCoordinatesInterface $coordinates, ResizeOptionsInterface $options): void
     {
         $targetPath = Path::makeRelative($targetPath, $this->cacheDir);
+
         if ($this->storage->has($targetPath)) {
             return;
         }
@@ -142,17 +143,17 @@ class DeferredResizer extends Resizer implements DeferredResizerInterface
 
     private function executeDeferredResize(string $targetPath, array $config, ImagineInterface $imagine): ImageInterface
     {
-        $sourcePath = $config['path'];
         $coordinates = new ResizeCoordinates(
             new Box($config['coordinates']['size']['width'], $config['coordinates']['size']['height']),
             new Point($config['coordinates']['crop']['x'], $config['coordinates']['crop']['y']),
             new Box($config['coordinates']['crop']['width'], $config['coordinates']['crop']['height'])
         );
+
         $options = new ResizeOptions();
         $options->setImagineOptions($config['options']['imagine_options']);
 
         return parent::executeResize(
-            new Image($sourcePath, $imagine, $this->filesystem),
+            new Image($config['path'], $imagine, $this->filesystem),
             $coordinates,
             $this->cacheDir.'/'.$targetPath,
             $options

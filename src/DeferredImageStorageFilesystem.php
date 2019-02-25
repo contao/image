@@ -79,7 +79,7 @@ class DeferredImageStorageFilesystem implements DeferredImageStorageInterface
 
         $configPath = $this->getConfigPath($path);
 
-        if (!$handle = fopen($configPath, 'r+') ?: fopen($configPath, 'r')) {
+        if (!$handle = fopen($configPath, 'rb+') ?: fopen($configPath, 'rb')) {
             throw new \RuntimeException(sprintf('Unable to open file "%s".', $configPath));
         }
 
@@ -123,14 +123,22 @@ class DeferredImageStorageFilesystem implements DeferredImageStorageInterface
     {
         $iterator = new \RecursiveDirectoryIterator($this->cacheDir);
         $iterator = new \RecursiveIteratorIterator($iterator);
-        $iterator = new \CallbackFilterIterator($iterator, function ($path) {
-            return self::PATH_SUFFIX === substr((string) $path, -\strlen(self::PATH_SUFFIX));
-        });
+
+        $iterator = new \CallbackFilterIterator(
+            $iterator,
+            function ($path) {
+                return self::PATH_SUFFIX === substr((string) $path, -\strlen(self::PATH_SUFFIX));
+            }
+        );
+
         $iterator = new \LimitIterator($iterator, 0, $limit);
 
-        return array_map(function ($path) {
-            return substr(Path::makeRelative((string) $path, $this->cacheDir), 0, -\strlen(self::PATH_SUFFIX));
-        }, iterator_to_array($iterator));
+        return array_map(
+            function ($path) {
+                return substr(Path::makeRelative((string) $path, $this->cacheDir), 0, -\strlen(self::PATH_SUFFIX));
+            },
+            iterator_to_array($iterator)
+        );
     }
 
     private function getConfigPath(string $path): string

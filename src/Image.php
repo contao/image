@@ -173,7 +173,6 @@ class Image implements ImageInterface
 
         $size = null;
         $reader = new XMLReader();
-
         $path = $this->path;
 
         if ($zlibSupport) {

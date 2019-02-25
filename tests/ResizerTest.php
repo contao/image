@@ -57,14 +57,6 @@ class ResizerTest extends TestCase
         }
     }
 
-    public function testInstantiation(): void
-    {
-        $resizer = $this->createResizer();
-
-        $this->assertInstanceOf('Contao\Image\Resizer', $resizer);
-        $this->assertInstanceOf('Contao\Image\ResizerInterface', $resizer);
-    }
-
     public function testResize(): void
     {
         $calculator = $this->createMock(ResizeCalculatorInterface::class);
@@ -101,7 +93,6 @@ class ResizerTest extends TestCase
         ;
 
         $configuration = $this->createMock(ResizeConfigurationInterface::class);
-
         $defaultUmask = umask();
 
         try {
@@ -504,16 +495,7 @@ class ResizerTest extends TestCase
         unlink($resizedImage->getPath());
     }
 
-    /**
-     * Returns a resizer.
-     *
-     * @param string                    $cacheDir
-     * @param ResizeCalculatorInterface $calculator
-     * @param Filesystem                $filesystem
-     *
-     * @return Resizer
-     */
-    private function createResizer($cacheDir = null, $calculator = null, $filesystem = null)
+    private function createResizer(string $cacheDir = null, ResizeCalculatorInterface $calculator = null, Filesystem $filesystem = null): Resizer
     {
         if (null === $cacheDir) {
             $cacheDir = $this->rootDir;
@@ -522,11 +504,7 @@ class ResizerTest extends TestCase
         return new Resizer($cacheDir, $calculator, $filesystem);
     }
 
-    /**
-     * @param int    $expectedPermissions
-     * @param string $path
-     */
-    private function assertFilePermissions($expectedPermissions, $path): void
+    private function assertFilePermissions(int $expectedPermissions, string $path): void
     {
         $this->assertSame(
             sprintf('%o', $expectedPermissions & ~umask() & 0777),

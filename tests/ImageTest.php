@@ -54,14 +54,6 @@ class ImageTest extends TestCase
         }
     }
 
-    public function testInstantiation(): void
-    {
-        $image = $this->createImage();
-
-        $this->assertInstanceOf('Contao\Image\Image', $image);
-        $this->assertInstanceOf('Contao\Image\ImageInterface', $image);
-    }
-
     public function testConstructorNonExistentPath(): void
     {
         $this->expectException('InvalidArgumentException');
@@ -167,17 +159,16 @@ class ImageTest extends TestCase
 
     public function testGetDimensions(): void
     {
-        $imagine = $this->createMock(ImagineInterface::class);
         $imagineImage = $this->createMock(ImageInterface::class);
-
-        $imagine
-            ->method('open')
-            ->willReturn($imagineImage)
-        ;
-
         $imagineImage
             ->method('getSize')
             ->willReturn(new Box(100, 100))
+        ;
+
+        $imagine = $this->createMock(ImagineInterface::class);
+        $imagine
+            ->method('open')
+            ->willReturn($imagineImage)
         ;
 
         $image = $this->createImage(null, $imagine);
@@ -288,16 +279,7 @@ class ImageTest extends TestCase
         $this->assertEquals(new ImportantPart(new Point(10, 10), new Box(80, 80)), $image->getImportantPart());
     }
 
-    /**
-     * Returns an image.
-     *
-     * @param string           $path
-     * @param ImagineInterface $imagine
-     * @param Filesystem       $filesystem
-     *
-     * @return Image
-     */
-    private function createImage($path = null, $imagine = null, $filesystem = null)
+    private function createImage(string $path = null, ImagineInterface $imagine = null, Filesystem $filesystem = null): Image
     {
         if (null === $path) {
             $path = 'dummy.jpg';

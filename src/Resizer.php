@@ -48,7 +48,7 @@ class Resizer implements ResizerInterface
             $filesystem = new Filesystem();
         }
 
-        $this->cacheDir = (string) $cacheDir;
+        $this->cacheDir = $cacheDir;
         $this->calculator = $calculator;
         $this->filesystem = $filesystem;
     }

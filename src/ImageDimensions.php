@@ -35,17 +35,17 @@ class ImageDimensions implements ImageDimensionsInterface
 
     public function __construct(BoxInterface $size, bool $relative = null, bool $undefined = null)
     {
-        if (null === $relative && $size instanceof RelativeBoxInterface) {
-            $relative = true;
+        if (null === $relative) {
+            $relative = $size instanceof RelativeBoxInterface;
         }
 
-        if (null === $undefined && $size instanceof UndefinedBoxInterface) {
-            $undefined = true;
+        if (null === $undefined) {
+            $undefined = $size instanceof UndefinedBoxInterface;
         }
 
         $this->size = $size;
-        $this->relative = (bool) $relative;
-        $this->undefined = (bool) $undefined;
+        $this->relative = $relative;
+        $this->undefined = $undefined;
     }
 
     /**

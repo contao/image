@@ -21,18 +21,6 @@ use PHPUnit\Framework\TestCase;
 
 class ResizeCoordinatesTest extends TestCase
 {
-    public function testInstantiation(): void
-    {
-        $coordinates = new ResizeCoordinates(
-            $this->createMock(BoxInterface::class),
-            $this->createMock(PointInterface::class),
-            $this->createMock(BoxInterface::class)
-        );
-
-        $this->assertInstanceOf('Contao\Image\ResizeCoordinates', $coordinates);
-        $this->assertInstanceOf('Contao\Image\ResizeCoordinatesInterface', $coordinates);
-    }
-
     public function testGetter(): void
     {
         $size = $this->createMock(BoxInterface::class);
@@ -78,6 +66,7 @@ class ResizeCoordinatesTest extends TestCase
         $this->assertFalse($coordinates->isEqualTo(new Box(200, 200)));
 
         $coordinates = new ResizeCoordinates(new Box(100, 100), new Point(0, 0), new Box(100, 100));
+
         $this->assertTrue($coordinates->isEqualTo(new Box(100, 100)));
 
         $this->expectException('InvalidArgumentException');

@@ -94,8 +94,8 @@ class Picture implements PictureInterface
 
                 return implode(' ', $src);
             },
-            $img['srcset'])
-        ;
+            $img['srcset']
+        );
 
         $img['srcset'] = implode(', ', $img['srcset']);
 

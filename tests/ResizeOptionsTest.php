@@ -17,14 +17,6 @@ use PHPUnit\Framework\TestCase;
 
 class ResizeOptionsTest extends TestCase
 {
-    public function testInstantiation(): void
-    {
-        $options = new ResizeOptions();
-
-        $this->assertInstanceOf('Contao\Image\ResizeOptions', $options);
-        $this->assertInstanceOf('Contao\Image\ResizeOptionsInterface', $options);
-    }
-
     public function testSetImagineOptions(): void
     {
         $options = new ResizeOptions();
@@ -43,6 +35,7 @@ class ResizeOptionsTest extends TestCase
         $this->assertSame('/target/path', $options->getTargetPath());
 
         $options->setTargetPath(null);
+
         $this->assertNull($options->getTargetPath());
 
         $this->expectException('InvalidArgumentException');

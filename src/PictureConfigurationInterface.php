@@ -35,8 +35,6 @@ interface PictureConfigurationInterface
      * Sets the size items.
      *
      * @param PictureConfigurationItemInterface[] $sizeItems
-     *
-     * @return self
      */
-    public function setSizeItems(array $sizeItems);
+    public function setSizeItems(array $sizeItems): self;
 }

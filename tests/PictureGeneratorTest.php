@@ -31,20 +31,12 @@ use PHPUnit\Framework\TestCase;
 
 class PictureGeneratorTest extends TestCase
 {
-    public function testInstantiation(): void
-    {
-        $pictureGenerator = $this->createPictureGenerator();
-
-        $this->assertInstanceOf('Contao\Image\PictureGenerator', $pictureGenerator);
-        $this->assertInstanceOf('Contao\Image\PictureGeneratorInterface', $pictureGenerator);
-    }
-
     public function testGenerate(): void
     {
         $resizer = $this->createMock(ResizerInterface::class);
         $resizer
             ->method('resize')
-            ->will($this->returnCallback(
+            ->willReturnCallback(
                 function (ImageInterface $image, ResizeConfigurationInterface $config) {
                     $imageMock = $this->createMock(Image::class);
                     $imageMock
@@ -67,7 +59,7 @@ class PictureGeneratorTest extends TestCase
 
                     return $imageMock;
                 }
-            ))
+            )
         ;
 
         $imageMock = $this->createMock(Image::class);
@@ -75,6 +67,7 @@ class PictureGeneratorTest extends TestCase
             ->method('getDimensions')
             ->willReturn(new ImageDimensions(new Box(1000, 1000)))
         ;
+
         $imageMock
             ->method('getImportantPart')
             ->willReturn(new ImportantPart(new Point(0, 0), new Box(1000, 1000)))
@@ -156,9 +149,6 @@ class PictureGeneratorTest extends TestCase
             ],
             $picture->getSources('/root/dir')
         );
-
-        $this->assertInstanceOf('Contao\Image\Picture', $picture);
-        $this->assertInstanceOf('Contao\Image\PictureInterface', $picture);
     }
 
     public function testGenerateWDescriptor(): void
@@ -166,7 +156,7 @@ class PictureGeneratorTest extends TestCase
         $resizer = $this->createMock(ResizerInterface::class);
         $resizer
             ->method('resize')
-            ->will($this->returnCallback(
+            ->willReturnCallback(
                 function (ImageInterface $image, ResizeConfigurationInterface $config) {
                     $imageMock = $this->createMock(Image::class);
                     $imageMock
@@ -186,7 +176,7 @@ class PictureGeneratorTest extends TestCase
 
                     return $imageMock;
                 }
-            ))
+            )
         ;
 
         $imageMock = $this->createMock(Image::class);
@@ -194,6 +184,7 @@ class PictureGeneratorTest extends TestCase
             ->method('getDimensions')
             ->willReturn(new ImageDimensions(new Box(400, 200)))
         ;
+
         $imageMock
             ->method('getImportantPart')
             ->willReturn(new ImportantPart(new Point(0, 0), new Box(400, 200)))
@@ -246,9 +237,6 @@ class PictureGeneratorTest extends TestCase
             ],
             $picture->getSources('/root/dir')
         );
-
-        $this->assertInstanceOf('Contao\Image\Picture', $picture);
-        $this->assertInstanceOf('Contao\Image\PictureInterface', $picture);
     }
 
     public function testGenerateWDescriptorSmallImage(): void
@@ -256,7 +244,7 @@ class PictureGeneratorTest extends TestCase
         $resizer = $this->createMock(ResizerInterface::class);
         $resizer
             ->method('resize')
-            ->will($this->returnCallback(
+            ->willReturnCallback(
                 function (ImageInterface $image, ResizeConfigurationInterface $config) {
                     $imageMock = $this->createMock(Image::class);
 
@@ -280,7 +268,7 @@ class PictureGeneratorTest extends TestCase
 
                     return $imageMock;
                 }
-            ))
+            )
         ;
 
         $imageMock = $this->createMock(Image::class);
@@ -288,6 +276,7 @@ class PictureGeneratorTest extends TestCase
             ->method('getDimensions')
             ->willReturn(new ImageDimensions(new Box(123, 246)))
         ;
+
         $imageMock
             ->method('getImportantPart')
             ->willReturn(new ImportantPart(new Point(0, 0), new Box(123, 246)))
@@ -362,9 +351,6 @@ class PictureGeneratorTest extends TestCase
             ],
             $picture->getSources('/root/dir')
         );
-
-        $this->assertInstanceOf('Contao\Image\Picture', $picture);
-        $this->assertInstanceOf('Contao\Image\PictureInterface', $picture);
     }
 
     public function testGenerateDuplicateSrcsetItems(): void
@@ -372,7 +358,7 @@ class PictureGeneratorTest extends TestCase
         $resizer = $this->createMock(ResizerInterface::class);
         $resizer
             ->method('resize')
-            ->will($this->returnCallback(
+            ->willReturnCallback(
                 function (ImageInterface $image, ResizeConfigurationInterface $config) {
                     $imageMock = $this->createMock(Image::class);
                     $imageMock
@@ -392,7 +378,7 @@ class PictureGeneratorTest extends TestCase
 
                     return $imageMock;
                 }
-            ))
+            )
         ;
 
         $imageMock = $this->createMock(Image::class);
@@ -400,6 +386,7 @@ class PictureGeneratorTest extends TestCase
             ->method('getDimensions')
             ->willReturn(new ImageDimensions(new Box(200, 200)))
         ;
+
         $imageMock
             ->method('getImportantPart')
             ->willReturn(new ImportantPart(new Point(0, 0), new Box(200, 200)))
@@ -451,9 +438,6 @@ class PictureGeneratorTest extends TestCase
             ],
             $picture->getSources('/root/dir')
         );
-
-        $this->assertInstanceOf('Contao\Image\Picture', $picture);
-        $this->assertInstanceOf('Contao\Image\PictureInterface', $picture);
     }
 
     public function testGenerateSmallSourceImage(): void
@@ -461,7 +445,7 @@ class PictureGeneratorTest extends TestCase
         $resizer = $this->createMock(ResizerInterface::class);
         $resizer
             ->method('resize')
-            ->will($this->returnCallback(
+            ->willReturnCallback(
                 function (ImageInterface $image, ResizeConfigurationInterface $config) {
                     $imageMock = $this->createMock(Image::class);
                     $imageMock
@@ -481,7 +465,7 @@ class PictureGeneratorTest extends TestCase
 
                     return $imageMock;
                 }
-            ))
+            )
         ;
 
         $imageMock = $this->createMock(Image::class);
@@ -489,6 +473,7 @@ class PictureGeneratorTest extends TestCase
             ->method('getDimensions')
             ->willReturn(new ImageDimensions(new Box(20, 20)))
         ;
+
         $imageMock
             ->method('getImportantPart')
             ->willReturn(new ImportantPart(new Point(0, 0), new Box(20, 20)))
@@ -540,9 +525,6 @@ class PictureGeneratorTest extends TestCase
             ],
             $picture->getSources('/root/dir')
         );
-
-        $this->assertInstanceOf('Contao\Image\Picture', $picture);
-        $this->assertInstanceOf('Contao\Image\PictureInterface', $picture);
     }
 
     public function testGenerateSvgImage(): void
@@ -550,7 +532,7 @@ class PictureGeneratorTest extends TestCase
         $resizer = $this->createMock(ResizerInterface::class);
         $resizer
             ->method('resize')
-            ->will($this->returnCallback(
+            ->willReturnCallback(
                 function (ImageInterface $image, ResizeConfigurationInterface $config) {
                     $imageMock = $this->createMock(Image::class);
                     $imageMock
@@ -570,7 +552,7 @@ class PictureGeneratorTest extends TestCase
 
                     return $imageMock;
                 }
-            ))
+            )
         ;
 
         $imageMock = $this->createMock(Image::class);
@@ -578,10 +560,12 @@ class PictureGeneratorTest extends TestCase
             ->method('getDimensions')
             ->willReturn(new ImageDimensions(new Box(200, 200)))
         ;
+
         $imageMock
             ->method('getImagine')
             ->willReturn($this->createMock(ImagineSvg::class))
         ;
+
         $imageMock
             ->method('getImportantPart')
             ->willReturn(new ImportantPart(new Point(0, 0), new Box(200, 200)))
@@ -633,9 +617,6 @@ class PictureGeneratorTest extends TestCase
             ],
             $picture->getSources('/root/dir')
         );
-
-        $this->assertInstanceOf('Contao\Image\Picture', $picture);
-        $this->assertInstanceOf('Contao\Image\PictureInterface', $picture);
     }
 
     public function testGenerateWithLocale(): void
@@ -648,23 +629,18 @@ class PictureGeneratorTest extends TestCase
 
         try {
             $requiredLocales = ['de_DE.UTF-8', 'de_DE.UTF8', 'de_DE.utf-8', 'de_DE.utf8', 'German_Germany.1252'];
+
             if (false === setlocale(LC_NUMERIC, $requiredLocales)) {
                 $this->markTestSkipped('Could not set any of required locales: '.implode(', ', $requiredLocales));
             }
+
             $this->testGenerate();
         } finally {
             setlocale(LC_NUMERIC, $locale);
         }
     }
 
-    /**
-     * Returns a picture generator.
-     *
-     * @param ResizerInterface $resizer
-     *
-     * @return PictureGenerator
-     */
-    private function createPictureGenerator($resizer = null)
+    private function createPictureGenerator(ResizerInterface $resizer = null): PictureGenerator
     {
         if (null === $resizer) {
             $resizer = $this->createMock(ResizerInterface::class);

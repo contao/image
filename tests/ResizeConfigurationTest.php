@@ -17,14 +17,6 @@ use PHPUnit\Framework\TestCase;
 
 class ResizeConfigurationTest extends TestCase
 {
-    public function testInstantiation(): void
-    {
-        $resizeConfig = new ResizeConfiguration();
-
-        $this->assertInstanceOf('Contao\Image\ResizeConfiguration', $resizeConfig);
-        $this->assertInstanceOf('Contao\Image\ResizeConfigurationInterface', $resizeConfig);
-    }
-
     public function testIsEmpty(): void
     {
         $config = new ResizeConfiguration();

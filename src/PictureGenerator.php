@@ -165,7 +165,6 @@ class PictureGenerator implements PictureGeneratorInterface
         $resizeConfig->setHeight((int) round($resizeConfig->getHeight() * $density));
 
         $resizedImage = $this->resizer->resize($image, $resizeConfig, $this->resizeOptions);
-
         $src = [$resizedImage];
 
         if ('x' === $descriptorType) {

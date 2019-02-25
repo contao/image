@@ -45,14 +45,6 @@ class DeferredImageStorageFilesystemTest extends TestCase
         }
     }
 
-    public function testInstantiation(): void
-    {
-        $storage = new DeferredImageStorageFilesystem($this->rootDir);
-
-        $this->assertInstanceOf('Contao\Image\DeferredImageStorageFilesystem', $storage);
-        $this->assertInstanceOf('Contao\Image\DeferredImageStorageInterface', $storage);
-    }
-
     /**
      * @dataProvider getValues
      */
@@ -60,7 +52,6 @@ class DeferredImageStorageFilesystemTest extends TestCase
     {
         $key = 'foo/bar.baz';
         $value = ['foo' => 'bar'];
-
         $storage = new DeferredImageStorageFilesystem($this->rootDir);
 
         $this->assertFalse($storage->has($key));
@@ -81,13 +72,12 @@ class DeferredImageStorageFilesystemTest extends TestCase
     public function testGetLocked(string $key, array $value): void
     {
         $storage = new DeferredImageStorageFilesystem($this->rootDir);
-
         $storage->set($key, $value);
 
         $this->assertEquals($value, $storage->getLocked($key));
 
         $dataPath = $this->rootDir.'/'.$key.'.config';
-        $handle = fopen($dataPath, 'r+');
+        $handle = fopen($dataPath, 'rb+');
 
         $this->assertFalse(flock($handle, LOCK_EX | LOCK_NB), 'Data file should be locked');
 
@@ -103,6 +93,14 @@ class DeferredImageStorageFilesystemTest extends TestCase
         $storage->releaseLock($key);
     }
 
+    public function getValues(): \Generator
+    {
+        yield ['foo', ['foo' => 'bar']];
+        yield ['foo/bar.baz', ['foo' => ['nested' => ['array', 0, false]]]];
+        yield ['foo/bar/baz/nested/path.jpg', ['foo' => 'bar']];
+        yield ['foo.config', ['foo' => 'bar']];
+    }
+
     /**
      * @dataProvider invalidKeys
      */
@@ -113,6 +111,14 @@ class DeferredImageStorageFilesystemTest extends TestCase
         $this->expectException('InvalidArgumentException');
 
         $storage->set($key, []);
+    }
+
+    public function invalidKeys(): \Generator
+    {
+        yield ['/foo'];
+        yield ['foo/'];
+        yield ['foo//bar'];
+        yield ['../foo'];
     }
 
     public function testListPaths(): void
@@ -141,21 +147,5 @@ class DeferredImageStorageFilesystemTest extends TestCase
         sort($paths);
 
         $this->assertEquals($originalPaths, $paths);
-    }
-
-    public function getValues()
-    {
-        yield ['foo', ['foo' => 'bar']];
-        yield ['foo/bar.baz', ['foo' => ['nested' => ['array', 0, false]]]];
-        yield ['foo/bar/baz/nested/path.jpg', ['foo' => 'bar']];
-        yield ['foo.config', ['foo' => 'bar']];
-    }
-
-    public function invalidKeys()
-    {
-        yield ['/foo'];
-        yield ['foo/'];
-        yield ['foo//bar'];
-        yield ['../foo'];
     }
 }

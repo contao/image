@@ -23,7 +23,7 @@ class ResizeCalculator implements ResizeCalculatorInterface
      */
     public function calculate(ResizeConfigurationInterface $config, ImageDimensionsInterface $dimensions, ImportantPartInterface $importantPart = null): ResizeCoordinatesInterface
     {
-        $zoom = max(0, min(1, (int) $config->getZoomLevel() / 100));
+        $zoom = max(0, min(1, $config->getZoomLevel() / 100));
         $importantPart = $this->importantPartAsArray($dimensions, $importantPart);
 
         // If both dimensions are present, use the mode specific calculations
@@ -128,7 +128,7 @@ class ResizeCalculator implements ResizeCalculatorInterface
      *
      * @param int[] $size
      */
-    private function calculateBox(array $size, ImageDimensionsInterface $original, array $importantPart, float $zoom)
+    private function calculateBox(array $size, ImageDimensionsInterface $original, array $importantPart, float $zoom): ResizeCoordinatesInterface
     {
         $importantPart = $this->zoomImportantPart($importantPart, $zoom, $original->getSize());
 
@@ -148,13 +148,11 @@ class ResizeCalculator implements ResizeCalculatorInterface
      */
     private function calculateSingleDimension(array $size, ImageDimensionsInterface $original, array $importantPart): ResizeCoordinatesInterface
     {
-        // Calculate the height if only the width is given
         if ($size[0]) {
+            // Calculate the height if only the width is given
             $size[1] = max($importantPart['height'] * $size[0] / $importantPart['width'], 1);
-        }
-
-        // Calculate the width if only the height is given
-        else {
+        } else {
+            // Calculate the width if only the height is given
             $size[0] = max($importantPart['width'] * $size[1] / $importantPart['height'], 1);
         }
 

@@ -19,17 +19,13 @@ use PHPUnit\Framework\TestCase;
 
 class DeferredImageTest extends TestCase
 {
-    public function testInstantiation(): void
+    public function testGetters(): void
     {
         $path = '/path/to/image.jpg';
         $imagine = $this->createMock(ImagineInterface::class);
         $dimensions = $this->createMock(ImageDimensionsInterface::class);
 
         $image = new DeferredImage($path, $imagine, $dimensions);
-
-        $this->assertInstanceOf('Contao\Image\DeferredImage', $image);
-        $this->assertInstanceOf('Contao\Image\ImageInterface', $image);
-        $this->assertInstanceOf('Contao\Image\DeferredImageInterface', $image);
 
         $this->assertSame($path, $image->getPath());
         $this->assertSame($imagine, $image->getImagine());

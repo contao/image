@@ -23,14 +23,12 @@ use Contao\Image\ResizeConfiguration;
 use Contao\Image\ResizeConfigurationInterface;
 use Contao\Image\ResizeCoordinates;
 use Contao\Image\ResizeOptions;
-use Contao\Image\Resizer;
 use Imagine\Gd\Imagine as GdImagine;
 use Imagine\Image\Box;
 use Imagine\Image\ImageInterface as ImagineImageInterface;
 use Imagine\Image\Point;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
-use Webmozart\PathUtil\Path;
 
 class DeferredResizerTest extends TestCase
 {
@@ -59,15 +57,6 @@ class DeferredResizerTest extends TestCase
         if (file_exists($this->rootDir)) {
             (new Filesystem())->remove($this->rootDir);
         }
-    }
-
-    public function testInstantiation(): void
-    {
-        $resizer = $this->createResizer();
-
-        $this->assertInstanceOf('Contao\Image\DeferredResizer', $resizer);
-        $this->assertInstanceOf('Contao\Image\DeferredResizerInterface', $resizer);
-        $this->assertInstanceOf('Contao\Image\ResizerInterface', $resizer);
     }
 
     public function testResize(): void
@@ -107,8 +96,6 @@ class DeferredResizerTest extends TestCase
             ->willReturn(new GdImagine())
         ;
 
-        $defaultUmask = umask();
-
         $deferredImage = $resizer->resize(
             $image,
             (new ResizeConfiguration())
@@ -128,6 +115,7 @@ class DeferredResizerTest extends TestCase
         $this->assertFileNotExists($deferredImage->getPath());
         $this->assertFileExists($deferredImage->getPath().'.config');
 
+        /** @var DeferredImageInterface $deferredImage2 */
         $deferredImage2 = $resizer->resize(
             $deferredImage,
             (new ResizeConfiguration())
@@ -152,9 +140,7 @@ class DeferredResizerTest extends TestCase
 
         $resizedImage = $resizer->resize(
             $image,
-            (new ResizeConfiguration())
-                ->setWidth(100)
-                ->setHeight(100),
+            (new ResizeConfiguration())->setWidth(100)->setHeight(100),
             (new ResizeOptions())->setTargetPath($this->rootDir.'/target-path.jpg')
         );
 
@@ -164,33 +150,12 @@ class DeferredResizerTest extends TestCase
         $this->assertFileExists($resizedImage->getPath());
     }
 
-    /**
-     * Returns a resizer.
-     *
-     * @param string                    $cacheDir
-     * @param ResizeCalculatorInterface $calculator
-     * @param Filesystem                $filesystem
-     *
-     * @return DeferredResizer
-     */
-    private function createResizer($cacheDir = null, $calculator = null, $filesystem = null)
+    private function createResizer(string $cacheDir = null, ResizeCalculatorInterface $calculator = null, Filesystem $filesystem = null): DeferredResizer
     {
         if (null === $cacheDir) {
             $cacheDir = $this->rootDir;
         }
 
         return new DeferredResizer($cacheDir, $calculator, $filesystem);
-    }
-
-    /**
-     * @param int    $expectedPermissions
-     * @param string $path
-     */
-    private function assertFilePermissions($expectedPermissions, $path): void
-    {
-        $this->assertSame(
-            sprintf('%o', $expectedPermissions & ~umask() & 0777),
-            sprintf('%o', fileperms($path) & 0777)
-        );
     }
 }

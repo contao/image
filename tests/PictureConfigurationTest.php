@@ -18,20 +18,11 @@ use PHPUnit\Framework\TestCase;
 
 class PictureConfigurationTest extends TestCase
 {
-    public function testInstantiation(): void
-    {
-        $config = new PictureConfiguration();
-
-        $this->assertInstanceOf('Contao\Image\PictureConfiguration', $config);
-        $this->assertInstanceOf('Contao\Image\PictureConfigurationInterface', $config);
-    }
-
     public function testSetSize(): void
     {
         $config = new PictureConfiguration();
         $configItem = $this->createMock(PictureConfigurationItemInterface::class);
 
-        $this->assertInstanceOf('Contao\Image\PictureConfigurationItemInterface', $config->getSize());
         $this->assertSame($config, $config->setSize($configItem));
         $this->assertSame($configItem, $config->getSize());
     }

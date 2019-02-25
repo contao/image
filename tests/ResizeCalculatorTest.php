@@ -24,14 +24,6 @@ use PHPUnit\Framework\TestCase;
 
 class ResizeCalculatorTest extends TestCase
 {
-    public function testInstantiation(): void
-    {
-        $calculator = new ResizeCalculator();
-
-        $this->assertInstanceOf('Contao\Image\ResizeCalculator', $calculator);
-        $this->assertInstanceOf('Contao\Image\ResizeCalculatorInterface', $calculator);
-    }
-
     /**
      * @dataProvider getCalculateDataWithoutImportantPart
      */
@@ -118,385 +110,413 @@ class ResizeCalculatorTest extends TestCase
         }
     }
 
-    /**
-     * @return array
-     */
-    public function getCalculateDataWithoutImportantPart()
+    public function getCalculateDataWithoutImportantPart(): \Generator
     {
-        return [
-            'No dimensions' => [
-                [null, null, 100, 100, null],
-                [
-                    'width' => 100,
-                    'height' => 100,
-                    'target_x' => 0,
-                    'target_y' => 0,
-                    'target_width' => 100,
-                    'target_height' => 100,
-                ],
+        yield 'No dimensions' => [
+            [null, null, 100, 100, null],
+            [
+                'width' => 100,
+                'height' => 100,
+                'target_x' => 0,
+                'target_y' => 0,
+                'target_width' => 100,
+                'target_height' => 100,
             ],
-            'Same dimensions' => [
-                [100, 100, 100, 100, null],
-                [
-                    'width' => 100,
-                    'height' => 100,
-                    'target_x' => 0,
-                    'target_y' => 0,
-                    'target_width' => 100,
-                    'target_height' => 100,
-                ],
+        ];
+
+        yield 'Same dimensions' => [
+            [100, 100, 100, 100, null],
+            [
+                'width' => 100,
+                'height' => 100,
+                'target_x' => 0,
+                'target_y' => 0,
+                'target_width' => 100,
+                'target_height' => 100,
             ],
-            'Scale down' => [
-                [50, 50, 100, 100, null],
-                [
-                    'width' => 50,
-                    'height' => 50,
-                    'target_x' => 0,
-                    'target_y' => 0,
-                    'target_width' => 50,
-                    'target_height' => 50,
-                ],
+        ];
+
+        yield 'Scale down' => [
+            [50, 50, 100, 100, null],
+            [
+                'width' => 50,
+                'height' => 50,
+                'target_x' => 0,
+                'target_y' => 0,
+                'target_width' => 50,
+                'target_height' => 50,
             ],
-            'Scale up' => [
-                [100, 100, 50, 50, null, true],
-                [
-                    'width' => 100,
-                    'height' => 100,
-                    'target_x' => 0,
-                    'target_y' => 0,
-                    'target_width' => 100,
-                    'target_height' => 100,
-                ],
+        ];
+
+        yield 'Scale up' => [
+            [100, 100, 50, 50, null, true],
+            [
+                'width' => 100,
+                'height' => 100,
+                'target_x' => 0,
+                'target_y' => 0,
+                'target_width' => 100,
+                'target_height' => 100,
             ],
-            'Do not scale up' => [
-                [100, 100, 50, 50, null],
-                [
-                    'width' => 50,
-                    'height' => 50,
-                    'target_x' => 0,
-                    'target_y' => 0,
-                    'target_width' => 50,
-                    'target_height' => 50,
-                ],
+        ];
+
+        yield 'Do not scale up' => [
+            [100, 100, 50, 50, null],
+            [
+                'width' => 50,
+                'height' => 50,
+                'target_x' => 0,
+                'target_y' => 0,
+                'target_width' => 50,
+                'target_height' => 50,
             ],
-            'Width only' => [
-                [100, null, 50, 50, null, true],
-                [
-                    'width' => 100,
-                    'height' => 100,
-                    'target_x' => 0,
-                    'target_y' => 0,
-                    'target_width' => 100,
-                    'target_height' => 100,
-                ],
+        ];
+
+        yield 'Width only' => [
+            [100, null, 50, 50, null, true],
+            [
+                'width' => 100,
+                'height' => 100,
+                'target_x' => 0,
+                'target_y' => 0,
+                'target_width' => 100,
+                'target_height' => 100,
             ],
-            'Height only' => [
-                [null, 100, 50, 50, null, true],
-                [
-                    'width' => 100,
-                    'height' => 100,
-                    'target_x' => 0,
-                    'target_y' => 0,
-                    'target_width' => 100,
-                    'target_height' => 100,
-                ],
+        ];
+
+        yield 'Height only' => [
+            [null, 100, 50, 50, null, true],
+            [
+                'width' => 100,
+                'height' => 100,
+                'target_x' => 0,
+                'target_y' => 0,
+                'target_width' => 100,
+                'target_height' => 100,
             ],
-            'Crop landscape' => [
-                [100, 50, 100, 100, null],
-                [
-                    'width' => 100,
-                    'height' => 50,
-                    'target_x' => 0,
-                    'target_y' => 25,
-                    'target_width' => 100,
-                    'target_height' => 100,
-                ],
+        ];
+
+        yield 'Crop landscape' => [
+            [100, 50, 100, 100, null],
+            [
+                'width' => 100,
+                'height' => 50,
+                'target_x' => 0,
+                'target_y' => 25,
+                'target_width' => 100,
+                'target_height' => 100,
             ],
-            'Crop portrait' => [
-                [50, 100, 100, 100, null],
-                [
-                    'width' => 50,
-                    'height' => 100,
-                    'target_x' => 25,
-                    'target_y' => 0,
-                    'target_width' => 100,
-                    'target_height' => 100,
-                ],
+        ];
+
+        yield 'Crop portrait' => [
+            [50, 100, 100, 100, null],
+            [
+                'width' => 50,
+                'height' => 100,
+                'target_x' => 25,
+                'target_y' => 0,
+                'target_width' => 100,
+                'target_height' => 100,
             ],
-            'Mode proportional landscape' => [
-                [100, 10, 100, 50, 'proportional'],
-                [
-                    'width' => 100,
-                    'height' => 50,
-                    'target_x' => 0,
-                    'target_y' => 0,
-                    'target_width' => 100,
-                    'target_height' => 50,
-                ],
+        ];
+
+        yield 'Mode proportional landscape' => [
+            [100, 10, 100, 50, 'proportional'],
+            [
+                'width' => 100,
+                'height' => 50,
+                'target_x' => 0,
+                'target_y' => 0,
+                'target_width' => 100,
+                'target_height' => 50,
             ],
-            'Mode proportional portrait' => [
-                [10, 100, 50, 100, 'proportional'],
-                [
-                    'width' => 50,
-                    'height' => 100,
-                    'target_x' => 0,
-                    'target_y' => 0,
-                    'target_width' => 50,
-                    'target_height' => 100,
-                ],
+        ];
+
+        yield 'Mode proportional portrait' => [
+            [10, 100, 50, 100, 'proportional'],
+            [
+                'width' => 50,
+                'height' => 100,
+                'target_x' => 0,
+                'target_y' => 0,
+                'target_width' => 50,
+                'target_height' => 100,
             ],
-            'Mode proportional square' => [
-                [100, 50, 100, 100, 'proportional'],
-                [
-                    'width' => 100,
-                    'height' => 100,
-                    'target_x' => 0,
-                    'target_y' => 0,
-                    'target_width' => 100,
-                    'target_height' => 100,
-                ],
+        ];
+
+        yield 'Mode proportional square' => [
+            [100, 50, 100, 100, 'proportional'],
+            [
+                'width' => 100,
+                'height' => 100,
+                'target_x' => 0,
+                'target_y' => 0,
+                'target_width' => 100,
+                'target_height' => 100,
             ],
-            'Mode box landscape 1' => [
-                [100, 100, 100, 50, 'box'],
-                [
-                    'width' => 100,
-                    'height' => 50,
-                    'target_x' => 0,
-                    'target_y' => 0,
-                    'target_width' => 100,
-                    'target_height' => 50,
-                ],
+        ];
+
+        yield 'Mode box landscape 1' => [
+            [100, 100, 100, 50, 'box'],
+            [
+                'width' => 100,
+                'height' => 50,
+                'target_x' => 0,
+                'target_y' => 0,
+                'target_width' => 100,
+                'target_height' => 50,
             ],
-            'Mode box landscape 2' => [
-                [100, 10, 100, 50, 'box'],
-                [
-                    'width' => 20,
-                    'height' => 10,
-                    'target_x' => 0,
-                    'target_y' => 0,
-                    'target_width' => 20,
-                    'target_height' => 10,
-                ],
+        ];
+
+        yield 'Mode box landscape 2' => [
+            [100, 10, 100, 50, 'box'],
+            [
+                'width' => 20,
+                'height' => 10,
+                'target_x' => 0,
+                'target_y' => 0,
+                'target_width' => 20,
+                'target_height' => 10,
             ],
-            'Mode box portrait 1' => [
-                [100, 100, 50, 100, 'box'],
-                [
-                    'width' => 50,
-                    'height' => 100,
-                    'target_x' => 0,
-                    'target_y' => 0,
-                    'target_width' => 50,
-                    'target_height' => 100,
-                ],
+        ];
+
+        yield 'Mode box portrait 1' => [
+            [100, 100, 50, 100, 'box'],
+            [
+                'width' => 50,
+                'height' => 100,
+                'target_x' => 0,
+                'target_y' => 0,
+                'target_width' => 50,
+                'target_height' => 100,
             ],
-            'Mode box portrait 2' => [
-                [10, 100, 50, 100, 'box'],
-                [
-                    'width' => 10,
-                    'height' => 20,
-                    'target_x' => 0,
-                    'target_y' => 0,
-                    'target_width' => 10,
-                    'target_height' => 20,
-                ],
+        ];
+
+        yield 'Mode box portrait 2' => [
+            [10, 100, 50, 100, 'box'],
+            [
+                'width' => 10,
+                'height' => 20,
+                'target_x' => 0,
+                'target_y' => 0,
+                'target_width' => 10,
+                'target_height' => 20,
             ],
-            'Mode left_top landscape' => [
-                [100, 100, 100, 50, 'left_top', true],
-                [
-                    'width' => 100,
-                    'height' => 100,
-                    'target_x' => 0,
-                    'target_y' => 0,
-                    'target_width' => 200,
-                    'target_height' => 100,
-                ],
+        ];
+
+        yield 'Mode left_top landscape' => [
+            [100, 100, 100, 50, 'left_top', true],
+            [
+                'width' => 100,
+                'height' => 100,
+                'target_x' => 0,
+                'target_y' => 0,
+                'target_width' => 200,
+                'target_height' => 100,
             ],
-            'Mode left_top portrait' => [
-                [100, 100, 50, 100, 'left_top', true],
-                [
-                    'width' => 100,
-                    'height' => 100,
-                    'target_x' => 0,
-                    'target_y' => 0,
-                    'target_width' => 100,
-                    'target_height' => 200,
-                ],
+        ];
+
+        yield 'Mode left_top portrait' => [
+            [100, 100, 50, 100, 'left_top', true],
+            [
+                'width' => 100,
+                'height' => 100,
+                'target_x' => 0,
+                'target_y' => 0,
+                'target_width' => 100,
+                'target_height' => 200,
             ],
-            'Mode center_top landscape' => [
-                [100, 100, 100, 50, 'center_top', true],
-                [
-                    'width' => 100,
-                    'height' => 100,
-                    'target_x' => 50,
-                    'target_y' => 0,
-                    'target_width' => 200,
-                    'target_height' => 100,
-                ],
+        ];
+
+        yield 'Mode center_top landscape' => [
+            [100, 100, 100, 50, 'center_top', true],
+            [
+                'width' => 100,
+                'height' => 100,
+                'target_x' => 50,
+                'target_y' => 0,
+                'target_width' => 200,
+                'target_height' => 100,
             ],
-            'Mode center_top portrait' => [
-                [100, 100, 50, 100, 'center_top', true],
-                [
-                    'width' => 100,
-                    'height' => 100,
-                    'target_x' => 0,
-                    'target_y' => 0,
-                    'target_width' => 100,
-                    'target_height' => 200,
-                ],
+        ];
+
+        yield 'Mode center_top portrait' => [
+            [100, 100, 50, 100, 'center_top', true],
+            [
+                'width' => 100,
+                'height' => 100,
+                'target_x' => 0,
+                'target_y' => 0,
+                'target_width' => 100,
+                'target_height' => 200,
             ],
-            'Mode right_top landscape' => [
-                [100, 100, 100, 50, 'right_top', true],
-                [
-                    'width' => 100,
-                    'height' => 100,
-                    'target_x' => 100,
-                    'target_y' => 0,
-                    'target_width' => 200,
-                    'target_height' => 100,
-                ],
+        ];
+
+        yield 'Mode right_top landscape' => [
+            [100, 100, 100, 50, 'right_top', true],
+            [
+                'width' => 100,
+                'height' => 100,
+                'target_x' => 100,
+                'target_y' => 0,
+                'target_width' => 200,
+                'target_height' => 100,
             ],
-            'Mode right_top portrait' => [
-                [100, 100, 50, 100, 'right_top', true],
-                [
-                    'width' => 100,
-                    'height' => 100,
-                    'target_x' => 0,
-                    'target_y' => 0,
-                    'target_width' => 100,
-                    'target_height' => 200,
-                ],
+        ];
+
+        yield 'Mode right_top portrait' => [
+            [100, 100, 50, 100, 'right_top', true],
+            [
+                'width' => 100,
+                'height' => 100,
+                'target_x' => 0,
+                'target_y' => 0,
+                'target_width' => 100,
+                'target_height' => 200,
             ],
-            'Mode left_center landscape' => [
-                [100, 100, 100, 50, 'left_center', true],
-                [
-                    'width' => 100,
-                    'height' => 100,
-                    'target_x' => 0,
-                    'target_y' => 0,
-                    'target_width' => 200,
-                    'target_height' => 100,
-                ],
+        ];
+
+        yield 'Mode left_center landscape' => [
+            [100, 100, 100, 50, 'left_center', true],
+            [
+                'width' => 100,
+                'height' => 100,
+                'target_x' => 0,
+                'target_y' => 0,
+                'target_width' => 200,
+                'target_height' => 100,
             ],
-            'Mode left_center portrait' => [
-                [100, 100, 50, 100, 'left_center', true],
-                [
-                    'width' => 100,
-                    'height' => 100,
-                    'target_x' => 0,
-                    'target_y' => 50,
-                    'target_width' => 100,
-                    'target_height' => 200,
-                ],
+        ];
+
+        yield 'Mode left_center portrait' => [
+            [100, 100, 50, 100, 'left_center', true],
+            [
+                'width' => 100,
+                'height' => 100,
+                'target_x' => 0,
+                'target_y' => 50,
+                'target_width' => 100,
+                'target_height' => 200,
             ],
-            'Mode center_center landscape' => [
-                [100, 100, 100, 50, 'center_center', true],
-                [
-                    'width' => 100,
-                    'height' => 100,
-                    'target_x' => 50,
-                    'target_y' => 0,
-                    'target_width' => 200,
-                    'target_height' => 100,
-                ],
+        ];
+
+        yield 'Mode center_center landscape' => [
+            [100, 100, 100, 50, 'center_center', true],
+            [
+                'width' => 100,
+                'height' => 100,
+                'target_x' => 50,
+                'target_y' => 0,
+                'target_width' => 200,
+                'target_height' => 100,
             ],
-            'Mode center_center portrait' => [
-                [100, 100, 50, 100, 'center_center', true],
-                [
-                    'width' => 100,
-                    'height' => 100,
-                    'target_x' => 0,
-                    'target_y' => 50,
-                    'target_width' => 100,
-                    'target_height' => 200,
-                ],
+        ];
+
+        yield 'Mode center_center portrait' => [
+            [100, 100, 50, 100, 'center_center', true],
+            [
+                'width' => 100,
+                'height' => 100,
+                'target_x' => 0,
+                'target_y' => 50,
+                'target_width' => 100,
+                'target_height' => 200,
             ],
-            'Mode right_center landscape' => [
-                [100, 100, 100, 50, 'right_center', true],
-                [
-                    'width' => 100,
-                    'height' => 100,
-                    'target_x' => 100,
-                    'target_y' => 0,
-                    'target_width' => 200,
-                    'target_height' => 100,
-                ],
+        ];
+
+        yield 'Mode right_center landscape' => [
+            [100, 100, 100, 50, 'right_center', true],
+            [
+                'width' => 100,
+                'height' => 100,
+                'target_x' => 100,
+                'target_y' => 0,
+                'target_width' => 200,
+                'target_height' => 100,
             ],
-            'Mode right_center portrait' => [
-                [100, 100, 50, 100, 'right_center', true],
-                [
-                    'width' => 100,
-                    'height' => 100,
-                    'target_x' => 0,
-                    'target_y' => 50,
-                    'target_width' => 100,
-                    'target_height' => 200,
-                ],
+        ];
+
+        yield 'Mode right_center portrait' => [
+            [100, 100, 50, 100, 'right_center', true],
+            [
+                'width' => 100,
+                'height' => 100,
+                'target_x' => 0,
+                'target_y' => 50,
+                'target_width' => 100,
+                'target_height' => 200,
             ],
-            'Mode left_bottom landscape' => [
-                [100, 100, 100, 50, 'left_bottom', true],
-                [
-                    'width' => 100,
-                    'height' => 100,
-                    'target_x' => 0,
-                    'target_y' => 0,
-                    'target_width' => 200,
-                    'target_height' => 100,
-                ],
+        ];
+
+        yield 'Mode left_bottom landscape' => [
+            [100, 100, 100, 50, 'left_bottom', true],
+            [
+                'width' => 100,
+                'height' => 100,
+                'target_x' => 0,
+                'target_y' => 0,
+                'target_width' => 200,
+                'target_height' => 100,
             ],
-            'Mode left_bottom portrait' => [
-                [100, 100, 50, 100, 'left_bottom', true],
-                [
-                    'width' => 100,
-                    'height' => 100,
-                    'target_x' => 0,
-                    'target_y' => 100,
-                    'target_width' => 100,
-                    'target_height' => 200,
-                ],
+        ];
+
+        yield 'Mode left_bottom portrait' => [
+            [100, 100, 50, 100, 'left_bottom', true],
+            [
+                'width' => 100,
+                'height' => 100,
+                'target_x' => 0,
+                'target_y' => 100,
+                'target_width' => 100,
+                'target_height' => 200,
             ],
-            'Mode center_bottom landscape' => [
-                [100, 100, 100, 50, 'center_bottom', true],
-                [
-                    'width' => 100,
-                    'height' => 100,
-                    'target_x' => 50,
-                    'target_y' => 0,
-                    'target_width' => 200,
-                    'target_height' => 100,
-                ],
+        ];
+
+        yield 'Mode center_bottom landscape' => [
+            [100, 100, 100, 50, 'center_bottom', true],
+            [
+                'width' => 100,
+                'height' => 100,
+                'target_x' => 50,
+                'target_y' => 0,
+                'target_width' => 200,
+                'target_height' => 100,
             ],
-            'Mode center_bottom portrait' => [
-                [100, 100, 50, 100, 'center_bottom', true],
-                [
-                    'width' => 100,
-                    'height' => 100,
-                    'target_x' => 0,
-                    'target_y' => 100,
-                    'target_width' => 100,
-                    'target_height' => 200,
-                ],
+        ];
+
+        yield 'Mode center_bottom portrait' => [
+            [100, 100, 50, 100, 'center_bottom', true],
+            [
+                'width' => 100,
+                'height' => 100,
+                'target_x' => 0,
+                'target_y' => 100,
+                'target_width' => 100,
+                'target_height' => 200,
             ],
-            'Mode right_bottom landscape' => [
-                [100, 100, 100, 50, 'right_bottom', true],
-                [
-                    'width' => 100,
-                    'height' => 100,
-                    'target_x' => 100,
-                    'target_y' => 0,
-                    'target_width' => 200,
-                    'target_height' => 100,
-                ],
+        ];
+
+        yield 'Mode right_bottom landscape' => [
+            [100, 100, 100, 50, 'right_bottom', true],
+            [
+                'width' => 100,
+                'height' => 100,
+                'target_x' => 100,
+                'target_y' => 0,
+                'target_width' => 200,
+                'target_height' => 100,
             ],
-            'Mode right_bottom portrait' => [
-                [100, 100, 50, 100, 'right_bottom', true],
-                [
-                    'width' => 100,
-                    'height' => 100,
-                    'target_x' => 0,
-                    'target_y' => 100,
-                    'target_width' => 100,
-                    'target_height' => 200,
-                ],
+        ];
+
+        yield 'Mode right_bottom portrait' => [
+            [100, 100, 50, 100, 'right_bottom', true],
+            [
+                'width' => 100,
+                'height' => 100,
+                'target_x' => 0,
+                'target_y' => 100,
+                'target_width' => 100,
+                'target_height' => 200,
             ],
         ];
     }
@@ -519,12 +539,15 @@ class ResizeCalculatorTest extends TestCase
         if (null !== $arguments[0]) {
             $config->setWidth($arguments[0]);
         }
+
         if (null !== $arguments[1]) {
             $config->setHeight($arguments[1]);
         }
+
         if (null !== $arguments[5]) {
             $config->setZoomLevel($arguments[5]);
         }
+
         if (null !== $arguments[4]) {
             $config->setMode($arguments[4]);
         }
@@ -555,143 +578,149 @@ class ResizeCalculatorTest extends TestCase
         }
     }
 
-    /**
-     * @return array The data
-     */
-    public function getCalculateDataWithImportantPart()
+    public function getCalculateDataWithImportantPart(): \Generator
     {
-        return [
-            'No dimensions zoom 0' => [
-                [null, null, 100, 100, null, 0, ['x' => 20, 'y' => 20, 'width' => 60, 'height' => 60]],
-                [
-                    'width' => 100,
-                    'height' => 100,
-                    'target_x' => 0,
-                    'target_y' => 0,
-                    'target_width' => 100,
-                    'target_height' => 100,
-                ],
+        yield 'No dimensions zoom 0' => [
+            [null, null, 100, 100, null, 0, ['x' => 20, 'y' => 20, 'width' => 60, 'height' => 60]],
+            [
+                'width' => 100,
+                'height' => 100,
+                'target_x' => 0,
+                'target_y' => 0,
+                'target_width' => 100,
+                'target_height' => 100,
             ],
-            'No dimensions zoom 50' => [
-                [null, null, 100, 100, null, 50, ['x' => 20, 'y' => 20, 'width' => 60, 'height' => 60]],
-                [
-                    'width' => 80,
-                    'height' => 80,
-                    'target_x' => 10,
-                    'target_y' => 10,
-                    'target_width' => 100,
-                    'target_height' => 100,
-                ],
+        ];
+
+        yield 'No dimensions zoom 50' => [
+            [null, null, 100, 100, null, 50, ['x' => 20, 'y' => 20, 'width' => 60, 'height' => 60]],
+            [
+                'width' => 80,
+                'height' => 80,
+                'target_x' => 10,
+                'target_y' => 10,
+                'target_width' => 100,
+                'target_height' => 100,
             ],
-            'No dimensions zoom 100' => [
-                [null, null, 100, 100, null, 100, ['x' => 20, 'y' => 20, 'width' => 60, 'height' => 60]],
-                [
-                    'width' => 60,
-                    'height' => 60,
-                    'target_x' => 20,
-                    'target_y' => 20,
-                    'target_width' => 100,
-                    'target_height' => 100,
-                ],
+        ];
+
+        yield 'No dimensions zoom 100' => [
+            [null, null, 100, 100, null, 100, ['x' => 20, 'y' => 20, 'width' => 60, 'height' => 60]],
+            [
+                'width' => 60,
+                'height' => 60,
+                'target_x' => 20,
+                'target_y' => 20,
+                'target_width' => 100,
+                'target_height' => 100,
             ],
-            'Width only zoom 0' => [
-                [100, null, 100, 100, null, 0, ['x' => 20, 'y' => 20, 'width' => 60, 'height' => 60]],
-                [
-                    'width' => 100,
-                    'height' => 100,
-                    'target_x' => 0,
-                    'target_y' => 0,
-                    'target_width' => 100,
-                    'target_height' => 100,
-                ],
+        ];
+
+        yield 'Width only zoom 0' => [
+            [100, null, 100, 100, null, 0, ['x' => 20, 'y' => 20, 'width' => 60, 'height' => 60]],
+            [
+                'width' => 100,
+                'height' => 100,
+                'target_x' => 0,
+                'target_y' => 0,
+                'target_width' => 100,
+                'target_height' => 100,
             ],
-            'Width only zoom 50' => [
-                [100, null, 100, 100, null, 50, ['x' => 20, 'y' => 20, 'width' => 60, 'height' => 60], true],
-                [
-                    'width' => 100,
-                    'height' => 100,
-                    'target_x' => 13,
-                    'target_y' => 13,
-                    'target_width' => 125,
-                    'target_height' => 125,
-                ],
+        ];
+
+        yield 'Width only zoom 50' => [
+            [100, null, 100, 100, null, 50, ['x' => 20, 'y' => 20, 'width' => 60, 'height' => 60], true],
+            [
+                'width' => 100,
+                'height' => 100,
+                'target_x' => 13,
+                'target_y' => 13,
+                'target_width' => 125,
+                'target_height' => 125,
             ],
-            'Width only zoom 100' => [
-                [100, null, 100, 100, null, 100, ['x' => 20, 'y' => 20, 'width' => 60, 'height' => 60], true],
-                [
-                    'width' => 100,
-                    'height' => 100,
-                    'target_x' => 33,
-                    'target_y' => 33,
-                    'target_width' => 167,
-                    'target_height' => 167,
-                ],
+        ];
+
+        yield 'Width only zoom 100' => [
+            [100, null, 100, 100, null, 100, ['x' => 20, 'y' => 20, 'width' => 60, 'height' => 60], true],
+            [
+                'width' => 100,
+                'height' => 100,
+                'target_x' => 33,
+                'target_y' => 33,
+                'target_width' => 167,
+                'target_height' => 167,
             ],
-            'Same dimensions zoom 0' => [
-                [100, 100, 100, 100, null, 0, ['x' => 25, 'y' => 25, 'width' => 50, 'height' => 50]],
-                [
-                    'width' => 100,
-                    'height' => 100,
-                    'target_x' => 0,
-                    'target_y' => 0,
-                    'target_width' => 100,
-                    'target_height' => 100,
-                ],
+        ];
+
+        yield 'Same dimensions zoom 0' => [
+            [100, 100, 100, 100, null, 0, ['x' => 25, 'y' => 25, 'width' => 50, 'height' => 50]],
+            [
+                'width' => 100,
+                'height' => 100,
+                'target_x' => 0,
+                'target_y' => 0,
+                'target_width' => 100,
+                'target_height' => 100,
             ],
-            'Same dimensions zoom 50' => [
-                [100, 100, 100, 100, null, 50, ['x' => 25, 'y' => 25, 'width' => 50, 'height' => 50], true],
-                [
-                    'width' => 100,
-                    'height' => 100,
-                    'target_x' => 17,
-                    'target_y' => 17,
-                    'target_width' => 133,
-                    'target_height' => 133,
-                ],
+        ];
+
+        yield 'Same dimensions zoom 50' => [
+            [100, 100, 100, 100, null, 50, ['x' => 25, 'y' => 25, 'width' => 50, 'height' => 50], true],
+            [
+                'width' => 100,
+                'height' => 100,
+                'target_x' => 17,
+                'target_y' => 17,
+                'target_width' => 133,
+                'target_height' => 133,
             ],
-            'Same dimensions zoom 100' => [
-                [100, 100, 100, 100, null, 100, ['x' => 25, 'y' => 25, 'width' => 50, 'height' => 50], true],
-                [
-                    'width' => 100,
-                    'height' => 100,
-                    'target_x' => 50,
-                    'target_y' => 50,
-                    'target_width' => 200,
-                    'target_height' => 200,
-                ],
+        ];
+
+        yield 'Same dimensions zoom 100' => [
+            [100, 100, 100, 100, null, 100, ['x' => 25, 'y' => 25, 'width' => 50, 'height' => 50], true],
+            [
+                'width' => 100,
+                'height' => 100,
+                'target_x' => 50,
+                'target_y' => 50,
+                'target_width' => 200,
+                'target_height' => 200,
             ],
-            'Landscape to portrait zoom 0' => [
-                [100, 200, 200, 100, null, 0, ['x' => 140, 'y' => 40, 'width' => 20, 'height' => 20], true],
-                [
-                    'width' => 100,
-                    'height' => 200,
-                    'target_x' => 233,
-                    'target_y' => 0,
-                    'target_width' => 400,
-                    'target_height' => 200,
-                ],
+        ];
+
+        yield 'Landscape to portrait zoom 0' => [
+            [100, 200, 200, 100, null, 0, ['x' => 140, 'y' => 40, 'width' => 20, 'height' => 20], true],
+            [
+                'width' => 100,
+                'height' => 200,
+                'target_x' => 233,
+                'target_y' => 0,
+                'target_width' => 400,
+                'target_height' => 200,
             ],
-            'Landscape to portrait zoom 50' => [
-                [100, 200, 200, 100, null, 50, ['x' => 140, 'y' => 40, 'width' => 20, 'height' => 20], true],
-                [
-                    'width' => 100,
-                    'height' => 200,
-                    'target_x' => 367,
-                    'target_y' => 43,
-                    'target_width' => 571,
-                    'target_height' => 286,
-                ],
+        ];
+
+        yield 'Landscape to portrait zoom 50' => [
+            [100, 200, 200, 100, null, 50, ['x' => 140, 'y' => 40, 'width' => 20, 'height' => 20], true],
+            [
+                'width' => 100,
+                'height' => 200,
+                'target_x' => 367,
+                'target_y' => 43,
+                'target_width' => 571,
+                'target_height' => 286,
             ],
-            'Landscape to portrait zoom 100' => [
-                [100, 200, 200, 100, null, 100, ['x' => 140, 'y' => 40, 'width' => 20, 'height' => 20], true],
-                [
-                    'width' => 100,
-                    'height' => 200,
-                    'target_x' => 700,
-                    'target_y' => 150,
-                    'target_width' => 1000,
-                    'target_height' => 500,
-                ],
+        ];
+
+        yield 'Landscape to portrait zoom 100' => [
+            [100, 200, 200, 100, null, 100, ['x' => 140, 'y' => 40, 'width' => 20, 'height' => 20], true],
+            [
+                'width' => 100,
+                'height' => 200,
+                'target_x' => 700,
+                'target_y' => 150,
+                'target_width' => 1000,
+                'target_height' => 500,
             ],
         ];
     }

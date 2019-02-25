@@ -16,6 +16,10 @@ use Imagine\Image\ImagineInterface;
 
 class DeferredImage extends Image implements DeferredImageInterface
 {
+    /**
+     * No parent::__construct() call here, as we overwrite the parent
+     * constructor to skip the file_exists() checks.
+     */
     public function __construct(string $path, ImagineInterface $imagine, ImageDimensionsInterface $dimensions)
     {
         $this->path = $path;
