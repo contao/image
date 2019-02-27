@@ -15,8 +15,8 @@
         "ext-libxml": "*",
         "ext-xmlreader": "*",
         "contao/imagine-svg": "^0.1.4 || ^0.2",
-        "imagine/imagine": "^1.0",
-        "symfony/filesystem": "3.4.* || ^4.1",
+        "imagine/imagine": "^0.7.1 || ^1.0",
+        "symfony/filesystem": "^2.8 || ^3.0 || ^4.0",
         "webmozart/path-util": "^2.0"
     },
     "require-dev": {
