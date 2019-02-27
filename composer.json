@@ -12,14 +12,15 @@
     "require": {
         "php": "^7.1",
         "ext-json": "*",
-        "ext-libxml": "*",
-        "ext-xmlreader": "*",
-        "contao/imagine-svg": "^0.1.4 || ^0.2",
         "imagine/imagine": "^0.7.1 || ^1.0",
         "symfony/filesystem": "^2.8 || ^3.0 || ^4.0",
         "webmozart/path-util": "^2.0"
     },
+    "conflict": {
+        "contao/imagine-svg": "<0.1.4 || >=0.3"
+    },
     "require-dev": {
+        "contao/imagine-svg": "^0.1.4 || ^0.2",
         "friendsofphp/php-cs-fixer": "^2.12",
         "php-coveralls/php-coveralls": "^2.1",
         "phpstan/phpstan-phpunit": "^0.10",

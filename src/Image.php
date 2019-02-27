@@ -161,6 +161,10 @@ class Image implements ImageInterface
      */
     private function getSvgSize(): ?BoxInterface
     {
+        if (!class_exists(SvgImage::class) || !class_exists(XMLReader::class) || !class_exists(DOMDocument::class)) {
+            return null;
+        }
+
         static $zlibSupport;
 
         if (null === $zlibSupport) {
