@@ -26,7 +26,6 @@ use Contao\Image\ResizeOptions;
 use Contao\Image\ResizerInterface;
 use Contao\ImagineSvg\Imagine as ImagineSvg;
 use Imagine\Image\Box;
-use Imagine\Image\Point;
 use PHPUnit\Framework\TestCase;
 
 class PictureGeneratorTest extends TestCase
