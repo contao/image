@@ -272,7 +272,7 @@ class ImageTest extends TestCase
 
         $image = $this->createImage(null, $imagine);
 
-        $this->assertEquals(new ImportantPart(0, 0, 1, 1), $image->getImportantPart());
+        $this->assertEquals(new ImportantPart(), $image->getImportantPart());
 
         $image->setImportantPart(new ImportantPart(0.1, 0.1, 0.8, 0.8));
 

@@ -173,7 +173,7 @@ class ResizeCalculator implements ResizeCalculatorInterface
     private function importantPartAsArray(ImageDimensionsInterface $dimensions, ImportantPartInterface $importantPart = null): array
     {
         if (null === $importantPart) {
-            $importantPart = new ImportantPart(0, 0, 1, 1);
+            $importantPart = new ImportantPart();
         }
 
         $imageWidth = $dimensions->getSize()->getWidth();

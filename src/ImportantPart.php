@@ -37,7 +37,7 @@ class ImportantPart implements ImportantPartInterface
      */
     private $height;
 
-    public function __construct(float $x, float $y, float $width, float $height)
+    public function __construct(float $x = 0, float $y = 0, float $width = 1, float $height = 1)
     {
         if ($x < 0 || $x > 1 || $y < 0 || $y > 1 || $width < 0 || $width > 1 || $height < 0 || $height > 1) {
             throw new \InvalidArgumentException('X, Y, width and height must be a float between 0 and 1');
