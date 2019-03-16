@@ -140,8 +140,7 @@ class DeferredImageStorageFilesystem implements DeferredImageStorageInterface
             }
         );
 
-        return new class($iterator, $this->cacheDir, self::PATH_SUFFIX) extends \IteratorIterator
-        {
+        return new class($iterator, $this->cacheDir, self::PATH_SUFFIX) extends \IteratorIterator {
             private $cacheDir;
 
             private $suffix;
