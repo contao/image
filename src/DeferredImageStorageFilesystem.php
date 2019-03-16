@@ -41,7 +41,7 @@ class DeferredImageStorageFilesystem implements DeferredImageStorageInterface
             $filesystem = new Filesystem();
         }
 
-        $this->cacheDir = $cacheDir . self::PATH_PREFIX;
+        $this->cacheDir = $cacheDir.self::PATH_PREFIX;
         $this->filesystem = $filesystem;
     }
 

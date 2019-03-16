@@ -41,6 +41,9 @@ class DeferredResizer extends Resizer implements DeferredResizerInterface
         $this->storage = $storage;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getDeferredImage(string $targetPath, ImagineInterface $imagine): ?DeferredImageInterface
     {
         if (Path::isAbsolute($targetPath)) {
@@ -69,6 +72,9 @@ class DeferredResizer extends Resizer implements DeferredResizerInterface
         );
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function resizeDeferredImage(DeferredImageInterface $image, bool $blocking = true): ?ImageInterface
     {
         if (!Path::isBasePath($this->cacheDir, $image->getPath())) {
@@ -93,6 +99,9 @@ class DeferredResizer extends Resizer implements DeferredResizerInterface
         return $resizedImage;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     protected function processResize(ImageInterface $image, ResizeConfigurationInterface $config, ResizeOptionsInterface $options): ImageInterface
     {
         // Resize the source image if it is deferred
