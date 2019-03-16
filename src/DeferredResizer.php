@@ -67,14 +67,18 @@ class DeferredResizer extends Resizer implements DeferredResizerInterface
         );
     }
 
-    public function resizeDeferredImage(DeferredImageInterface $image): ImageInterface
+    public function resizeDeferredImage(DeferredImageInterface $image, bool $blocking = true): ?ImageInterface
     {
         if (!Path::isBasePath($this->cacheDir, $image->getPath())) {
             throw new \InvalidArgumentException(sprintf('Path "%s" is not inside cache directory "%s"', $image->getPath(), $this->cacheDir));
         }
 
         $targetPath = Path::makeRelative($image->getPath(), $this->cacheDir);
-        $config = $this->storage->getLocked($targetPath);
+        $config = $this->storage->getLocked($targetPath, $blocking);
+
+        if (null === $config) {
+            return null;
+        }
 
         try {
             $resizedImage = $this->executeDeferredResize($targetPath, $config, $image->getImagine());

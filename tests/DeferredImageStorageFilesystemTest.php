@@ -81,12 +81,26 @@ class DeferredImageStorageFilesystemTest extends TestCase
 
         $this->assertFalse(flock($handle, LOCK_EX | LOCK_NB), 'Data file should be locked');
 
+        $this->assertNull(
+            $storage->getLocked($key, false),
+            'Self locked file should return null for non-blocking lock.'
+        );
+
         $storage->releaseLock($key);
 
-        $this->assertTrue(flock($handle, LOCK_EX | LOCK_NB), 'Data file should be locked');
+        $this->assertTrue(flock($handle, LOCK_EX | LOCK_NB), 'Data file should not be locked');
+
+        $this->assertNull(
+            $storage->getLocked($key, false),
+            'Foreign locked file should return null for non-blocking lock.'
+        );
 
         flock($handle, LOCK_UN | LOCK_NB);
         fclose($handle);
+
+        $this->assertEquals($value, $storage->getLocked($key, false));
+
+        $storage->releaseLock($key);
 
         $this->expectException('RuntimeException');
 

@@ -24,5 +24,5 @@ interface DeferredResizerInterface extends ResizerInterface
     /**
      * Resizes a deferred image.
      */
-    public function resizeDeferredImage(DeferredImageInterface $image): ImageInterface;
+    public function resizeDeferredImage(DeferredImageInterface $image, bool $blocking = true): ?ImageInterface;
 }

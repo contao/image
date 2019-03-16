@@ -71,10 +71,14 @@ class DeferredImageStorageFilesystem implements DeferredImageStorageInterface
     /**
      * {@inheritdoc}
      */
-    public function getLocked(string $path): array
+    public function getLocked(string $path, bool $blocking = true): ?array
     {
         if (isset($this->locks[$path])) {
-            throw new \RuntimeException(sprintf('Lock for "%s" was already acquired.', $path));
+            if ($blocking) {
+                throw new \RuntimeException(sprintf('Lock for "%s" was already acquired.', $path));
+            }
+
+            return null;
         }
 
         $configPath = $this->getConfigPath($path);
@@ -83,9 +87,14 @@ class DeferredImageStorageFilesystem implements DeferredImageStorageInterface
             throw new \RuntimeException(sprintf('Unable to open file "%s".', $configPath));
         }
 
-        if (!flock($handle, LOCK_EX)) {
+        if (!flock($handle, LOCK_EX | ($blocking ? 0 : LOCK_NB))) {
             fclose($handle);
-            throw new \RuntimeException(sprintf('Unable to acquire lock for file "%s".', $configPath));
+
+            if ($blocking) {
+                throw new \RuntimeException(sprintf('Unable to acquire lock for file "%s".', $configPath));
+            }
+
+            return null;
         }
 
         $this->locks[$path] = $handle;
