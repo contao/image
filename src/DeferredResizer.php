@@ -35,8 +35,10 @@ class DeferredResizer extends Resizer implements DeferredResizerInterface
         parent::__construct($cacheDir, $calculator, $filesystem);
 
         if (null === $storage) {
-            $this->storage = new DeferredImageStorageFilesystem($cacheDir);
+            $storage = new DeferredImageStorageFilesystem($cacheDir);
         }
+
+        $this->storage = $storage;
     }
 
     public function getDeferredImage(string $targetPath, ImagineInterface $imagine): ?DeferredImageInterface

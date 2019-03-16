@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Contao\Image\Tests;
 
 use Contao\Image\DeferredImageInterface;
+use Contao\Image\DeferredImageStorageInterface;
 use Contao\Image\DeferredResizer;
 use Contao\Image\Image;
 use Contao\Image\ImageDimensions;
@@ -26,6 +27,7 @@ use Contao\Image\ResizeOptions;
 use Imagine\Gd\Imagine as GdImagine;
 use Imagine\Image\Box;
 use Imagine\Image\ImageInterface as ImagineImageInterface;
+use Imagine\Image\ImagineInterface;
 use Imagine\Image\Point;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
@@ -150,12 +152,64 @@ class DeferredResizerTest extends TestCase
         $this->assertFileExists($resizedImage->getPath());
     }
 
-    private function createResizer(string $cacheDir = null, ResizeCalculatorInterface $calculator = null, Filesystem $filesystem = null): DeferredResizer
+    public function testGetDeferredImage(): void
+    {
+        $storage = $this->createMock(DeferredImageStorageInterface::class);
+
+        $storage
+            ->method('has')
+            ->willReturn(true)
+        ;
+
+        $storage
+            ->method('get')
+            ->willReturn([
+                'coordinates' => [
+                    'crop' => [
+                        'width' => 200,
+                        'height' => 100,
+                    ],
+                ],
+            ])
+        ;
+
+        $resizer = $this->createResizer(null, null, null, $storage);
+        $imagePath = $this->rootDir.'/a/foo-5fc1c9f9.jpg';
+        $imagine = $this->createMock(ImagineInterface::class);
+
+        $deferredImage = $resizer->getDeferredImage($imagePath, $imagine);
+
+        $this->assertInstanceOf(DeferredImageInterface::class, $deferredImage);
+        $this->assertEquals(new ImageDimensions(new Box(200, 100)), $deferredImage->getDimensions());
+        $this->assertSame($imagePath, $deferredImage->getPath());
+
+        $deferredImage = $resizer->getDeferredImage('/not/inside/cache-path.jpg', $imagine);
+
+        $this->assertNull($deferredImage);
+    }
+
+    public function testGetMissingDeferredImage(): void
+    {
+        $storage = $this->createMock(DeferredImageStorageInterface::class);
+
+        $storage
+            ->method('has')
+            ->willReturn(false)
+        ;
+
+        $resizer = $this->createResizer(null, null, null, $storage);
+        $imagePath = $this->rootDir.'/a/foo-5fc1c9f9.jpg';
+        $imagine = $this->createMock(ImagineInterface::class);
+
+        $this->assertNull($resizer->getDeferredImage($imagePath, $imagine));
+    }
+
+    private function createResizer(string $cacheDir = null, ResizeCalculatorInterface $calculator = null, Filesystem $filesystem = null, DeferredImageStorageInterface $storage = null): DeferredResizer
     {
         if (null === $cacheDir) {
             $cacheDir = $this->rootDir;
         }
 
-        return new DeferredResizer($cacheDir, $calculator, $filesystem);
+        return new DeferredResizer($cacheDir, $calculator, $filesystem, $storage);
     }
 }
