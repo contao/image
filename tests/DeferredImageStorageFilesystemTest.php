@@ -157,5 +157,9 @@ class DeferredImageStorageFilesystemTest extends TestCase
         sort($paths);
 
         $this->assertEquals($originalPaths, $paths);
+
+        $storage = new DeferredImageStorageFilesystem('/path/does/not/exist');
+
+        $this->assertCount(0, $storage->listPaths());
     }
 }

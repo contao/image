@@ -131,6 +131,10 @@ class DeferredImageStorageFilesystem implements DeferredImageStorageInterface
      */
     public function listPaths(): iterable
     {
+        if (!$this->filesystem->exists($this->cacheDir)) {
+            return new \ArrayIterator([]);
+        }
+
         $iterator = new \RecursiveDirectoryIterator($this->cacheDir);
         $iterator = new \RecursiveIteratorIterator($iterator);
 
