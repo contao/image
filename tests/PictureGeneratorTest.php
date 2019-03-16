@@ -26,7 +26,6 @@ use Contao\Image\ResizeOptions;
 use Contao\Image\ResizerInterface;
 use Contao\ImagineSvg\Imagine as ImagineSvg;
 use Imagine\Image\Box;
-use Imagine\Image\Point;
 use PHPUnit\Framework\TestCase;
 
 class PictureGeneratorTest extends TestCase
@@ -70,7 +69,7 @@ class PictureGeneratorTest extends TestCase
 
         $imageMock
             ->method('getImportantPart')
-            ->willReturn(new ImportantPart(new Point(0, 0), new Box(1000, 1000)))
+            ->willReturn(new ImportantPart())
         ;
 
         $pictureGenerator = $this->createPictureGenerator($resizer);
@@ -187,7 +186,7 @@ class PictureGeneratorTest extends TestCase
 
         $imageMock
             ->method('getImportantPart')
-            ->willReturn(new ImportantPart(new Point(0, 0), new Box(400, 200)))
+            ->willReturn(new ImportantPart())
         ;
 
         $pictureGenerator = $this->createPictureGenerator($resizer);
@@ -279,7 +278,7 @@ class PictureGeneratorTest extends TestCase
 
         $imageMock
             ->method('getImportantPart')
-            ->willReturn(new ImportantPart(new Point(0, 0), new Box(123, 246)))
+            ->willReturn(new ImportantPart())
         ;
 
         $pictureGenerator = $this->createPictureGenerator($resizer);
@@ -389,7 +388,7 @@ class PictureGeneratorTest extends TestCase
 
         $imageMock
             ->method('getImportantPart')
-            ->willReturn(new ImportantPart(new Point(0, 0), new Box(200, 200)))
+            ->willReturn(new ImportantPart())
         ;
 
         $pictureGenerator = $this->createPictureGenerator($resizer);
@@ -476,7 +475,7 @@ class PictureGeneratorTest extends TestCase
 
         $imageMock
             ->method('getImportantPart')
-            ->willReturn(new ImportantPart(new Point(0, 0), new Box(20, 20)))
+            ->willReturn(new ImportantPart())
         ;
 
         $pictureGenerator = $this->createPictureGenerator($resizer);
@@ -568,7 +567,7 @@ class PictureGeneratorTest extends TestCase
 
         $imageMock
             ->method('getImportantPart')
-            ->willReturn(new ImportantPart(new Point(0, 0), new Box(200, 200)))
+            ->willReturn(new ImportantPart())
         ;
 
         $pictureGenerator = $this->createPictureGenerator($resizer);

@@ -12,18 +12,25 @@ declare(strict_types=1);
 
 namespace Contao\Image;
 
-use Imagine\Image\BoxInterface;
-use Imagine\Image\PointInterface;
-
 interface ImportantPartInterface
 {
     /**
-     * Returns the position.
+     * Returns the relative X position as a fraction.
      */
-    public function getPosition(): PointInterface;
+    public function getX(): float;
 
     /**
-     * Returns the size.
+     * Returns the relative Y position as a fraction.
      */
-    public function getSize(): BoxInterface;
+    public function getY(): float;
+
+    /**
+     * Returns the relative width as a fraction.
+     */
+    public function getWidth(): float;
+
+    /**
+     * Returns the relative height as a fraction.
+     */
+    public function getHeight(): float;
 }

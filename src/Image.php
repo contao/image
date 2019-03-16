@@ -19,7 +19,6 @@ use Imagine\Image\Box;
 use Imagine\Image\BoxInterface;
 use Imagine\Image\ImagineInterface;
 use Imagine\Image\Metadata\MetadataBag;
-use Imagine\Image\Point;
 use Symfony\Component\Filesystem\Filesystem;
 use Webmozart\PathUtil\Path;
 use XMLReader;
@@ -136,11 +135,7 @@ class Image implements ImageInterface
      */
     public function getImportantPart(): ImportantPartInterface
     {
-        if (null === $this->importantPart) {
-            $this->importantPart = new ImportantPart(new Point(0, 0), $this->getDimensions()->getSize());
-        }
-
-        return $this->importantPart;
+        return $this->importantPart ?? new ImportantPart();
     }
 
     /**
