@@ -151,11 +151,7 @@ class DeferredImageStorageFilesystemTest extends TestCase
             $storage->set($path, []);
         }
 
-        $this->assertCount(1, $storage->listPaths(1));
-        $this->assertCount(2, $storage->listPaths(2));
-        $this->assertCount(3, $storage->listPaths(3));
-
-        $paths = $storage->listPaths();
+        $paths = iterator_to_array($storage->listPaths());
 
         sort($originalPaths);
         sort($paths);

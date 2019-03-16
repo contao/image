@@ -29,5 +29,5 @@ interface DeferredImageStorageInterface
     /**
      * @return string[]
      */
-    public function listPaths(int $limit = -1): array;
+    public function listPaths(): iterable;
 }

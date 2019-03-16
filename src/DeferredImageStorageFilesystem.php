@@ -128,7 +128,7 @@ class DeferredImageStorageFilesystem implements DeferredImageStorageInterface
     /**
      * {@inheritdoc}
      */
-    public function listPaths(int $limit = -1): array
+    public function listPaths(): iterable
     {
         $iterator = new \RecursiveDirectoryIterator($this->cacheDir);
         $iterator = new \RecursiveIteratorIterator($iterator);
@@ -140,14 +140,26 @@ class DeferredImageStorageFilesystem implements DeferredImageStorageInterface
             }
         );
 
-        $iterator = new \LimitIterator($iterator, 0, $limit);
+        return new class($iterator, $this->cacheDir, self::PATH_SUFFIX) extends \IteratorIterator
+        {
+            private $cacheDir;
 
-        return array_map(
-            function ($path) {
-                return substr(Path::makeRelative((string) $path, $this->cacheDir), 0, -\strlen(self::PATH_SUFFIX));
-            },
-            iterator_to_array($iterator)
-        );
+            private $suffix;
+
+            public function __construct(\Traversable $iterator, string $cacheDir, string $suffix)
+            {
+                parent::__construct($iterator);
+                $this->cacheDir = $cacheDir;
+                $this->suffix = $suffix;
+            }
+
+            public function current()
+            {
+                $path = Path::makeRelative((string) parent::current(), $this->cacheDir);
+
+                return substr($path, 0, -\strlen($this->suffix));
+            }
+        };
     }
 
     private function getConfigPath(string $path): string
