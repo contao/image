@@ -126,7 +126,7 @@ class DeferredResizer extends Resizer implements DeferredResizerInterface
         }
 
         $this->storage->set($targetPath, [
-            'path' => $sourcePath,
+            'path' => Path::makeRelative($sourcePath, $this->cacheDir),
             'coordinates' => [
                 'size' => [
                     'width' => $coordinates->getSize()->getWidth(),
@@ -157,7 +157,7 @@ class DeferredResizer extends Resizer implements DeferredResizerInterface
         $options->setImagineOptions($config['options']['imagine_options']);
 
         return parent::executeResize(
-            new Image($config['path'], $imagine, $this->filesystem),
+            new Image($this->cacheDir.'/'.$config['path'], $imagine, $this->filesystem),
             $coordinates,
             $this->cacheDir.'/'.$targetPath,
             $options
