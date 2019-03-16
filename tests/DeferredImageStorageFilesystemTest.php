@@ -76,7 +76,7 @@ class DeferredImageStorageFilesystemTest extends TestCase
 
         $this->assertEquals($value, $storage->getLocked($key));
 
-        $dataPath = $this->rootDir.'/'.$key.'.config';
+        $dataPath = $this->rootDir.'/deferred/'.$key.'.json';
         $handle = fopen($dataPath, 'rb+');
 
         $this->assertFalse(flock($handle, LOCK_EX | LOCK_NB), 'Data file should be locked');
@@ -112,7 +112,7 @@ class DeferredImageStorageFilesystemTest extends TestCase
         yield ['foo', ['foo' => 'bar']];
         yield ['foo/bar.baz', ['foo' => ['nested' => ['array', 0, false]]]];
         yield ['foo/bar/baz/nested/path.jpg', ['foo' => 'bar']];
-        yield ['foo.config', ['foo' => 'bar']];
+        yield ['foo.json', ['foo' => 'bar']];
     }
 
     /**

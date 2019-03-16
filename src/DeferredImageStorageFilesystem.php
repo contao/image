@@ -17,7 +17,8 @@ use Webmozart\PathUtil\Path;
 
 class DeferredImageStorageFilesystem implements DeferredImageStorageInterface
 {
-    private const PATH_SUFFIX = '.config';
+    private const PATH_PREFIX = '/deferred';
+    private const PATH_SUFFIX = '.json';
 
     /**
      * @var string
@@ -40,7 +41,7 @@ class DeferredImageStorageFilesystem implements DeferredImageStorageInterface
             $filesystem = new Filesystem();
         }
 
-        $this->cacheDir = $cacheDir;
+        $this->cacheDir = $cacheDir . self::PATH_PREFIX;
         $this->filesystem = $filesystem;
     }
 
