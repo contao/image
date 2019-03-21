@@ -29,6 +29,7 @@ use Imagine\Image\Box;
 use Imagine\Image\ImageInterface as ImagineImageInterface;
 use Imagine\Image\ImagineInterface;
 use Imagine\Image\Point;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -63,12 +64,19 @@ class DeferredResizerTest extends TestCase
 
     public function testResize(): void
     {
+        /** @var ResizeCalculatorInterface|MockObject $calculator */
         $calculator = $this->createMock(ResizeCalculatorInterface::class);
         $calculator
             ->method('calculate')
-            ->willReturnCallback(function (ResizeConfigurationInterface $config, ImageDimensionsInterface $dimensions, ImportantPartInterface $importantPart = null) {
-                return new ResizeCoordinates(new Box($config->getWidth(), $config->getHeight()), new Point(0, 0), new Box($config->getWidth(), $config->getHeight()));
-            })
+            ->willReturnCallback(
+                function (ResizeConfigurationInterface $config, ImageDimensionsInterface $dimensions, ImportantPartInterface $importantPart = null) {
+                    return new ResizeCoordinates(
+                        new Box($config->getWidth(), $config->getHeight()),
+                        new Point(0, 0),
+                        new Box($config->getWidth(), $config->getHeight())
+                    );
+                }
+            )
         ;
 
         $resizer = $this->createResizer(null, $calculator);
@@ -82,6 +90,7 @@ class DeferredResizerTest extends TestCase
             ->save($this->rootDir.'/dummy.jpg')
         ;
 
+        /** @var Image|MockObject $image */
         $image = $this->createMock(Image::class);
         $image
             ->method('getDimensions')
@@ -154,8 +163,8 @@ class DeferredResizerTest extends TestCase
 
     public function testGetDeferredImage(): void
     {
+        /** @var DeferredImageStorageInterface|MockObject $storage */
         $storage = $this->createMock(DeferredImageStorageInterface::class);
-
         $storage
             ->method('has')
             ->willReturn(true)
@@ -173,10 +182,11 @@ class DeferredResizerTest extends TestCase
             ])
         ;
 
-        $resizer = $this->createResizer(null, null, null, $storage);
-        $imagePath = $this->rootDir.'/a/foo-5fc1c9f9.jpg';
+        /** @var ImagineInterface|MockObject $imagine */
         $imagine = $this->createMock(ImagineInterface::class);
 
+        $resizer = $this->createResizer(null, null, null, $storage);
+        $imagePath = $this->rootDir.'/a/foo-5fc1c9f9.jpg';
         $deferredImage = $resizer->getDeferredImage($imagePath, $imagine);
 
         $this->assertInstanceOf(DeferredImageInterface::class, $deferredImage);
@@ -190,16 +200,18 @@ class DeferredResizerTest extends TestCase
 
     public function testGetMissingDeferredImage(): void
     {
+        /** @var DeferredImageStorageInterface|MockObject $storage */
         $storage = $this->createMock(DeferredImageStorageInterface::class);
-
         $storage
             ->method('has')
             ->willReturn(false)
         ;
 
+        /** @var ImagineInterface|MockObject $imagine */
+        $imagine = $this->createMock(ImagineInterface::class);
+
         $resizer = $this->createResizer(null, null, null, $storage);
         $imagePath = $this->rootDir.'/a/foo-5fc1c9f9.jpg';
-        $imagine = $this->createMock(ImagineInterface::class);
 
         $this->assertNull($resizer->getDeferredImage($imagePath, $imagine));
     }

@@ -76,7 +76,7 @@ class DeferredImageStorageFilesystem implements DeferredImageStorageInterface
     {
         if (isset($this->locks[$path])) {
             if ($blocking) {
-                throw new \RuntimeException(sprintf('Lock for "%s" was already acquired.', $path));
+                throw new \RuntimeException(sprintf('Lock for "%s" was already acquired', $path));
             }
 
             return null;
@@ -85,14 +85,14 @@ class DeferredImageStorageFilesystem implements DeferredImageStorageInterface
         $configPath = $this->getConfigPath($path);
 
         if (!$handle = fopen($configPath, 'rb+') ?: fopen($configPath, 'rb')) {
-            throw new \RuntimeException(sprintf('Unable to open file "%s".', $configPath));
+            throw new \RuntimeException(sprintf('Unable to open file "%s"', $configPath));
         }
 
         if (!flock($handle, LOCK_EX | ($blocking ? 0 : LOCK_NB))) {
             fclose($handle);
 
             if ($blocking) {
-                throw new \RuntimeException(sprintf('Unable to acquire lock for file "%s".', $configPath));
+                throw new \RuntimeException(sprintf('Unable to acquire lock for file "%s"', $configPath));
             }
 
             return null;
@@ -109,7 +109,7 @@ class DeferredImageStorageFilesystem implements DeferredImageStorageInterface
     public function releaseLock(string $path): void
     {
         if (!isset($this->locks[$path])) {
-            throw new \RuntimeException(sprintf('No acquired lock for "%s" exists.', $path));
+            throw new \RuntimeException(sprintf('No acquired lock for "%s" exists', $path));
         }
 
         flock($this->locks[$path], LOCK_UN | LOCK_NB);
@@ -147,17 +147,17 @@ class DeferredImageStorageFilesystem implements DeferredImageStorageInterface
 
         return new class($iterator, $this->cacheDir, self::PATH_SUFFIX) extends \IteratorIterator {
             private $cacheDir;
-
             private $suffix;
 
             public function __construct(\Traversable $iterator, string $cacheDir, string $suffix)
             {
                 parent::__construct($iterator);
+
                 $this->cacheDir = $cacheDir;
                 $this->suffix = $suffix;
             }
 
-            public function current()
+            public function current(): string
             {
                 $path = Path::makeRelative((string) parent::current(), $this->cacheDir);
 
@@ -176,7 +176,7 @@ class DeferredImageStorageFilesystem implements DeferredImageStorageInterface
     }
 
     /**
-     * Decode the contents of a stored configuration.
+     * Decodes the contents of a stored configuration.
      */
     private function decode(string $contents): array
     {

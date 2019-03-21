@@ -39,9 +39,11 @@ class ImportantPart implements ImportantPartInterface
         if ($x < 0 || $x > 1 || $y < 0 || $y > 1 || $width < 0 || $width > 1 || $height < 0 || $height > 1) {
             throw new \InvalidArgumentException('X, Y, width and height must be a float between 0 and 1');
         }
+
         if ($x + $width > 1) {
             throw new \InvalidArgumentException('The X coordinate plus the width must not be greater than 1');
         }
+
         if ($y + $height > 1) {
             throw new \InvalidArgumentException('The Y coordinate plus the height must not be greater than 1');
         }

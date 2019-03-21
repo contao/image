@@ -21,7 +21,7 @@
     },
     "require-dev": {
         "contao/imagine-svg": "^0.1.4 || ^0.2",
-        "friendsofphp/php-cs-fixer": "^2.12.7",
+        "friendsofphp/php-cs-fixer": "^2.14",
         "php-coveralls/php-coveralls": "^2.1",
         "phpstan/phpstan-phpunit": "^0.10",
         "phpunit/phpunit": "^7.5 || ^8.0"

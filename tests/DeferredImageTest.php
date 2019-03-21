@@ -15,16 +15,20 @@ namespace Contao\Image\Tests;
 use Contao\Image\DeferredImage;
 use Contao\Image\ImageDimensionsInterface;
 use Imagine\Image\ImagineInterface;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class DeferredImageTest extends TestCase
 {
     public function testGetters(): void
     {
-        $path = '/path/to/image.jpg';
+        /** @var ImagineInterface|MockObject $imagine */
         $imagine = $this->createMock(ImagineInterface::class);
+
+        /** @var ImageDimensionsInterface|MockObject $dimensions */
         $dimensions = $this->createMock(ImageDimensionsInterface::class);
 
+        $path = '/path/to/image.jpg';
         $image = new DeferredImage($path, $imagine, $dimensions);
 
         $this->assertSame($path, $image->getPath());
