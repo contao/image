@@ -77,7 +77,7 @@ class DeferredImageStorageFilesystemTest extends TestCase
         $this->assertEquals($value, $storage->getLocked($key));
 
         $dataPath = $this->rootDir.'/deferred/'.$key.'.json';
-        $handle = fopen($dataPath, 'rb+');
+        $handle = fopen($dataPath, 'r+');
 
         $this->assertFalse(flock($handle, LOCK_EX | LOCK_NB), 'Data file should be locked');
 

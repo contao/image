@@ -84,7 +84,7 @@ class DeferredImageStorageFilesystem implements DeferredImageStorageInterface
 
         $configPath = $this->getConfigPath($path);
 
-        if (!$handle = fopen($configPath, 'rb+') ?: fopen($configPath, 'rb')) {
+        if (!$handle = fopen($configPath, 'r+') ?: fopen($configPath, 'r')) {
             throw new \RuntimeException(sprintf('Unable to open file "%s"', $configPath));
         }
 
