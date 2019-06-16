@@ -4,9 +4,14 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+
+## [1.0.0-beta1]
+
  * Add deferred image resizing. [#50]
+ * Use important part with relative values as fractions [#51]
  * Increase PHP requirement to 7.1.
  * Fix bug with imagine array options.
+ * Remove unnecessary requirements for `ext-libxml`, `ext-xmlreader` and `contao/imagine-svg`.
 
 ## [0.3.9] (2019-01-28)
 
@@ -76,7 +81,8 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
  * Initial release
 
-[Unreleased]: https://github.com/contao/image/compare/0.3.9...HEAD
+[Unreleased]: https://github.com/contao/image/compare/1.0.0-beta1...HEAD
+[1.0.0-beta1]: https://github.com/contao/image/compare/0.3.9...1.0.0-beta1
 [0.3.9]: https://github.com/contao/image/compare/0.3.8...0.3.9
 [0.3.8]: https://github.com/contao/image/compare/0.3.7...0.3.8
 [0.3.7]: https://github.com/contao/image/compare/0.3.6...0.3.7
@@ -90,6 +96,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 [0.2.0]: https://github.com/contao/image/compare/0.1.0...0.2.0
 [0.1.0]: https://github.com/contao/image/commits/0.1.0
 
+[#51]: https://github.com/contao/image/issues/51
 [#50]: https://github.com/contao/image/issues/50
 [#49]: https://github.com/contao/image/issues/49
 [#48]: https://github.com/contao/image/issues/48
