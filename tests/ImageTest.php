@@ -21,6 +21,7 @@ use Imagine\Gd\Imagine as GdImagine;
 use Imagine\Image\Box;
 use Imagine\Image\ImageInterface;
 use Imagine\Image\ImagineInterface;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -256,9 +257,9 @@ class ImageTest extends TestCase
 
     public function testGetImportantPart(): void
     {
-        $imagine = $this->createMock(ImagineInterface::class);
         $imagineImage = $this->createMock(ImageInterface::class);
 
+        $imagine = $this->createMock(ImagineInterface::class);
         $imagine
             ->method('open')
             ->willReturn($imagineImage)
@@ -278,6 +279,10 @@ class ImageTest extends TestCase
         $this->assertEquals(new ImportantPart(0.1, 0.1, 0.8, 0.8), $image->getImportantPart());
     }
 
+    /**
+     * @param ImagineInterface&MockObject $imagine
+     * @param Filesystem&MockObject       $filesystem
+     */
     private function createImage(string $path = null, ImagineInterface $imagine = null, Filesystem $filesystem = null): Image
     {
         if (null === $path) {

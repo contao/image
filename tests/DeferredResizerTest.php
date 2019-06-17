@@ -29,7 +29,6 @@ use Imagine\Image\Box;
 use Imagine\Image\ImageInterface as ImagineImageInterface;
 use Imagine\Image\ImagineInterface;
 use Imagine\Image\Point;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -64,12 +63,11 @@ class DeferredResizerTest extends TestCase
 
     public function testResize(): void
     {
-        /** @var ResizeCalculatorInterface|MockObject $calculator */
         $calculator = $this->createMock(ResizeCalculatorInterface::class);
         $calculator
             ->method('calculate')
             ->willReturnCallback(
-                function (ResizeConfigurationInterface $config, ImageDimensionsInterface $dimensions, ImportantPartInterface $importantPart = null) {
+                static function (ResizeConfigurationInterface $config, ImageDimensionsInterface $dimensions, ImportantPartInterface $importantPart = null) {
                     return new ResizeCoordinates(
                         new Box($config->getWidth(), $config->getHeight()),
                         new Point(0, 0),
@@ -90,7 +88,6 @@ class DeferredResizerTest extends TestCase
             ->save($this->rootDir.'/dummy.jpg')
         ;
 
-        /** @var Image|MockObject $image */
         $image = $this->createMock(Image::class);
         $image
             ->method('getDimensions')
@@ -124,7 +121,9 @@ class DeferredResizerTest extends TestCase
         $this->assertEquals(new ImageDimensions(new Box(100, 100)), $deferredImage->getDimensions());
         $this->assertRegExp('(/[0-9a-f]/dummy-[0-9a-f]{8}.jpg$)', $deferredImage->getPath());
         $this->assertFileNotExists($deferredImage->getPath());
-        $this->assertFileExists($this->rootDir.'/deferred/'.substr($deferredImage->getPath(), \strlen($this->rootDir)).'.json');
+        $this->assertFileExists(
+            $this->rootDir.'/deferred/'.substr($deferredImage->getPath(), \strlen($this->rootDir)).'.json'
+        );
 
         /** @var DeferredImageInterface $deferredImage2 */
         $deferredImage2 = $resizer->resize(
@@ -147,7 +146,9 @@ class DeferredResizerTest extends TestCase
         $this->assertNotInstanceOf(DeferredImageInterface::class, $resizedImage);
         $this->assertEquals(new ImageDimensions(new Box(50, 50)), $resizedImage->getDimensions());
         $this->assertFileExists($resizedImage->getPath());
-        $this->assertFileNotExists($this->rootDir.'/deferred/'.substr($deferredImage->getPath(), \strlen($this->rootDir)).'.json');
+        $this->assertFileNotExists(
+            $this->rootDir.'/deferred/'.substr($deferredImage->getPath(), \strlen($this->rootDir)).'.json'
+        );
 
         $resizedImage = $resizer->resize(
             $image,
@@ -163,7 +164,6 @@ class DeferredResizerTest extends TestCase
 
     public function testGetDeferredImage(): void
     {
-        /** @var DeferredImageStorageInterface|MockObject $storage */
         $storage = $this->createMock(DeferredImageStorageInterface::class);
         $storage
             ->method('has')
@@ -182,9 +182,7 @@ class DeferredResizerTest extends TestCase
             ])
         ;
 
-        /** @var ImagineInterface|MockObject $imagine */
         $imagine = $this->createMock(ImagineInterface::class);
-
         $resizer = $this->createResizer(null, null, null, $storage);
         $imagePath = $this->rootDir.'/a/foo-5fc1c9f9.jpg';
         $deferredImage = $resizer->getDeferredImage($imagePath, $imagine);
@@ -200,16 +198,13 @@ class DeferredResizerTest extends TestCase
 
     public function testGetMissingDeferredImage(): void
     {
-        /** @var DeferredImageStorageInterface|MockObject $storage */
         $storage = $this->createMock(DeferredImageStorageInterface::class);
         $storage
             ->method('has')
             ->willReturn(false)
         ;
 
-        /** @var ImagineInterface|MockObject $imagine */
         $imagine = $this->createMock(ImagineInterface::class);
-
         $resizer = $this->createResizer(null, null, null, $storage);
         $imagePath = $this->rootDir.'/a/foo-5fc1c9f9.jpg';
 

@@ -140,7 +140,7 @@ class DeferredImageStorageFilesystem implements DeferredImageStorageInterface
 
         $iterator = new \CallbackFilterIterator(
             $iterator,
-            function ($path) {
+            static function ($path) {
                 return self::PATH_SUFFIX === substr((string) $path, -\strlen(self::PATH_SUFFIX));
             }
         );

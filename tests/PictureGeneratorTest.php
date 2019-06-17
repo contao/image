@@ -26,6 +26,7 @@ use Contao\Image\ResizeOptions;
 use Contao\Image\ResizerInterface;
 use Contao\ImagineSvg\Imagine as ImagineSvg;
 use Imagine\Image\Box;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class PictureGeneratorTest extends TestCase
@@ -362,7 +363,10 @@ class PictureGeneratorTest extends TestCase
                     $imageMock = $this->createMock(Image::class);
                     $imageMock
                         ->method('getDimensions')
-                        ->willReturn(new ImageDimensions(new Box(min(200, $config->getWidth()), min(200, $config->getHeight()))))
+                        ->willReturn(new ImageDimensions(new Box(
+                            min(200, $config->getWidth()),
+                            min(200, $config->getHeight())
+                        )))
                     ;
 
                     $imageMock
@@ -639,6 +643,9 @@ class PictureGeneratorTest extends TestCase
         }
     }
 
+    /**
+     * @param ResizerInterface&MockObject $resizer
+     */
     private function createPictureGenerator(ResizerInterface $resizer = null): PictureGenerator
     {
         if (null === $resizer) {

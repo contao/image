@@ -280,7 +280,11 @@ class ResizerTest extends TestCase
         $this->assertFileEquals($imagePath, $targetPath, 'Cache file should have been copied');
 
         // With different imagine options
-        $resizedImage = $resizer->resize($image, $configuration, (new ResizeOptions())->setImagineOptions(['jpeg_quality' => 10]));
+        $resizedImage = $resizer->resize(
+            $image,
+            $configuration,
+            (new ResizeOptions())->setImagineOptions(['jpeg_quality' => 10])
+        );
 
         $this->assertNotSame($imagePath, $resizedImage->getPath());
         $this->assertSame(100, getimagesize($resizedImage->getPath())[0], 'New cache file should have been created');

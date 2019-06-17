@@ -151,9 +151,7 @@ class Resizer implements ResizerInterface
     }
 
     /**
-     * Creates the target cache path.
-     *
-     * @return string The relative target path
+     * Returns the relative target cache path.
      */
     private function createCachePath(string $path, ResizeCoordinatesInterface $coordinates, ResizeOptionsInterface $options): string
     {
@@ -168,7 +166,7 @@ class Resizer implements ResizerInterface
             ],
             array_keys($imagineOptions),
             array_map(
-                function ($value) {
+                static function ($value) {
                     return \is_array($value) ? implode(',', $value) : $value;
                 },
                 array_values($imagineOptions)

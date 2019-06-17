@@ -88,7 +88,7 @@ class Picture implements PictureInterface
         }
 
         $img['srcset'] = array_map(
-            function (array $src) use ($rootDir, $prefix) {
+            static function (array $src) use ($rootDir, $prefix) {
                 /* @var ImageInterface[] $src */
                 $src[0] = $src[0]->getUrl($rootDir, $prefix);
 
@@ -104,8 +104,6 @@ class Picture implements PictureInterface
 
     /**
      * Validates the src attribute.
-     *
-     * @throws \InvalidArgumentException
      */
     private function validateSrcAttribute(array $img): void
     {
@@ -120,8 +118,6 @@ class Picture implements PictureInterface
 
     /**
      * Validates the srcset attribute.
-     *
-     * @throws \InvalidArgumentException
      */
     private function validateSrcsetAttribute(array $img): void
     {

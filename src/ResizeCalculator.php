@@ -24,7 +24,7 @@ class ResizeCalculator implements ResizeCalculatorInterface
     public function calculate(ResizeConfigurationInterface $config, ImageDimensionsInterface $dimensions, ImportantPartInterface $importantPart = null): ResizeCoordinatesInterface
     {
         $zoom = max(0, min(1, $config->getZoomLevel() / 100));
-        $importantPart = $this->importantPartAsArray($dimensions, $importantPart);
+        $importantPartArray = $this->importantPartAsArray($dimensions, $importantPart);
 
         // If both dimensions are present, use the mode specific calculations
         if ($config->getWidth() && $config->getHeight()) {
@@ -32,13 +32,13 @@ class ResizeCalculator implements ResizeCalculatorInterface
 
             switch ($config->getMode()) {
                 case ResizeConfigurationInterface::MODE_CROP:
-                    return $this->calculateCrop($widthHeight, $dimensions, $importantPart, $zoom);
+                    return $this->calculateCrop($widthHeight, $dimensions, $importantPartArray, $zoom);
 
                 case ResizeConfigurationInterface::MODE_PROPORTIONAL:
-                    return $this->calculateProportional($widthHeight, $dimensions, $importantPart, $zoom);
+                    return $this->calculateProportional($widthHeight, $dimensions, $importantPartArray, $zoom);
 
                 case ResizeConfigurationInterface::MODE_BOX:
-                    return $this->calculateBox($widthHeight, $dimensions, $importantPart, $zoom);
+                    return $this->calculateBox($widthHeight, $dimensions, $importantPartArray, $zoom);
             }
 
             throw new \InvalidArgumentException(sprintf('Unsupported resize mode "%s"', $config->getMode()));
@@ -46,7 +46,7 @@ class ResizeCalculator implements ResizeCalculatorInterface
 
         // If no dimensions are specified, use the zoomed important part
         if (!$config->getWidth() && !$config->getHeight()) {
-            $zoomedImportantPart = $this->zoomImportantPart($importantPart, $zoom, $dimensions->getSize());
+            $zoomedImportantPart = $this->zoomImportantPart($importantPartArray, $zoom, $dimensions->getSize());
 
             return $this->buildCoordinates(
                 [$dimensions->getSize()->getWidth(), $dimensions->getSize()->getHeight()],
@@ -60,12 +60,12 @@ class ResizeCalculator implements ResizeCalculatorInterface
         return $this->calculateSingleDimension(
             [$config->getWidth(), $config->getHeight()],
             $dimensions,
-            $this->zoomImportantPart($importantPart, $zoom, $dimensions->getSize())
+            $this->zoomImportantPart($importantPartArray, $zoom, $dimensions->getSize())
         );
     }
 
     /**
-     * Calculates resize coordinates for mode crop.
+     * Calculates the resize coordinates for mode crop.
      *
      * @param int[] $size
      */
@@ -106,7 +106,7 @@ class ResizeCalculator implements ResizeCalculatorInterface
     }
 
     /**
-     * Calculates resize coordinates for mode proportional.
+     * Calculates the resize coordinates for mode proportional.
      *
      * @param int[] $size
      */
@@ -124,7 +124,7 @@ class ResizeCalculator implements ResizeCalculatorInterface
     }
 
     /**
-     * Calculates resize coordinates for mode box.
+     * Calculates the resize coordinates for mode box.
      *
      * @param int[] $size
      */
@@ -142,7 +142,7 @@ class ResizeCalculator implements ResizeCalculatorInterface
     }
 
     /**
-     * Calculates resize coordinates for single dimension size.
+     * Calculates the resize coordinates for single dimension size.
      *
      * @param int[] $size
      */

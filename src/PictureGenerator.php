@@ -91,7 +91,6 @@ class PictureGenerator implements PictureGeneratorInterface
 
         $attributes = [];
         $srcset = [];
-
         $descriptorType = $sizesAttribute ? 'w' : 'x'; // use pixel density descriptors if the sizes attribute is empty
 
         foreach ($densities as $density) {
@@ -126,10 +125,10 @@ class PictureGenerator implements PictureGeneratorInterface
      */
     private function parseDensities(string $densities, int $width1x): array
     {
-        $densities = explode(',', $densities);
+        $densitiesArray = explode(',', $densities);
 
-        $densities = array_map(
-            function ($density) use ($width1x) {
+        $densitiesArray = array_map(
+            static function ($density) use ($width1x) {
                 $type = substr(trim($density), -1);
 
                 if ('w' === $type) {
@@ -138,17 +137,17 @@ class PictureGenerator implements PictureGeneratorInterface
 
                 return (float) $density;
             },
-            $densities
+            $densitiesArray
         );
 
         // Strip empty densities
-        $densities = array_filter($densities);
+        $densitiesArray = array_filter($densitiesArray);
 
         // Add 1x to the beginning of the list
-        array_unshift($densities, 1);
+        array_unshift($densitiesArray, 1);
 
         // Strip duplicates
-        return array_values(array_unique($densities));
+        return array_values(array_unique($densitiesArray));
     }
 
     /**
@@ -186,7 +185,7 @@ class PictureGenerator implements PictureGeneratorInterface
     {
         $srcset = array_values(array_filter(
             $srcset,
-            function (array $item) use (&$usedPaths) {
+            static function (array $item) use (&$usedPaths) {
                 /** @var ImageInterface[] $item */
                 $key = $item[0]->getPath();
 
