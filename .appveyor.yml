@@ -9,7 +9,7 @@ environment:
   PHPCI_COMPOSER: C:\tools\phpci\composer
 
 cache:
-  - '%PHPCI_CACHE%'
+  - '%PHPCI_CACHE% -> appveyor.yml'
 
 init:
   - SET PATH=%PHPCI_PHP%;%PHPCI_COMPOSER%;%PATH%
@@ -33,6 +33,7 @@ install:
   - IF %PHP%==0 echo extension=php_gd2.dll >> php.ini
   - IF %PHP%==0 echo extension=php_intl.dll >> php.ini
   - IF %PHP%==0 echo extension=php_mbstring.dll >> php.ini
+  - IF %PHP%==0 echo extension=php_exif.dll >> php.ini
   - IF %PHP%==0 echo extension=php_openssl.dll >> php.ini
   - IF %PHP%==0 (composer --version) ELSE (composer self-update)
   - cd %APPVEYOR_BUILD_FOLDER%

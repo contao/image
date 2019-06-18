@@ -187,6 +187,10 @@ class ImageTest extends TestCase
      */
     public function testGetDimensionsFromExifRotatedFile(int $orientation, int $width, int $height, int $expectedWidth, int $expectedHeight): void
     {
+        if (!\function_exists('exif_read_data')) {
+            $this->markTestSkipped('Your platform is missing the EXIF extension.');
+        }
+
         if (!is_dir($this->rootDir)) {
             mkdir($this->rootDir, 0777, true);
         }
