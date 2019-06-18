@@ -14,6 +14,7 @@ namespace Contao\Image\Tests;
 
 use Contao\Image\Image;
 use Contao\Image\ImageDimensions;
+use Contao\Image\ImageDimensionsInterface;
 use Contao\Image\ImportantPart;
 use Contao\ImagineSvg\Imagine;
 use Exception;
@@ -21,6 +22,7 @@ use Imagine\Gd\Imagine as GdImagine;
 use Imagine\Image\Box;
 use Imagine\Image\ImageInterface;
 use Imagine\Image\ImagineInterface;
+use Imagine\Image\Metadata\MetadataBag;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
@@ -164,6 +166,10 @@ class ImageTest extends TestCase
             ->method('getSize')
             ->willReturn(new Box(100, 100))
         ;
+        $imagineImage
+            ->method('metadata')
+            ->willReturn(new MetadataBag())
+        ;
 
         $imagine = $this->createMock(ImagineInterface::class);
         $imagine
@@ -174,6 +180,73 @@ class ImageTest extends TestCase
         $image = $this->createImage(null, $imagine);
 
         $this->assertEquals(new ImageDimensions(new Box(100, 100)), $image->getDimensions());
+    }
+
+    /**
+     * @dataProvider getDimensionsFromExifRotated
+     */
+    public function testGetDimensionsFromExifRotatedFile(int $orientation, int $width, int $height, int $expectedWidth, int $expectedHeight): void
+    {
+        if (!is_dir($this->rootDir)) {
+            mkdir($this->rootDir, 0777, true);
+        }
+
+        $image = (new GdImagine())
+            ->create(new Box($width, $height))
+            ->get('jpg')
+        ;
+
+        file_put_contents($this->rootDir.'/dummy.jpg', $this->addImageOrientation($image, $orientation));
+
+        $image = $this->createImage($this->rootDir.'/dummy.jpg');
+
+        $dimensions = $image->getDimensions();
+
+        $this->assertSame($expectedWidth, $dimensions->getSize()->getWidth());
+        $this->assertSame($expectedHeight, $dimensions->getSize()->getHeight());
+        $this->assertSame($orientation, $dimensions->getOrientation());
+    }
+
+    /**
+     * @dataProvider getDimensionsFromExifRotated
+     */
+    public function testGetDimensionsFromExifRotatedImage(int $orientation, int $width, int $height, int $expectedWidth, int $expectedHeight): void
+    {
+        $imagineImage = $this->createMock(ImageInterface::class);
+        $imagineImage
+            ->method('getSize')
+            ->willReturn(new Box($width, $height))
+        ;
+        $imagineImage
+            ->method('metadata')
+            ->willReturn(new MetadataBag(['ifd0.Orientation' => $orientation]))
+        ;
+
+        $imagine = $this->createMock(ImagineInterface::class);
+        $imagine
+            ->method('open')
+            ->willReturn($imagineImage)
+        ;
+
+        $image = $this->createImage(null, $imagine);
+
+        $dimensions = $image->getDimensions();
+
+        $this->assertSame($expectedWidth, $dimensions->getSize()->getWidth());
+        $this->assertSame($expectedHeight, $dimensions->getSize()->getHeight());
+        $this->assertSame($orientation, $dimensions->getOrientation());
+    }
+
+    public function getDimensionsFromExifRotated()
+    {
+        yield [ImageDimensionsInterface::ORIENTATION_NORMAL,     22, 11, 22, 11];
+        yield [ImageDimensionsInterface::ORIENTATION_NORMAL_90,  22, 11, 11, 22];
+        yield [ImageDimensionsInterface::ORIENTATION_NORMAL_180, 22, 11, 22, 11];
+        yield [ImageDimensionsInterface::ORIENTATION_NORMAL_270, 22, 11, 11, 22];
+        yield [ImageDimensionsInterface::ORIENTATION_MIRROR,     22, 11, 22, 11];
+        yield [ImageDimensionsInterface::ORIENTATION_MIRROR_90,  22, 11, 11, 22];
+        yield [ImageDimensionsInterface::ORIENTATION_MIRROR_180, 22, 11, 22, 11];
+        yield [ImageDimensionsInterface::ORIENTATION_MIRROR_270, 22, 11, 11, 22];
     }
 
     public function testGetDimensionsFromPartialFile(): void
@@ -302,5 +375,24 @@ class ImageTest extends TestCase
         }
 
         return new Image($path, $imagine, $filesystem);
+    }
+
+    /**
+     * Insert an EXIF header into the passed JPEG data with the specified orientation.
+     */
+    private function addImageOrientation(string $jpegData, int $orientation): string
+    {
+        $exif = implode('', [
+            "\x45\x78\x69\x66\x00\x00",                                           // Exif header
+            "\x49\x49\x2a\x00\x08\x00\x00\x00",                                   // TIFF header
+            "\x01\x00",                                                           // IFD0 entries
+            "\x12\x01\x03\x00\x01\x00\x00\x00".\chr($orientation)."\x00\x12\x00", // IFD0-00 Orientation
+            "\x00\x00\x00\x00",                                                   // Next IFD
+        ]);
+
+        $length = \strlen($exif) + 2;
+        $exif = "\xFF\xE1".\chr(($length >> 8) & 0xFF).\chr($length & 0xFF).$exif;
+
+        return substr($jpegData, 0, 2).$exif.substr($jpegData, 2);
     }
 }

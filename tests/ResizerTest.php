@@ -14,6 +14,7 @@ namespace Contao\Image\Tests;
 
 use Contao\Image\Image;
 use Contao\Image\ImageDimensions;
+use Contao\Image\ImageDimensionsInterface;
 use Contao\Image\ResizeCalculatorInterface;
 use Contao\Image\ResizeConfigurationInterface;
 use Contao\Image\ResizeCoordinates;
@@ -499,6 +500,95 @@ class ResizerTest extends TestCase
         $this->assertRegExp('(/[0-9a-f]/dummy-[0-9a-f]{8}.svg$)', $resizedImage->getPath());
 
         unlink($resizedImage->getPath());
+    }
+
+    public function testResizeEmptyConfigRotatedImage(): void
+    {
+        $imagePath = $this->rootDir.'/dummy.jpg';
+        $resizer = $this->createResizer();
+
+        if (!is_dir($this->rootDir)) {
+            mkdir($this->rootDir, 0777, true);
+        }
+
+        (new GdImagine())
+            ->create(new Box(100, 100))
+            ->save($imagePath)
+        ;
+
+        /** @var Image|MockObject $image */
+        $image = $this->createMock(Image::class);
+        $image
+            ->method('getDimensions')
+            ->willReturn(new ImageDimensions(new Box(100, 100), null, null, ImageDimensionsInterface::ORIENTATION_NORMAL_180))
+        ;
+
+        $image
+            ->method('getPath')
+            ->willReturn($imagePath)
+        ;
+
+        $image
+            ->method('getImagine')
+            ->willReturn(new GdImagine())
+        ;
+
+        $configuration = $this->createMock(ResizeConfigurationInterface::class);
+        $configuration
+            ->method('isEmpty')
+            ->willReturn(true)
+        ;
+
+        $resizedImage = $resizer->resize($image, $configuration, new ResizeOptions());
+
+        $this->assertRegExp('(/[0-9a-f]/dummy-[0-9a-f]{8}.jpg$)', $resizedImage->getPath());
+        $this->assertNotSame($image, $resizedImage);
+    }
+
+    public function testResizeEmptyConfigForcedReEncode(): void
+    {
+        $imagePath = $this->rootDir.'/dummy.jpg';
+        $resizer = $this->createResizer();
+
+        if (!is_dir($this->rootDir)) {
+            mkdir($this->rootDir, 0777, true);
+        }
+
+        (new GdImagine())
+            ->create(new Box(100, 100))
+            ->save($imagePath)
+        ;
+
+        /** @var Image|MockObject $image */
+        $image = $this->createMock(Image::class);
+        $image
+            ->method('getDimensions')
+            ->willReturn(new ImageDimensions(new Box(100, 100)))
+        ;
+
+        $image
+            ->method('getPath')
+            ->willReturn($imagePath)
+        ;
+
+        $image
+            ->method('getImagine')
+            ->willReturn(new GdImagine())
+        ;
+
+        $configuration = $this->createMock(ResizeConfigurationInterface::class);
+        $configuration
+            ->method('isEmpty')
+            ->willReturn(true)
+        ;
+
+        $options = new ResizeOptions();
+        $options->setForceReEncoding(true);
+
+        $resizedImage = $resizer->resize($image, $configuration, $options);
+
+        $this->assertRegExp('(/[0-9a-f]/dummy-[0-9a-f]{8}.jpg$)', $resizedImage->getPath());
+        $this->assertNotSame($image, $resizedImage);
     }
 
     private function createResizer(string $cacheDir = null, ResizeCalculatorInterface $calculator = null, Filesystem $filesystem = null): Resizer

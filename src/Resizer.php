@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Contao\Image;
 
 use Imagine\Exception\RuntimeException as ImagineRuntimeException;
+use Imagine\Filter\Basic\Autorotate;
 use Imagine\Image\Palette\RGB;
 use Symfony\Component\Filesystem\Filesystem;
 use Webmozart\PathUtil\Path;
@@ -58,7 +59,11 @@ class Resizer implements ResizerInterface
      */
     public function resize(ImageInterface $image, ResizeConfigurationInterface $config, ResizeOptionsInterface $options): ImageInterface
     {
-        if ($config->isEmpty() || $image->getDimensions()->isUndefined()) {
+        if (
+            ($config->isEmpty() || $image->getDimensions()->isUndefined())
+            && ImageDimensionsInterface::ORIENTATION_NORMAL === $image->getDimensions()->getOrientation()
+            && !$options->getForceReEncoding()
+        ) {
             $image = $this->createImage($image, $image->getPath());
         } else {
             $image = $this->processResize($image, $config, $options);
@@ -87,9 +92,13 @@ class Resizer implements ResizerInterface
 
         $imagineOptions = $options->getImagineOptions();
 
-        $imagineImage = $image
-            ->getImagine()
-            ->open($image->getPath())
+        $imagineImage = $image->getImagine()->open($image->getPath());
+
+        if (ImageDimensionsInterface::ORIENTATION_NORMAL !== $image->getDimensions()->getOrientation()) {
+            (new Autorotate())->apply($imagineImage);
+        }
+
+        $imagineImage
             ->resize($coordinates->getSize())
             ->crop($coordinates->getCropStart(), $coordinates->getCropSize())
             ->usePalette(new RGB())
@@ -137,7 +146,12 @@ class Resizer implements ResizerInterface
         $coordinates = $this->calculator->calculate($config, $image->getDimensions(), $image->getImportantPart());
 
         // Skip resizing if it would have no effect
-        if (!$image->getDimensions()->isRelative() && $coordinates->isEqualTo($image->getDimensions()->getSize())) {
+        if (
+            !$image->getDimensions()->isRelative()
+            && ImageDimensionsInterface::ORIENTATION_NORMAL === $image->getDimensions()->getOrientation()
+            && $coordinates->isEqualTo($image->getDimensions()->getSize())
+            && !$options->getForceReEncoding()
+        ) {
             return $this->createImage($image, $image->getPath());
         }
 

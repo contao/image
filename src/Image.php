@@ -106,24 +106,35 @@ class Image implements ImageInterface
     public function getDimensions(): ImageDimensionsInterface
     {
         if (null === $this->dimensions) {
-            // Try getSvgSize() or native getimagesize() for better performance
+            // Try getSvgSize() or native exif_read_data()/getimagesize() for better performance
             if ($this->imagine instanceof SvgImagine) {
                 $size = $this->getSvgSize();
 
                 if (null !== $size) {
                     $this->dimensions = new ImageDimensions($size);
                 }
-            } else {
-                $size = @getimagesize($this->path);
-
-                if (!empty($size[0]) && !empty($size[1])) {
-                    $this->dimensions = new ImageDimensions(new Box($size[0], $size[1]));
-                }
+            } elseif (
+                \function_exists('exif_read_data')
+                && ($exif = @exif_read_data($this->path, 'COMPUTED,IFD0'))
+                && !empty($exif['COMPUTED']['Width'])
+                && !empty($exif['COMPUTED']['Height'])
+            ) {
+                $orientation = $exif['Orientation'] ?? ImageDimensionsInterface::ORIENTATION_NORMAL;
+                $size = $this->fixOrientation(new Box($exif['COMPUTED']['Width'], $exif['COMPUTED']['Height']), $orientation);
+                $this->dimensions = new ImageDimensions($size, null, null, $orientation);
+            } elseif (
+                ($size = @getimagesize($this->path))
+                && !empty($size[0]) && !empty($size[1])
+            ) {
+                $this->dimensions = new ImageDimensions(new Box($size[0], $size[1]));
             }
 
             // Fall back to Imagine
             if (null === $this->dimensions) {
-                $this->dimensions = new ImageDimensions($this->imagine->open($this->path)->getSize());
+                $imagineImage = $this->imagine->open($this->path);
+                $orientation = $imagineImage->metadata()->get('ifd0.Orientation') ?? ImageDimensionsInterface::ORIENTATION_NORMAL;
+                $size = $this->fixOrientation($imagineImage->getSize(), $orientation);
+                $this->dimensions = new ImageDimensions($size, null, null, $orientation);
             }
         }
 
@@ -146,6 +157,29 @@ class Image implements ImageInterface
         $this->importantPart = $importantPart;
 
         return $this;
+    }
+
+    /**
+     * Swaps width and height for (-/+)90 degree rotated orientations.
+     */
+    private function fixOrientation(BoxInterface $size, int $orientation): BoxInterface
+    {
+        if (
+            \in_array(
+                $orientation,
+                [
+                    ImageDimensionsInterface::ORIENTATION_NORMAL_90,
+                    ImageDimensionsInterface::ORIENTATION_NORMAL_270,
+                    ImageDimensionsInterface::ORIENTATION_MIRROR_90,
+                    ImageDimensionsInterface::ORIENTATION_MIRROR_270,
+                ],
+                true
+            )
+        ) {
+            return new Box($size->getHeight(), $size->getWidth());
+        }
+
+        return $size;
     }
 
     /**

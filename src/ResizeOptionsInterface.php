@@ -43,4 +43,14 @@ interface ResizeOptionsInterface
      * Sets the bypass cache flag.
      */
     public function setBypassCache(bool $bypassCache): self;
+
+    /**
+     * Returns the force re-encoding flag.
+     */
+    public function getForceReEncoding(): bool;
+
+    /**
+     * Sets the force re-encoding flag.
+     */
+    public function setForceReEncoding(bool $forceReEncoding): self;
 }

@@ -51,4 +51,13 @@ class ResizeOptionsTest extends TestCase
         $this->assertSame($options, $options->setBypassCache(true));
         $this->assertTrue($options->getBypassCache());
     }
+
+    public function testSetForceReEncoding(): void
+    {
+        $options = new ResizeOptions();
+
+        $this->assertFalse($options->getForceReEncoding());
+        $this->assertSame($options, $options->setForceReEncoding(true));
+        $this->assertTrue($options->getForceReEncoding());
+    }
 }
