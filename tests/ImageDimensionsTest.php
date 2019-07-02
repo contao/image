@@ -32,9 +32,9 @@ class ImageDimensionsTest extends TestCase
     public function testGetOrientation(): void
     {
         $size = $this->createMock(BoxInterface::class);
-        $dimensions = new ImageDimensions($size, null, null, ImageDimensionsInterface::ORIENTATION_NORMAL_90);
+        $dimensions = new ImageDimensions($size, null, null, ImageDimensionsInterface::ORIENTATION_90);
 
-        $this->assertSame(ImageDimensionsInterface::ORIENTATION_NORMAL_90, $dimensions->getOrientation());
+        $this->assertSame(ImageDimensionsInterface::ORIENTATION_90, $dimensions->getOrientation());
 
         $this->expectException('InvalidArgumentException');
 

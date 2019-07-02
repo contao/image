@@ -244,9 +244,9 @@ class ImageTest extends TestCase
     public function getDimensionsFromExifRotated()
     {
         yield [ImageDimensionsInterface::ORIENTATION_NORMAL,     22, 11, 22, 11];
-        yield [ImageDimensionsInterface::ORIENTATION_NORMAL_90,  22, 11, 11, 22];
-        yield [ImageDimensionsInterface::ORIENTATION_NORMAL_180, 22, 11, 22, 11];
-        yield [ImageDimensionsInterface::ORIENTATION_NORMAL_270, 22, 11, 11, 22];
+        yield [ImageDimensionsInterface::ORIENTATION_90,  22, 11, 11, 22];
+        yield [ImageDimensionsInterface::ORIENTATION_180, 22, 11, 22, 11];
+        yield [ImageDimensionsInterface::ORIENTATION_270, 22, 11, 11, 22];
         yield [ImageDimensionsInterface::ORIENTATION_MIRROR,     22, 11, 22, 11];
         yield [ImageDimensionsInterface::ORIENTATION_MIRROR_90,  22, 11, 11, 22];
         yield [ImageDimensionsInterface::ORIENTATION_MIRROR_180, 22, 11, 22, 11];

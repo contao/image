@@ -168,8 +168,8 @@ class Image implements ImageInterface
             \in_array(
                 $orientation,
                 [
-                    ImageDimensionsInterface::ORIENTATION_NORMAL_90,
-                    ImageDimensionsInterface::ORIENTATION_NORMAL_270,
+                    ImageDimensionsInterface::ORIENTATION_90,
+                    ImageDimensionsInterface::ORIENTATION_270,
                     ImageDimensionsInterface::ORIENTATION_MIRROR_90,
                     ImageDimensionsInterface::ORIENTATION_MIRROR_270,
                 ],

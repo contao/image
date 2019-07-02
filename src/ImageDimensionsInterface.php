@@ -22,9 +22,9 @@ interface ImageDimensionsInterface
      * @see <http://www.cipa.jp/std/documents/e/DC-008-Translation-2019-E.pdf>
      */
     public const ORIENTATION_NORMAL = 1;
-    public const ORIENTATION_NORMAL_90 = 6;
-    public const ORIENTATION_NORMAL_180 = 3;
-    public const ORIENTATION_NORMAL_270 = 8;
+    public const ORIENTATION_90 = 6;
+    public const ORIENTATION_180 = 3;
+    public const ORIENTATION_270 = 8;
     public const ORIENTATION_MIRROR = 2;
     public const ORIENTATION_MIRROR_90 = 7;
     public const ORIENTATION_MIRROR_180 = 4;

@@ -520,7 +520,7 @@ class ResizerTest extends TestCase
         $image = $this->createMock(Image::class);
         $image
             ->method('getDimensions')
-            ->willReturn(new ImageDimensions(new Box(100, 100), null, null, ImageDimensionsInterface::ORIENTATION_NORMAL_180))
+            ->willReturn(new ImageDimensions(new Box(100, 100), null, null, ImageDimensionsInterface::ORIENTATION_180))
         ;
 
         $image
