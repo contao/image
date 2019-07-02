@@ -4,6 +4,9 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+
+## [1.0.0-beta2]
+
  * Add skipIfDimensionsMatch flag to ResizeOptions. [#52]
  * Autorotate images based on EXIF metadata. [#52]
 
@@ -83,7 +86,8 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
  * Initial release
 
-[Unreleased]: https://github.com/contao/image/compare/1.0.0-beta1...HEAD
+[Unreleased]: https://github.com/contao/image/compare/1.0.0-beta2...HEAD
+[1.0.0-beta2]: https://github.com/contao/image/compare/1.0.0-beta1...1.0.0-beta2
 [1.0.0-beta1]: https://github.com/contao/image/compare/0.3.9...1.0.0-beta1
 [0.3.9]: https://github.com/contao/image/compare/0.3.8...0.3.9
 [0.3.8]: https://github.com/contao/image/compare/0.3.7...0.3.8
