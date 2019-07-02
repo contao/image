@@ -51,4 +51,13 @@ class ResizeOptionsTest extends TestCase
         $this->assertSame($options, $options->setBypassCache(true));
         $this->assertTrue($options->getBypassCache());
     }
+
+    public function testSetSkipIfDimensionsMatch(): void
+    {
+        $options = new ResizeOptions();
+
+        $this->assertTrue($options->getSkipIfDimensionsMatch());
+        $this->assertSame($options, $options->setSkipIfDimensionsMatch(false));
+        $this->assertFalse($options->getSkipIfDimensionsMatch());
+    }
 }

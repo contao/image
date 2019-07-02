@@ -24,6 +24,11 @@ class ImageDimensions implements ImageDimensionsInterface
     private $size;
 
     /**
+     * @var int
+     */
+    private $orientation;
+
+    /**
      * @var bool
      */
     private $relative;
@@ -33,8 +38,14 @@ class ImageDimensions implements ImageDimensionsInterface
      */
     private $undefined;
 
-    public function __construct(BoxInterface $size, bool $relative = null, bool $undefined = null)
+    public function __construct(BoxInterface $size, bool $relative = null, bool $undefined = null, int $orientation = self::ORIENTATION_NORMAL)
     {
+        if ($orientation < 1 || $orientation > 8) {
+            throw new \InvalidArgumentException(
+                'Orientation must be one of the ImageDimensionsInterface::ORIENTATION_* constants'
+            );
+        }
+
         if (null === $relative) {
             $relative = $size instanceof RelativeBoxInterface;
         }
@@ -44,6 +55,7 @@ class ImageDimensions implements ImageDimensionsInterface
         }
 
         $this->size = $size;
+        $this->orientation = $orientation;
         $this->relative = $relative;
         $this->undefined = $undefined;
     }
@@ -54,6 +66,14 @@ class ImageDimensions implements ImageDimensionsInterface
     public function getSize(): BoxInterface
     {
         return $this->size;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getOrientation(): int
+    {
+        return $this->orientation;
     }
 
     /**

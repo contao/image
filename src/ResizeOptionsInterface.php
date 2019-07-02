@@ -43,4 +43,14 @@ interface ResizeOptionsInterface
      * Sets the bypass cache flag.
      */
     public function setBypassCache(bool $bypassCache): self;
+
+    /**
+     * Returns the skip if dimensions match flag.
+     */
+    public function getSkipIfDimensionsMatch(): bool;
+
+    /**
+     * Sets the skip if dimensions match flag.
+     */
+    public function setSkipIfDimensionsMatch(bool $skipIfDimensionsMatch): self;
 }

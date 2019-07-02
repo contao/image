@@ -26,6 +26,9 @@
         "phpstan/phpstan-phpunit": "^0.10",
         "phpunit/phpunit": "^7.5 || ^8.0"
     },
+    "suggest": {
+        "ext-exif": "To support EXIF auto-rotation"
+    },
     "extra": {
         "branch-alias": {
             "dev-master": "1.0.x-dev"

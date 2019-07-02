@@ -32,6 +32,11 @@ class ResizeOptions implements ResizeOptionsInterface
     private $bypassCache = false;
 
     /**
+     * @var bool
+     */
+    private $skipIfDimensionsMatch = true;
+
+    /**
      * {@inheritdoc}
      */
     public function getImagineOptions(): array
@@ -85,6 +90,24 @@ class ResizeOptions implements ResizeOptionsInterface
     public function setBypassCache(bool $bypassCache): ResizeOptionsInterface
     {
         $this->bypassCache = $bypassCache;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getSkipIfDimensionsMatch(): bool
+    {
+        return $this->skipIfDimensionsMatch;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setSkipIfDimensionsMatch(bool $skipIfDimensionsMatch): ResizeOptionsInterface
+    {
+        $this->skipIfDimensionsMatch = $skipIfDimensionsMatch;
 
         return $this;
     }
