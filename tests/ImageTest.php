@@ -166,6 +166,7 @@ class ImageTest extends TestCase
             ->method('getSize')
             ->willReturn(new Box(100, 100))
         ;
+
         $imagineImage
             ->method('metadata')
             ->willReturn(new MetadataBag())
@@ -188,7 +189,7 @@ class ImageTest extends TestCase
     public function testGetDimensionsFromExifRotatedFile(int $orientation, int $width, int $height, int $expectedWidth, int $expectedHeight): void
     {
         if (!\function_exists('exif_read_data')) {
-            $this->markTestSkipped('Your platform is missing the EXIF extension.');
+            $this->markTestSkipped('The PHP EXIF extension is not installed');
         }
 
         if (!is_dir($this->rootDir)) {
@@ -221,6 +222,7 @@ class ImageTest extends TestCase
             ->method('getSize')
             ->willReturn(new Box($width, $height))
         ;
+
         $imagineImage
             ->method('metadata')
             ->willReturn(new MetadataBag(['ifd0.Orientation' => $orientation]))
@@ -241,7 +243,7 @@ class ImageTest extends TestCase
         $this->assertSame($orientation, $dimensions->getOrientation());
     }
 
-    public function getDimensionsFromExifRotated()
+    public function getDimensionsFromExifRotated(): \Generator
     {
         yield [ImageDimensionsInterface::ORIENTATION_NORMAL,     22, 11, 22, 11];
         yield [ImageDimensionsInterface::ORIENTATION_90,  22, 11, 11, 22];

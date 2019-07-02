@@ -60,9 +60,9 @@ class Resizer implements ResizerInterface
     public function resize(ImageInterface $image, ResizeConfigurationInterface $config, ResizeOptionsInterface $options): ImageInterface
     {
         if (
-            ($config->isEmpty() || $image->getDimensions()->isUndefined())
+            $options->getSkipIfDimensionsMatch()
             && ImageDimensionsInterface::ORIENTATION_NORMAL === $image->getDimensions()->getOrientation()
-            && $options->getSkipIfDimensionsMatch()
+            && ($config->isEmpty() || $image->getDimensions()->isUndefined())
         ) {
             $image = $this->createImage($image, $image->getPath());
         } else {
@@ -91,7 +91,6 @@ class Resizer implements ResizerInterface
         }
 
         $imagineOptions = $options->getImagineOptions();
-
         $imagineImage = $image->getImagine()->open($image->getPath());
 
         if (ImageDimensionsInterface::ORIENTATION_NORMAL !== $image->getDimensions()->getOrientation()) {
@@ -147,10 +146,10 @@ class Resizer implements ResizerInterface
 
         // Skip resizing if it would have no effect
         if (
-            !$image->getDimensions()->isRelative()
+            $options->getSkipIfDimensionsMatch()
+            && !$image->getDimensions()->isRelative()
             && ImageDimensionsInterface::ORIENTATION_NORMAL === $image->getDimensions()->getOrientation()
             && $coordinates->isEqualTo($image->getDimensions()->getSize())
-            && $options->getSkipIfDimensionsMatch()
         ) {
             return $this->createImage($image, $image->getPath());
         }
