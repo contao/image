@@ -545,7 +545,7 @@ class ResizerTest extends TestCase
         $this->assertNotSame($image, $resizedImage);
     }
 
-    public function testResizeEmptyConfigForcedReEncode(): void
+    public function testResizeEmptyConfigNoSkip(): void
     {
         $imagePath = $this->rootDir.'/dummy.jpg';
         $resizer = $this->createResizer();
@@ -583,7 +583,7 @@ class ResizerTest extends TestCase
         ;
 
         $options = new ResizeOptions();
-        $options->setForceReEncoding(true);
+        $options->setSkipIfDimensionsMatch(false);
 
         $resizedImage = $resizer->resize($image, $configuration, $options);
 

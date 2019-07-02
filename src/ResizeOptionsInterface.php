@@ -45,12 +45,12 @@ interface ResizeOptionsInterface
     public function setBypassCache(bool $bypassCache): self;
 
     /**
-     * Returns the force re-encoding flag.
+     * Returns the skip if dimensions match flag.
      */
-    public function getForceReEncoding(): bool;
+    public function getSkipIfDimensionsMatch(): bool;
 
     /**
-     * Sets the force re-encoding flag.
+     * Sets the skip if dimensions match flag.
      */
-    public function setForceReEncoding(bool $forceReEncoding): self;
+    public function setSkipIfDimensionsMatch(bool $skipIfDimensionsMatch): self;
 }

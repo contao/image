@@ -52,12 +52,12 @@ class ResizeOptionsTest extends TestCase
         $this->assertTrue($options->getBypassCache());
     }
 
-    public function testSetForceReEncoding(): void
+    public function testSetSkipIfDimensionsMatch(): void
     {
         $options = new ResizeOptions();
 
-        $this->assertFalse($options->getForceReEncoding());
-        $this->assertSame($options, $options->setForceReEncoding(true));
-        $this->assertTrue($options->getForceReEncoding());
+        $this->assertTrue($options->getSkipIfDimensionsMatch());
+        $this->assertSame($options, $options->setSkipIfDimensionsMatch(false));
+        $this->assertFalse($options->getSkipIfDimensionsMatch());
     }
 }

@@ -34,7 +34,7 @@ class ResizeOptions implements ResizeOptionsInterface
     /**
      * @var bool
      */
-    private $forceReEncoding = false;
+    private $skipIfDimensionsMatch = true;
 
     /**
      * {@inheritdoc}
@@ -97,17 +97,17 @@ class ResizeOptions implements ResizeOptionsInterface
     /**
      * {@inheritdoc}
      */
-    public function getForceReEncoding(): bool
+    public function getSkipIfDimensionsMatch(): bool
     {
-        return $this->forceReEncoding;
+        return $this->skipIfDimensionsMatch;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function setForceReEncoding(bool $forceReEncoding): ResizeOptionsInterface
+    public function setSkipIfDimensionsMatch(bool $skipIfDimensionsMatch): ResizeOptionsInterface
     {
-        $this->forceReEncoding = $forceReEncoding;
+        $this->skipIfDimensionsMatch = $skipIfDimensionsMatch;
 
         return $this;
     }

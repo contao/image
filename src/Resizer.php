@@ -62,7 +62,7 @@ class Resizer implements ResizerInterface
         if (
             ($config->isEmpty() || $image->getDimensions()->isUndefined())
             && ImageDimensionsInterface::ORIENTATION_NORMAL === $image->getDimensions()->getOrientation()
-            && !$options->getForceReEncoding()
+            && $options->getSkipIfDimensionsMatch()
         ) {
             $image = $this->createImage($image, $image->getPath());
         } else {
@@ -150,7 +150,7 @@ class Resizer implements ResizerInterface
             !$image->getDimensions()->isRelative()
             && ImageDimensionsInterface::ORIENTATION_NORMAL === $image->getDimensions()->getOrientation()
             && $coordinates->isEqualTo($image->getDimensions()->getSize())
-            && !$options->getForceReEncoding()
+            && $options->getSkipIfDimensionsMatch()
         ) {
             return $this->createImage($image, $image->getPath());
         }
