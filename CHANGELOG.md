@@ -4,11 +4,13 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+ * Add skipIfDimensionsMatch flag to ResizeOptions. [#52]
+ * Autorotate images based on EXIF metadata. [#52]
 
 ## [1.0.0-beta1]
 
  * Add deferred image resizing. [#50]
- * Use important part with relative values as fractions [#51]
+ * Use important part with relative values as fractions. [#51]
  * Increase PHP requirement to 7.1.
  * Fix bug with imagine array options.
  * Remove unnecessary requirements for `ext-libxml`, `ext-xmlreader` and `contao/imagine-svg`.
@@ -96,6 +98,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 [0.2.0]: https://github.com/contao/image/compare/0.1.0...0.2.0
 [0.1.0]: https://github.com/contao/image/commits/0.1.0
 
+[#52]: https://github.com/contao/image/issues/52
 [#51]: https://github.com/contao/image/issues/51
 [#50]: https://github.com/contao/image/issues/50
 [#49]: https://github.com/contao/image/issues/49
