@@ -193,7 +193,7 @@ class Resizer implements ResizerInterface
 
         $hash = substr(md5(implode('|', $hashData)), 0, 9);
         $pathinfo = pathinfo($path);
-        $extension = $options->getImagineOptions()['format'] ?? $pathinfo['extension'];
+        $extension = $options->getImagineOptions()['format'] ?? strtolower($pathinfo['extension']);
 
         return $hash[0].'/'.$pathinfo['filename'].'-'.substr($hash, 1).'.'.$extension;
     }
