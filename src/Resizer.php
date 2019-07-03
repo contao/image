@@ -119,6 +119,11 @@ class Resizer implements ResizerInterface
             $imagineOptions['format'] = strtolower(pathinfo($path, PATHINFO_EXTENSION));
         }
 
+        // Fix bug with undefined index notice in Imagine
+        if ('webp' === $imagineOptions['format'] && !isset($imagineOptions['webp_quality'])) {
+            $imagineOptions['webp_quality'] = 80;
+        }
+
         // Atomic write operation
         $tmpPath = $this->filesystem->tempnam($dir, 'img');
         $this->filesystem->chmod($tmpPath, 0666, umask());
