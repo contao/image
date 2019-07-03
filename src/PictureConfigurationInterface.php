@@ -14,6 +14,8 @@ namespace Contao\Image;
 
 interface PictureConfigurationInterface
 {
+    public const FORMAT_DEFAULT = '.default';
+
     /**
      * Returns the size.
      */
@@ -37,4 +39,18 @@ interface PictureConfigurationInterface
      * @param PictureConfigurationItemInterface[] $sizeItems
      */
     public function setSizeItems(array $sizeItems): self;
+
+    /**
+     * Returns the formats.
+     *
+     * @return array<string,string[]>
+     */
+    public function getFormats(): array;
+
+    /**
+     * Sets the formats.
+     *
+     * @param array<string,string[]> $formats
+     */
+    public function setFormats(array $formats): self;
 }

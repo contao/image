@@ -25,6 +25,11 @@ class PictureConfiguration implements PictureConfigurationInterface
     private $sizeItems = [];
 
     /**
+     * @var array[]
+     */
+    private $formats = [];
+
+    /**
      * {@inheritdoc}
      */
     public function getSize(): PictureConfigurationItemInterface
@@ -70,5 +75,50 @@ class PictureConfiguration implements PictureConfigurationInterface
         $this->sizeItems = $sizeItems;
 
         return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getFormats(): array
+    {
+        return $this->formats ?: [self::FORMAT_DEFAULT => [self::FORMAT_DEFAULT]];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setFormats(array $formats): PictureConfigurationInterface
+    {
+        if (!isset($formats[self::FORMAT_DEFAULT])) {
+            $formats[self::FORMAT_DEFAULT] = [self::FORMAT_DEFAULT];
+        }
+
+        foreach ($formats as $sourceFormat => $targetFormats) {
+            $this->assertValidFormat($sourceFormat);
+            foreach ($targetFormats as $targetFormat) {
+                $this->assertValidFormat($targetFormat);
+            }
+        }
+
+        $this->formats = $formats;
+
+        return $this;
+    }
+
+    /**
+     * Throws an exception on invalid image formats.
+     */
+    private function assertValidFormat(string $format): void
+    {
+        if (self::FORMAT_DEFAULT === $format) {
+            return;
+        }
+
+        if (preg_match('/^[a-z0-9]+$/', $format)) {
+            return;
+        }
+
+        throw new \InvalidArgumentException(sprintf('Invalid image format "%s".', $format));
     }
 }
