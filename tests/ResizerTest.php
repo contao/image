@@ -454,6 +454,55 @@ class ResizerTest extends TestCase
         $this->assertNotSame($image, $resizedImage);
     }
 
+    public function testResizeEmptyConfigWithFormat(): void
+    {
+        $imagePath = $this->rootDir.'/dummy.jpg';
+        $resizer = $this->createResizer();
+
+        if (!is_dir($this->rootDir)) {
+            mkdir($this->rootDir, 0777, true);
+        }
+
+        (new GdImagine())
+            ->create(new Box(100, 100))
+            ->save($imagePath)
+        ;
+
+        /** @var Image|MockObject $image */
+        $image = $this->createMock(Image::class);
+        $image
+            ->method('getDimensions')
+            ->willReturn(new ImageDimensions(new Box(100, 100)))
+        ;
+
+        $image
+            ->method('getPath')
+            ->willReturn($imagePath)
+        ;
+
+        $image
+            ->method('getImagine')
+            ->willReturn(new GdImagine())
+        ;
+
+        $configuration = $this->createMock(ResizeConfigurationInterface::class);
+        $configuration
+            ->method('isEmpty')
+            ->willReturn(true)
+        ;
+
+        $resizedImage = $resizer->resize(
+            $image,
+            $configuration,
+            (new ResizeOptions())
+                ->setSkipIfDimensionsMatch(true)
+                ->setImagineOptions(['format' => 'png'])
+        );
+
+        $this->assertRegExp('(/[0-9a-f]/dummy-[0-9a-f]{8}.png$)', $resizedImage->getPath());
+        $this->assertNotSame($image, $resizedImage);
+    }
+
     public function testResizeSameDimensions(): void
     {
         $path = $this->rootDir.'/dummy.jpg';
