@@ -56,8 +56,8 @@ class ResizeOptionsTest extends TestCase
     {
         $options = new ResizeOptions();
 
-        $this->assertTrue($options->getSkipIfDimensionsMatch());
-        $this->assertSame($options, $options->setSkipIfDimensionsMatch(false));
         $this->assertFalse($options->getSkipIfDimensionsMatch());
+        $this->assertSame($options, $options->setSkipIfDimensionsMatch(true));
+        $this->assertTrue($options->getSkipIfDimensionsMatch());
     }
 }

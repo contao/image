@@ -34,7 +34,7 @@ class ResizeOptions implements ResizeOptionsInterface
     /**
      * @var bool
      */
-    private $skipIfDimensionsMatch = true;
+    private $skipIfDimensionsMatch = false;
 
     /**
      * {@inheritdoc}

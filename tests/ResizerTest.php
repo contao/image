@@ -358,12 +358,59 @@ class ResizerTest extends TestCase
         ;
 
         $configuration = $this->createMock(ResizeConfigurationInterface::class);
-        $resizedImage = $resizer->resize($image, $configuration, new ResizeOptions());
+        $resizedImage = $resizer->resize(
+            $image,
+            $configuration,
+            (new ResizeOptions())->setSkipIfDimensionsMatch(true)
+        );
 
         $this->assertSame($imagePath, $resizedImage->getPath());
     }
 
     public function testResizeEmptyConfig(): void
+    {
+        $imagePath = $this->rootDir.'/dummy.jpg';
+        $resizer = $this->createResizer();
+
+        if (!is_dir($this->rootDir)) {
+            mkdir($this->rootDir, 0777, true);
+        }
+
+        (new GdImagine())
+            ->create(new Box(100, 100))
+            ->save($imagePath)
+        ;
+
+        /** @var Image|MockObject $image */
+        $image = $this->createMock(Image::class);
+        $image
+            ->method('getDimensions')
+            ->willReturn(new ImageDimensions(new Box(100, 100)))
+        ;
+
+        $image
+            ->method('getPath')
+            ->willReturn($imagePath)
+        ;
+
+        $image
+            ->method('getImagine')
+            ->willReturn(new GdImagine())
+        ;
+
+        $configuration = $this->createMock(ResizeConfigurationInterface::class);
+        $configuration
+            ->method('isEmpty')
+            ->willReturn(true)
+        ;
+
+        $resizedImage = $resizer->resize($image, $configuration, new ResizeOptions());
+
+        $this->assertRegExp('(/[0-9a-f]/dummy-[0-9a-f]{8}.jpg$)', $resizedImage->getPath());
+        $this->assertNotSame($image, $resizedImage);
+    }
+
+    public function testResizeEmptyConfigSkipsMatchingDimensions(): void
     {
         $imagePath = $this->rootDir.'/dummy.jpg';
         $resizer = $this->createResizer();
@@ -397,7 +444,11 @@ class ResizerTest extends TestCase
             ->willReturn(true)
         ;
 
-        $resizedImage = $resizer->resize($image, $configuration, new ResizeOptions());
+        $resizedImage = $resizer->resize(
+            $image,
+            $configuration,
+            (new ResizeOptions())->setSkipIfDimensionsMatch(true)
+        );
 
         $this->assertSame($image->getPath(), $resizedImage->getPath());
         $this->assertNotSame($image, $resizedImage);
@@ -441,7 +492,11 @@ class ResizerTest extends TestCase
         ;
 
         $configuration = $this->createMock(ResizeConfigurationInterface::class);
-        $resizedImage = $resizer->resize($image, $configuration, new ResizeOptions());
+        $resizedImage = $resizer->resize(
+            $image,
+            $configuration,
+            (new ResizeOptions())->setSkipIfDimensionsMatch(true)
+        );
 
         $this->assertEquals(new ImageDimensions(new Box(100, 100)), $resizedImage->getDimensions());
         $this->assertSame($path, $resizedImage->getPath());
@@ -449,7 +504,9 @@ class ResizerTest extends TestCase
         $resizedImage = $resizer->resize(
             $image,
             $configuration,
-            (new ResizeOptions())->setTargetPath($this->rootDir.'/target-path.jpg')
+            (new ResizeOptions())
+                ->setTargetPath($this->rootDir.'/target-path.jpg')
+                ->setSkipIfDimensionsMatch(true)
         );
 
         $this->assertEquals(new ImageDimensions(new Box(100, 100)), $resizedImage->getDimensions());
@@ -582,10 +639,7 @@ class ResizerTest extends TestCase
             ->willReturn(true)
         ;
 
-        $options = new ResizeOptions();
-        $options->setSkipIfDimensionsMatch(false);
-
-        $resizedImage = $resizer->resize($image, $configuration, $options);
+        $resizedImage = $resizer->resize($image, $configuration, new ResizeOptions());
 
         $this->assertRegExp('(/[0-9a-f]/dummy-[0-9a-f]{8}.jpg$)', $resizedImage->getPath());
         $this->assertNotSame($image, $resizedImage);
