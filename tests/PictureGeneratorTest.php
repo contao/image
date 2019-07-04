@@ -23,6 +23,7 @@ use Contao\Image\ResizeCalculator;
 use Contao\Image\ResizeConfiguration;
 use Contao\Image\ResizeConfigurationInterface;
 use Contao\Image\ResizeOptions;
+use Contao\Image\ResizeOptionsInterface;
 use Contao\Image\ResizerInterface;
 use Contao\ImagineSvg\Imagine as ImagineSvg;
 use Imagine\Image\Box;
@@ -37,7 +38,9 @@ class PictureGeneratorTest extends TestCase
         $resizer
             ->method('resize')
             ->willReturnCallback(
-                function (ImageInterface $image, ResizeConfigurationInterface $config) {
+                function (ImageInterface $image, ResizeConfigurationInterface $config, ResizeOptionsInterface $options) {
+                    $format = $options->getImagineOptions()['format'];
+
                     $imageMock = $this->createMock(Image::class);
                     $imageMock
                         ->method('getDimensions')
@@ -49,13 +52,15 @@ class PictureGeneratorTest extends TestCase
 
                     $imageMock
                         ->method('getUrl')
-                        ->willReturn('image-'.min(1000, $config->getWidth()).'.jpg')
+                        ->willReturn('image-'.min(1000, $config->getWidth()).'.'.$format)
                     ;
 
                     $imageMock
                         ->method('getPath')
-                        ->willReturn('/dir/image-'.min(1000, $config->getWidth()).'.jpg')
+                        ->willReturn('/dir/image-'.min(1000, $config->getWidth()).'.'.$format)
                     ;
+
+                    $this->assertContains($format, ['jpg', 'webp']);
 
                     return $imageMock;
                 }
@@ -73,9 +78,17 @@ class PictureGeneratorTest extends TestCase
             ->willReturn(new ImportantPart())
         ;
 
+        $imageMock
+            ->method('getPath')
+            ->willReturn('/dir/source-image.jpg')
+        ;
+
         $pictureGenerator = $this->createPictureGenerator($resizer);
 
         $pictureConfig = (new PictureConfiguration())
+            ->setFormats([
+                'jpg' => ['webp', 'jpg'],
+            ])
             ->setSize((new PictureConfigurationItem())
                 ->setDensities('1x, 1.35354x, 1.9999x, 10x')
                 ->setResizeConfig((new ResizeConfiguration())
@@ -125,12 +138,29 @@ class PictureGeneratorTest extends TestCase
         $this->assertSame(
             [
                 [
+                    'srcset' => 'image-100.webp 100w, image-50.webp 50w',
+                    'src' => 'image-100.webp',
+                    'width' => 100,
+                    'height' => 50,
+                    'sizes' => '50vw',
+                    'media' => '(min-width: 600px)',
+                    'type' => 'image/webp',
+                ],
+                [
                     'srcset' => 'image-100.jpg 100w, image-50.jpg 50w',
                     'src' => 'image-100.jpg',
                     'width' => 100,
                     'height' => 50,
                     'sizes' => '50vw',
                     'media' => '(min-width: 600px)',
+                ],
+                [
+                    'srcset' => 'image-50.webp',
+                    'src' => 'image-50.webp',
+                    'width' => 50,
+                    'height' => 25,
+                    'media' => '(min-width: 300px)',
+                    'type' => 'image/webp',
                 ],
                 [
                     'srcset' => 'image-50.jpg',
@@ -140,11 +170,26 @@ class PictureGeneratorTest extends TestCase
                     'media' => '(min-width: 300px)',
                 ],
                 [
+                    'srcset' => 'image-160.webp 1x, image-1000.webp 6.25x',
+                    'src' => 'image-160.webp',
+                    'width' => 160,
+                    'height' => 160,
+                    'media' => '(min-width: 200px)',
+                    'type' => 'image/webp',
+                ],
+                [
                     'srcset' => 'image-160.jpg 1x, image-1000.jpg 6.25x',
                     'src' => 'image-160.jpg',
                     'width' => 160,
                     'height' => 160,
                     'media' => '(min-width: 200px)',
+                ],
+                [
+                    'srcset' => 'image-99.webp 1x, image-134.webp 1.354x, image-198.webp 2x, image-990.webp 10x',
+                    'src' => 'image-99.webp',
+                    'width' => 99,
+                    'height' => 99,
+                    'type' => 'image/webp',
                 ],
             ],
             $picture->getSources('/root/dir')
@@ -157,7 +202,7 @@ class PictureGeneratorTest extends TestCase
         $resizer
             ->method('resize')
             ->willReturnCallback(
-                function (ImageInterface $image, ResizeConfigurationInterface $config) {
+                function (ImageInterface $image, ResizeConfigurationInterface $config, ResizeOptionsInterface $options) {
                     $imageMock = $this->createMock(Image::class);
                     $imageMock
                         ->method('getDimensions')
@@ -174,6 +219,8 @@ class PictureGeneratorTest extends TestCase
                         ->willReturn('/dir/image-'.($config->getHeight() * 2).'.jpg')
                     ;
 
+                    $this->assertSame('', $options->getImagineOptions()['format']);
+
                     return $imageMock;
                 }
             )
@@ -188,6 +235,11 @@ class PictureGeneratorTest extends TestCase
         $imageMock
             ->method('getImportantPart')
             ->willReturn(new ImportantPart())
+        ;
+
+        $imageMock
+            ->method('getPath')
+            ->willReturn('/dir/source-image-without-extension')
         ;
 
         $pictureGenerator = $this->createPictureGenerator($resizer);

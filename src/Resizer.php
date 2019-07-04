@@ -59,8 +59,11 @@ class Resizer implements ResizerInterface
      */
     public function resize(ImageInterface $image, ResizeConfigurationInterface $config, ResizeOptionsInterface $options): ImageInterface
     {
+        $extension = strtolower(pathinfo($image->getPath(), PATHINFO_EXTENSION));
+
         if (
             $options->getSkipIfDimensionsMatch()
+            && ($options->getImagineOptions()['format'] ?? $extension) === $extension
             && ImageDimensionsInterface::ORIENTATION_NORMAL === $image->getDimensions()->getOrientation()
             && ($config->isEmpty() || $image->getDimensions()->isUndefined())
         ) {
@@ -116,6 +119,11 @@ class Resizer implements ResizerInterface
             $imagineOptions['format'] = strtolower(pathinfo($path, PATHINFO_EXTENSION));
         }
 
+        // Fix bug with undefined index notice in Imagine
+        if ('webp' === $imagineOptions['format'] && !isset($imagineOptions['webp_quality'])) {
+            $imagineOptions['webp_quality'] = 80;
+        }
+
         // Atomic write operation
         $tmpPath = $this->filesystem->tempnam($dir, 'img');
         $this->filesystem->chmod($tmpPath, 0666, umask());
@@ -143,10 +151,12 @@ class Resizer implements ResizerInterface
     protected function processResize(ImageInterface $image, ResizeConfigurationInterface $config, ResizeOptionsInterface $options): ImageInterface
     {
         $coordinates = $this->calculator->calculate($config, $image->getDimensions(), $image->getImportantPart());
+        $extension = strtolower(pathinfo($image->getPath(), PATHINFO_EXTENSION));
 
         // Skip resizing if it would have no effect
         if (
             $options->getSkipIfDimensionsMatch()
+            && ($options->getImagineOptions()['format'] ?? $extension) === $extension
             && !$image->getDimensions()->isRelative()
             && ImageDimensionsInterface::ORIENTATION_NORMAL === $image->getDimensions()->getOrientation()
             && $coordinates->isEqualTo($image->getDimensions()->getSize())
@@ -188,7 +198,8 @@ class Resizer implements ResizerInterface
 
         $hash = substr(md5(implode('|', $hashData)), 0, 9);
         $pathinfo = pathinfo($path);
+        $extension = $options->getImagineOptions()['format'] ?? strtolower($pathinfo['extension']);
 
-        return $hash[0].'/'.$pathinfo['filename'].'-'.substr($hash, 1).'.'.$pathinfo['extension'];
+        return $hash[0].'/'.$pathinfo['filename'].'-'.substr($hash, 1).'.'.$extension;
     }
 }

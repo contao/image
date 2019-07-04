@@ -49,19 +49,32 @@ class PictureGenerator implements PictureGeneratorInterface
         $this->resizeOptions = clone $options;
         $this->resizeOptions->setTargetPath(null);
 
+        $formats = $this->getFormatsFromConfig(
+            $config,
+            strtolower(pathinfo($image->getPath(), PATHINFO_EXTENSION))
+        );
+
         $sources = [];
 
         foreach ($config->getSizeItems() as $sizeItem) {
-            $sources[] = $this->generateSource($image, $sizeItem);
+            foreach ($formats as $index => $format) {
+                $sources[] = $this->generateSource($image, $sizeItem, $format, $index + 1 === \count($formats));
+            }
         }
 
-        return new Picture($this->generateSource($image, $config->getSize()), $sources);
+        $source = $this->generateSource($image, $config->getSize(), array_pop($formats), true);
+
+        foreach ($formats as $format) {
+            $sources[] = $this->generateSource($image, $config->getSize(), $format, false);
+        }
+
+        return new Picture($source, $sources);
     }
 
     /**
      * Generates the source.
      */
-    private function generateSource(ImageInterface $image, PictureConfigurationItemInterface $config): array
+    private function generateSource(ImageInterface $image, PictureConfigurationItemInterface $config, string $format, bool $lastFormat): array
     {
         $densities = [1];
         $sizesAttribute = $config->getSizes();
@@ -94,7 +107,7 @@ class PictureGenerator implements PictureGeneratorInterface
         $descriptorType = $sizesAttribute ? 'w' : 'x'; // use pixel density descriptors if the sizes attribute is empty
 
         foreach ($densities as $density) {
-            $srcset[] = $this->generateSrcsetItem($image, $config, $density, $descriptorType, $width1x);
+            $srcset[] = $this->generateSrcsetItem($image, $config, $density, $descriptorType, $width1x, $format);
         }
 
         $srcset = $this->removeDuplicateScrsetItems($srcset);
@@ -113,6 +126,10 @@ class PictureGenerator implements PictureGeneratorInterface
 
         if ($config->getMedia()) {
             $attributes['media'] = $config->getMedia();
+        }
+
+        if (!$lastFormat) {
+            $attributes['type'] = $this->getMimeFromFormat($format);
         }
 
         return $attributes;
@@ -157,13 +174,18 @@ class PictureGenerator implements PictureGeneratorInterface
      *
      * @return array Array containing an ImageInterface and an optional descriptor string
      */
-    private function generateSrcsetItem(ImageInterface $image, PictureConfigurationItemInterface $config, float $density, string $descriptorType, int $width1x): array
+    private function generateSrcsetItem(ImageInterface $image, PictureConfigurationItemInterface $config, float $density, string $descriptorType, int $width1x, string $format): array
     {
         $resizeConfig = clone $config->getResizeConfig();
         $resizeConfig->setWidth((int) round($resizeConfig->getWidth() * $density));
         $resizeConfig->setHeight((int) round($resizeConfig->getHeight() * $density));
 
-        $resizedImage = $this->resizer->resize($image, $resizeConfig, $this->resizeOptions);
+        $options = clone $this->resizeOptions;
+        $imagineOptions = $options->getImagineOptions();
+        $imagineOptions['format'] = $format;
+        $options->setImagineOptions($imagineOptions);
+
+        $resizedImage = $this->resizer->resize($image, $resizeConfig, $options);
         $src = [$resizedImage];
 
         if ('x' === $descriptorType) {
@@ -204,5 +226,31 @@ class PictureGenerator implements PictureGeneratorInterface
         }
 
         return $srcset;
+    }
+
+    /**
+     * @return string[]
+     */
+    private function getFormatsFromConfig(PictureConfigurationInterface $config, string $sourceFormat): array
+    {
+        $formatsConfig = $config->getFormats();
+
+        return array_map(
+            function ($format) use ($config, $sourceFormat) {
+                return $format === $config::FORMAT_DEFAULT ? $sourceFormat : $format;
+            },
+            $formatsConfig[$sourceFormat] ?? $formatsConfig[$config::FORMAT_DEFAULT]
+        );
+    }
+
+    private function getMimeFromFormat(string $format): string
+    {
+        static $mapping = [
+            'jpg' => 'image/jpeg',
+            'wbmp' => 'image/vnd.wap.wbmp',
+            'svg' => 'image/svg+xml',
+        ];
+
+        return $mapping[$format] ?? 'image/'.$format;
     }
 }
