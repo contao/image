@@ -96,6 +96,7 @@ class PictureConfiguration implements PictureConfigurationInterface
 
         foreach ($formats as $sourceFormat => $targetFormats) {
             $this->assertValidFormat($sourceFormat);
+
             foreach ($targetFormats as $targetFormat) {
                 $this->assertValidFormat($targetFormat);
             }
