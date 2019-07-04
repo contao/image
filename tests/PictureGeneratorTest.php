@@ -202,7 +202,7 @@ class PictureGeneratorTest extends TestCase
         $resizer
             ->method('resize')
             ->willReturnCallback(
-                function (ImageInterface $image, ResizeConfigurationInterface $config) {
+                function (ImageInterface $image, ResizeConfigurationInterface $config, ResizeOptionsInterface $options) {
                     $imageMock = $this->createMock(Image::class);
                     $imageMock
                         ->method('getDimensions')
@@ -219,6 +219,8 @@ class PictureGeneratorTest extends TestCase
                         ->willReturn('/dir/image-'.($config->getHeight() * 2).'.jpg')
                     ;
 
+                    $this->assertSame('', $options->getImagineOptions()['format']);
+
                     return $imageMock;
                 }
             )
@@ -233,6 +235,11 @@ class PictureGeneratorTest extends TestCase
         $imageMock
             ->method('getImportantPart')
             ->willReturn(new ImportantPart())
+        ;
+
+        $imageMock
+            ->method('getPath')
+            ->willReturn('/dir/source-image-without-extension')
         ;
 
         $pictureGenerator = $this->createPictureGenerator($resizer);
