@@ -365,6 +365,10 @@ class ResizerTest extends TestCase
         );
 
         $this->assertSame($imagePath, $resizedImage->getPath());
+
+        $resizedImage = $resizer->resize($image, $configuration, new ResizeOptions());
+
+        $this->assertSame($imagePath, $resizedImage->getPath());
     }
 
     public function testResizeEmptyConfig(): void

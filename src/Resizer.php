@@ -62,10 +62,13 @@ class Resizer implements ResizerInterface
         $extension = strtolower(pathinfo($image->getPath(), PATHINFO_EXTENSION));
 
         if (
-            $options->getSkipIfDimensionsMatch()
-            && ($options->getImagineOptions()['format'] ?? $extension) === $extension
-            && ImageDimensionsInterface::ORIENTATION_NORMAL === $image->getDimensions()->getOrientation()
-            && ($config->isEmpty() || $image->getDimensions()->isUndefined())
+            $image->getDimensions()->isUndefined()
+            || (
+                $options->getSkipIfDimensionsMatch()
+                && ($options->getImagineOptions()['format'] ?? $extension) === $extension
+                && ImageDimensionsInterface::ORIENTATION_NORMAL === $image->getDimensions()->getOrientation()
+                && $config->isEmpty()
+            )
         ) {
             $image = $this->createImage($image, $image->getPath());
         } else {
