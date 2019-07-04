@@ -4,6 +4,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+ * Add support for multiple image formats in pictures. [#53]
 
 ## [1.0.0-beta2]
 
@@ -102,6 +103,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 [0.2.0]: https://github.com/contao/image/compare/0.1.0...0.2.0
 [0.1.0]: https://github.com/contao/image/commits/0.1.0
 
+[#53]: https://github.com/contao/image/issues/53
 [#52]: https://github.com/contao/image/issues/52
 [#51]: https://github.com/contao/image/issues/51
 [#50]: https://github.com/contao/image/issues/50
