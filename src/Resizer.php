@@ -59,16 +59,9 @@ class Resizer implements ResizerInterface
      */
     public function resize(ImageInterface $image, ResizeConfigurationInterface $config, ResizeOptionsInterface $options): ImageInterface
     {
-        $extension = strtolower(pathinfo($image->getPath(), PATHINFO_EXTENSION));
-
         if (
             $image->getDimensions()->isUndefined()
-            || (
-                $options->getSkipIfDimensionsMatch()
-                && ($options->getImagineOptions()['format'] ?? $extension) === $extension
-                && ImageDimensionsInterface::ORIENTATION_NORMAL === $image->getDimensions()->getOrientation()
-                && $config->isEmpty()
-            )
+            || ($config->isEmpty() && $this->canSkipResize($image, $options))
         ) {
             $image = $this->createImage($image, $image->getPath());
         } else {
@@ -154,14 +147,11 @@ class Resizer implements ResizerInterface
     protected function processResize(ImageInterface $image, ResizeConfigurationInterface $config, ResizeOptionsInterface $options): ImageInterface
     {
         $coordinates = $this->calculator->calculate($config, $image->getDimensions(), $image->getImportantPart());
-        $extension = strtolower(pathinfo($image->getPath(), PATHINFO_EXTENSION));
 
         // Skip resizing if it would have no effect
         if (
-            $options->getSkipIfDimensionsMatch()
-            && ($options->getImagineOptions()['format'] ?? $extension) === $extension
+            $this->canSkipResize($image, $options)
             && !$image->getDimensions()->isRelative()
-            && ImageDimensionsInterface::ORIENTATION_NORMAL === $image->getDimensions()->getOrientation()
             && $coordinates->isEqualTo($image->getDimensions()->getSize())
         ) {
             return $this->createImage($image, $image->getPath());
@@ -174,6 +164,26 @@ class Resizer implements ResizerInterface
         }
 
         return $this->executeResize($image, $coordinates, $cachePath, $options);
+    }
+
+    private function canSkipResize(ImageInterface $image, ResizeOptionsInterface $options): bool
+    {
+        if (!$options->getSkipIfDimensionsMatch()) {
+            return false;
+        }
+
+        if (ImageDimensionsInterface::ORIENTATION_NORMAL !== $image->getDimensions()->getOrientation()) {
+            return false;
+        }
+
+        if (
+            isset($options->getImagineOptions()['format'])
+            && $options->getImagineOptions()['format'] !== strtolower(pathinfo($image->getPath(), PATHINFO_EXTENSION))
+        ) {
+            return false;
+        }
+
+        return true;
     }
 
     /**
