@@ -158,7 +158,7 @@ class DeferredResizerTest extends TestCase
 
         $this->assertNull(
             $resizer->resizeDeferredImage($deferredImage2, false),
-            'Non-blocking deffered resize of an existing image should return null'
+            'Non-blocking deferred resize of an existing image should return null'
         );
 
         $resizedImage = $resizer->resize(
