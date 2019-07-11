@@ -141,13 +141,24 @@ class DeferredResizerTest extends TestCase
 
         $this->assertFileExists($deferredImage->getPath());
 
-        $resizedImage = $resizer->resizeDeferredImage($deferredImage2);
+        $resizedImage = $resizer->resizeDeferredImage($deferredImage2, false);
 
         $this->assertNotInstanceOf(DeferredImageInterface::class, $resizedImage);
         $this->assertEquals(new ImageDimensions(new Box(50, 50)), $resizedImage->getDimensions());
         $this->assertFileExists($resizedImage->getPath());
         $this->assertFileNotExists(
             $this->rootDir.'/deferred/'.substr($deferredImage->getPath(), \strlen($this->rootDir)).'.json'
+        );
+
+        // Calling resizeDeferredImage() a second time should return the already
+        // generated image to prevent race conditions.
+        $resizedImage2 = $resizer->resizeDeferredImage($deferredImage2);
+
+        $this->assertSame($resizedImage->getPath(), $resizedImage2->getPath());
+
+        $this->assertNull(
+            $resizer->resizeDeferredImage($deferredImage2, false),
+            'Non-blocking deffered resize of an existing image should return null'
         );
 
         $resizedImage = $resizer->resize(
