@@ -106,11 +106,10 @@ class DeferredResizer extends Resizer implements DeferredResizerInterface
 
         try {
             $resizedImage = $this->executeDeferredResize($targetPath, $config, $image->getImagine());
+            $this->storage->delete($targetPath);
         } finally {
             $this->storage->releaseLock($targetPath);
         }
-
-        $this->storage->delete($targetPath);
 
         return $resizedImage;
     }
