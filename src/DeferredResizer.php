@@ -84,19 +84,33 @@ class DeferredResizer extends Resizer implements DeferredResizerInterface
         }
 
         $targetPath = Path::makeRelative($image->getPath(), $this->cacheDir);
-        $config = $this->storage->getLocked($targetPath, $blocking);
+
+        try {
+            $config = $this->storage->getLocked($targetPath, $blocking);
+        } catch (\Throwable $exception) {
+            // Getting the lock might fail if the image was already generated
+            if ($this->filesystem->exists($image->getPath())) {
+                return $blocking ? new Image($image->getPath(), $image->getImagine(), $this->filesystem) : null;
+            }
+
+            throw $exception;
+        }
 
         if (null === $config) {
+            if ($blocking) {
+                throw new \RuntimeException(sprintf('Unable to acquire lock for "%s"', $targetPath));
+            }
+
             return null;
         }
 
         try {
             $resizedImage = $this->executeDeferredResize($targetPath, $config, $image->getImagine());
-        } finally {
+            $this->storage->delete($targetPath);
+        } catch (\Throwable $exception) {
             $this->storage->releaseLock($targetPath);
+            throw $exception;
         }
-
-        $this->storage->delete($targetPath);
 
         return $resizedImage;
     }

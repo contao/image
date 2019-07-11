@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Contao\Image;
 
+use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Filesystem\Filesystem;
 use Webmozart\PathUtil\Path;
 
@@ -84,7 +85,7 @@ class DeferredImageStorageFilesystem implements DeferredImageStorageInterface
 
         $configPath = $this->getConfigPath($path);
 
-        if (!$handle = fopen($configPath, 'r+') ?: fopen($configPath, 'r')) {
+        if (!$handle = @fopen($configPath, 'r+') ?: @fopen($configPath, 'r')) {
             throw new \RuntimeException(sprintf('Unable to open file "%s"', $configPath));
         }
 
@@ -123,7 +124,20 @@ class DeferredImageStorageFilesystem implements DeferredImageStorageInterface
      */
     public function delete(string $path): void
     {
-        $this->filesystem->remove($this->getConfigPath($path));
+        try {
+            $this->filesystem->remove($this->getConfigPath($path));
+        } catch (IOException $exception) {
+            if (!isset($this->locks[$path])) {
+                throw $exception;
+            }
+
+            $this->releaseLock($path);
+            $this->filesystem->remove($this->getConfigPath($path));
+        }
+
+        if (isset($this->locks[$path])) {
+            $this->releaseLock($path);
+        }
     }
 
     /**

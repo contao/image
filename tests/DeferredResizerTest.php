@@ -141,13 +141,24 @@ class DeferredResizerTest extends TestCase
 
         $this->assertFileExists($deferredImage->getPath());
 
-        $resizedImage = $resizer->resizeDeferredImage($deferredImage2);
+        $resizedImage = $resizer->resizeDeferredImage($deferredImage2, false);
 
         $this->assertNotInstanceOf(DeferredImageInterface::class, $resizedImage);
         $this->assertEquals(new ImageDimensions(new Box(50, 50)), $resizedImage->getDimensions());
         $this->assertFileExists($resizedImage->getPath());
         $this->assertFileNotExists(
             $this->rootDir.'/deferred/'.substr($deferredImage->getPath(), \strlen($this->rootDir)).'.json'
+        );
+
+        // Calling resizeDeferredImage() a second time should return the already
+        // generated image to prevent race conditions.
+        $resizedImage2 = $resizer->resizeDeferredImage($deferredImage2);
+
+        $this->assertSame($resizedImage->getPath(), $resizedImage2->getPath());
+
+        $this->assertNull(
+            $resizer->resizeDeferredImage($deferredImage2, false),
+            'Non-blocking deferred resize of an existing image should return null'
         );
 
         $resizedImage = $resizer->resize(
@@ -209,6 +220,128 @@ class DeferredResizerTest extends TestCase
         $imagePath = $this->rootDir.'/a/foo-5fc1c9f9.jpg';
 
         $this->assertNull($resizer->getDeferredImage($imagePath, $imagine));
+    }
+
+    public function testResizeDeferredImageThrowsForOutsidePath(): void
+    {
+        $resizer = $this->createResizer();
+
+        $deferredImage = $this->createMock(DeferredImageInterface::class);
+        $deferredImage
+            ->method('getPath')
+            ->willReturn($this->rootDir.'/../foo.jpg')
+        ;
+
+        $this->expectException('InvalidArgumentException');
+        $resizer->resizeDeferredImage($deferredImage);
+    }
+
+    public function testResizeDeferredImageDoesNotCatchStorageException(): void
+    {
+        $storageException = new \RuntimeException('From storage');
+
+        $storage = $this->createMock(DeferredImageStorageInterface::class);
+        $storage
+            ->method('getLocked')
+            ->with('foo.jpg', true)
+            ->willThrowException($storageException)
+        ;
+
+        $resizer = $this->createResizer(null, null, null, $storage);
+
+        $deferredImage = $this->createMock(DeferredImageInterface::class);
+        $deferredImage
+            ->method('getPath')
+            ->willReturn($this->rootDir.'/foo.jpg')
+        ;
+
+        $this->expectExceptionObject($storageException);
+        $resizer->resizeDeferredImage($deferredImage);
+    }
+
+    public function testResizeDeferredImageReturnsNullForLockedNonBlockingResize(): void
+    {
+        $storage = $this->createMock(DeferredImageStorageInterface::class);
+        $storage
+            ->method('getLocked')
+            ->with('foo.jpg', false)
+            ->willReturn(null)
+        ;
+
+        $resizer = $this->createResizer(null, null, null, $storage);
+
+        $deferredImage = $this->createMock(DeferredImageInterface::class);
+        $deferredImage
+            ->method('getPath')
+            ->willReturn($this->rootDir.'/foo.jpg')
+        ;
+
+        $this->assertNull($resizer->resizeDeferredImage($deferredImage, false));
+    }
+
+    public function testResizeDeferredImageThrowsForLockedBlockingResize(): void
+    {
+        $storage = $this->createMock(DeferredImageStorageInterface::class);
+        $storage
+            ->method('getLocked')
+            ->willReturn(null)
+        ;
+
+        $resizer = $this->createResizer(null, null, null, $storage);
+
+        $deferredImage = $this->createMock(DeferredImageInterface::class);
+        $deferredImage
+            ->method('getPath')
+            ->willReturn($this->rootDir.'/foo.jpg')
+        ;
+
+        $this->expectException(\RuntimeException::class);
+        $resizer->resizeDeferredImage($deferredImage, true);
+    }
+
+    public function testResizeDeferredImageReleasesLockForFailedResize(): void
+    {
+        $storage = $this->createMock(DeferredImageStorageInterface::class);
+        $storage
+            ->expects($this->once())
+            ->method('getLocked')
+            ->with('foo.jpg', true)
+            ->willReturn([
+                'path' => $this->rootDir.'/foo.jpg',
+                'coordinates' => [
+                    'size' => [
+                        'width' => 100,
+                        'height' => 100,
+                    ],
+                    'crop' => [
+                        'x' => 0,
+                        'y' => 0,
+                        'width' => 100,
+                        'height' => 100,
+                    ],
+                ],
+                'options' => [
+                    'imagine_options' => [],
+                ],
+            ])
+        ;
+
+        $storage
+            ->expects($this->once())
+            ->method('releaseLock')
+            ->with('foo.jpg')
+        ;
+
+        $resizer = $this->createResizer(null, null, null, $storage);
+
+        $deferredImage = $this->createMock(DeferredImageInterface::class);
+        $deferredImage
+            ->method('getPath')
+            ->willReturn($this->rootDir.'/foo.jpg')
+        ;
+
+        $this->expectException(\InvalidArgumentException::class);
+        $resizer->resizeDeferredImage($deferredImage);
     }
 
     private function createResizer(string $cacheDir = null, ResizeCalculatorInterface $calculator = null, Filesystem $filesystem = null, DeferredImageStorageInterface $storage = null): DeferredResizer

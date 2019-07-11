@@ -86,6 +86,13 @@ class DeferredImageStorageFilesystemTest extends TestCase
             'Self locked file should return null for non-blocking lock.'
         );
 
+        try {
+            $storage->getLocked($key, true);
+            $this->fail('Self locked file should throw for blocking lock.');
+        } catch (\RuntimeException $e) {
+            $this->assertRegExp('/already acquired/', $e->getMessage());
+        }
+
         $storage->releaseLock($key);
 
         $this->assertTrue(flock($handle, LOCK_EX | LOCK_NB), 'Data file should not be locked');
