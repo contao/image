@@ -119,8 +119,8 @@ class Image implements ImageInterface
                 && !empty($exif['COMPUTED']['Width'])
                 && !empty($exif['COMPUTED']['Height'])
             ) {
-                $orientation = $exif['Orientation'] ?? ImageDimensionsInterface::ORIENTATION_NORMAL;
-                $size = $this->fixOrientation(new Box($exif['COMPUTED']['Width'], $exif['COMPUTED']['Height']), $orientation);
+                $orientation = $this->fixOrientation($exif['Orientation'] ?? null);
+                $size = $this->fixSizeOrientation(new Box($exif['COMPUTED']['Width'], $exif['COMPUTED']['Height']), $orientation);
                 $this->dimensions = new ImageDimensions($size, null, null, $orientation);
             } elseif (
                 ($size = @getimagesize($this->path))
@@ -132,8 +132,8 @@ class Image implements ImageInterface
             // Fall back to Imagine
             if (null === $this->dimensions) {
                 $imagineImage = $this->imagine->open($this->path);
-                $orientation = $imagineImage->metadata()->get('ifd0.Orientation') ?? ImageDimensionsInterface::ORIENTATION_NORMAL;
-                $size = $this->fixOrientation($imagineImage->getSize(), $orientation);
+                $orientation = $this->fixOrientation($imagineImage->metadata()->get('ifd0.Orientation'));
+                $size = $this->fixSizeOrientation($imagineImage->getSize(), $orientation);
                 $this->dimensions = new ImageDimensions($size, null, null, $orientation);
             }
         }
@@ -160,9 +160,23 @@ class Image implements ImageInterface
     }
 
     /**
+     * Corrects invalid EXIF orientation values.
+     */
+    private function fixOrientation($orientation): int
+    {
+        $orientation = (int) $orientation;
+
+        if ($orientation < 1 || $orientation > 8) {
+            return ImageDimensionsInterface::ORIENTATION_NORMAL;
+        }
+
+        return $orientation;
+    }
+
+    /**
      * Swaps width and height for (-/+)90 degree rotated orientations.
      */
-    private function fixOrientation(BoxInterface $size, int $orientation): BoxInterface
+    private function fixSizeOrientation(BoxInterface $size, int $orientation): BoxInterface
     {
         if (
             \in_array(

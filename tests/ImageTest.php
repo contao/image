@@ -186,7 +186,7 @@ class ImageTest extends TestCase
     /**
      * @dataProvider getDimensionsFromExifRotated
      */
-    public function testGetDimensionsFromExifRotatedFile(int $orientation, int $width, int $height, int $expectedWidth, int $expectedHeight): void
+    public function testGetDimensionsFromExifRotatedFile(int $orientation, int $width, int $height, int $expectedWidth, int $expectedHeight, int $expectedOrientation = null): void
     {
         if (!\function_exists('exif_read_data')) {
             $this->markTestSkipped('The PHP EXIF extension is not installed');
@@ -209,13 +209,13 @@ class ImageTest extends TestCase
 
         $this->assertSame($expectedWidth, $dimensions->getSize()->getWidth());
         $this->assertSame($expectedHeight, $dimensions->getSize()->getHeight());
-        $this->assertSame($orientation, $dimensions->getOrientation());
+        $this->assertSame($expectedOrientation ?? $orientation, $dimensions->getOrientation());
     }
 
     /**
      * @dataProvider getDimensionsFromExifRotated
      */
-    public function testGetDimensionsFromExifRotatedImage(int $orientation, int $width, int $height, int $expectedWidth, int $expectedHeight): void
+    public function testGetDimensionsFromExifRotatedImage(int $orientation, int $width, int $height, int $expectedWidth, int $expectedHeight, int $expectedOrientation = null): void
     {
         $imagineImage = $this->createMock(ImageInterface::class);
         $imagineImage
@@ -240,7 +240,7 @@ class ImageTest extends TestCase
 
         $this->assertSame($expectedWidth, $dimensions->getSize()->getWidth());
         $this->assertSame($expectedHeight, $dimensions->getSize()->getHeight());
-        $this->assertSame($orientation, $dimensions->getOrientation());
+        $this->assertSame($expectedOrientation ?? $orientation, $dimensions->getOrientation());
     }
 
     public function getDimensionsFromExifRotated(): \Generator
@@ -253,6 +253,9 @@ class ImageTest extends TestCase
         yield [ImageDimensionsInterface::ORIENTATION_MIRROR_90, 22, 11, 11, 22];
         yield [ImageDimensionsInterface::ORIENTATION_MIRROR_180, 22, 11, 22, 11];
         yield [ImageDimensionsInterface::ORIENTATION_MIRROR_270, 22, 11, 11, 22];
+        yield [0, 22, 11, 22, 11, ImageDimensionsInterface::ORIENTATION_NORMAL];
+        yield [9, 22, 11, 22, 11, ImageDimensionsInterface::ORIENTATION_NORMAL];
+        yield [255, 22, 11, 22, 11, ImageDimensionsInterface::ORIENTATION_NORMAL];
     }
 
     public function testGetDimensionsFromPartialFile(): void
