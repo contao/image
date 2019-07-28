@@ -16,8 +16,22 @@ use Contao\ImagineSvg\RelativeBoxInterface;
 use Contao\ImagineSvg\UndefinedBoxInterface;
 use Imagine\Image\BoxInterface;
 
-class ImageDimensions implements ImageDimensionsInterface
+class ImageDimensions
 {
+    /**
+     * Exif 2.32 orientation attribute (tag 274).
+     *
+     * @see <http://www.cipa.jp/std/documents/e/DC-008-Translation-2019-E.pdf>
+     */
+    public const ORIENTATION_NORMAL = 1;
+    public const ORIENTATION_90 = 6;
+    public const ORIENTATION_180 = 3;
+    public const ORIENTATION_270 = 8;
+    public const ORIENTATION_MIRROR = 2;
+    public const ORIENTATION_MIRROR_90 = 7;
+    public const ORIENTATION_MIRROR_180 = 4;
+    public const ORIENTATION_MIRROR_270 = 5;
+
     /**
      * @var BoxInterface
      */
@@ -42,7 +56,7 @@ class ImageDimensions implements ImageDimensionsInterface
     {
         if ($orientation < 1 || $orientation > 8) {
             throw new \InvalidArgumentException(
-                'Orientation must be one of the ImageDimensionsInterface::ORIENTATION_* constants'
+                'Orientation must be one of the ImageDimensions::ORIENTATION_* constants'
             );
         }
 
@@ -60,33 +74,21 @@ class ImageDimensions implements ImageDimensionsInterface
         $this->undefined = $undefined;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getSize(): BoxInterface
     {
         return $this->size;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getOrientation(): int
     {
         return $this->orientation;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function isRelative(): bool
     {
         return $this->relative;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function isUndefined(): bool
     {
         return $this->undefined;

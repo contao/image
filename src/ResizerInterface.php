@@ -17,5 +17,5 @@ interface ResizerInterface
     /**
      * Resizes an Image object.
      */
-    public function resize(ImageInterface $image, ResizeConfigurationInterface $config, ResizeOptionsInterface $options): ImageInterface;
+    public function resize(ImageInterface $image, ResizeConfiguration $config, ResizeOptions $options): ImageInterface;
 }

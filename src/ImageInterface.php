@@ -35,15 +35,15 @@ interface ImageInterface
     /**
      * Returns the dimensions.
      */
-    public function getDimensions(): ImageDimensionsInterface;
+    public function getDimensions(): ImageDimensions;
 
     /**
      * Returns the important part.
      */
-    public function getImportantPart(): ImportantPartInterface;
+    public function getImportantPart(): ImportantPart;
 
     /**
      * Sets the important part.
      */
-    public function setImportantPart(ImportantPartInterface $importantPart = null): self;
+    public function setImportantPart(ImportantPart $importantPart = null): self;
 }

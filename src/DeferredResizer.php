@@ -30,7 +30,7 @@ class DeferredResizer extends Resizer implements DeferredResizerInterface
     /**
      * {@inheritdoc}
      */
-    public function __construct(string $cacheDir, ResizeCalculatorInterface $calculator = null, Filesystem $filesystem = null, DeferredImageStorageInterface $storage = null)
+    public function __construct(string $cacheDir, ResizeCalculator $calculator = null, Filesystem $filesystem = null, DeferredImageStorageInterface $storage = null)
     {
         parent::__construct($cacheDir, $calculator, $filesystem);
 
@@ -118,7 +118,7 @@ class DeferredResizer extends Resizer implements DeferredResizerInterface
     /**
      * {@inheritdoc}
      */
-    protected function processResize(ImageInterface $image, ResizeConfigurationInterface $config, ResizeOptionsInterface $options): ImageInterface
+    protected function processResize(ImageInterface $image, ResizeConfiguration $config, ResizeOptions $options): ImageInterface
     {
         // Resize the source image if it is deferred
         if ($image instanceof DeferredImageInterface) {
@@ -131,7 +131,7 @@ class DeferredResizer extends Resizer implements DeferredResizerInterface
     /**
      * {@inheritdoc}
      */
-    protected function executeResize(ImageInterface $image, ResizeCoordinatesInterface $coordinates, string $path, ResizeOptionsInterface $options): ImageInterface
+    protected function executeResize(ImageInterface $image, ResizeCoordinates $coordinates, string $path, ResizeOptions $options): ImageInterface
     {
         if (null !== $options->getTargetPath() || $options->getBypassCache()) {
             return parent::executeResize($image, $coordinates, $path, $options);
@@ -142,7 +142,7 @@ class DeferredResizer extends Resizer implements DeferredResizerInterface
         return new DeferredImage($path, $image->getImagine(), new ImageDimensions($coordinates->getCropSize()));
     }
 
-    private function storeResizeData(string $sourcePath, string $targetPath, ResizeCoordinatesInterface $coordinates, ResizeOptionsInterface $options): void
+    private function storeResizeData(string $sourcePath, string $targetPath, ResizeCoordinates $coordinates, ResizeOptions $options): void
     {
         $targetPath = Path::makeRelative($targetPath, $this->cacheDir);
 

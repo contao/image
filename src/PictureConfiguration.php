@@ -12,15 +12,17 @@ declare(strict_types=1);
 
 namespace Contao\Image;
 
-class PictureConfiguration implements PictureConfigurationInterface
+class PictureConfiguration
 {
+    public const FORMAT_DEFAULT = '.default';
+
     /**
-     * @var PictureConfigurationItemInterface
+     * @var PictureConfigurationItem
      */
     private $size;
 
     /**
-     * @var PictureConfigurationItemInterface[]
+     * @var PictureConfigurationItem[]
      */
     private $sizeItems = [];
 
@@ -29,10 +31,7 @@ class PictureConfiguration implements PictureConfigurationInterface
      */
     private $formats = [];
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getSize(): PictureConfigurationItemInterface
+    public function getSize(): PictureConfigurationItem
     {
         if (null === $this->size) {
             $this->setSize(new PictureConfigurationItem());
@@ -41,10 +40,7 @@ class PictureConfiguration implements PictureConfigurationInterface
         return $this->size;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setSize(PictureConfigurationItemInterface $size): PictureConfigurationInterface
+    public function setSize(PictureConfigurationItem $size): self
     {
         $this->size = $size;
 
@@ -52,7 +48,7 @@ class PictureConfiguration implements PictureConfigurationInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @return PictureConfigurationItem[]
      */
     public function getSizeItems(): array
     {
@@ -60,14 +56,14 @@ class PictureConfiguration implements PictureConfigurationInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @param PictureConfigurationItem[] $sizeItems
      */
-    public function setSizeItems(array $sizeItems): PictureConfigurationInterface
+    public function setSizeItems(array $sizeItems): self
     {
         foreach ($sizeItems as $sizeItem) {
-            if (!$sizeItem instanceof PictureConfigurationItemInterface) {
+            if (!$sizeItem instanceof PictureConfigurationItem) {
                 throw new \InvalidArgumentException(
-                    '$sizeItems must be an array of PictureConfigurationItemInterface objects'
+                    '$sizeItems must be an array of PictureConfigurationItem objects'
                 );
             }
         }
@@ -78,7 +74,7 @@ class PictureConfiguration implements PictureConfigurationInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @return array<string,string[]>
      */
     public function getFormats(): array
     {
@@ -86,9 +82,9 @@ class PictureConfiguration implements PictureConfigurationInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @param array<string,string[]> $formats
      */
-    public function setFormats(array $formats): PictureConfigurationInterface
+    public function setFormats(array $formats): self
     {
         if (!isset($formats[self::FORMAT_DEFAULT])) {
             $formats[self::FORMAT_DEFAULT] = [self::FORMAT_DEFAULT];

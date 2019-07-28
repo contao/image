@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace Contao\Image\Tests;
 
 use Contao\Image\DeferredImage;
-use Contao\Image\ImageDimensionsInterface;
+use Contao\Image\ImageDimensions;
 use Imagine\Image\ImagineInterface;
 use PHPUnit\Framework\TestCase;
 
@@ -22,7 +22,7 @@ class DeferredImageTest extends TestCase
     public function testGetters(): void
     {
         $imagine = $this->createMock(ImagineInterface::class);
-        $dimensions = $this->createMock(ImageDimensionsInterface::class);
+        $dimensions = $this->createMock(ImageDimensions::class);
         $path = '/path/to/image.jpg';
 
         $image = new DeferredImage($path, $imagine, $dimensions);

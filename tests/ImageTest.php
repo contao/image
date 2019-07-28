@@ -14,7 +14,6 @@ namespace Contao\Image\Tests;
 
 use Contao\Image\Image;
 use Contao\Image\ImageDimensions;
-use Contao\Image\ImageDimensionsInterface;
 use Contao\Image\ImportantPart;
 use Contao\ImagineSvg\Imagine;
 use Exception;
@@ -245,17 +244,17 @@ class ImageTest extends TestCase
 
     public function getDimensionsFromExifRotated(): \Generator
     {
-        yield [ImageDimensionsInterface::ORIENTATION_NORMAL, 22, 11, 22, 11];
-        yield [ImageDimensionsInterface::ORIENTATION_90, 22, 11, 11, 22];
-        yield [ImageDimensionsInterface::ORIENTATION_180, 22, 11, 22, 11];
-        yield [ImageDimensionsInterface::ORIENTATION_270, 22, 11, 11, 22];
-        yield [ImageDimensionsInterface::ORIENTATION_MIRROR, 22, 11, 22, 11];
-        yield [ImageDimensionsInterface::ORIENTATION_MIRROR_90, 22, 11, 11, 22];
-        yield [ImageDimensionsInterface::ORIENTATION_MIRROR_180, 22, 11, 22, 11];
-        yield [ImageDimensionsInterface::ORIENTATION_MIRROR_270, 22, 11, 11, 22];
-        yield [0, 22, 11, 22, 11, ImageDimensionsInterface::ORIENTATION_NORMAL];
-        yield [9, 22, 11, 22, 11, ImageDimensionsInterface::ORIENTATION_NORMAL];
-        yield [255, 22, 11, 22, 11, ImageDimensionsInterface::ORIENTATION_NORMAL];
+        yield [ImageDimensions::ORIENTATION_NORMAL, 22, 11, 22, 11];
+        yield [ImageDimensions::ORIENTATION_90, 22, 11, 11, 22];
+        yield [ImageDimensions::ORIENTATION_180, 22, 11, 22, 11];
+        yield [ImageDimensions::ORIENTATION_270, 22, 11, 11, 22];
+        yield [ImageDimensions::ORIENTATION_MIRROR, 22, 11, 22, 11];
+        yield [ImageDimensions::ORIENTATION_MIRROR_90, 22, 11, 11, 22];
+        yield [ImageDimensions::ORIENTATION_MIRROR_180, 22, 11, 22, 11];
+        yield [ImageDimensions::ORIENTATION_MIRROR_270, 22, 11, 11, 22];
+        yield [0, 22, 11, 22, 11, ImageDimensions::ORIENTATION_NORMAL];
+        yield [9, 22, 11, 22, 11, ImageDimensions::ORIENTATION_NORMAL];
+        yield [255, 22, 11, 22, 11, ImageDimensions::ORIENTATION_NORMAL];
     }
 
     public function testGetDimensionsFromPartialFile(): void

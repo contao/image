@@ -16,7 +16,6 @@ use Contao\Image\ImageDimensions;
 use Contao\Image\ImportantPart;
 use Contao\Image\ResizeCalculator;
 use Contao\Image\ResizeConfiguration;
-use Contao\Image\ResizeConfigurationInterface;
 use Contao\Image\ResizeCoordinates;
 use Imagine\Image\Box;
 use Imagine\Image\Point;
@@ -736,7 +735,7 @@ class ResizeCalculatorTest extends TestCase
     {
         $calculator = new ResizeCalculator();
 
-        $config = $this->createMock(ResizeConfigurationInterface::class);
+        $config = $this->createMock(ResizeConfiguration::class);
         $config
             ->method('getWidth')
             ->willReturn(200)

@@ -16,7 +16,7 @@ use Imagine\Image\BoxInterface;
 use Imagine\Image\Point;
 use Imagine\Image\PointInterface;
 
-class ResizeCoordinates implements ResizeCoordinatesInterface
+class ResizeCoordinates
 {
     /**
      * @var BoxInterface
@@ -40,33 +40,21 @@ class ResizeCoordinates implements ResizeCoordinatesInterface
         $this->cropSize = $cropSize;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getSize(): BoxInterface
     {
         return $this->size;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getCropStart(): PointInterface
     {
         return $this->cropStart;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getCropSize(): BoxInterface
     {
         return $this->cropSize;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getHash(): string
     {
         return md5(implode(',', [
@@ -80,7 +68,9 @@ class ResizeCoordinates implements ResizeCoordinatesInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Compares the coordinates with another ResizeCoordinates or Box object.
+     *
+     * @param self|BoxInterface $coordinates
      */
     public function isEqualTo($coordinates): bool
     {
@@ -88,14 +78,14 @@ class ResizeCoordinates implements ResizeCoordinatesInterface
             $coordinates = new static($coordinates, new Point(0, 0), $coordinates);
         }
 
-        if (!$coordinates instanceof ResizeCoordinatesInterface) {
+        if (!$coordinates instanceof self) {
             throw new \InvalidArgumentException(sprintf(
-                '$coordinates must be an instance of ResizeCoordinatesInterface or BoxInterface, "%s" given',
+                '$coordinates must be an instance of ResizeCoordinates or BoxInterface, "%s" given',
                 \get_class($coordinates)
             ));
         }
 
-        /* @var ResizeCoordinatesInterface $coordinates */
+        /* @var self $coordinates */
         return $this->cropStart->getX() === $coordinates->getCropStart()->getX()
             && $this->cropStart->getY() === $coordinates->getCropStart()->getY()
             && $this->cropSize->getWidth() === $coordinates->getCropSize()->getWidth()

@@ -22,16 +22,16 @@ class PictureGenerator implements PictureGeneratorInterface
     private $resizer;
 
     /**
-     * @var ResizeCalculatorInterface
+     * @var ResizeCalculator
      */
     private $calculator;
 
     /**
-     * @var ResizeOptionsInterface
+     * @var ResizeOptions
      */
     private $resizeOptions;
 
-    public function __construct(ResizerInterface $resizer, ResizeCalculatorInterface $calculator = null)
+    public function __construct(ResizerInterface $resizer, ResizeCalculator $calculator = null)
     {
         if (null === $calculator) {
             $calculator = new ResizeCalculator();
@@ -44,7 +44,7 @@ class PictureGenerator implements PictureGeneratorInterface
     /**
      * {@inheritdoc}
      */
-    public function generate(ImageInterface $image, PictureConfigurationInterface $config, ResizeOptionsInterface $options): PictureInterface
+    public function generate(ImageInterface $image, PictureConfiguration $config, ResizeOptions $options): PictureInterface
     {
         $this->resizeOptions = clone $options;
         $this->resizeOptions->setTargetPath(null);
@@ -74,7 +74,7 @@ class PictureGenerator implements PictureGeneratorInterface
     /**
      * Generates the source.
      */
-    private function generateSource(ImageInterface $image, PictureConfigurationItemInterface $config, string $format, bool $lastFormat): array
+    private function generateSource(ImageInterface $image, PictureConfigurationItem $config, string $format, bool $lastFormat): array
     {
         $densities = [1];
         $sizesAttribute = $config->getSizes();
@@ -174,7 +174,7 @@ class PictureGenerator implements PictureGeneratorInterface
      *
      * @return array Array containing an ImageInterface and an optional descriptor string
      */
-    private function generateSrcsetItem(ImageInterface $image, PictureConfigurationItemInterface $config, float $density, string $descriptorType, int $width1x, string $format): array
+    private function generateSrcsetItem(ImageInterface $image, PictureConfigurationItem $config, float $density, string $descriptorType, int $width1x, string $format): array
     {
         $resizeConfig = clone $config->getResizeConfig();
         $resizeConfig->setWidth((int) round($resizeConfig->getWidth() * $density));
@@ -231,7 +231,7 @@ class PictureGenerator implements PictureGeneratorInterface
     /**
      * @return string[]
      */
-    private function getFormatsFromConfig(PictureConfigurationInterface $config, string $sourceFormat): array
+    private function getFormatsFromConfig(PictureConfiguration $config, string $sourceFormat): array
     {
         $formatsConfig = $config->getFormats();
 

@@ -17,5 +17,5 @@ interface PictureGeneratorInterface
     /**
      * Generates a Picture object.
      */
-    public function generate(ImageInterface $image, PictureConfigurationInterface $config, ResizeOptionsInterface $options): PictureInterface;
+    public function generate(ImageInterface $image, PictureConfiguration $config, ResizeOptions $options): PictureInterface;
 }

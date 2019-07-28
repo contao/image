@@ -13,7 +13,6 @@ declare(strict_types=1);
 namespace Contao\Image\Tests;
 
 use Contao\Image\ImageDimensions;
-use Contao\Image\ImageDimensionsInterface;
 use Contao\ImagineSvg\RelativeBoxInterface;
 use Contao\ImagineSvg\UndefinedBoxInterface;
 use Imagine\Image\BoxInterface;
@@ -32,9 +31,9 @@ class ImageDimensionsTest extends TestCase
     public function testGetOrientation(): void
     {
         $size = $this->createMock(BoxInterface::class);
-        $dimensions = new ImageDimensions($size, null, null, ImageDimensionsInterface::ORIENTATION_90);
+        $dimensions = new ImageDimensions($size, null, null, ImageDimensions::ORIENTATION_90);
 
-        $this->assertSame(ImageDimensionsInterface::ORIENTATION_90, $dimensions->getOrientation());
+        $this->assertSame(ImageDimensions::ORIENTATION_90, $dimensions->getOrientation());
 
         $this->expectException('InvalidArgumentException');
 

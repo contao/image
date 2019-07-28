@@ -14,7 +14,7 @@ namespace Contao\Image;
 
 use Symfony\Component\Filesystem\Filesystem;
 
-class ResizeOptions implements ResizeOptionsInterface
+class ResizeOptions
 {
     /**
      * @var array
@@ -36,36 +36,24 @@ class ResizeOptions implements ResizeOptionsInterface
      */
     private $skipIfDimensionsMatch = false;
 
-    /**
-     * {@inheritdoc}
-     */
     public function getImagineOptions(): array
     {
         return $this->imagineOptions;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setImagineOptions(array $imagineOptions): ResizeOptionsInterface
+    public function setImagineOptions(array $imagineOptions): self
     {
         $this->imagineOptions = $imagineOptions;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getTargetPath(): ?string
     {
         return $this->targetPath;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setTargetPath(?string $targetPath): ResizeOptionsInterface
+    public function setTargetPath(?string $targetPath): self
     {
         if (null !== $targetPath && !(new Filesystem())->isAbsolutePath($targetPath)) {
             throw new \InvalidArgumentException('"'.$targetPath.'" is not an absolute target path');
@@ -76,36 +64,24 @@ class ResizeOptions implements ResizeOptionsInterface
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getBypassCache(): bool
     {
         return $this->bypassCache;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setBypassCache(bool $bypassCache): ResizeOptionsInterface
+    public function setBypassCache(bool $bypassCache): self
     {
         $this->bypassCache = $bypassCache;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getSkipIfDimensionsMatch(): bool
     {
         return $this->skipIfDimensionsMatch;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setSkipIfDimensionsMatch(bool $skipIfDimensionsMatch): ResizeOptionsInterface
+    public function setSkipIfDimensionsMatch(bool $skipIfDimensionsMatch): self
     {
         $this->skipIfDimensionsMatch = $skipIfDimensionsMatch;
 
