@@ -4,6 +4,9 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+ * Remove unnecessary interfaces. [#57]
+ * Don’t throw exceptions for malformed EXIF data [#56]
+ * Fix race conditions [#55]
 
 ## [1.0.0-beta3]
 
@@ -107,6 +110,9 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 [0.2.0]: https://github.com/contao/image/compare/0.1.0...0.2.0
 [0.1.0]: https://github.com/contao/image/commits/0.1.0
 
+[#57]: https://github.com/contao/image/issues/57
+[#56]: https://github.com/contao/image/issues/56
+[#55]: https://github.com/contao/image/issues/55
 [#53]: https://github.com/contao/image/issues/53
 [#52]: https://github.com/contao/image/issues/52
 [#51]: https://github.com/contao/image/issues/51
