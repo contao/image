@@ -17,11 +17,9 @@ use Contao\Image\DeferredImageStorageInterface;
 use Contao\Image\DeferredResizer;
 use Contao\Image\Image;
 use Contao\Image\ImageDimensions;
-use Contao\Image\ImageDimensionsInterface;
-use Contao\Image\ImportantPartInterface;
-use Contao\Image\ResizeCalculatorInterface;
+use Contao\Image\ImportantPart;
+use Contao\Image\ResizeCalculator;
 use Contao\Image\ResizeConfiguration;
-use Contao\Image\ResizeConfigurationInterface;
 use Contao\Image\ResizeCoordinates;
 use Contao\Image\ResizeOptions;
 use Imagine\Gd\Imagine as GdImagine;
@@ -63,11 +61,11 @@ class DeferredResizerTest extends TestCase
 
     public function testResize(): void
     {
-        $calculator = $this->createMock(ResizeCalculatorInterface::class);
+        $calculator = $this->createMock(ResizeCalculator::class);
         $calculator
             ->method('calculate')
             ->willReturnCallback(
-                static function (ResizeConfigurationInterface $config, ImageDimensionsInterface $dimensions, ImportantPartInterface $importantPart = null) {
+                static function (ResizeConfiguration $config, ImageDimensions $dimensions, ImportantPart $importantPart = null) {
                     return new ResizeCoordinates(
                         new Box($config->getWidth(), $config->getHeight()),
                         new Point(0, 0),
@@ -344,7 +342,7 @@ class DeferredResizerTest extends TestCase
         $resizer->resizeDeferredImage($deferredImage);
     }
 
-    private function createResizer(string $cacheDir = null, ResizeCalculatorInterface $calculator = null, Filesystem $filesystem = null, DeferredImageStorageInterface $storage = null): DeferredResizer
+    private function createResizer(string $cacheDir = null, ResizeCalculator $calculator = null, Filesystem $filesystem = null, DeferredImageStorageInterface $storage = null): DeferredResizer
     {
         if (null === $cacheDir) {
             $cacheDir = $this->rootDir;

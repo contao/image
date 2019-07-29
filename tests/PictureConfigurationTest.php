@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace Contao\Image\Tests;
 
 use Contao\Image\PictureConfiguration;
-use Contao\Image\PictureConfigurationItemInterface;
+use Contao\Image\PictureConfigurationItem;
 use PHPUnit\Framework\TestCase;
 
 class PictureConfigurationTest extends TestCase
@@ -21,7 +21,7 @@ class PictureConfigurationTest extends TestCase
     public function testSetSize(): void
     {
         $config = new PictureConfiguration();
-        $configItem = $this->createMock(PictureConfigurationItemInterface::class);
+        $configItem = $this->createMock(PictureConfigurationItem::class);
 
         $this->assertSame($config, $config->setSize($configItem));
         $this->assertSame($configItem, $config->getSize());
@@ -30,7 +30,7 @@ class PictureConfigurationTest extends TestCase
     public function testSetSizeItems(): void
     {
         $config = new PictureConfiguration();
-        $configItem = $this->createMock(PictureConfigurationItemInterface::class);
+        $configItem = $this->createMock(PictureConfigurationItem::class);
 
         $this->assertSame([], $config->getSizeItems());
         $this->assertSame($config, $config->setSizeItems([$configItem]));

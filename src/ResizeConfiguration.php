@@ -12,8 +12,12 @@ declare(strict_types=1);
 
 namespace Contao\Image;
 
-class ResizeConfiguration implements ResizeConfigurationInterface
+class ResizeConfiguration
 {
+    public const MODE_CROP = 'crop';
+    public const MODE_BOX = 'box';
+    public const MODE_PROPORTIONAL = 'proportional';
+
     /**
      * @var int
      */
@@ -35,25 +39,19 @@ class ResizeConfiguration implements ResizeConfigurationInterface
     private $zoomLevel = 0;
 
     /**
-     * {@inheritdoc}
+     * Returns true if the resize would have no effect.
      */
     public function isEmpty(): bool
     {
         return 0 === $this->width && 0 === $this->height && 0 === $this->zoomLevel;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getWidth(): int
     {
         return $this->width;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setWidth(int $width): ResizeConfigurationInterface
+    public function setWidth(int $width): self
     {
         if ($width < 0) {
             throw new \InvalidArgumentException('Width must not be negative');
@@ -64,18 +62,12 @@ class ResizeConfiguration implements ResizeConfigurationInterface
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getHeight(): int
     {
         return $this->height;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setHeight(int $height): ResizeConfigurationInterface
+    public function setHeight(int $height): self
     {
         if ($height < 0) {
             throw new \InvalidArgumentException('Height must not be negative');
@@ -87,7 +79,7 @@ class ResizeConfiguration implements ResizeConfigurationInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @return string One of the ResizeConfiguration::MODE_* constants
      */
     public function getMode(): string
     {
@@ -95,9 +87,9 @@ class ResizeConfiguration implements ResizeConfigurationInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @param string $mode One of the ResizeConfiguration::MODE_* constants
      */
-    public function setMode(string $mode): ResizeConfigurationInterface
+    public function setMode(string $mode): self
     {
         if (!\in_array($mode, [self::MODE_CROP, self::MODE_BOX, self::MODE_PROPORTIONAL], true)) {
             throw new \InvalidArgumentException('Mode must be one of the '.__CLASS__.'::MODE_* constants');
@@ -108,18 +100,12 @@ class ResizeConfiguration implements ResizeConfigurationInterface
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getZoomLevel(): int
     {
         return $this->zoomLevel;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setZoomLevel(int $zoomLevel): ResizeConfigurationInterface
+    public function setZoomLevel(int $zoomLevel): self
     {
         if ($zoomLevel < 0 || $zoomLevel > 100) {
             throw new \InvalidArgumentException('Zoom level must be between 0 and 100');

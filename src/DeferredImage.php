@@ -20,7 +20,7 @@ class DeferredImage extends Image implements DeferredImageInterface
      * No parent::__construct() call here, as we overwrite the parent
      * constructor to skip the file_exists() checks.
      */
-    public function __construct(string $path, ImagineInterface $imagine, ImageDimensionsInterface $dimensions)
+    public function __construct(string $path, ImagineInterface $imagine, ImageDimensions $dimensions)
     {
         $this->path = $path;
         $this->imagine = $imagine;

@@ -33,7 +33,7 @@ class Image implements ImageInterface
     protected $path;
 
     /**
-     * @var ImageDimensionsInterface
+     * @var ImageDimensions
      *
      * @internal
      */
@@ -47,7 +47,7 @@ class Image implements ImageInterface
     protected $imagine;
 
     /**
-     * @var ImportantPartInterface
+     * @var ImportantPart
      */
     private $importantPart;
 
@@ -103,7 +103,7 @@ class Image implements ImageInterface
     /**
      * {@inheritdoc}
      */
-    public function getDimensions(): ImageDimensionsInterface
+    public function getDimensions(): ImageDimensions
     {
         if (null === $this->dimensions) {
             // Try getSvgSize() or native exif_read_data()/getimagesize() for better performance
@@ -144,7 +144,7 @@ class Image implements ImageInterface
     /**
      * {@inheritdoc}
      */
-    public function getImportantPart(): ImportantPartInterface
+    public function getImportantPart(): ImportantPart
     {
         return $this->importantPart ?? new ImportantPart();
     }
@@ -152,7 +152,7 @@ class Image implements ImageInterface
     /**
      * {@inheritdoc}
      */
-    public function setImportantPart(ImportantPartInterface $importantPart = null): ImageInterface
+    public function setImportantPart(ImportantPart $importantPart = null): ImageInterface
     {
         $this->importantPart = $importantPart;
 
@@ -167,7 +167,7 @@ class Image implements ImageInterface
         $orientation = (int) $orientation;
 
         if ($orientation < 1 || $orientation > 8) {
-            return ImageDimensionsInterface::ORIENTATION_NORMAL;
+            return ImageDimensions::ORIENTATION_NORMAL;
         }
 
         return $orientation;
@@ -182,10 +182,10 @@ class Image implements ImageInterface
             \in_array(
                 $orientation,
                 [
-                    ImageDimensionsInterface::ORIENTATION_90,
-                    ImageDimensionsInterface::ORIENTATION_270,
-                    ImageDimensionsInterface::ORIENTATION_MIRROR_90,
-                    ImageDimensionsInterface::ORIENTATION_MIRROR_270,
+                    ImageDimensions::ORIENTATION_90,
+                    ImageDimensions::ORIENTATION_270,
+                    ImageDimensions::ORIENTATION_MIRROR_90,
+                    ImageDimensions::ORIENTATION_MIRROR_270,
                 ],
                 true
             )

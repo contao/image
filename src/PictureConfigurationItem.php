@@ -12,10 +12,10 @@ declare(strict_types=1);
 
 namespace Contao\Image;
 
-class PictureConfigurationItem implements PictureConfigurationItemInterface
+class PictureConfigurationItem
 {
     /**
-     * @var ResizeConfigurationInterface
+     * @var ResizeConfiguration
      */
     private $resizeConfig;
 
@@ -34,10 +34,7 @@ class PictureConfigurationItem implements PictureConfigurationItemInterface
      */
     private $media = '';
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getResizeConfig(): ResizeConfigurationInterface
+    public function getResizeConfig(): ResizeConfiguration
     {
         if (null === $this->resizeConfig) {
             $this->setResizeConfig(new ResizeConfiguration());
@@ -46,64 +43,43 @@ class PictureConfigurationItem implements PictureConfigurationItemInterface
         return $this->resizeConfig;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setResizeConfig(ResizeConfigurationInterface $resizeConfig): PictureConfigurationItemInterface
+    public function setResizeConfig(ResizeConfiguration $resizeConfig): self
     {
         $this->resizeConfig = $resizeConfig;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getSizes(): string
     {
         return $this->sizes;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setSizes(string $sizes): PictureConfigurationItemInterface
+    public function setSizes(string $sizes): self
     {
         $this->sizes = $sizes;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getDensities(): string
     {
         return $this->densities;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setDensities(string $densities): PictureConfigurationItemInterface
+    public function setDensities(string $densities): self
     {
         $this->densities = $densities;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getMedia(): string
     {
         return $this->media;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setMedia(string $media): PictureConfigurationItemInterface
+    public function setMedia(string $media): self
     {
         $this->media = $media;
 

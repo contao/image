@@ -21,9 +21,7 @@ use Contao\Image\PictureConfigurationItem;
 use Contao\Image\PictureGenerator;
 use Contao\Image\ResizeCalculator;
 use Contao\Image\ResizeConfiguration;
-use Contao\Image\ResizeConfigurationInterface;
 use Contao\Image\ResizeOptions;
-use Contao\Image\ResizeOptionsInterface;
 use Contao\Image\ResizerInterface;
 use Contao\ImagineSvg\Imagine as ImagineSvg;
 use Imagine\Image\Box;
@@ -38,7 +36,7 @@ class PictureGeneratorTest extends TestCase
         $resizer
             ->method('resize')
             ->willReturnCallback(
-                function (ImageInterface $image, ResizeConfigurationInterface $config, ResizeOptionsInterface $options) {
+                function (ImageInterface $image, ResizeConfiguration $config, ResizeOptions $options) {
                     $format = $options->getImagineOptions()['format'];
 
                     $imageMock = $this->createMock(Image::class);
@@ -202,7 +200,7 @@ class PictureGeneratorTest extends TestCase
         $resizer
             ->method('resize')
             ->willReturnCallback(
-                function (ImageInterface $image, ResizeConfigurationInterface $config, ResizeOptionsInterface $options) {
+                function (ImageInterface $image, ResizeConfiguration $config, ResizeOptions $options) {
                     $imageMock = $this->createMock(Image::class);
                     $imageMock
                         ->method('getDimensions')
@@ -297,7 +295,7 @@ class PictureGeneratorTest extends TestCase
         $resizer
             ->method('resize')
             ->willReturnCallback(
-                function (ImageInterface $image, ResizeConfigurationInterface $config) {
+                function (ImageInterface $image, ResizeConfiguration $config) {
                     $imageMock = $this->createMock(Image::class);
 
                     $calculator = new ResizeCalculator();
@@ -411,7 +409,7 @@ class PictureGeneratorTest extends TestCase
         $resizer
             ->method('resize')
             ->willReturnCallback(
-                function (ImageInterface $image, ResizeConfigurationInterface $config) {
+                function (ImageInterface $image, ResizeConfiguration $config) {
                     $imageMock = $this->createMock(Image::class);
                     $imageMock
                         ->method('getDimensions')
@@ -501,7 +499,7 @@ class PictureGeneratorTest extends TestCase
         $resizer
             ->method('resize')
             ->willReturnCallback(
-                function (ImageInterface $image, ResizeConfigurationInterface $config) {
+                function (ImageInterface $image, ResizeConfiguration $config) {
                     $imageMock = $this->createMock(Image::class);
                     $imageMock
                         ->method('getDimensions')
@@ -588,7 +586,7 @@ class PictureGeneratorTest extends TestCase
         $resizer
             ->method('resize')
             ->willReturnCallback(
-                function (ImageInterface $image, ResizeConfigurationInterface $config) {
+                function (ImageInterface $image, ResizeConfiguration $config) {
                     $imageMock = $this->createMock(Image::class);
                     $imageMock
                         ->method('getDimensions')

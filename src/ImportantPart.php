@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace Contao\Image;
 
-class ImportantPart implements ImportantPartInterface
+class ImportantPart
 {
     /**
      * @var float
@@ -55,7 +55,7 @@ class ImportantPart implements ImportantPartInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Returns the relative X position as a fraction.
      */
     public function getX(): float
     {
@@ -63,7 +63,7 @@ class ImportantPart implements ImportantPartInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Returns the relative Y position as a fraction.
      */
     public function getY(): float
     {
@@ -71,7 +71,7 @@ class ImportantPart implements ImportantPartInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Returns the relative width as a fraction.
      */
     public function getWidth(): float
     {
@@ -79,7 +79,7 @@ class ImportantPart implements ImportantPartInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Returns the relative height as a fraction.
      */
     public function getHeight(): float
     {

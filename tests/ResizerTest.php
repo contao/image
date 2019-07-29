@@ -14,9 +14,8 @@ namespace Contao\Image\Tests;
 
 use Contao\Image\Image;
 use Contao\Image\ImageDimensions;
-use Contao\Image\ImageDimensionsInterface;
-use Contao\Image\ResizeCalculatorInterface;
-use Contao\Image\ResizeConfigurationInterface;
+use Contao\Image\ResizeCalculator;
+use Contao\Image\ResizeConfiguration;
 use Contao\Image\ResizeCoordinates;
 use Contao\Image\ResizeOptions;
 use Contao\Image\Resizer;
@@ -61,7 +60,7 @@ class ResizerTest extends TestCase
 
     public function testResize(): void
     {
-        $calculator = $this->createMock(ResizeCalculatorInterface::class);
+        $calculator = $this->createMock(ResizeCalculator::class);
         $calculator
             ->method('calculate')
             ->willReturn(new ResizeCoordinates(new Box(100, 100), new Point(0, 0), new Box(100, 100)))
@@ -94,7 +93,7 @@ class ResizerTest extends TestCase
             ->willReturn(new GdImagine())
         ;
 
-        $configuration = $this->createMock(ResizeConfigurationInterface::class);
+        $configuration = $this->createMock(ResizeConfiguration::class);
         $defaultUmask = umask();
 
         try {
@@ -161,7 +160,7 @@ class ResizerTest extends TestCase
 
         file_put_contents($this->rootDir.'/dummy.svg', $xml);
 
-        $calculator = $this->createMock(ResizeCalculatorInterface::class);
+        $calculator = $this->createMock(ResizeCalculator::class);
         $calculator
             ->method('calculate')
             ->willReturn(new ResizeCoordinates(new Box(100, 100), new Point(0, 0), new Box(100, 100)))
@@ -185,7 +184,7 @@ class ResizerTest extends TestCase
             ->willReturn(new SvgImagine())
         ;
 
-        $configuration = $this->createMock(ResizeConfigurationInterface::class);
+        $configuration = $this->createMock(ResizeConfiguration::class);
 
         $resizedImage = $resizer->resize(
             $image,
@@ -219,7 +218,7 @@ class ResizerTest extends TestCase
 
     public function testResizeCache(): void
     {
-        $calculator = $this->createMock(ResizeCalculatorInterface::class);
+        $calculator = $this->createMock(ResizeCalculator::class);
         $calculator
             ->method('calculate')
             ->willReturn(new ResizeCoordinates(new Box(100, 100), new Point(0, 0), new Box(100, 100)))
@@ -252,7 +251,7 @@ class ResizerTest extends TestCase
             ->willReturn(new GdImagine())
         ;
 
-        $configuration = $this->createMock(ResizeConfigurationInterface::class);
+        $configuration = $this->createMock(ResizeConfiguration::class);
         $resizedImage = $resizer->resize($image, $configuration, new ResizeOptions());
 
         $this->assertEquals(new ImageDimensions(new Box(100, 100)), $resizedImage->getDimensions());
@@ -357,7 +356,7 @@ class ResizerTest extends TestCase
             ->willReturn(new GdImagine())
         ;
 
-        $configuration = $this->createMock(ResizeConfigurationInterface::class);
+        $configuration = $this->createMock(ResizeConfiguration::class);
         $resizedImage = $resizer->resize(
             $image,
             $configuration,
@@ -402,7 +401,7 @@ class ResizerTest extends TestCase
             ->willReturn(new GdImagine())
         ;
 
-        $configuration = $this->createMock(ResizeConfigurationInterface::class);
+        $configuration = $this->createMock(ResizeConfiguration::class);
         $configuration
             ->method('isEmpty')
             ->willReturn(true)
@@ -442,7 +441,7 @@ class ResizerTest extends TestCase
             ->willReturn(new GdImagine())
         ;
 
-        $configuration = $this->createMock(ResizeConfigurationInterface::class);
+        $configuration = $this->createMock(ResizeConfiguration::class);
         $configuration
             ->method('isEmpty')
             ->willReturn(true)
@@ -489,7 +488,7 @@ class ResizerTest extends TestCase
             ->willReturn(new GdImagine())
         ;
 
-        $configuration = $this->createMock(ResizeConfigurationInterface::class);
+        $configuration = $this->createMock(ResizeConfiguration::class);
         $configuration
             ->method('isEmpty')
             ->willReturn(true)
@@ -511,7 +510,7 @@ class ResizerTest extends TestCase
     {
         $path = $this->rootDir.'/dummy.jpg';
 
-        $calculator = $this->createMock(ResizeCalculatorInterface::class);
+        $calculator = $this->createMock(ResizeCalculator::class);
         $calculator
             ->method('calculate')
             ->willReturn(new ResizeCoordinates(new Box(100, 100), new Point(0, 0), new Box(100, 100)))
@@ -544,7 +543,7 @@ class ResizerTest extends TestCase
             ->willReturn(new GdImagine())
         ;
 
-        $configuration = $this->createMock(ResizeConfigurationInterface::class);
+        $configuration = $this->createMock(ResizeConfiguration::class);
         $resizedImage = $resizer->resize(
             $image,
             $configuration,
@@ -577,7 +576,7 @@ class ResizerTest extends TestCase
 
         file_put_contents($this->rootDir.'/dummy.svg', $xml);
 
-        $calculator = $this->createMock(ResizeCalculatorInterface::class);
+        $calculator = $this->createMock(ResizeCalculator::class);
         $calculator
             ->method('calculate')
             ->willReturn(new ResizeCoordinates(new Box(100, 100), new Point(0, 0), new Box(100, 100)))
@@ -601,7 +600,7 @@ class ResizerTest extends TestCase
             ->willReturn(new SvgImagine())
         ;
 
-        $configuration = $this->createMock(ResizeConfigurationInterface::class);
+        $configuration = $this->createMock(ResizeConfiguration::class);
         $resizedImage = $resizer->resize($image, $configuration, new ResizeOptions());
 
         $this->assertSame(100, $resizedImage->getDimensions()->getSize()->getWidth());
@@ -630,7 +629,7 @@ class ResizerTest extends TestCase
         $image = $this->createMock(Image::class);
         $image
             ->method('getDimensions')
-            ->willReturn(new ImageDimensions(new Box(100, 100), null, null, ImageDimensionsInterface::ORIENTATION_180))
+            ->willReturn(new ImageDimensions(new Box(100, 100), null, null, ImageDimensions::ORIENTATION_180))
         ;
 
         $image
@@ -643,7 +642,7 @@ class ResizerTest extends TestCase
             ->willReturn(new GdImagine())
         ;
 
-        $configuration = $this->createMock(ResizeConfigurationInterface::class);
+        $configuration = $this->createMock(ResizeConfiguration::class);
         $configuration
             ->method('isEmpty')
             ->willReturn(true)
@@ -686,7 +685,7 @@ class ResizerTest extends TestCase
             ->willReturn(new GdImagine())
         ;
 
-        $configuration = $this->createMock(ResizeConfigurationInterface::class);
+        $configuration = $this->createMock(ResizeConfiguration::class);
         $configuration
             ->method('isEmpty')
             ->willReturn(true)
@@ -698,7 +697,7 @@ class ResizerTest extends TestCase
         $this->assertNotSame($image, $resizedImage);
     }
 
-    private function createResizer(string $cacheDir = null, ResizeCalculatorInterface $calculator = null, Filesystem $filesystem = null): Resizer
+    private function createResizer(string $cacheDir = null, ResizeCalculator $calculator = null, Filesystem $filesystem = null): Resizer
     {
         if (null === $cacheDir) {
             $cacheDir = $this->rootDir;

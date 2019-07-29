@@ -35,11 +35,11 @@ class Resizer implements ResizerInterface
     protected $cacheDir;
 
     /**
-     * @var ResizeCalculatorInterface
+     * @var ResizeCalculator
      */
     private $calculator;
 
-    public function __construct(string $cacheDir, ResizeCalculatorInterface $calculator = null, Filesystem $filesystem = null)
+    public function __construct(string $cacheDir, ResizeCalculator $calculator = null, Filesystem $filesystem = null)
     {
         if (null === $calculator) {
             $calculator = new ResizeCalculator();
@@ -57,7 +57,7 @@ class Resizer implements ResizerInterface
     /**
      * {@inheritdoc}
      */
-    public function resize(ImageInterface $image, ResizeConfigurationInterface $config, ResizeOptionsInterface $options): ImageInterface
+    public function resize(ImageInterface $image, ResizeConfiguration $config, ResizeOptions $options): ImageInterface
     {
         if (
             $image->getDimensions()->isUndefined()
@@ -81,7 +81,7 @@ class Resizer implements ResizerInterface
      *
      * @internal Do not call this method in your code; it will be made private in a future version
      */
-    protected function executeResize(ImageInterface $image, ResizeCoordinatesInterface $coordinates, string $path, ResizeOptionsInterface $options): ImageInterface
+    protected function executeResize(ImageInterface $image, ResizeCoordinates $coordinates, string $path, ResizeOptions $options): ImageInterface
     {
         $dir = \dirname($path);
 
@@ -92,7 +92,7 @@ class Resizer implements ResizerInterface
         $imagineOptions = $options->getImagineOptions();
         $imagineImage = $image->getImagine()->open($image->getPath());
 
-        if (ImageDimensionsInterface::ORIENTATION_NORMAL !== $image->getDimensions()->getOrientation()) {
+        if (ImageDimensions::ORIENTATION_NORMAL !== $image->getDimensions()->getOrientation()) {
             (new Autorotate())->apply($imagineImage);
         }
 
@@ -144,7 +144,7 @@ class Resizer implements ResizerInterface
      *
      * @internal
      */
-    protected function processResize(ImageInterface $image, ResizeConfigurationInterface $config, ResizeOptionsInterface $options): ImageInterface
+    protected function processResize(ImageInterface $image, ResizeConfiguration $config, ResizeOptions $options): ImageInterface
     {
         $coordinates = $this->calculator->calculate($config, $image->getDimensions(), $image->getImportantPart());
 
@@ -166,13 +166,13 @@ class Resizer implements ResizerInterface
         return $this->executeResize($image, $coordinates, $cachePath, $options);
     }
 
-    private function canSkipResize(ImageInterface $image, ResizeOptionsInterface $options): bool
+    private function canSkipResize(ImageInterface $image, ResizeOptions $options): bool
     {
         if (!$options->getSkipIfDimensionsMatch()) {
             return false;
         }
 
-        if (ImageDimensionsInterface::ORIENTATION_NORMAL !== $image->getDimensions()->getOrientation()) {
+        if (ImageDimensions::ORIENTATION_NORMAL !== $image->getDimensions()->getOrientation()) {
             return false;
         }
 
@@ -189,7 +189,7 @@ class Resizer implements ResizerInterface
     /**
      * Returns the relative target cache path.
      */
-    private function createCachePath(string $path, ResizeCoordinatesInterface $coordinates, ResizeOptionsInterface $options): string
+    private function createCachePath(string $path, ResizeCoordinates $coordinates, ResizeOptions $options): string
     {
         $imagineOptions = $options->getImagineOptions();
         ksort($imagineOptions);
