@@ -4,6 +4,9 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+
+## [1.0.0] (2019-08-08)
+
  * Add upgrade documentation (UPGRADE.md file).
 
 ## [1.0.0-beta4] (2019-07-29)
@@ -97,7 +100,8 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
  * Initial release
 
-[Unreleased]: https://github.com/contao/image/compare/1.0.0-beta4...HEAD
+[Unreleased]: https://github.com/contao/image/compare/1.0.0...HEAD
+[1.0.0]: https://github.com/contao/image/compare/1.0.0-beta4...1.0.0
 [1.0.0-beta4]: https://github.com/contao/image/compare/1.0.0-beta3...1.0.0-beta4
 [1.0.0-beta3]: https://github.com/contao/image/compare/1.0.0-beta2...1.0.0-beta3
 [1.0.0-beta2]: https://github.com/contao/image/compare/1.0.0-beta1...1.0.0-beta2
