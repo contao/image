@@ -4,12 +4,13 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+ * Add upgrade documentation (UPGRADE.md file).
 
 ## [1.0.0-beta4] (2019-07-29)
 
  * Remove unnecessary interfaces. [#57]
- * Don’t throw exceptions for malformed EXIF data [#56]
- * Fix race conditions [#55]
+ * Don’t throw exceptions for malformed EXIF data. [#56]
+ * Fix race conditions. [#55]
 
 ## [1.0.0-beta3] (2019-07-04)
 
