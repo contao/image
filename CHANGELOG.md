@@ -5,22 +5,22 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 ## [Unreleased]
 
 
-## [1.0.0-beta4]
+## [1.0.0-beta4] (2019-07-29)
 
  * Remove unnecessary interfaces. [#57]
  * Don’t throw exceptions for malformed EXIF data [#56]
  * Fix race conditions [#55]
 
-## [1.0.0-beta3]
+## [1.0.0-beta3] (2019-07-04)
 
  * Add support for multiple image formats in pictures. [#53]
 
-## [1.0.0-beta2]
+## [1.0.0-beta2] (2019-07-02)
 
  * Add skipIfDimensionsMatch flag to ResizeOptions. [#52]
  * Autorotate images based on EXIF metadata. [#52]
 
-## [1.0.0-beta1]
+## [1.0.0-beta1] (2019-06-16)
 
  * Add deferred image resizing. [#50]
  * Use important part with relative values as fractions. [#51]
