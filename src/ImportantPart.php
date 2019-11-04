@@ -17,6 +17,11 @@ class ImportantPart
     /**
      * @var float
      */
+    private const ROUNDING_ERROR_THRESHOLD = 1 / 100000;
+
+    /**
+     * @var float
+     */
     private $x;
 
     /**
@@ -41,11 +46,19 @@ class ImportantPart
         }
 
         if ($x + $width > 1) {
-            throw new \InvalidArgumentException('The X coordinate plus the width must not be greater than 1');
+            if ($x + $width - 1 > self::ROUNDING_ERROR_THRESHOLD) {
+                throw new \InvalidArgumentException('The X coordinate plus the width must not be greater than 1');
+            }
+
+            $width = 1 - $x;
         }
 
         if ($y + $height > 1) {
-            throw new \InvalidArgumentException('The Y coordinate plus the height must not be greater than 1');
+            if ($y + $height - 1 > self::ROUNDING_ERROR_THRESHOLD) {
+                throw new \InvalidArgumentException('The Y coordinate plus the height must not be greater than 1');
+            }
+
+            $height = 1 - $y;
         }
 
         $this->x = $x;
