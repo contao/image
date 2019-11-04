@@ -76,12 +76,12 @@ class ImportantPartTest extends TestCase
 
     public function getValuesWithRoundingErrors(): \Generator
     {
-        yield [PHP_FLOAT_EPSILON, 0, 1, 1];
-        yield [0, PHP_FLOAT_EPSILON, 1, 1];
-        yield [0.5 + PHP_FLOAT_EPSILON, 0.5, 0.5, 0.5];
-        yield [0.5, 0.5 + PHP_FLOAT_EPSILON, 0.5, 0.5];
-        yield [0.5, 0.5, 0.5 + PHP_FLOAT_EPSILON, 0.5];
-        yield [0.5, 0.5, 0.5, 0.5 + PHP_FLOAT_EPSILON];
+        yield [3E-16, 0, 1, 1];
+        yield [0, 3E-16, 1, 1];
+        yield [0.5 + 3E-16, 0.5, 0.5, 0.5];
+        yield [0.5, 0.5 + 3E-16, 0.5, 0.5];
+        yield [0.5, 0.5, 0.5 + 3E-16, 0.5];
+        yield [0.5, 0.5, 0.5, 0.5 + 3E-16];
         yield [5E-6, 0, 1, 1];
         yield [0, 5E-6, 1, 1];
         yield [0.5 + 5E-6, 0.5, 0.5, 0.5];
