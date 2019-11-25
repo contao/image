@@ -26,7 +26,7 @@
         "phpstan/phpstan-phpunit": "^0.10",
         "phpunit/phpunit": "^7.5 || ^8.0",
         "symfony/console": "^4.3",
-        "symfony/phpunit-bridge": "^4.3"
+        "symfony/phpunit-bridge": "^4.3.4"
     },
     "suggest": {
         "ext-exif": "To support EXIF auto-rotation"
