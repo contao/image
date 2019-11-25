@@ -4,6 +4,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+ * Handle JSON errors. [#63]
  * Compatibility with Symfony 5. [#62]
  * Fix rounding errors of important part values. [#60]
 
@@ -121,6 +122,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 [0.2.0]: https://github.com/contao/image/compare/0.1.0...0.2.0
 [0.1.0]: https://github.com/contao/image/commits/0.1.0
 
+[#63]: https://github.com/contao/image/issues/63
 [#62]: https://github.com/contao/image/issues/62
 [#60]: https://github.com/contao/image/issues/60
 [#57]: https://github.com/contao/image/issues/57
