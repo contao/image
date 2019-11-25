@@ -51,7 +51,13 @@ class DeferredImageStorageFilesystem implements DeferredImageStorageInterface
      */
     public function set(string $path, array $value): void
     {
-        $this->filesystem->dumpFile($this->getConfigPath($path), json_encode($value));
+        $json = json_encode($value);
+
+        if (JSON_ERROR_NONE !== json_last_error()) {
+            throw new \JsonException(json_last_error_msg());
+        }
+
+        $this->filesystem->dumpFile($this->getConfigPath($path), $json);
     }
 
     /**
