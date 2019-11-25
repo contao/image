@@ -57,7 +57,36 @@ class ImportantPartTest extends TestCase
         yield [0, 0, 1, -1, 'float between 0 and 1'];
         yield [1, 0, 1, 1, 'X coordinate plus the width'];
         yield [0.5, 0, 0.6, 1, 'X coordinate plus the width'];
+        yield [1, 0, 5E-5, 1, 'X coordinate plus the width'];
         yield [0, 1, 1, 1, 'Y coordinate plus the height'];
         yield [0, 0.5, 1, 0.6, 'Y coordinate plus the height'];
+        yield [0, 1, 1, 5E-5, 'Y coordinate plus the height'];
+    }
+
+    /**
+     * @dataProvider getValuesWithRoundingErrors
+     */
+    public function testValuesWithRoundingErrorsDoNotThrow(float $x, float $y, float $width, float $height): void
+    {
+        $importantPart = new ImportantPart($x, $y, $width, $height);
+
+        $this->assertLessThanOrEqual(1.0, $importantPart->getX() + $importantPart->getWidth());
+        $this->assertLessThanOrEqual(1.0, $importantPart->getY() + $importantPart->getHeight());
+    }
+
+    public function getValuesWithRoundingErrors(): \Generator
+    {
+        yield [3E-16, 0, 1, 1];
+        yield [0, 3E-16, 1, 1];
+        yield [0.5 + 3E-16, 0.5, 0.5, 0.5];
+        yield [0.5, 0.5 + 3E-16, 0.5, 0.5];
+        yield [0.5, 0.5, 0.5 + 3E-16, 0.5];
+        yield [0.5, 0.5, 0.5, 0.5 + 3E-16];
+        yield [5E-6, 0, 1, 1];
+        yield [0, 5E-6, 1, 1];
+        yield [0.5 + 5E-6, 0.5, 0.5, 0.5];
+        yield [0.5, 0.5 + 5E-6, 0.5, 0.5];
+        yield [0.5, 0.5, 0.5 + 5E-6, 0.5];
+        yield [0.5, 0.5, 0.5, 0.5 + 5E-6];
     }
 }
