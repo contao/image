@@ -122,6 +122,15 @@ class DeferredImageStorageFilesystemTest extends TestCase
         yield ['foo.json', ['foo' => 'bar']];
     }
 
+    public function testInvalidUtf8Throws(): void
+    {
+        $storage = new DeferredImageStorageFilesystem($this->rootDir);
+
+        $this->expectException('JsonException');
+
+        $storage->set('foo', ["foo\x80bar"]);
+    }
+
     /**
      * @dataProvider invalidKeys
      */
