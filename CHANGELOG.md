@@ -4,6 +4,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+ * Compatibility with Symfony 5. [#62]
  * Fix rounding errors of important part values. [#60]
 
 ## [1.0.0] (2019-08-08)
@@ -120,6 +121,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 [0.2.0]: https://github.com/contao/image/compare/0.1.0...0.2.0
 [0.1.0]: https://github.com/contao/image/commits/0.1.0
 
+[#62]: https://github.com/contao/image/issues/62
 [#60]: https://github.com/contao/image/issues/60
 [#57]: https://github.com/contao/image/issues/57
 [#56]: https://github.com/contao/image/issues/56
