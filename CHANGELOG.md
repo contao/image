@@ -4,6 +4,9 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+
+## [1.0.1] (2019-11-25)
+
  * Handle JSON errors. [#63]
  * Compatibility with Symfony 5. [#62]
  * Canonicalize relative paths of deferred images. [#64]
@@ -104,7 +107,8 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
  * Initial release
 
-[Unreleased]: https://github.com/contao/image/compare/1.0.0...HEAD
+[Unreleased]: https://github.com/contao/image/compare/1.0.1...HEAD
+[1.0.1]: https://github.com/contao/image/compare/1.0.0...1.0.1
 [1.0.0]: https://github.com/contao/image/compare/1.0.0-beta4...1.0.0
 [1.0.0-beta4]: https://github.com/contao/image/compare/1.0.0-beta3...1.0.0-beta4
 [1.0.0-beta3]: https://github.com/contao/image/compare/1.0.0-beta2...1.0.0-beta3
