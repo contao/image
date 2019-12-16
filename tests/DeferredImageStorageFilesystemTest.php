@@ -178,4 +178,17 @@ class DeferredImageStorageFilesystemTest extends TestCase
 
         $this->assertCount(0, $storage->listPaths());
     }
+
+    public function testResetTheService()
+    {
+        $storage = new DeferredImageStorageFilesystem($this->rootDir);
+        $storage->set('foo', ['foo' => 'bar']);
+
+        $this->assertEquals(['foo' => 'bar'], $storage->getLocked('foo'));
+
+        $storage->reset();
+
+        // This call would fail with exception if the lock was not released through $storage->reset()
+        $this->assertEquals(['foo' => 'bar'], $storage->getLocked('foo'));
+    }
 }

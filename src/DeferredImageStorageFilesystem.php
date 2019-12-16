@@ -188,6 +188,10 @@ class DeferredImageStorageFilesystem implements DeferredImageStorageInterface
 
     public function reset()
     {
+        foreach ($this->locks as $path => $handle) {
+            $this->releaseLock($path);
+        }
+
         $this->locks = [];
     }
 
