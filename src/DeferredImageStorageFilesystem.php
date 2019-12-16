@@ -186,6 +186,11 @@ class DeferredImageStorageFilesystem implements DeferredImageStorageInterface
         };
     }
 
+    public function reset()
+    {
+        $this->locks = [];
+    }
+
     private function getConfigPath(string $path): string
     {
         if (preg_match('(^/|/$|//|/\.\.|^\.\.)', $path)) {
