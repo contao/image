@@ -200,6 +200,12 @@ class DeferredImageStorageFilesystem implements DeferredImageStorageInterface
      */
     private function decode(string $contents): array
     {
-        return json_decode($contents, true);
+        $content = json_decode($contents, true);
+
+        if (!\is_array($content)) {
+            throw new \RuntimeException('Invalid JSON: '.json_last_error_msg());
+        }
+
+        return $content;
     }
 }
