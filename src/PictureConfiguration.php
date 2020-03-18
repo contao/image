@@ -62,9 +62,7 @@ class PictureConfiguration
     {
         foreach ($sizeItems as $sizeItem) {
             if (!$sizeItem instanceof PictureConfigurationItem) {
-                throw new \InvalidArgumentException(
-                    '$sizeItems must be an array of PictureConfigurationItem objects'
-                );
+                throw new \InvalidArgumentException('$sizeItems must be an array of PictureConfigurationItem objects');
             }
         }
 

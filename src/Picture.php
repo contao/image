@@ -44,9 +44,7 @@ class Picture implements PictureInterface
     {
         if (null === $rootDir) {
             if ('' !== $prefix) {
-                throw new \InvalidArgumentException(
-                    sprintf('Prefix must no be specified if rootDir is null, given "%s"', $prefix)
-                );
+                throw new \InvalidArgumentException(sprintf('Prefix must no be specified if rootDir is null, given "%s"', $prefix));
             }
 
             return $this->img;
@@ -62,9 +60,7 @@ class Picture implements PictureInterface
     {
         if (null === $rootDir) {
             if ('' !== $prefix) {
-                throw new \InvalidArgumentException(
-                    sprintf('Prefix must no be specified if rootDir is null, given "%s"', $prefix)
-                );
+                throw new \InvalidArgumentException(sprintf('Prefix must no be specified if rootDir is null, given "%s"', $prefix));
             }
 
             return $this->sources;
