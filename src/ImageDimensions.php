@@ -55,9 +55,7 @@ class ImageDimensions
     public function __construct(BoxInterface $size, bool $relative = null, bool $undefined = null, int $orientation = self::ORIENTATION_NORMAL)
     {
         if ($orientation < 1 || $orientation > 8) {
-            throw new \InvalidArgumentException(
-                'Orientation must be one of the ImageDimensions::ORIENTATION_* constants'
-            );
+            throw new \InvalidArgumentException('Orientation must be one of the ImageDimensions::ORIENTATION_* constants');
         }
 
         if (null === $relative) {

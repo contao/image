@@ -79,10 +79,7 @@ class ResizeCoordinates
         }
 
         if (!$coordinates instanceof self) {
-            throw new \InvalidArgumentException(sprintf(
-                '$coordinates must be an instance of ResizeCoordinates or BoxInterface, "%s" given',
-                \get_class($coordinates)
-            ));
+            throw new \InvalidArgumentException(sprintf('$coordinates must be an instance of ResizeCoordinates or BoxInterface, "%s" given', \get_class($coordinates)));
         }
 
         /* @var self $coordinates */
