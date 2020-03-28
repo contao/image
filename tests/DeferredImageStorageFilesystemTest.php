@@ -122,6 +122,34 @@ class DeferredImageStorageFilesystemTest extends TestCase
         yield ['foo.json', ['foo' => 'bar']];
     }
 
+    public function testInvalidJsonThrows(): void
+    {
+        $storage = new DeferredImageStorageFilesystem($this->rootDir);
+
+        if (!is_dir($this->rootDir.'/deferred')) {
+            mkdir($this->rootDir.'/deferred', 0777, true);
+        }
+        file_put_contents($this->rootDir.'/deferred/test.json', 'invalid JSON');
+
+        $this->expectException('JsonException');
+
+        $storage->get('test');
+    }
+
+    public function testInvalidJsonDataThrows(): void
+    {
+        $storage = new DeferredImageStorageFilesystem($this->rootDir);
+
+        if (!is_dir($this->rootDir.'/deferred')) {
+            mkdir($this->rootDir.'/deferred', 0777, true);
+        }
+        file_put_contents($this->rootDir.'/deferred/test.json', '"JSON string instead of an array"');
+
+        $this->expectException('InvalidArgumentException');
+
+        $storage->get('test');
+    }
+
     public function testInvalidUtf8Throws(): void
     {
         $storage = new DeferredImageStorageFilesystem($this->rootDir);
