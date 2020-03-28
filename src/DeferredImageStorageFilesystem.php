@@ -207,7 +207,7 @@ class DeferredImageStorageFilesystem implements DeferredImageStorageInterface
         }
 
         if (!\is_array($content)) {
-            throw new \InvalidArgumentException(sprintf('Invalid JSON data: expected array, got "%s"', gettype($content)));
+            throw new \InvalidArgumentException(sprintf('Invalid JSON data: expected array, got "%s"', \gettype($content)));
         }
 
         return $content;
