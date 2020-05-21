@@ -20,6 +20,7 @@ use Contao\Image\ResizeCoordinates;
 use Contao\Image\ResizeOptions;
 use Contao\Image\Resizer;
 use Contao\ImagineSvg\Imagine as SvgImagine;
+use Contao\ImagineSvg\SvgBox;
 use Contao\ImagineSvg\UndefinedBox;
 use Imagine\Gd\Imagine as GdImagine;
 use Imagine\Image\Box;
@@ -197,7 +198,10 @@ class ResizerTest extends TestCase
                 ])
         );
 
-        $this->assertEquals(new ImageDimensions(new Box(100, 100)), $resizedImage->getDimensions());
+        $this->assertSame(100, $resizedImage->getDimensions()->getSize()->getWidth());
+        $this->assertSame(100, $resizedImage->getDimensions()->getSize()->getHeight());
+        $this->assertFalse($resizedImage->getDimensions()->isRelative());
+        $this->assertFalse($resizedImage->getDimensions()->isUndefined());
         $this->assertRegExp('(/[0-9a-f]/dummy-[0-9a-f]{8}.svg$)', $resizedImage->getPath());
         $this->assertFilePermissions(0666, $resizedImage->getPath());
 
@@ -209,7 +213,10 @@ class ResizerTest extends TestCase
             (new ResizeOptions())->setTargetPath($this->rootDir.'/target-path.svg')
         );
 
-        $this->assertEquals(new ImageDimensions(new Box(100, 100)), $resizedImage->getDimensions());
+        $this->assertSame(100, $resizedImage->getDimensions()->getSize()->getWidth());
+        $this->assertSame(100, $resizedImage->getDimensions()->getSize()->getHeight());
+        $this->assertFalse($resizedImage->getDimensions()->isRelative());
+        $this->assertFalse($resizedImage->getDimensions()->isUndefined());
         $this->assertSame($this->rootDir.'/target-path.svg', $resizedImage->getPath());
         $this->assertFilePermissions(0666, $resizedImage->getPath());
 
@@ -343,7 +350,9 @@ class ResizerTest extends TestCase
         $image = $this->createMock(Image::class);
         $image
             ->method('getDimensions')
-            ->willReturn(new ImageDimensions(new UndefinedBox()))
+            ->willReturn(new ImageDimensions(
+                class_exists(SvgBox::class) ? SvgBox::createTypeNone() : new UndefinedBox()
+            ))
         ;
 
         $image
