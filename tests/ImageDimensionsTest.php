@@ -52,7 +52,11 @@ class ImageDimensionsTest extends TestCase
 
         $this->assertTrue($dimensions->isRelative());
 
-        $size = $this->createMock(RelativeBoxInterface::class);
+        if (class_exists(SvgBox::class)) {
+            $size = SvgBox::createTypeAspectRatio(100, 100);
+        } else {
+            $size = $this->createMock(RelativeBoxInterface::class);
+        }
         $dimensions = new ImageDimensions($size);
 
         $this->assertTrue($dimensions->isRelative());
