@@ -1,2 +1,3 @@
 parameters:
     ignoreErrors:
+        - '#undefined method Gmagick::getImageBlob#'
