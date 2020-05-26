@@ -1,3 +1,5 @@
 parameters:
     ignoreErrors:
         - '#undefined method Gmagick::getImageBlob#'
+        - '#Contao\\ImagineSvg\\UndefinedBox#'
+        - '#Contao\\ImagineSvg\\RelativeBox#'
