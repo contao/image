@@ -123,7 +123,23 @@ class Resizer implements ResizerInterface
         // Atomic write operation
         $tmpPath = $this->filesystem->tempnam($dir, 'img');
         $this->filesystem->chmod($tmpPath, 0666, umask());
-        $imagineImage->save($tmpPath, $imagineOptions);
+
+        try {
+            $imagineImage->save($tmpPath, $imagineOptions);
+        } catch (\GmagickException $exception) {
+            if (false === stripos($exception->getMessage(), 'no encode delegate')) {
+                throw $exception;
+            }
+
+            // Fix Gmagick bug “No encode delegate for this image format”, see #67
+            $gmagick = new \Gmagick();
+            $gmagick->newimage(1, 1, (new \GmagickPixel('#FFFFFF'))->getcolor(false));
+            $gmagick->setimageformat(strtoupper($imagineOptions['format']));
+            $gmagick->getImageBlob();
+
+            $imagineImage->save($tmpPath, $imagineOptions);
+        }
+
         $this->filesystem->rename($tmpPath, $path, true);
 
         return $this->createImage($image, $path);

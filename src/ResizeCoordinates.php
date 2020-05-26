@@ -75,14 +75,11 @@ class ResizeCoordinates
     public function isEqualTo($coordinates): bool
     {
         if ($coordinates instanceof BoxInterface) {
-            $coordinates = new static($coordinates, new Point(0, 0), $coordinates);
+            $coordinates = new self($coordinates, new Point(0, 0), $coordinates);
         }
 
         if (!$coordinates instanceof self) {
-            throw new \InvalidArgumentException(sprintf(
-                '$coordinates must be an instance of ResizeCoordinates or BoxInterface, "%s" given',
-                \get_class($coordinates)
-            ));
+            throw new \InvalidArgumentException(sprintf('$coordinates must be an instance of ResizeCoordinates or BoxInterface, "%s" given', \get_class($coordinates)));
         }
 
         /* @var self $coordinates */

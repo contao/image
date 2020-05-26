@@ -51,7 +51,13 @@ class DeferredImageStorageFilesystem implements DeferredImageStorageInterface
      */
     public function set(string $path, array $value): void
     {
-        $this->filesystem->dumpFile($this->getConfigPath($path), json_encode($value));
+        $json = json_encode($value);
+
+        if (JSON_ERROR_NONE !== json_last_error()) {
+            throw new \JsonException(json_last_error_msg());
+        }
+
+        $this->filesystem->dumpFile($this->getConfigPath($path), $json);
     }
 
     /**
@@ -194,6 +200,16 @@ class DeferredImageStorageFilesystem implements DeferredImageStorageInterface
      */
     private function decode(string $contents): array
     {
-        return json_decode($contents, true);
+        $content = json_decode($contents, true);
+
+        if (JSON_ERROR_NONE !== json_last_error()) {
+            throw new \JsonException(json_last_error_msg());
+        }
+
+        if (!\is_array($content)) {
+            throw new \InvalidArgumentException(sprintf('Invalid JSON data: expected array, got "%s"', \gettype($content)));
+        }
+
+        return $content;
     }
 }

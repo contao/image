@@ -78,9 +78,7 @@ class DeferredResizer extends Resizer implements DeferredResizerInterface
     public function resizeDeferredImage(DeferredImageInterface $image, bool $blocking = true): ?ImageInterface
     {
         if (!Path::isBasePath($this->cacheDir, $image->getPath())) {
-            throw new \InvalidArgumentException(
-                sprintf('Path "%s" is not inside cache directory "%s"', $image->getPath(), $this->cacheDir)
-            );
+            throw new \InvalidArgumentException(sprintf('Path "%s" is not inside cache directory "%s"', $image->getPath(), $this->cacheDir));
         }
 
         $targetPath = Path::makeRelative($image->getPath(), $this->cacheDir);
@@ -181,8 +179,10 @@ class DeferredResizer extends Resizer implements DeferredResizerInterface
         $options = new ResizeOptions();
         $options->setImagineOptions($config['options']['imagine_options']);
 
+        $path = Path::canonicalize($this->cacheDir.'/'.$config['path']);
+
         return parent::executeResize(
-            new Image($this->cacheDir.'/'.$config['path'], $imagine, $this->filesystem),
+            new Image($path, $imagine, $this->filesystem),
             $coordinates,
             $this->cacheDir.'/'.$targetPath,
             $options
