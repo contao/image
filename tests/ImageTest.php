@@ -293,7 +293,10 @@ class ImageTest extends TestCase
 
         $image = $this->createImage($this->rootDir.'/dummy.svg', $imagine);
 
-        $this->assertEquals(new ImageDimensions(new Box(1000, 1000)), $image->getDimensions());
+        $this->assertSame(1000, $image->getDimensions()->getSize()->getWidth());
+        $this->assertSame(1000, $image->getDimensions()->getSize()->getHeight());
+        $this->assertFalse($image->getDimensions()->isRelative());
+        $this->assertFalse($image->getDimensions()->isUndefined());
     }
 
     public function testGetDimensionsFromPartialSvgzFile(): void
@@ -313,7 +316,10 @@ class ImageTest extends TestCase
 
         $image = $this->createImage($this->rootDir.'/dummy.svgz', $imagine);
 
-        $this->assertEquals(new ImageDimensions(new Box(1000, 1000)), $image->getDimensions());
+        $this->assertSame(1000, $image->getDimensions()->getSize()->getWidth());
+        $this->assertSame(1000, $image->getDimensions()->getSize()->getHeight());
+        $this->assertFalse($image->getDimensions()->isRelative());
+        $this->assertFalse($image->getDimensions()->isUndefined());
     }
 
     public function testGetDimensionsInvalidSvg(): void

@@ -1,3 +1,2 @@
 parameters:
     ignoreErrors:
-        - '#Contao\\Image\\DeferredImage::__construct\(\) does not call parent constructor#'

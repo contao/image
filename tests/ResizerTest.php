@@ -197,7 +197,10 @@ class ResizerTest extends TestCase
                 ])
         );
 
-        $this->assertEquals(new ImageDimensions(new Box(100, 100)), $resizedImage->getDimensions());
+        $this->assertSame(100, $resizedImage->getDimensions()->getSize()->getWidth());
+        $this->assertSame(100, $resizedImage->getDimensions()->getSize()->getHeight());
+        $this->assertFalse($resizedImage->getDimensions()->isRelative());
+        $this->assertFalse($resizedImage->getDimensions()->isUndefined());
         $this->assertRegExp('(/[0-9a-f]/dummy-[0-9a-f]{8}.svg$)', $resizedImage->getPath());
         $this->assertFilePermissions(0666, $resizedImage->getPath());
 
@@ -209,7 +212,10 @@ class ResizerTest extends TestCase
             (new ResizeOptions())->setTargetPath($this->rootDir.'/target-path.svg')
         );
 
-        $this->assertEquals(new ImageDimensions(new Box(100, 100)), $resizedImage->getDimensions());
+        $this->assertSame(100, $resizedImage->getDimensions()->getSize()->getWidth());
+        $this->assertSame(100, $resizedImage->getDimensions()->getSize()->getHeight());
+        $this->assertFalse($resizedImage->getDimensions()->isRelative());
+        $this->assertFalse($resizedImage->getDimensions()->isUndefined());
         $this->assertSame($this->rootDir.'/target-path.svg', $resizedImage->getPath());
         $this->assertFilePermissions(0666, $resizedImage->getPath());
 
