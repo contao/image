@@ -6,6 +6,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
  * Handle JSON errors when decoding. [#68]
  * Fix Gmagick bug `No encode delegate for this image format`. [#70]
+ * Compatibility with `contao/imagine-svg` 1.0. [#71]
 
 ## [1.0.1] (2019-11-25)
 
@@ -129,6 +130,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 [0.2.0]: https://github.com/contao/image/compare/0.1.0...0.2.0
 [0.1.0]: https://github.com/contao/image/commits/0.1.0
 
+[#71]: https://github.com/contao/image/issues/71
 [#70]: https://github.com/contao/image/issues/70
 [#68]: https://github.com/contao/image/issues/68
 [#64]: https://github.com/contao/image/issues/64
