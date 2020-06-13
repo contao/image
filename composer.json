@@ -21,7 +21,7 @@
         "contao/imagine-svg": "<0.1.4 || >=2.0"
     },
     "require-dev": {
-        "contao/imagine-svg": "^0.1.4 || ^0.2 || ^1.0@dev",
+        "contao/imagine-svg": "^0.1.4 || ^0.2 || ^1.0@RC",
         "friendsofphp/php-cs-fixer": "^2.14",
         "phpstan/phpstan-phpunit": "^0.12",
         "phpunit/phpunit": "^7.5 || ^8.0",
