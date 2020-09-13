@@ -10,7 +10,7 @@
         }
     ],
     "require": {
-        "php": "^7.1",
+        "php": ">=7.1",
         "ext-json": "*",
         "imagine/imagine": "^0.7.1 || ^1.0",
         "symfony/filesystem": "^2.8 || ^3.0 || ^4.0 || ^5.0",
@@ -24,7 +24,7 @@
         "contao/imagine-svg": "^0.1.4 || ^0.2 || ^1.0",
         "friendsofphp/php-cs-fixer": "^2.14",
         "phpstan/phpstan-phpunit": "^0.12",
-        "phpunit/phpunit": "^7.5 || ^8.0",
+        "phpunit/phpunit": "^7.5 || ^8.0 || ^9.0",
         "symfony/console": "^4.3 || ^5.0",
         "symfony/phpunit-bridge": "^4.3.4 || ^5.0"
     },
