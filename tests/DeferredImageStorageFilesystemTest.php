@@ -90,7 +90,7 @@ class DeferredImageStorageFilesystemTest extends TestCase
             $storage->getLocked($key, true);
             $this->fail('Self locked file should throw for blocking lock.');
         } catch (\RuntimeException $e) {
-            $this->assertRegExp('/already acquired/', $e->getMessage());
+            $this->assertMatchesRegularExpression('/already acquired/', $e->getMessage());
         }
 
         $storage->releaseLock($key);

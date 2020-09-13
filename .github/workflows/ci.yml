@@ -28,7 +28,9 @@ jobs:
               uses: actions/checkout@v2
 
             - name: Install the dependencies
-              run: composer install --no-interaction --no-suggest
+              run: |
+                  composer install --no-interaction --no-suggest
+                  vendor/bin/simple-phpunit --version
 
             - name: Generate the coverage report
               run: php -d pcov.enabled=1 vendor/bin/simple-phpunit --coverage-clover=clover.xml --colors=always
@@ -87,7 +89,9 @@ jobs:
               uses: actions/checkout@v2
 
             - name: Install the dependencies
-              run: composer install --no-interaction --no-suggest
+              run: |
+                  composer install --no-interaction --no-suggest
+                  vendor/bin/simple-phpunit --version
 
             - name: Run the unit tests
               run: vendor/bin/simple-phpunit --colors=always
@@ -112,6 +116,7 @@ jobs:
               run: |
                   composer self-update --preview
                   composer install --no-interaction --no-suggest --ignore-platform-req=php
+                  vendor/bin/simple-phpunit --version
 
             - name: Run the unit tests
               run: vendor/bin/simple-phpunit --colors=always
@@ -133,7 +138,9 @@ jobs:
               uses: actions/checkout@v2
 
             - name: Install the dependencies
-              run: composer update --prefer-lowest --prefer-stable --no-interaction --no-suggest
+              run: |
+                  composer update --prefer-lowest --prefer-stable --no-interaction --no-suggest
+                  vendor/bin/simple-phpunit --version
 
             - name: Run the unit tests
               run: vendor/bin/simple-phpunit --colors=always
@@ -159,7 +166,9 @@ jobs:
               uses: actions/checkout@v2
 
             - name: Install the dependencies
-              run: composer install --no-interaction --no-suggest --no-progress
+              run: |
+                  composer install --no-interaction --no-suggest --no-progress
+                  vendor/bin/simple-phpunit.bat --version
 
             - name: Run the unit tests
               run: vendor/bin/simple-phpunit.bat --colors=always
