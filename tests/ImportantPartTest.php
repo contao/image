@@ -40,7 +40,7 @@ class ImportantPartTest extends TestCase
     public function testInvalidValuesThrowsException(float $x, float $y, float $width, float $height, string $message): void
     {
         $this->expectException('InvalidArgumentException');
-        $this->expectExceptionMessageRegExp('/'.$message.'/i');
+        $this->expectExceptionMessageMatches('/'.$message.'/i');
 
         new ImportantPart($x, $y, $width, $height);
     }
@@ -88,5 +88,14 @@ class ImportantPartTest extends TestCase
         yield [0.5, 0.5 + 5E-6, 0.5, 0.5];
         yield [0.5, 0.5, 0.5 + 5E-6, 0.5];
         yield [0.5, 0.5, 0.5, 0.5 + 5E-6];
+    }
+
+    public function expectExceptionMessageMatches(string $regularExpression): void
+    {
+        if (method_exists(get_parent_class(), 'expectExceptionMessageMatches')) {
+            parent::expectExceptionMessageMatches($regularExpression);
+        } else {
+            parent::expectExceptionMessageRegExp($regularExpression);
+        }
     }
 }
