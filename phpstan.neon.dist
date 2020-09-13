@@ -3,3 +3,4 @@ parameters:
         - '#undefined method Gmagick::getImageBlob#'
         - '#Contao\\ImagineSvg\\UndefinedBox#'
         - '#Contao\\ImagineSvg\\RelativeBox#'
+        - '#undefined static method PHPUnit\\Framework\\TestCase::expectExceptionMessageRegExp#'
