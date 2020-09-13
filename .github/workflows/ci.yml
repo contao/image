@@ -31,7 +31,7 @@ jobs:
               run: composer install --no-interaction --no-suggest
 
             - name: Generate the coverage report
-              run: php -d pcov.enabled=1 vendor/bin/phpunit --coverage-clover=clover.xml --colors=always
+              run: php -d pcov.enabled=1 vendor/bin/simple-phpunit --coverage-clover=clover.xml --colors=always
 
             - name: Upload the coverage report
               uses: codecov/codecov-action@v1
@@ -88,7 +88,7 @@ jobs:
               run: composer install --no-interaction --no-suggest
 
             - name: Run the unit tests
-              run: vendor/bin/phpunit --colors=always
+              run: vendor/bin/simple-phpunit --colors=always
 
     test-php8:
         name: PHP 8.0
@@ -112,7 +112,7 @@ jobs:
                   composer install --no-interaction --no-suggest --ignore-platform-req=php
 
             - name: Run the unit tests
-              run: vendor/bin/phpunit --colors=always
+              run: vendor/bin/simple-phpunit --colors=always
 
     prefer-lowest:
         name: Prefer Lowest
@@ -134,7 +134,7 @@ jobs:
               run: composer update --prefer-lowest --prefer-stable --no-interaction --no-suggest
 
             - name: Run the unit tests
-              run: vendor/bin/phpunit --colors=always
+              run: vendor/bin/simple-phpunit --colors=always
 
     windows:
         name: Windows
@@ -160,4 +160,4 @@ jobs:
               run: composer install --no-interaction --no-suggest --no-progress
 
             - name: Run the unit tests
-              run: vendor/bin/phpunit.bat --colors=always
+              run: vendor/bin/simple-phpunit.bat --colors=always

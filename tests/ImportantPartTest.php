@@ -89,13 +89,4 @@ class ImportantPartTest extends TestCase
         yield [0.5, 0.5, 0.5 + 5E-6, 0.5];
         yield [0.5, 0.5, 0.5, 0.5 + 5E-6];
     }
-
-    public function expectExceptionMessageMatches(string $regularExpression): void
-    {
-        if (method_exists(get_parent_class(), 'expectExceptionMessageMatches')) {
-            parent::expectExceptionMessageMatches($regularExpression);
-        } else {
-            parent::expectExceptionMessageRegExp($regularExpression);
-        }
-    }
 }
