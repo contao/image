@@ -56,7 +56,9 @@ jobs:
               uses: actions/checkout@v2
 
             - name: Install the dependencies
-              run: composer install --no-interaction --no-suggest
+              run: |
+                  composer install --no-interaction --no-suggest
+                  vendor/bin/simple-phpunit --version
 
             - name: Check the coding style
               run: vendor/bin/php-cs-fixer fix --diff --diff-format=udiff --dry-run
