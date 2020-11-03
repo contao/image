@@ -115,7 +115,6 @@ jobs:
             - name: Install the dependencies
               run: |
                   composer self-update --2
-                  php -r '$data = json_decode(file_get_contents(__DIR__."/composer.json"), true); $data["require"]["imagine/imagine"] = "dev-develop as 1.2.99"; file_put_contents(__DIR__."/composer.json", json_encode($data));'
                   composer remove --dev --no-update friendsofphp/php-cs-fixer
                   composer install --no-interaction --no-suggest
                   vendor/bin/simple-phpunit --version
