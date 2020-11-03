@@ -115,9 +115,7 @@ jobs:
             - name: Install the dependencies
               run: |
                   composer self-update --2
-                  composer config --global github-oauth.github.com ${{ secrets.GITHUB_TOKEN }}
-                  composer config repositories.dev vcs https://github.com/ausi/Imagine
-                  php -r '$data = json_decode(file_get_contents(__DIR__."/composer.json"), true); $data["require"]["imagine/imagine"] = "dev-fix/php-8 as 1.2.99"; file_put_contents(__DIR__."/composer.json", json_encode($data));'
+                  php -r '$data = json_decode(file_get_contents(__DIR__."/composer.json"), true); $data["require"]["imagine/imagine"] = "dev-develop as 1.2.99"; file_put_contents(__DIR__."/composer.json", json_encode($data));'
                   composer install --no-interaction --no-suggest --ignore-platform-req=php
                   vendor/bin/simple-phpunit --version
 
