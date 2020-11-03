@@ -40,7 +40,7 @@ class ImportantPartTest extends TestCase
     public function testInvalidValuesThrowsException(float $x, float $y, float $width, float $height, string $message): void
     {
         $this->expectException('InvalidArgumentException');
-        $this->expectExceptionMessageRegExp('/'.$message.'/i');
+        $this->expectExceptionMessageMatches('/'.$message.'/i');
 
         new ImportantPart($x, $y, $width, $height);
     }

@@ -1,4 +1,6 @@
 parameters:
+    bootstrapFiles:
+        - vendor/bin/.phpunit/phpunit/vendor/autoload.php
     ignoreErrors:
         - '#undefined method Gmagick::getImageBlob#'
         - '#Contao\\ImagineSvg\\UndefinedBox#'

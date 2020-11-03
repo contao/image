@@ -226,22 +226,32 @@ class Image implements ImageInterface
             $path = 'compress.zlib://'.$path;
         }
 
-        // Enable the entity loader at first to make XMLReader::open() work
-        // see https://bugs.php.net/bug.php?id=73328
-        $disableEntities = libxml_disable_entity_loader(false);
+        $disableEntities = null;
+
+        if (LIBXML_VERSION < 20900) {
+            // Enable the entity loader at first to make XMLReader::open() work
+            // see https://bugs.php.net/bug.php?id=73328
+            $disableEntities = libxml_disable_entity_loader(false);
+        }
+
         $internalErrors = libxml_use_internal_errors(true);
 
         if ($reader->open($path, null, LIBXML_NONET)) {
-            // After opening the file disable the entity loader for security reasons
-            libxml_disable_entity_loader();
+            if (LIBXML_VERSION < 20900) {
+                // After opening the file disable the entity loader for security reasons
+                libxml_disable_entity_loader();
+            }
 
             $size = $this->getSvgSizeFromReader($reader);
 
             $reader->close();
         }
 
+        if (LIBXML_VERSION < 20900) {
+            libxml_disable_entity_loader($disableEntities);
+        }
+
         libxml_use_internal_errors($internalErrors);
-        libxml_disable_entity_loader($disableEntities);
         libxml_clear_errors();
 
         return $size;
