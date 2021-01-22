@@ -1,8 +1,8 @@
 Contao image library
 ====================
 
-[![](https://img.shields.io/github/workflow/status/contao/image/CI/master.svg?style=flat-square)](https://github.com/contao/image/actions?query=branch%3Amaster)
-[![](https://img.shields.io/codecov/c/github/contao/image/master.svg?style=flat-square)](https://codecov.io/gh/contao/image)
+[![](https://img.shields.io/github/workflow/status/contao/image/CI/1.x.svg?style=flat-square)](https://github.com/contao/image/actions?query=branch%3A1.x)
+[![](https://img.shields.io/codecov/c/github/contao/image/1.x.svg?style=flat-square)](https://codecov.io/gh/contao/image)
 [![](https://img.shields.io/packagist/v/contao/image.svg?style=flat-square)](https://packagist.org/packages/contao/image)
 [![](https://img.shields.io/packagist/dt/contao/image.svg?style=flat-square)](https://packagist.org/packages/contao/image)
 
