@@ -63,10 +63,12 @@ jobs:
                   vendor/bin/simple-phpunit --version
 
             - name: Check the coding style
-              run: vendor/bin/php-cs-fixer fix --diff --diff-format=udiff --dry-run
+              run: vendor/bin/ecs check src tests --config vendor/contao/easy-coding-standard/config/default.php --no-progress-bar --ansi
 
             - name: Analyze the code
-              run: vendor/bin/phpstan analyse src tests --level=4 --no-progress
+              run: |
+                  vendor/bin/phpstan analyse src tests --level=4 --no-progress
+                  vendor/bin/psalm --no-suggestions --threads=4 --no-progress
 
     tests:
         name: PHP ${{ matrix.php }}
