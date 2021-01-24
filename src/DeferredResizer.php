@@ -107,6 +107,7 @@ class DeferredResizer extends Resizer implements DeferredResizerInterface
             $this->storage->delete($targetPath);
         } catch (\Throwable $exception) {
             $this->storage->releaseLock($targetPath);
+
             throw $exception;
         }
 

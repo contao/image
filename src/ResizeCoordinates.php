@@ -82,7 +82,7 @@ class ResizeCoordinates
             throw new \InvalidArgumentException(sprintf('$coordinates must be an instance of ResizeCoordinates or BoxInterface, "%s" given', \get_class($coordinates)));
         }
 
-        /* @var self $coordinates */
+        /** @var self $coordinates */
         return $this->cropStart->getX() === $coordinates->getCropStart()->getX()
             && $this->cropStart->getY() === $coordinates->getCropStart()->getY()
             && $this->cropSize->getWidth() === $coordinates->getCropSize()->getWidth()

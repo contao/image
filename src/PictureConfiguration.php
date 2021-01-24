@@ -22,12 +22,12 @@ class PictureConfiguration
     private $size;
 
     /**
-     * @var PictureConfigurationItem[]
+     * @var array<PictureConfigurationItem>
      */
     private $sizeItems = [];
 
     /**
-     * @var array[]
+     * @var array<array>
      */
     private $formats = [];
 
@@ -48,7 +48,7 @@ class PictureConfiguration
     }
 
     /**
-     * @return PictureConfigurationItem[]
+     * @return array<PictureConfigurationItem>
      */
     public function getSizeItems(): array
     {
@@ -56,7 +56,7 @@ class PictureConfiguration
     }
 
     /**
-     * @param PictureConfigurationItem[] $sizeItems
+     * @param array<PictureConfigurationItem> $sizeItems
      */
     public function setSizeItems(array $sizeItems): self
     {
@@ -72,7 +72,7 @@ class PictureConfiguration
     }
 
     /**
-     * @return array<string,string[]>
+     * @return array<string, array<string>>
      */
     public function getFormats(): array
     {
@@ -80,7 +80,7 @@ class PictureConfiguration
     }
 
     /**
-     * @param array<string,string[]> $formats
+     * @param array<string, array<string>> $formats
      */
     public function setFormats(array $formats): self
     {

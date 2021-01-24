@@ -71,7 +71,7 @@ class ResizeCoordinatesTest extends TestCase
 
         $this->expectException('InvalidArgumentException');
 
-        /* @noinspection PhpParamsInspection */
+        /** @psalm-suppress InvalidArgument */
         $coordinates->isEqualTo(new \stdClass());
     }
 }

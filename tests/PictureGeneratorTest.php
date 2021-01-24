@@ -87,12 +87,14 @@ class PictureGeneratorTest extends TestCase
             ->setFormats([
                 'jpg' => ['webp', 'jpg'],
             ])
-            ->setSize((new PictureConfigurationItem())
-                ->setDensities('1x, 1.35354x, 1.9999x, 10x')
-                ->setResizeConfig((new ResizeConfiguration())
-                    ->setWidth(99)
-                    ->setHeight(99)
-                )
+            ->setSize(
+                (new PictureConfigurationItem())
+                    ->setDensities('1x, 1.35354x, 1.9999x, 10x')
+                    ->setResizeConfig(
+                        (new ResizeConfiguration())
+                            ->setWidth(99)
+                            ->setHeight(99)
+                    )
             )
             ->setSizeItems(
                 [
@@ -100,22 +102,25 @@ class PictureGeneratorTest extends TestCase
                         ->setMedia('(min-width: 600px)')
                         ->setDensities('0.5x')
                         ->setSizes('50vw')
-                        ->setResizeConfig((new ResizeConfiguration())
-                            ->setWidth(100)
-                            ->setHeight(50)
+                        ->setResizeConfig(
+                            (new ResizeConfiguration())
+                                ->setWidth(100)
+                                ->setHeight(50)
                         ),
                     (new PictureConfigurationItem())
                         ->setMedia('(min-width: 300px)')
-                        ->setResizeConfig((new ResizeConfiguration())
-                            ->setWidth(50)
-                            ->setHeight(25)
+                        ->setResizeConfig(
+                            (new ResizeConfiguration())
+                                ->setWidth(50)
+                                ->setHeight(25)
                         ),
                     (new PictureConfigurationItem())
                         ->setMedia('(min-width: 200px)')
                         ->setDensities('1x, 10x')
-                        ->setResizeConfig((new ResizeConfiguration())
-                            ->setWidth(160)
-                            ->setHeight(160)
+                        ->setResizeConfig(
+                            (new ResizeConfiguration())
+                                ->setWidth(160)
+                                ->setHeight(160)
                         ),
                 ]
             )
@@ -243,20 +248,23 @@ class PictureGeneratorTest extends TestCase
         $pictureGenerator = $this->createPictureGenerator($resizer);
 
         $pictureConfig = (new PictureConfiguration())
-            ->setSize((new PictureConfigurationItem())
-                ->setDensities('200w, 400w, 0.5x')
-                ->setResizeConfig((new ResizeConfiguration())
-                    ->setHeight(100)
-                )
+            ->setSize(
+                (new PictureConfigurationItem())
+                    ->setDensities('200w, 400w, 0.5x')
+                    ->setResizeConfig(
+                        (new ResizeConfiguration())
+                            ->setHeight(100)
+                    )
             )
             ->setSizeItems(
                 [
                     (new PictureConfigurationItem())
                         ->setDensities('1x, 100w, 200w, 0.5x')
                         ->setSizes('33vw')
-                        ->setResizeConfig((new ResizeConfiguration())
-                            ->setWidth(100)
-                            ->setHeight(50)
+                        ->setResizeConfig(
+                            (new ResizeConfiguration())
+                                ->setWidth(100)
+                                ->setHeight(50)
                         ),
                 ]
             )
@@ -335,29 +343,34 @@ class PictureGeneratorTest extends TestCase
         $pictureGenerator = $this->createPictureGenerator($resizer);
 
         $pictureConfig = (new PictureConfiguration())
-            ->setSize((new PictureConfigurationItem())
-                ->setDensities('100w, 50w, 0.2x, 500w, 2x')
-                ->setResizeConfig((new ResizeConfiguration())
-                    ->setWidth(200)
-                )
+            ->setSize(
+                (new PictureConfigurationItem())
+                    ->setDensities('100w, 50w, 0.2x, 500w, 2x')
+                    ->setResizeConfig(
+                        (new ResizeConfiguration())
+                            ->setWidth(200)
+                    )
             )
             ->setSizeItems(
                 [
                     (new PictureConfigurationItem())
                         ->setDensities('100w, 50w, 0.2x, 500w, 2x')
-                        ->setResizeConfig((new ResizeConfiguration())
-                            ->setHeight(400)
+                        ->setResizeConfig(
+                            (new ResizeConfiguration())
+                                ->setHeight(400)
                         ),
                     (new PictureConfigurationItem())
                         ->setDensities('0.5x, 0.25x, 0.2x, 2x')
-                        ->setResizeConfig((new ResizeConfiguration())
-                            ->setWidth(200)
+                        ->setResizeConfig(
+                            (new ResizeConfiguration())
+                                ->setWidth(200)
                         ),
                     (new PictureConfigurationItem())
                         ->setDensities('100w, 50w, 0.2x, 500w, 2x')
-                        ->setResizeConfig((new ResizeConfiguration())
-                            ->setWidth(200)
-                            ->setHeight(440)
+                        ->setResizeConfig(
+                            (new ResizeConfiguration())
+                                ->setWidth(200)
+                                ->setHeight(440)
                         ),
                 ]
             )
@@ -448,20 +461,23 @@ class PictureGeneratorTest extends TestCase
         $pictureGenerator = $this->createPictureGenerator($resizer);
 
         $pictureConfig = (new PictureConfiguration())
-            ->setSize((new PictureConfigurationItem())
-                ->setDensities('200w, 400w, 600w, 3x, 4x, 0.5x')
-                ->setResizeConfig((new ResizeConfiguration())
-                    ->setWidth(100)
-                    ->setHeight(100)
-                )
+            ->setSize(
+                (new PictureConfigurationItem())
+                    ->setDensities('200w, 400w, 600w, 3x, 4x, 0.5x')
+                    ->setResizeConfig(
+                        (new ResizeConfiguration())
+                            ->setWidth(100)
+                            ->setHeight(100)
+                    )
             )
             ->setSizeItems(
                 [
                     (new PictureConfigurationItem())
                         ->setDensities('1x, 2x, 3x, 4x, 0.5x')
-                        ->setResizeConfig((new ResizeConfiguration())
-                            ->setWidth(100)
-                            ->setHeight(50)
+                        ->setResizeConfig(
+                            (new ResizeConfiguration())
+                                ->setWidth(100)
+                                ->setHeight(50)
                         ),
                 ]
             )
@@ -535,20 +551,23 @@ class PictureGeneratorTest extends TestCase
         $pictureGenerator = $this->createPictureGenerator($resizer);
 
         $pictureConfig = (new PictureConfiguration())
-            ->setSize((new PictureConfigurationItem())
-                ->setDensities('200w, 400w, 600w, 3x, 4x, 0.5x')
-                ->setResizeConfig((new ResizeConfiguration())
-                    ->setWidth(100)
-                    ->setHeight(100)
-                )
+            ->setSize(
+                (new PictureConfigurationItem())
+                    ->setDensities('200w, 400w, 600w, 3x, 4x, 0.5x')
+                    ->setResizeConfig(
+                        (new ResizeConfiguration())
+                            ->setWidth(100)
+                            ->setHeight(100)
+                    )
             )
             ->setSizeItems(
                 [
                     (new PictureConfigurationItem())
                         ->setDensities('1x, 2x, 3x, 4x, 0.5x')
-                        ->setResizeConfig((new ResizeConfiguration())
-                            ->setWidth(100)
-                            ->setHeight(100)
+                        ->setResizeConfig(
+                            (new ResizeConfiguration())
+                                ->setWidth(100)
+                                ->setHeight(100)
                         ),
                 ]
             )
@@ -627,20 +646,23 @@ class PictureGeneratorTest extends TestCase
         $pictureGenerator = $this->createPictureGenerator($resizer);
 
         $pictureConfig = (new PictureConfiguration())
-            ->setSize((new PictureConfigurationItem())
-                ->setDensities('200w, 400w, 600w, 3x, 4x, 0.5x')
-                ->setResizeConfig((new ResizeConfiguration())
-                    ->setWidth(100)
-                    ->setHeight(100)
-                )
+            ->setSize(
+                (new PictureConfigurationItem())
+                    ->setDensities('200w, 400w, 600w, 3x, 4x, 0.5x')
+                    ->setResizeConfig(
+                        (new ResizeConfiguration())
+                            ->setWidth(100)
+                            ->setHeight(100)
+                    )
             )
             ->setSizeItems(
                 [
                     (new PictureConfigurationItem())
                         ->setDensities('1x, 2x, 3x, 4x, 0.5x')
-                        ->setResizeConfig((new ResizeConfiguration())
-                            ->setWidth(100)
-                            ->setHeight(50)
+                        ->setResizeConfig(
+                            (new ResizeConfiguration())
+                                ->setWidth(100)
+                                ->setHeight(50)
                         ),
                 ]
             )

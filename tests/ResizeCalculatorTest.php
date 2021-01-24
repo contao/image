@@ -72,7 +72,7 @@ class ResizeCalculatorTest extends TestCase
             $config->setMode($arguments[4]);
         }
 
-        $this->assertEquals($expected, $calculator->calculate($config, $dimensions, $importantPart));
+        $this->assertSameCoordinates($expected, $calculator->calculate($config, $dimensions, $importantPart));
 
         if (null !== $importantPart) {
             return;
@@ -80,7 +80,7 @@ class ResizeCalculatorTest extends TestCase
 
         $config->setZoomLevel(50);
 
-        $this->assertEquals(
+        $this->assertSameCoordinates(
             $expected,
             $calculator->calculate($config, $dimensions),
             'Zoom 50 should return the same results if no important part is specified'
@@ -88,7 +88,7 @@ class ResizeCalculatorTest extends TestCase
 
         $config->setZoomLevel(100);
 
-        $this->assertEquals(
+        $this->assertSameCoordinates(
             $expected,
             $calculator->calculate($config, $dimensions),
             'Zoom 100 should return the same results if no important part is specified'
@@ -97,13 +97,13 @@ class ResizeCalculatorTest extends TestCase
         $dimensions = new ImageDimensions(new Box($arguments[2], $arguments[3]));
 
         if (empty($arguments[5])) {
-            $this->assertEquals(
+            $this->assertSameCoordinates(
                 $expected,
                 $calculator->calculate($config, $dimensions),
                 'Up scaling should have no effect'
             );
         } else {
-            $this->assertNotEquals(
+            $this->assertNotSameCoordinates(
                 $expected,
                 $calculator->calculate($config, $dimensions),
                 'Up scaling should have an effect'
@@ -562,18 +562,18 @@ class ResizeCalculatorTest extends TestCase
 
         $dimensions = new ImageDimensions(new Box($arguments[2], $arguments[3]), !empty($arguments[7]));
 
-        $this->assertEquals($expected, $calculator->calculate($config, $dimensions, $importantPart));
+        $this->assertSameCoordinates($expected, $calculator->calculate($config, $dimensions, $importantPart));
 
         $dimensions = new ImageDimensions(new Box($arguments[2], $arguments[3]));
 
         if (empty($arguments[7])) {
-            $this->assertEquals(
+            $this->assertSameCoordinates(
                 $expected,
                 $calculator->calculate($config, $dimensions, $importantPart),
                 'Up scaling should have no effect'
             );
         } else {
-            $this->assertNotEquals(
+            $this->assertNotSameCoordinates(
                 $expected,
                 $calculator->calculate($config, $dimensions, $importantPart),
                 'Up scaling should have an effect'
@@ -756,5 +756,17 @@ class ResizeCalculatorTest extends TestCase
         $this->expectException('InvalidArgumentException');
 
         $calculator->calculate($config, $dimensions);
+    }
+
+    private function assertSameCoordinates(ResizeCoordinates $expected, ResizeCoordinates $actual, string $message = ''): void
+    {
+        $this->assertTrue($expected->isEqualTo($actual), $message);
+        $this->assertTrue($actual->isEqualTo($expected), $message);
+    }
+
+    private function assertNotSameCoordinates(ResizeCoordinates $expected, ResizeCoordinates $actual, string $message = ''): void
+    {
+        $this->assertFalse($expected->isEqualTo($actual), $message);
+        $this->assertFalse($actual->isEqualTo($expected), $message);
     }
 }

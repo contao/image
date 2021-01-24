@@ -21,11 +21,15 @@
         "contao/imagine-svg": "<0.1.4 || >=2.0"
     },
     "require-dev": {
+        "contao/easy-coding-standard": "^1.0",
         "contao/imagine-svg": "^0.1.4 || ^0.2 || ^1.0",
-        "friendsofphp/php-cs-fixer": "^2.14",
         "phpstan/phpstan-phpunit": "^0.12",
+        "psalm/plugin-phpunit": "^0.9",
+        "psalm/plugin-symfony": "^1.0",
+        "slam/phpstan-extensions": "^5.0",
         "symfony/console": "^4.3 || ^5.0",
-        "symfony/phpunit-bridge": "^5.1.5"
+        "symfony/phpunit-bridge": "^5.1.5",
+        "vimeo/psalm": "^3.9"
     },
     "suggest": {
         "ext-exif": "To support EXIF auto-rotation"
@@ -39,5 +43,25 @@
         "psr-4": {
             "Contao\\Image\\Tests\\": "tests/"
         }
+    },
+    "scripts": {
+        "all": [
+            "@unit-tests",
+            "@cs-fixer",
+            "@phpstan",
+            "@psalm"
+        ],
+        "cs-fixer": [
+            "vendor/bin/ecs check src tests --config vendor/contao/easy-coding-standard/config/default.php --fix --ansi"
+        ],
+        "phpstan": [
+            "vendor/bin/phpstan analyze src tests --level=4 --memory-limit=1G --ansi"
+        ],
+        "psalm": [
+            "vendor/bin/psalm --no-suggestions --threads=4"
+        ],
+        "unit-tests": [
+            "vendor/bin/simple-phpunit --colors=always"
+        ]
     }
 }
