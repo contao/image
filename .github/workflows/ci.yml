@@ -19,7 +19,7 @@ jobs:
             - name: Setup PHP
               uses: shivammathur/setup-php@v2
               with:
-                  php-version: 7.3
+                  php-version: 7.4
                   extensions: dom, fileinfo, filter, gd, hash, intl, json, mbstring, pcre, pdo, zlib
                   tools: prestissimo, flex
                   coverage: pcov
@@ -49,7 +49,7 @@ jobs:
             - name: Setup PHP
               uses: shivammathur/setup-php@v2
               with:
-                  php-version: 7.3
+                  php-version: 7.4
                   extensions: dom, fileinfo, filter, gd, hash, intl, json, mbstring, pcre, pdo, zlib
                   tools: prestissimo, flex
                   coverage: none
@@ -75,7 +75,7 @@ jobs:
         strategy:
             fail-fast: false
             matrix:
-                php: [7.2, 7.3, 7.4]
+                php: [7.2, 7.3, 7.4, 8.0]
         steps:
             - name: Setup PHP
               uses: shivammathur/setup-php@v2
@@ -96,32 +96,6 @@ jobs:
             - name: Run the unit tests
               run: vendor/bin/simple-phpunit --colors=always
 
-    test-php8:
-        name: PHP 8.0
-        runs-on: ubuntu-latest
-        if: github.event_name != 'push'
-        steps:
-            - name: Setup PHP
-              uses: shivammathur/setup-php@v2
-              with:
-                  php-version: 8.0
-                  extensions: dom, fileinfo, filter, gd, hash, intl, json, mbstring, pcre, pdo_mysql, zlib
-                  tools: prestissimo, flex
-                  coverage: none
-
-            - name: Checkout
-              uses: actions/checkout@v2
-
-            - name: Install the dependencies
-              run: |
-                  composer self-update --2
-                  composer remove --dev --no-update friendsofphp/php-cs-fixer
-                  composer install --no-interaction --no-suggest
-                  vendor/bin/simple-phpunit --version
-
-            - name: Run the unit tests
-              run: vendor/bin/simple-phpunit --colors=always
-
     prefer-lowest:
         name: Prefer Lowest
         runs-on: ubuntu-latest
@@ -130,7 +104,7 @@ jobs:
             - name: Setup PHP
               uses: shivammathur/setup-php@v2
               with:
-                  php-version: 7.3
+                  php-version: 7.4
                   extensions: dom, fileinfo, filter, gd, hash, intl, json, mbstring, pcre, pdo_mysql, zlib
                   tools: prestissimo, flex
                   coverage: none
@@ -154,7 +128,7 @@ jobs:
             - name: Setup PHP
               uses: shivammathur/setup-php@v2
               with:
-                  php-version: 7.3
+                  php-version: 7.4
                   extensions: dom, fileinfo, filter, gd, hash, intl, json, mbstring, pcre, pdo_mysql, zlib
                   ini-values: memory_limit=1G
                   tools: prestissimo, flex
