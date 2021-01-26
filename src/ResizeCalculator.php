@@ -64,7 +64,7 @@ class ResizeCalculator
     /**
      * Calculates the resize coordinates for mode crop.
      *
-     * @param int[] $size
+     * @param array<int> $size
      */
     private function calculateCrop(array $size, ImageDimensions $original, array $importantPart, float $zoom): ResizeCoordinates
     {
@@ -105,7 +105,7 @@ class ResizeCalculator
     /**
      * Calculates the resize coordinates for mode proportional.
      *
-     * @param int[] $size
+     * @param array<int> $size
      */
     private function calculateProportional(array $size, ImageDimensions $original, array $importantPart, float $zoom): ResizeCoordinates
     {
@@ -123,7 +123,7 @@ class ResizeCalculator
     /**
      * Calculates the resize coordinates for mode box.
      *
-     * @param int[] $size
+     * @param array<int> $size
      */
     private function calculateBox(array $size, ImageDimensions $original, array $importantPart, float $zoom): ResizeCoordinates
     {
@@ -141,7 +141,7 @@ class ResizeCalculator
     /**
      * Calculates the resize coordinates for single dimension size.
      *
-     * @param int[] $size
+     * @param array<int> $size
      */
     private function calculateSingleDimension(array $size, ImageDimensions $original, array $importantPart): ResizeCoordinates
     {
@@ -177,12 +177,12 @@ class ResizeCalculator
         $imageHeight = $dimensions->getSize()->getHeight();
 
         $part = [
-            'x' => min($imageWidth - 1, round($importantPart->getX() * $imageWidth)),
-            'y' => min($imageHeight - 1, round($importantPart->getY() * $imageHeight)),
+            'x' => (int) min($imageWidth - 1, round($importantPart->getX() * $imageWidth)),
+            'y' => (int) min($imageHeight - 1, round($importantPart->getY() * $imageHeight)),
         ];
 
-        $part['width'] = max(1, min($imageWidth - $part['x'], round($importantPart->getWidth() * $imageWidth)));
-        $part['height'] = max(1, min($imageHeight - $part['y'], round($importantPart->getHeight() * $imageHeight)));
+        $part['width'] = (int) max(1, min($imageWidth - $part['x'], round($importantPart->getWidth() * $imageWidth)));
+        $part['height'] = (int) max(1, min($imageHeight - $part['y'], round($importantPart->getHeight() * $imageHeight)));
 
         return $part;
     }
@@ -209,9 +209,9 @@ class ResizeCalculator
     /**
      * Builds a resize coordinates object.
      *
-     * @param int[] $size
-     * @param int[] $cropStart
-     * @param int[] $cropSize
+     * @param array<int> $size
+     * @param array<int> $cropStart
+     * @param array<int> $cropSize
      */
     private function buildCoordinates(array $size, array $cropStart, array $cropSize, ImageDimensions $original): ResizeCoordinates
     {
@@ -240,7 +240,7 @@ class ResizeCalculator
     /**
      * Calculates the least zoomed crop possible.
      *
-     * @param int[]        $size     Target size
+     * @param array<int>   $size     Target size
      * @param BoxInterface $origSize Original size
      * @param array        $part     Important part
      *
@@ -285,7 +285,7 @@ class ResizeCalculator
     /**
      * Calculates the most zoomed crop possible.
      *
-     * @param int[]        $size     Target size
+     * @param array<int>   $size     Target size
      * @param BoxInterface $origSize Original size
      * @param array        $part     Important part
      *

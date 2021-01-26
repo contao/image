@@ -26,7 +26,7 @@ class DeferredImageStorageFilesystemTest extends TestCase
     /**
      * {@inheritdoc}
      */
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -36,7 +36,7 @@ class DeferredImageStorageFilesystemTest extends TestCase
     /**
      * {@inheritdoc}
      */
-    public function tearDown(): void
+    protected function tearDown(): void
     {
         parent::tearDown();
 
@@ -59,7 +59,7 @@ class DeferredImageStorageFilesystemTest extends TestCase
         $storage->set($key, $value);
 
         $this->assertTrue($storage->has($key));
-        $this->assertEquals($value, $storage->get($key));
+        $this->assertSame($value, $storage->get($key));
 
         $storage->delete($key);
 
@@ -74,7 +74,7 @@ class DeferredImageStorageFilesystemTest extends TestCase
         $storage = new DeferredImageStorageFilesystem($this->rootDir);
         $storage->set($key, $value);
 
-        $this->assertEquals($value, $storage->getLocked($key));
+        $this->assertSame($value, $storage->getLocked($key));
 
         $dataPath = $this->rootDir.'/deferred/'.$key.'.json';
         $handle = fopen($dataPath, 'r+');
@@ -90,7 +90,7 @@ class DeferredImageStorageFilesystemTest extends TestCase
             $storage->getLocked($key, true);
             $this->fail('Self locked file should throw for blocking lock.');
         } catch (\RuntimeException $e) {
-            $this->assertMatchesRegularExpression('/already acquired/', $e->getMessage());
+            $this->assertRegExp('/already acquired/', $e->getMessage());
         }
 
         $storage->releaseLock($key);
@@ -105,7 +105,7 @@ class DeferredImageStorageFilesystemTest extends TestCase
         flock($handle, LOCK_UN | LOCK_NB);
         fclose($handle);
 
-        $this->assertEquals($value, $storage->getLocked($key, false));
+        $this->assertSame($value, $storage->getLocked($key, false));
 
         $storage->releaseLock($key);
 
@@ -195,12 +195,16 @@ class DeferredImageStorageFilesystemTest extends TestCase
             $storage->set($path, []);
         }
 
-        $paths = iterator_to_array($storage->listPaths());
+        $paths = $storage->listPaths();
+
+        if (!\is_array($paths)) {
+            $paths = iterator_to_array($paths);
+        }
 
         sort($originalPaths);
         sort($paths);
 
-        $this->assertEquals($originalPaths, $paths);
+        $this->assertSame($originalPaths, $paths);
 
         $storage = new DeferredImageStorageFilesystem('/path/does/not/exist');
 

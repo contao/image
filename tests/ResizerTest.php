@@ -40,7 +40,7 @@ class ResizerTest extends TestCase
     /**
      * {@inheritdoc}
      */
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -50,7 +50,7 @@ class ResizerTest extends TestCase
     /**
      * {@inheritdoc}
      */
-    public function tearDown(): void
+    protected function tearDown(): void
     {
         parent::tearDown();
 
@@ -113,7 +113,7 @@ class ResizerTest extends TestCase
                 );
 
                 $this->assertEquals(new ImageDimensions(new Box(100, 100)), $resizedImage->getDimensions());
-                $this->assertMatchesRegularExpression('(/[0-9a-f]/dummy-[0-9a-f]{8}.jpg$)', $resizedImage->getPath());
+                $this->assertRegExp('(/[0-9a-f]/dummy-[0-9a-f]{8}.jpg$)', $resizedImage->getPath());
                 $this->assertFilePermissions(0666, $resizedImage->getPath());
 
                 unlink($resizedImage->getPath());
@@ -202,7 +202,7 @@ class ResizerTest extends TestCase
         $this->assertSame(100, $resizedImage->getDimensions()->getSize()->getHeight());
         $this->assertFalse($resizedImage->getDimensions()->isRelative());
         $this->assertFalse($resizedImage->getDimensions()->isUndefined());
-        $this->assertMatchesRegularExpression('(/[0-9a-f]/dummy-[0-9a-f]{8}.svg$)', $resizedImage->getPath());
+        $this->assertRegExp('(/[0-9a-f]/dummy-[0-9a-f]{8}.svg$)', $resizedImage->getPath());
         $this->assertFilePermissions(0666, $resizedImage->getPath());
 
         unlink($resizedImage->getPath());
@@ -262,7 +262,7 @@ class ResizerTest extends TestCase
         $resizedImage = $resizer->resize($image, $configuration, new ResizeOptions());
 
         $this->assertEquals(new ImageDimensions(new Box(100, 100)), $resizedImage->getDimensions());
-        $this->assertMatchesRegularExpression('(/[0-9a-f]/dummy-[0-9a-f]{8}.jpg$)', $resizedImage->getPath());
+        $this->assertRegExp('(/[0-9a-f]/dummy-[0-9a-f]{8}.jpg$)', $resizedImage->getPath());
         $this->assertFilePermissions(0666, $resizedImage->getPath());
 
         $imagePath = $resizedImage->getPath();
@@ -418,7 +418,7 @@ class ResizerTest extends TestCase
 
         $resizedImage = $resizer->resize($image, $configuration, new ResizeOptions());
 
-        $this->assertMatchesRegularExpression('(/[0-9a-f]/dummy-[0-9a-f]{8}.jpg$)', $resizedImage->getPath());
+        $this->assertRegExp('(/[0-9a-f]/dummy-[0-9a-f]{8}.jpg$)', $resizedImage->getPath());
         $this->assertNotSame($image, $resizedImage);
     }
 
@@ -511,7 +511,7 @@ class ResizerTest extends TestCase
                 ->setImagineOptions(['format' => 'png'])
         );
 
-        $this->assertMatchesRegularExpression('(/[0-9a-f]/dummy-[0-9a-f]{8}.png$)', $resizedImage->getPath());
+        $this->assertRegExp('(/[0-9a-f]/dummy-[0-9a-f]{8}.png$)', $resizedImage->getPath());
         $this->assertNotSame($image, $resizedImage);
     }
 
@@ -615,7 +615,7 @@ class ResizerTest extends TestCase
         $this->assertSame(100, $resizedImage->getDimensions()->getSize()->getWidth());
         $this->assertSame(100, $resizedImage->getDimensions()->getSize()->getHeight());
         $this->assertFalse($resizedImage->getDimensions()->isRelative());
-        $this->assertMatchesRegularExpression('(/[0-9a-f]/dummy-[0-9a-f]{8}.svg$)', $resizedImage->getPath());
+        $this->assertRegExp('(/[0-9a-f]/dummy-[0-9a-f]{8}.svg$)', $resizedImage->getPath());
 
         unlink($resizedImage->getPath());
     }
@@ -659,7 +659,7 @@ class ResizerTest extends TestCase
 
         $resizedImage = $resizer->resize($image, $configuration, new ResizeOptions());
 
-        $this->assertMatchesRegularExpression('(/[0-9a-f]/dummy-[0-9a-f]{8}.jpg$)', $resizedImage->getPath());
+        $this->assertRegExp('(/[0-9a-f]/dummy-[0-9a-f]{8}.jpg$)', $resizedImage->getPath());
         $this->assertNotSame($image, $resizedImage);
     }
 
@@ -702,7 +702,7 @@ class ResizerTest extends TestCase
 
         $resizedImage = $resizer->resize($image, $configuration, new ResizeOptions());
 
-        $this->assertMatchesRegularExpression('(/[0-9a-f]/dummy-[0-9a-f]{8}.jpg$)', $resizedImage->getPath());
+        $this->assertRegExp('(/[0-9a-f]/dummy-[0-9a-f]{8}.jpg$)', $resizedImage->getPath());
         $this->assertNotSame($image, $resizedImage);
     }
 

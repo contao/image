@@ -36,7 +36,7 @@ class ImageTest extends TestCase
     /**
      * {@inheritdoc}
      */
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -46,7 +46,7 @@ class ImageTest extends TestCase
     /**
      * {@inheritdoc}
      */
-    public function tearDown(): void
+    protected function tearDown(): void
     {
         parent::tearDown();
 
@@ -397,11 +397,11 @@ class ImageTest extends TestCase
     private function addImageOrientation(string $jpegData, int $orientation): string
     {
         $exif = implode('', [
-            "\x45\x78\x69\x66\x00\x00",                                           // Exif header
-            "\x49\x49\x2a\x00\x08\x00\x00\x00",                                   // TIFF header
-            "\x01\x00",                                                           // IFD0 entries
+            "\x45\x78\x69\x66\x00\x00", // Exif header
+            "\x49\x49\x2a\x00\x08\x00\x00\x00", // TIFF header
+            "\x01\x00", // IFD0 entries
             "\x12\x01\x03\x00\x01\x00\x00\x00".\chr($orientation)."\x00\x12\x00", // IFD0-00 Orientation
-            "\x00\x00\x00\x00",                                                   // Next IFD
+            "\x00\x00\x00\x00", // Next IFD
         ]);
 
         $length = \strlen($exif) + 2;

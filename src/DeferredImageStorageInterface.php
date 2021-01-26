@@ -27,7 +27,7 @@ interface DeferredImageStorageInterface
     public function has(string $path): bool;
 
     /**
-     * @return string[]
+     * @return iterable<string>
      */
     public function listPaths(): iterable;
 }

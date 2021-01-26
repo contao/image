@@ -85,7 +85,7 @@ class Picture implements PictureInterface
 
         $img['srcset'] = array_map(
             static function (array $src) use ($rootDir, $prefix) {
-                /* @var ImageInterface[] $src */
+                /** @var array<ImageInterface> $src */
                 $src[0] = $src[0]->getUrl($rootDir, $prefix);
 
                 return implode(' ', $src);

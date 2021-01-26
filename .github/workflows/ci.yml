@@ -19,7 +19,7 @@ jobs:
             - name: Setup PHP
               uses: shivammathur/setup-php@v2
               with:
-                  php-version: 7.3
+                  php-version: 7.4
                   extensions: dom, fileinfo, filter, gd, hash, intl, json, mbstring, pcre, pdo, zlib
                   tools: prestissimo, flex
                   coverage: pcov
@@ -28,12 +28,10 @@ jobs:
               uses: actions/checkout@v2
 
             - name: Install the dependencies
-              run: |
-                  composer install --no-interaction --no-suggest
-                  vendor/bin/simple-phpunit --version
+              run: composer install --no-interaction --no-suggest --no-progress
 
             - name: Generate the coverage report
-              run: php -d pcov.enabled=1 vendor/bin/simple-phpunit --coverage-clover=clover.xml --colors=always
+              run: php -d pcov.enabled=1 vendor/bin/phpunit --coverage-clover=clover.xml --colors=always
 
             - name: Upload the coverage report
               uses: codecov/codecov-action@v1
@@ -49,7 +47,7 @@ jobs:
             - name: Setup PHP
               uses: shivammathur/setup-php@v2
               with:
-                  php-version: 7.3
+                  php-version: 7.4
                   extensions: dom, fileinfo, filter, gd, hash, intl, json, mbstring, pcre, pdo, zlib
                   tools: prestissimo, flex
                   coverage: none
@@ -59,14 +57,16 @@ jobs:
 
             - name: Install the dependencies
               run: |
-                  composer install --no-interaction --no-suggest
-                  vendor/bin/simple-phpunit --version
+                  composer install --no-interaction --no-suggest --no-progress
+                  composer bin all install --no-interaction --no-progress
 
             - name: Check the coding style
-              run: vendor/bin/php-cs-fixer fix --diff --diff-format=udiff --dry-run
+              run: tools/ecs/vendor/bin/ecs check src tests --config tools/ecs/vendor/contao/easy-coding-standard/config/default.php --no-progress-bar --ansi
 
             - name: Analyze the code
-              run: vendor/bin/phpstan analyse src tests --level=3 --no-progress
+              run: |
+                  tools/phpstan/vendor/bin/phpstan analyse src tests --level=4 --no-progress
+                  tools/psalm/vendor/bin/psalm --no-suggestions --threads=4 --no-progress
 
     tests:
         name: PHP ${{ matrix.php }}
@@ -75,7 +75,7 @@ jobs:
         strategy:
             fail-fast: false
             matrix:
-                php: [7.2, 7.3, 7.4]
+                php: [7.2, 7.3, 7.4, 8.0]
         steps:
             - name: Setup PHP
               uses: shivammathur/setup-php@v2
@@ -89,38 +89,10 @@ jobs:
               uses: actions/checkout@v2
 
             - name: Install the dependencies
-              run: |
-                  composer install --no-interaction --no-suggest
-                  vendor/bin/simple-phpunit --version
+              run: composer install --no-interaction --no-suggest --no-progress
 
             - name: Run the unit tests
-              run: vendor/bin/simple-phpunit --colors=always
-
-    test-php8:
-        name: PHP 8.0
-        runs-on: ubuntu-latest
-        if: github.event_name != 'push'
-        steps:
-            - name: Setup PHP
-              uses: shivammathur/setup-php@v2
-              with:
-                  php-version: 8.0
-                  extensions: dom, fileinfo, filter, gd, hash, intl, json, mbstring, pcre, pdo_mysql, zlib
-                  tools: prestissimo, flex
-                  coverage: none
-
-            - name: Checkout
-              uses: actions/checkout@v2
-
-            - name: Install the dependencies
-              run: |
-                  composer self-update --2
-                  composer remove --dev --no-update friendsofphp/php-cs-fixer
-                  composer install --no-interaction --no-suggest
-                  vendor/bin/simple-phpunit --version
-
-            - name: Run the unit tests
-              run: vendor/bin/simple-phpunit --colors=always
+              run: vendor/bin/phpunit --colors=always
 
     prefer-lowest:
         name: Prefer Lowest
@@ -130,7 +102,7 @@ jobs:
             - name: Setup PHP
               uses: shivammathur/setup-php@v2
               with:
-                  php-version: 7.3
+                  php-version: 7.4
                   extensions: dom, fileinfo, filter, gd, hash, intl, json, mbstring, pcre, pdo_mysql, zlib
                   tools: prestissimo, flex
                   coverage: none
@@ -139,12 +111,10 @@ jobs:
               uses: actions/checkout@v2
 
             - name: Install the dependencies
-              run: |
-                  composer update --prefer-lowest --prefer-stable --no-interaction --no-suggest
-                  vendor/bin/simple-phpunit --version
+              run: composer update --prefer-lowest --prefer-stable --no-interaction --no-suggest --no-progress
 
             - name: Run the unit tests
-              run: vendor/bin/simple-phpunit --colors=always
+              run: vendor/bin/phpunit --colors=always
 
     windows:
         name: Windows
@@ -154,7 +124,7 @@ jobs:
             - name: Setup PHP
               uses: shivammathur/setup-php@v2
               with:
-                  php-version: 7.3
+                  php-version: 7.4
                   extensions: dom, fileinfo, filter, gd, hash, intl, json, mbstring, pcre, pdo_mysql, zlib
                   ini-values: memory_limit=1G
                   tools: prestissimo, flex
@@ -167,9 +137,7 @@ jobs:
               uses: actions/checkout@v2
 
             - name: Install the dependencies
-              run: |
-                  composer install --no-interaction --no-suggest --no-progress
-                  vendor/bin/simple-phpunit.bat --version
+              run: composer install --no-interaction --no-suggest --no-progress
 
             - name: Run the unit tests
-              run: vendor/bin/simple-phpunit.bat --colors=always
+              run: vendor/bin/phpunit.bat --colors=always

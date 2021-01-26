@@ -208,7 +208,7 @@ class PictureGenerator implements PictureGeneratorInterface
         $srcset = array_values(array_filter(
             $srcset,
             static function (array $item) use (&$usedPaths) {
-                /** @var ImageInterface[] $item */
+                /** @var array<ImageInterface> $item */
                 $key = $item[0]->getPath();
 
                 if (isset($usedPaths[$key])) {
@@ -229,14 +229,14 @@ class PictureGenerator implements PictureGeneratorInterface
     }
 
     /**
-     * @return string[]
+     * @return array<string>
      */
     private function getFormatsFromConfig(PictureConfiguration $config, string $sourceFormat): array
     {
         $formatsConfig = $config->getFormats();
 
         return array_map(
-            function ($format) use ($config, $sourceFormat) {
+            static function ($format) use ($config, $sourceFormat) {
                 return $format === $config::FORMAT_DEFAULT ? $sourceFormat : $format;
             },
             $formatsConfig[$sourceFormat] ?? $formatsConfig[$config::FORMAT_DEFAULT]
