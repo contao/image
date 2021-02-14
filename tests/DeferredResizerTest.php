@@ -237,6 +237,65 @@ class DeferredResizerTest extends TestCase
         $resizer->resizeDeferredImage($deferredImage);
     }
 
+    public function testResizeDeferredImageThrowsForMissingJson(): void
+    {
+        $resizer = $this->createResizer();
+
+        $deferredImage = $this->createMock(DeferredImageInterface::class);
+        $deferredImage
+            ->method('getPath')
+            ->willReturn($this->rootDir.'/foo.jpg')
+        ;
+
+        $this->expectException(FileNotExistsException::class);
+        $resizer->resizeDeferredImage($deferredImage);
+    }
+
+    public function testResizeDeferredImageThrowsForMissingImage(): void
+    {
+        $storage = $this->createMock(DeferredImageStorageInterface::class);
+        $storage
+            ->expects($this->once())
+            ->method('getLocked')
+            ->with('foo.jpg', true)
+            ->willReturn([
+                'path' => $this->rootDir.'/foo.jpg',
+                'coordinates' => [
+                    'size' => [
+                        'width' => 100,
+                        'height' => 100,
+                    ],
+                    'crop' => [
+                        'x' => 0,
+                        'y' => 0,
+                        'width' => 100,
+                        'height' => 100,
+                    ],
+                ],
+                'options' => [
+                    'imagine_options' => [],
+                ],
+            ])
+        ;
+
+        $storage
+            ->expects($this->once())
+            ->method('releaseLock')
+            ->with('foo.jpg')
+        ;
+
+        $resizer = $this->createResizer(null, null, null, $storage);
+
+        $deferredImage = $this->createMock(DeferredImageInterface::class);
+        $deferredImage
+            ->method('getPath')
+            ->willReturn($this->rootDir.'/foo.jpg')
+        ;
+
+        $this->expectException(FileNotExistsException::class);
+        $resizer->resizeDeferredImage($deferredImage);
+    }
+
     public function testResizeDeferredImageDoesNotCatchStorageException(): void
     {
         $storageException = new \RuntimeException('From storage');
