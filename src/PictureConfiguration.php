@@ -12,6 +12,8 @@ declare(strict_types=1);
 
 namespace Contao\Image;
 
+use Contao\Image\Exception\InvalidArgumentException;
+
 class PictureConfiguration
 {
     public const FORMAT_DEFAULT = '.default';
@@ -62,7 +64,7 @@ class PictureConfiguration
     {
         foreach ($sizeItems as $sizeItem) {
             if (!$sizeItem instanceof PictureConfigurationItem) {
-                throw new \InvalidArgumentException('$sizeItems must be an array of PictureConfigurationItem objects');
+                throw new InvalidArgumentException('$sizeItems must be an array of PictureConfigurationItem objects');
             }
         }
 
@@ -114,6 +116,6 @@ class PictureConfiguration
             return;
         }
 
-        throw new \InvalidArgumentException(sprintf('Invalid image format "%s".', $format));
+        throw new InvalidArgumentException(sprintf('Invalid image format "%s".', $format));
     }
 }

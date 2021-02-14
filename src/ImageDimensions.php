@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Contao\Image;
 
+use Contao\Image\Exception\InvalidArgumentException;
 use Contao\ImagineSvg\RelativeBoxInterface;
 use Contao\ImagineSvg\SvgBox;
 use Contao\ImagineSvg\UndefinedBoxInterface;
@@ -56,7 +57,7 @@ class ImageDimensions
     public function __construct(BoxInterface $size, bool $relative = null, bool $undefined = null, int $orientation = self::ORIENTATION_NORMAL)
     {
         if ($orientation < 1 || $orientation > 8) {
-            throw new \InvalidArgumentException('Orientation must be one of the ImageDimensions::ORIENTATION_* constants');
+            throw new InvalidArgumentException('Orientation must be one of the ImageDimensions::ORIENTATION_* constants');
         }
 
         if (null === $relative) {

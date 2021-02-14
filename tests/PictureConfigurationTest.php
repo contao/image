@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Contao\Image\Tests;
 
+use Contao\Image\Exception\InvalidArgumentException;
 use Contao\Image\PictureConfiguration;
 use Contao\Image\PictureConfigurationItem;
 use PHPUnit\Framework\TestCase;
@@ -36,7 +37,7 @@ class PictureConfigurationTest extends TestCase
         $this->assertSame($config, $config->setSizeItems([$configItem]));
         $this->assertSame([$configItem], $config->getSizeItems());
 
-        $this->expectException('InvalidArgumentException');
+        $this->expectException(InvalidArgumentException::class);
 
         /** @psalm-suppress InvalidArgument */
         $config->setSizeItems([$configItem, 'not a PictureConfigurationItem']);

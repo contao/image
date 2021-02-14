@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Contao\Image\Tests;
 
+use Contao\Image\Exception\InvalidArgumentException;
 use Contao\Image\ImportantPart;
 use PHPUnit\Framework\TestCase;
 
@@ -39,7 +40,7 @@ class ImportantPartTest extends TestCase
      */
     public function testInvalidValuesThrowsException(float $x, float $y, float $width, float $height, string $message): void
     {
-        $this->expectException('InvalidArgumentException');
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessageMatches('/'.$message.'/i');
 
         new ImportantPart($x, $y, $width, $height);

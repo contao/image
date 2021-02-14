@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Contao\Image;
 
+use Contao\Image\Exception\InvalidArgumentException;
 use Imagine\Image\Box;
 use Imagine\Image\BoxInterface;
 use Imagine\Image\Point;
@@ -38,7 +39,7 @@ class ResizeCalculator
                     return $this->calculateBox($widthHeight, $dimensions, $importantPartArray, $zoom);
             }
 
-            throw new \InvalidArgumentException(sprintf('Unsupported resize mode "%s"', $config->getMode()));
+            throw new InvalidArgumentException(sprintf('Unsupported resize mode "%s"', $config->getMode()));
         }
 
         // If no dimensions are specified, use the zoomed important part

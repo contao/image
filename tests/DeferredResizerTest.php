@@ -15,6 +15,9 @@ namespace Contao\Image\Tests;
 use Contao\Image\DeferredImageInterface;
 use Contao\Image\DeferredImageStorageInterface;
 use Contao\Image\DeferredResizer;
+use Contao\Image\Exception\FileNotExistsException;
+use Contao\Image\Exception\InvalidArgumentException;
+use Contao\Image\Exception\RuntimeException;
 use Contao\Image\Image;
 use Contao\Image\ImageDimensions;
 use Contao\Image\ImportantPart;
@@ -230,7 +233,7 @@ class DeferredResizerTest extends TestCase
             ->willReturn($this->rootDir.'/../foo.jpg')
         ;
 
-        $this->expectException('InvalidArgumentException');
+        $this->expectException(InvalidArgumentException::class);
         $resizer->resizeDeferredImage($deferredImage);
     }
 
@@ -293,7 +296,7 @@ class DeferredResizerTest extends TestCase
             ->willReturn($this->rootDir.'/foo.jpg')
         ;
 
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
         $resizer->resizeDeferredImage($deferredImage, true);
     }
 
@@ -338,7 +341,7 @@ class DeferredResizerTest extends TestCase
             ->willReturn($this->rootDir.'/foo.jpg')
         ;
 
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $resizer->resizeDeferredImage($deferredImage);
     }
 

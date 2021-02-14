@@ -12,6 +12,8 @@ declare(strict_types=1);
 
 namespace Contao\Image;
 
+use Contao\Image\Exception\InvalidArgumentException;
+use Contao\Image\Exception\RuntimeException;
 use Imagine\Image\Box;
 use Imagine\Image\ImagineInterface;
 use Imagine\Image\Point;
@@ -78,7 +80,7 @@ class DeferredResizer extends Resizer implements DeferredResizerInterface
     public function resizeDeferredImage(DeferredImageInterface $image, bool $blocking = true): ?ImageInterface
     {
         if (!Path::isBasePath($this->cacheDir, $image->getPath())) {
-            throw new \InvalidArgumentException(sprintf('Path "%s" is not inside cache directory "%s"', $image->getPath(), $this->cacheDir));
+            throw new InvalidArgumentException(sprintf('Path "%s" is not inside cache directory "%s"', $image->getPath(), $this->cacheDir));
         }
 
         $targetPath = Path::makeRelative($image->getPath(), $this->cacheDir);
@@ -96,7 +98,7 @@ class DeferredResizer extends Resizer implements DeferredResizerInterface
 
         if (null === $config) {
             if ($blocking) {
-                throw new \RuntimeException(sprintf('Unable to acquire lock for "%s"', $targetPath));
+                throw new RuntimeException(sprintf('Unable to acquire lock for "%s"', $targetPath));
             }
 
             return null;

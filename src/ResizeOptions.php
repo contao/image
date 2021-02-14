@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Contao\Image;
 
+use Contao\Image\Exception\InvalidArgumentException;
 use Symfony\Component\Filesystem\Filesystem;
 
 class ResizeOptions
@@ -56,7 +57,7 @@ class ResizeOptions
     public function setTargetPath(?string $targetPath): self
     {
         if (null !== $targetPath && !(new Filesystem())->isAbsolutePath($targetPath)) {
-            throw new \InvalidArgumentException('"'.$targetPath.'" is not an absolute target path');
+            throw new InvalidArgumentException('"'.$targetPath.'" is not an absolute target path');
         }
 
         $this->targetPath = $targetPath;

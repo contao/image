@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Contao\Image\Tests;
 
+use Contao\Image\Exception\InvalidArgumentException;
 use Contao\Image\ResizeConfiguration;
 use PHPUnit\Framework\TestCase;
 
@@ -64,7 +65,7 @@ class ResizeConfigurationTest extends TestCase
         $this->assertSame($config, $config->setWidth(100));
         $this->assertSame(100, $config->getWidth());
 
-        $this->expectException('InvalidArgumentException');
+        $this->expectException(InvalidArgumentException::class);
 
         $config->setWidth(-1);
     }
@@ -77,7 +78,7 @@ class ResizeConfigurationTest extends TestCase
         $this->assertSame($config, $config->setHeight(100));
         $this->assertSame(100, $config->getHeight());
 
-        $this->expectException('InvalidArgumentException');
+        $this->expectException(InvalidArgumentException::class);
 
         $config->setHeight(-1);
     }
@@ -90,7 +91,7 @@ class ResizeConfigurationTest extends TestCase
         $this->assertSame($config, $config->setMode(ResizeConfiguration::MODE_BOX));
         $this->assertSame(ResizeConfiguration::MODE_BOX, $config->getMode());
 
-        $this->expectException('InvalidArgumentException');
+        $this->expectException(InvalidArgumentException::class);
 
         $config->setMode('invalid');
     }
@@ -103,7 +104,7 @@ class ResizeConfigurationTest extends TestCase
         $this->assertSame($config, $config->setZoomLevel(100));
         $this->assertSame(100, $config->getZoomLevel());
 
-        $this->expectException('InvalidArgumentException');
+        $this->expectException(InvalidArgumentException::class);
 
         $config->setZoomLevel(-1);
     }
@@ -112,7 +113,7 @@ class ResizeConfigurationTest extends TestCase
     {
         $config = new ResizeConfiguration();
 
-        $this->expectException('InvalidArgumentException');
+        $this->expectException(InvalidArgumentException::class);
 
         $config->setZoomLevel(101);
     }
