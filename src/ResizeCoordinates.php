@@ -75,6 +75,7 @@ class ResizeCoordinates
      */
     public function isEqualTo($coordinates): bool
     {
+        /** @var BoxInterface $coordinates */
         if ($coordinates instanceof BoxInterface) {
             $coordinates = new self($coordinates, new Point(0, 0), $coordinates);
         }
