@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Contao\Image\Tests;
 
+use Contao\Image\Exception\InvalidArgumentException;
 use Contao\Image\Image;
 use Contao\Image\ImageInterface;
 use Contao\Image\Picture;
@@ -82,7 +83,7 @@ class PictureTest extends TestCase
         $this->assertSame('custom attribute', $picture->getImg()['data-custom']);
         $this->assertSame('custom attribute', $picture->getImg('/')['data-custom']);
 
-        $this->expectException('InvalidArgumentException');
+        $this->expectException(InvalidArgumentException::class);
 
         $picture->getImg(null, 'https://example.com/images/');
     }
@@ -121,21 +122,21 @@ class PictureTest extends TestCase
         $this->assertSame('custom attribute', $picture->getSources()[0]['data-custom']);
         $this->assertSame('custom attribute', $picture->getSources('/')[0]['data-custom']);
 
-        $this->expectException('InvalidArgumentException');
+        $this->expectException(InvalidArgumentException::class);
 
         $picture->getSources(null, 'https://example.com/images/');
     }
 
     public function testMissingSrc(): void
     {
-        $this->expectException('InvalidArgumentException');
+        $this->expectException(InvalidArgumentException::class);
 
         new Picture(['srcset' => []], []);
     }
 
     public function testInvalidSrc(): void
     {
-        $this->expectException('InvalidArgumentException');
+        $this->expectException(InvalidArgumentException::class);
 
         new Picture(['src' => new \stdClass(), 'srcset' => []], []);
     }
@@ -144,7 +145,7 @@ class PictureTest extends TestCase
     {
         $image = $this->createMock(ImageInterface::class);
 
-        $this->expectException('InvalidArgumentException');
+        $this->expectException(InvalidArgumentException::class);
 
         new Picture(['src' => $image], []);
     }
@@ -153,7 +154,7 @@ class PictureTest extends TestCase
     {
         $image = $this->createMock(ImageInterface::class);
 
-        $this->expectException('InvalidArgumentException');
+        $this->expectException(InvalidArgumentException::class);
 
         new Picture(['src' => $image, 'srcset' => [[$image, '1x'], [new \stdClass(), '2x']]], []);
     }

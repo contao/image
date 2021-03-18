@@ -12,6 +12,10 @@ declare(strict_types=1);
 
 namespace Contao\Image;
 
+use Contao\Image\Exception\FileNotExistsException;
+use Contao\Image\Exception\InvalidArgumentException;
+use Contao\Image\Exception\JsonException;
+use Contao\Image\Exception\RuntimeException;
 use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Filesystem\Filesystem;
 use Webmozart\PathUtil\Path;
@@ -54,7 +58,7 @@ class DeferredImageStorageFilesystem implements DeferredImageStorageInterface
         $json = json_encode($value);
 
         if (JSON_ERROR_NONE !== json_last_error()) {
-            throw new \JsonException(json_last_error_msg());
+            throw new JsonException(json_last_error_msg());
         }
 
         $this->filesystem->dumpFile($this->getConfigPath($path), $json);
@@ -83,7 +87,7 @@ class DeferredImageStorageFilesystem implements DeferredImageStorageInterface
     {
         if (isset($this->locks[$path])) {
             if ($blocking) {
-                throw new \RuntimeException(sprintf('Lock for "%s" was already acquired', $path));
+                throw new RuntimeException(sprintf('Lock for "%s" was already acquired', $path));
             }
 
             return null;
@@ -92,14 +96,14 @@ class DeferredImageStorageFilesystem implements DeferredImageStorageInterface
         $configPath = $this->getConfigPath($path);
 
         if (!$handle = @fopen($configPath, 'r+') ?: @fopen($configPath, 'r')) {
-            throw new \RuntimeException(sprintf('Unable to open file "%s"', $configPath));
+            throw new FileNotExistsException(sprintf('Unable to open file "%s"', $configPath));
         }
 
         if (!flock($handle, LOCK_EX | ($blocking ? 0 : LOCK_NB))) {
             fclose($handle);
 
             if ($blocking) {
-                throw new \RuntimeException(sprintf('Unable to acquire lock for file "%s"', $configPath));
+                throw new RuntimeException(sprintf('Unable to acquire lock for file "%s"', $configPath));
             }
 
             return null;
@@ -116,7 +120,7 @@ class DeferredImageStorageFilesystem implements DeferredImageStorageInterface
     public function releaseLock(string $path): void
     {
         if (!isset($this->locks[$path])) {
-            throw new \RuntimeException(sprintf('No acquired lock for "%s" exists', $path));
+            throw new RuntimeException(sprintf('No acquired lock for "%s" exists', $path));
         }
 
         flock($this->locks[$path], LOCK_UN | LOCK_NB);
@@ -134,7 +138,7 @@ class DeferredImageStorageFilesystem implements DeferredImageStorageInterface
             $this->filesystem->remove($this->getConfigPath($path));
         } catch (IOException $exception) {
             if (!isset($this->locks[$path])) {
-                throw $exception;
+                throw new RuntimeException($exception->getMessage(), 0, $exception);
             }
 
             $this->releaseLock($path);
@@ -189,7 +193,7 @@ class DeferredImageStorageFilesystem implements DeferredImageStorageInterface
     private function getConfigPath(string $path): string
     {
         if (preg_match('(^/|/$|//|/\.\.|^\.\.)', $path)) {
-            throw new \InvalidArgumentException(sprintf('Invalid storage key "%s"', $path));
+            throw new InvalidArgumentException(sprintf('Invalid storage key "%s"', $path));
         }
 
         return $this->cacheDir.'/'.$path.self::PATH_SUFFIX;
@@ -203,11 +207,11 @@ class DeferredImageStorageFilesystem implements DeferredImageStorageInterface
         $content = json_decode($contents, true);
 
         if (JSON_ERROR_NONE !== json_last_error()) {
-            throw new \JsonException(json_last_error_msg());
+            throw new JsonException(json_last_error_msg());
         }
 
         if (!\is_array($content)) {
-            throw new \InvalidArgumentException(sprintf('Invalid JSON data: expected array, got "%s"', \gettype($content)));
+            throw new InvalidArgumentException(sprintf('Invalid JSON data: expected array, got "%s"', \gettype($content)));
         }
 
         return $content;

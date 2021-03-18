@@ -13,6 +13,9 @@ declare(strict_types=1);
 namespace Contao\Image\Tests;
 
 use Contao\Image\DeferredImageStorageFilesystem;
+use Contao\Image\Exception\InvalidArgumentException;
+use Contao\Image\Exception\JsonException;
+use Contao\Image\Exception\RuntimeException;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -109,7 +112,7 @@ class DeferredImageStorageFilesystemTest extends TestCase
 
         $storage->releaseLock($key);
 
-        $this->expectException('RuntimeException');
+        $this->expectException(RuntimeException::class);
 
         $storage->releaseLock($key);
     }
@@ -131,7 +134,7 @@ class DeferredImageStorageFilesystemTest extends TestCase
         }
         file_put_contents($this->rootDir.'/deferred/test.json', 'invalid JSON');
 
-        $this->expectException('JsonException');
+        $this->expectException(JsonException::class);
 
         $storage->get('test');
     }
@@ -145,7 +148,7 @@ class DeferredImageStorageFilesystemTest extends TestCase
         }
         file_put_contents($this->rootDir.'/deferred/test.json', '"JSON string instead of an array"');
 
-        $this->expectException('InvalidArgumentException');
+        $this->expectException(InvalidArgumentException::class);
 
         $storage->get('test');
     }
@@ -154,7 +157,7 @@ class DeferredImageStorageFilesystemTest extends TestCase
     {
         $storage = new DeferredImageStorageFilesystem($this->rootDir);
 
-        $this->expectException('JsonException');
+        $this->expectException(JsonException::class);
 
         $storage->set('foo', ["foo\x80bar"]);
     }
@@ -166,7 +169,7 @@ class DeferredImageStorageFilesystemTest extends TestCase
     {
         $storage = new DeferredImageStorageFilesystem($this->rootDir);
 
-        $this->expectException('InvalidArgumentException');
+        $this->expectException(InvalidArgumentException::class);
 
         $storage->set($key, []);
     }

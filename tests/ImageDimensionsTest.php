@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Contao\Image\Tests;
 
+use Contao\Image\Exception\InvalidArgumentException;
 use Contao\Image\ImageDimensions;
 use Contao\ImagineSvg\RelativeBoxInterface;
 use Contao\ImagineSvg\SvgBox;
@@ -36,7 +37,7 @@ class ImageDimensionsTest extends TestCase
 
         $this->assertSame(ImageDimensions::ORIENTATION_90, $dimensions->getOrientation());
 
-        $this->expectException('InvalidArgumentException');
+        $this->expectException(InvalidArgumentException::class);
 
         new ImageDimensions($size, null, null, 0);
     }

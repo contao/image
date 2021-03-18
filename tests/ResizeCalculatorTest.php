@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Contao\Image\Tests;
 
+use Contao\Image\Exception\InvalidArgumentException;
 use Contao\Image\ImageDimensions;
 use Contao\Image\ImportantPart;
 use Contao\Image\ResizeCalculator;
@@ -753,7 +754,7 @@ class ResizeCalculatorTest extends TestCase
 
         $dimensions = new ImageDimensions(new Box(100, 100));
 
-        $this->expectException('InvalidArgumentException');
+        $this->expectException(InvalidArgumentException::class);
 
         $calculator->calculate($config, $dimensions);
     }

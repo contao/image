@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Contao\Image\Tests;
 
+use Contao\Image\Exception\InvalidArgumentException;
 use Contao\Image\ResizeOptions;
 use PHPUnit\Framework\TestCase;
 
@@ -38,7 +39,7 @@ class ResizeOptionsTest extends TestCase
 
         $this->assertNull($options->getTargetPath());
 
-        $this->expectException('InvalidArgumentException');
+        $this->expectException(InvalidArgumentException::class);
 
         $options->setTargetPath('invalid/relative/path');
     }

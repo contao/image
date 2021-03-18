@@ -12,6 +12,8 @@ declare(strict_types=1);
 
 namespace Contao\Image\Tests;
 
+use Contao\Image\Exception\FileNotExistsException;
+use Contao\Image\Exception\InvalidArgumentException;
 use Contao\Image\Image;
 use Contao\Image\ImageDimensions;
 use Contao\Image\ImportantPart;
@@ -57,14 +59,14 @@ class ImageTest extends TestCase
 
     public function testConstructorNonExistentPath(): void
     {
-        $this->expectException('InvalidArgumentException');
+        $this->expectException(FileNotExistsException::class);
 
         new Image('/path/to/non/existent/file.jpg', $this->createMock(ImagineInterface::class));
     }
 
     public function testConstructorDirPath(): void
     {
-        $this->expectException('InvalidArgumentException');
+        $this->expectException(FileNotExistsException::class);
         $this->createImage(__DIR__);
     }
 
@@ -76,7 +78,7 @@ class ImageTest extends TestCase
             ->willReturn(false)
         ;
 
-        $this->expectException('InvalidArgumentException');
+        $this->expectException(FileNotExistsException::class);
         $this->createImage(null, null, $filesystem);
     }
 
@@ -103,7 +105,7 @@ class ImageTest extends TestCase
         $this->assertSame('a/filename%20with%20special%26%3C%3E%22%27%252Fchars.jpeg', $image->getUrl('/path/to'));
         $this->assertSame('filename%20with%20special%26%3C%3E%22%27%252Fchars.jpeg', $image->getUrl('/path/to/a'));
 
-        $this->expectException('InvalidArgumentException');
+        $this->expectException(InvalidArgumentException::class);
 
         $image->getUrl('/path/t');
     }
@@ -153,7 +155,7 @@ class ImageTest extends TestCase
 
         $image = $this->createImage('C:\path/subdir\..\to\a/file.png');
 
-        $this->expectException('InvalidArgumentException');
+        $this->expectException(InvalidArgumentException::class);
 
         $image->getUrl('C:\path/subdir');
     }

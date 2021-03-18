@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Contao\Image;
 
+use Contao\Image\Exception\InvalidArgumentException;
 use Imagine\Image\BoxInterface;
 use Imagine\Image\Point;
 use Imagine\Image\PointInterface;
@@ -74,12 +75,13 @@ class ResizeCoordinates
      */
     public function isEqualTo($coordinates): bool
     {
+        /** @var BoxInterface $coordinates */
         if ($coordinates instanceof BoxInterface) {
             $coordinates = new self($coordinates, new Point(0, 0), $coordinates);
         }
 
         if (!$coordinates instanceof self) {
-            throw new \InvalidArgumentException(sprintf('$coordinates must be an instance of ResizeCoordinates or BoxInterface, "%s" given', \get_class($coordinates)));
+            throw new InvalidArgumentException(sprintf('$coordinates must be an instance of ResizeCoordinates or BoxInterface, "%s" given', \get_class($coordinates)));
         }
 
         /** @var self $coordinates */

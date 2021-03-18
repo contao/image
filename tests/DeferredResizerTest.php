@@ -15,6 +15,9 @@ namespace Contao\Image\Tests;
 use Contao\Image\DeferredImageInterface;
 use Contao\Image\DeferredImageStorageInterface;
 use Contao\Image\DeferredResizer;
+use Contao\Image\Exception\FileNotExistsException;
+use Contao\Image\Exception\InvalidArgumentException;
+use Contao\Image\Exception\RuntimeException;
 use Contao\Image\Image;
 use Contao\Image\ImageDimensions;
 use Contao\Image\ImportantPart;
@@ -230,7 +233,66 @@ class DeferredResizerTest extends TestCase
             ->willReturn($this->rootDir.'/../foo.jpg')
         ;
 
-        $this->expectException('InvalidArgumentException');
+        $this->expectException(InvalidArgumentException::class);
+        $resizer->resizeDeferredImage($deferredImage);
+    }
+
+    public function testResizeDeferredImageThrowsForMissingJson(): void
+    {
+        $resizer = $this->createResizer();
+
+        $deferredImage = $this->createMock(DeferredImageInterface::class);
+        $deferredImage
+            ->method('getPath')
+            ->willReturn($this->rootDir.'/foo.jpg')
+        ;
+
+        $this->expectException(FileNotExistsException::class);
+        $resizer->resizeDeferredImage($deferredImage);
+    }
+
+    public function testResizeDeferredImageThrowsForMissingImage(): void
+    {
+        $storage = $this->createMock(DeferredImageStorageInterface::class);
+        $storage
+            ->expects($this->once())
+            ->method('getLocked')
+            ->with('foo.jpg', true)
+            ->willReturn([
+                'path' => $this->rootDir.'/foo.jpg',
+                'coordinates' => [
+                    'size' => [
+                        'width' => 100,
+                        'height' => 100,
+                    ],
+                    'crop' => [
+                        'x' => 0,
+                        'y' => 0,
+                        'width' => 100,
+                        'height' => 100,
+                    ],
+                ],
+                'options' => [
+                    'imagine_options' => [],
+                ],
+            ])
+        ;
+
+        $storage
+            ->expects($this->once())
+            ->method('releaseLock')
+            ->with('foo.jpg')
+        ;
+
+        $resizer = $this->createResizer(null, null, null, $storage);
+
+        $deferredImage = $this->createMock(DeferredImageInterface::class);
+        $deferredImage
+            ->method('getPath')
+            ->willReturn($this->rootDir.'/foo.jpg')
+        ;
+
+        $this->expectException(FileNotExistsException::class);
         $resizer->resizeDeferredImage($deferredImage);
     }
 
@@ -293,7 +355,7 @@ class DeferredResizerTest extends TestCase
             ->willReturn($this->rootDir.'/foo.jpg')
         ;
 
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
         $resizer->resizeDeferredImage($deferredImage, true);
     }
 
@@ -338,7 +400,7 @@ class DeferredResizerTest extends TestCase
             ->willReturn($this->rootDir.'/foo.jpg')
         ;
 
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $resizer->resizeDeferredImage($deferredImage);
     }
 

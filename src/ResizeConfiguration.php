@@ -12,6 +12,8 @@ declare(strict_types=1);
 
 namespace Contao\Image;
 
+use Contao\Image\Exception\InvalidArgumentException;
+
 class ResizeConfiguration
 {
     public const MODE_CROP = 'crop';
@@ -54,7 +56,7 @@ class ResizeConfiguration
     public function setWidth(int $width): self
     {
         if ($width < 0) {
-            throw new \InvalidArgumentException('Width must not be negative');
+            throw new InvalidArgumentException('Width must not be negative');
         }
 
         $this->width = $width;
@@ -70,7 +72,7 @@ class ResizeConfiguration
     public function setHeight(int $height): self
     {
         if ($height < 0) {
-            throw new \InvalidArgumentException('Height must not be negative');
+            throw new InvalidArgumentException('Height must not be negative');
         }
 
         $this->height = $height;
@@ -92,7 +94,7 @@ class ResizeConfiguration
     public function setMode(string $mode): self
     {
         if (!\in_array($mode, [self::MODE_CROP, self::MODE_BOX, self::MODE_PROPORTIONAL], true)) {
-            throw new \InvalidArgumentException('Mode must be one of the '.self::class.'::MODE_* constants');
+            throw new InvalidArgumentException('Mode must be one of the '.self::class.'::MODE_* constants');
         }
 
         $this->mode = $mode;
@@ -108,7 +110,7 @@ class ResizeConfiguration
     public function setZoomLevel(int $zoomLevel): self
     {
         if ($zoomLevel < 0 || $zoomLevel > 100) {
-            throw new \InvalidArgumentException('Zoom level must be between 0 and 100');
+            throw new InvalidArgumentException('Zoom level must be between 0 and 100');
         }
 
         $this->zoomLevel = $zoomLevel;

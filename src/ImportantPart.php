@@ -12,6 +12,8 @@ declare(strict_types=1);
 
 namespace Contao\Image;
 
+use Contao\Image\Exception\CoordinatesOutOfBoundsException;
+
 class ImportantPart
 {
     /**
@@ -42,12 +44,12 @@ class ImportantPart
     public function __construct(float $x = 0, float $y = 0, float $width = 1, float $height = 1)
     {
         if ($x < 0 || $x > 1 || $y < 0 || $y > 1 || $width < 0 || $width > 1 || $height < 0 || $height > 1) {
-            throw new \InvalidArgumentException('X, Y, width and height must be a float between 0 and 1');
+            throw new CoordinatesOutOfBoundsException('X, Y, width and height must be a float between 0 and 1');
         }
 
         if ($x + $width > 1) {
             if ($x + $width - 1 > self::ROUNDING_ERROR_THRESHOLD) {
-                throw new \InvalidArgumentException('The X coordinate plus the width must not be greater than 1');
+                throw new CoordinatesOutOfBoundsException('The X coordinate plus the width must not be greater than 1');
             }
 
             $width = 1 - $x;
@@ -55,7 +57,7 @@ class ImportantPart
 
         if ($y + $height > 1) {
             if ($y + $height - 1 > self::ROUNDING_ERROR_THRESHOLD) {
-                throw new \InvalidArgumentException('The Y coordinate plus the height must not be greater than 1');
+                throw new CoordinatesOutOfBoundsException('The Y coordinate plus the height must not be greater than 1');
             }
 
             $height = 1 - $y;

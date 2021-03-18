@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Contao\Image\Tests;
 
+use Contao\Image\Exception\InvalidArgumentException;
 use Contao\Image\PictureConfiguration;
 use Contao\Image\PictureConfigurationItem;
 use PHPUnit\Framework\TestCase;
@@ -36,9 +37,54 @@ class PictureConfigurationTest extends TestCase
         $this->assertSame($config, $config->setSizeItems([$configItem]));
         $this->assertSame([$configItem], $config->getSizeItems());
 
-        $this->expectException('InvalidArgumentException');
+        $this->expectException(InvalidArgumentException::class);
 
         /** @psalm-suppress InvalidArgument */
         $config->setSizeItems([$configItem, 'not a PictureConfigurationItem']);
+    }
+
+    public function testSetFormats(): void
+    {
+        $config = new PictureConfiguration();
+
+        $this->assertSame(
+            [PictureConfiguration::FORMAT_DEFAULT => [PictureConfiguration::FORMAT_DEFAULT]],
+            $config->getFormats()
+        );
+
+        $formats = ['png' => ['webp', 'png'], 'jpeg' => ['heic']];
+        $expected = $formats + [PictureConfiguration::FORMAT_DEFAULT => [PictureConfiguration::FORMAT_DEFAULT]];
+
+        $this->assertSame($config, $config->setFormats($formats));
+        $this->assertSame($expected, $config->getFormats());
+
+        $formats = ['png' => ['webp', 'png'], PictureConfiguration::FORMAT_DEFAULT => ['heic']];
+        $expected = $formats;
+
+        $this->assertSame($config, $config->setFormats($formats));
+        $this->assertSame($expected, $config->getFormats());
+
+        $this->assertSame($config, $config->setFormats([]));
+
+        $this->assertSame(
+            [PictureConfiguration::FORMAT_DEFAULT => [PictureConfiguration::FORMAT_DEFAULT]],
+            $config->getFormats()
+        );
+    }
+
+    public function testSetFormatsThrowsForInvalidSourceFormat(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('"not-valid"');
+
+        (new PictureConfiguration())->setFormats(['not-valid' => ['png']]);
+    }
+
+    public function testSetFormatsThrowsForInvalidTargetFormat(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('"not-valid"');
+
+        (new PictureConfiguration())->setFormats(['png' => ['not-valid']]);
     }
 }

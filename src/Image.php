@@ -12,6 +12,8 @@ declare(strict_types=1);
 
 namespace Contao\Image;
 
+use Contao\Image\Exception\FileNotExistsException;
+use Contao\Image\Exception\InvalidArgumentException;
 use Contao\ImagineSvg\Image as SvgImage;
 use Contao\ImagineSvg\Imagine as SvgImagine;
 use DOMDocument;
@@ -58,11 +60,11 @@ class Image implements ImageInterface
         }
 
         if (!$filesystem->exists($path)) {
-            throw new \InvalidArgumentException($path.' does not exist');
+            throw new FileNotExistsException($path.' does not exist');
         }
 
         if (is_dir($path)) {
-            throw new \InvalidArgumentException($path.' is a directory');
+            throw new FileNotExistsException($path.' is a directory');
         }
 
         $this->path = $path;
@@ -91,7 +93,7 @@ class Image implements ImageInterface
     public function getUrl(string $rootDir, string $prefix = ''): string
     {
         if (!Path::isBasePath($rootDir, $this->path)) {
-            throw new \InvalidArgumentException(sprintf('Path "%s" is not inside root directory "%s"', $this->path, $rootDir));
+            throw new InvalidArgumentException(sprintf('Path "%s" is not inside root directory "%s"', $this->path, $rootDir));
         }
 
         $url = Path::makeRelative($this->path, $rootDir);

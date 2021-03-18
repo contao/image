@@ -23,6 +23,7 @@ class PictureConfigurationItemTest extends TestCase
         $config = new PictureConfigurationItem();
         $resizeConfig = $this->createMock(ResizeConfiguration::class);
 
+        $this->assertTrue($config->getResizeConfig()->isEmpty());
         $this->assertSame($config, $config->setResizeConfig($resizeConfig));
         $this->assertSame($resizeConfig, $config->getResizeConfig());
     }

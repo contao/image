@@ -12,6 +12,8 @@ declare(strict_types=1);
 
 namespace Contao\Image;
 
+use Contao\Image\Exception\InvalidArgumentException;
+
 class Picture implements PictureInterface
 {
     /**
@@ -44,7 +46,7 @@ class Picture implements PictureInterface
     {
         if (null === $rootDir) {
             if ('' !== $prefix) {
-                throw new \InvalidArgumentException(sprintf('Prefix must no be specified if rootDir is null, given "%s"', $prefix));
+                throw new InvalidArgumentException(sprintf('Prefix must no be specified if rootDir is null, given "%s"', $prefix));
             }
 
             return $this->img;
@@ -60,7 +62,7 @@ class Picture implements PictureInterface
     {
         if (null === $rootDir) {
             if ('' !== $prefix) {
-                throw new \InvalidArgumentException(sprintf('Prefix must no be specified if rootDir is null, given "%s"', $prefix));
+                throw new InvalidArgumentException(sprintf('Prefix must no be specified if rootDir is null, given "%s"', $prefix));
             }
 
             return $this->sources;
@@ -104,11 +106,11 @@ class Picture implements PictureInterface
     private function validateSrcAttribute(array $img): void
     {
         if (!isset($img['src'])) {
-            throw new \InvalidArgumentException('Missing src attribute');
+            throw new InvalidArgumentException('Missing src attribute');
         }
 
         if (!$img['src'] instanceof ImageInterface) {
-            throw new \InvalidArgumentException('Src must be of type ImageInterface');
+            throw new InvalidArgumentException('Src must be of type ImageInterface');
         }
     }
 
@@ -118,12 +120,12 @@ class Picture implements PictureInterface
     private function validateSrcsetAttribute(array $img): void
     {
         if (!isset($img['srcset'])) {
-            throw new \InvalidArgumentException('Missing srcset attribute');
+            throw new InvalidArgumentException('Missing srcset attribute');
         }
 
         foreach ($img['srcset'] as $src) {
             if (!$src[0] instanceof ImageInterface) {
-                throw new \InvalidArgumentException('Srcsets must be of type ImageInterface');
+                throw new InvalidArgumentException('Srcsets must be of type ImageInterface');
             }
         }
     }
