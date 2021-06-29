@@ -4,10 +4,11 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+ * Fix resize calculation ending up with zero. [#82]
 
 ## [1.1.0] (2021-03-18)
 
-* Add namespaced exceptions and a specific `FileNotExistsException`. [#79]
+ * Add namespaced exceptions and a specific `FileNotExistsException`. [#79]
 
 ## [1.0.3] (2020-11-20)
 
@@ -145,6 +146,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 [0.2.0]: https://github.com/contao/image/compare/0.1.0...0.2.0
 [0.1.0]: https://github.com/contao/image/commits/0.1.0
 
+[#82]: https://github.com/contao/image/issues/82
 [#79]: https://github.com/contao/image/issues/79
 [#74]: https://github.com/contao/image/issues/74
 [#71]: https://github.com/contao/image/issues/71

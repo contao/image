@@ -222,20 +222,22 @@ class ResizeCalculator
             $scale = $original->getSize()->getWidth() / $size[0];
         }
 
-        return new ResizeCoordinates(
-            new Box(
-                (int) round($size[0] * $scale),
-                (int) round($size[1] * $scale)
-            ),
-            new Point(
-                (int) round($cropStart[0] * $scale),
-                (int) round($cropStart[1] * $scale)
-            ),
-            new Box(
-                (int) round($cropSize[0] * $scale),
-                (int) round($cropSize[1] * $scale)
-            )
+        $sizeBox = new Box(
+            (int) max(round($size[0] * $scale), 1),
+            (int) max(round($size[1] * $scale), 1)
         );
+
+        $cropPoint = new Point(
+            (int) min(round($cropStart[0] * $scale), $sizeBox->getWidth() - 1),
+            (int) min(round($cropStart[1] * $scale), $sizeBox->getHeight() - 1)
+        );
+
+        $cropBox = new Box(
+            (int) max(round($cropSize[0] * $scale), 1),
+            (int) max(round($cropSize[1] * $scale), 1)
+        );
+
+        return new ResizeCoordinates($sizeBox, $cropPoint, $cropBox);
     }
 
     /**

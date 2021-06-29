@@ -521,6 +521,54 @@ class ResizeCalculatorTest extends TestCase
                 'target_height' => 200,
             ],
         ];
+
+        yield 'Do not round down to crop height zero' => [
+            [1000, 1, 100, 100, 'crop'],
+            [
+                'width' => 100,
+                'height' => 1,
+                'target_x' => 0,
+                'target_y' => 50,
+                'target_width' => 100,
+                'target_height' => 100,
+            ],
+        ];
+
+        yield 'Do not round down to crop width zero' => [
+            [1, 1000, 100, 100, 'crop'],
+            [
+                'width' => 1,
+                'height' => 100,
+                'target_x' => 50,
+                'target_y' => 0,
+                'target_width' => 100,
+                'target_height' => 100,
+            ],
+        ];
+
+        yield 'Do not round down to resize height zero' => [
+            [100, 100, 1000, 1, 'box'],
+            [
+                'width' => 100,
+                'height' => 1,
+                'target_x' => 0,
+                'target_y' => 0,
+                'target_width' => 100,
+                'target_height' => 1,
+            ],
+        ];
+
+        yield 'Do not round down to resize width zero' => [
+            [100, 100, 1, 1000, 'box'],
+            [
+                'width' => 1,
+                'height' => 100,
+                'target_x' => 0,
+                'target_y' => 0,
+                'target_width' => 1,
+                'target_height' => 100,
+            ],
+        ];
     }
 
     /**
@@ -725,6 +773,54 @@ class ResizeCalculatorTest extends TestCase
                 'target_y' => 150,
                 'target_width' => 1000,
                 'target_height' => 500,
+            ],
+        ];
+
+        yield 'Do not round down to crop height zero' => [
+            [1000, 1, 100, 100, 'crop', 100, ['x' => 25, 'y' => 25, 'width' => 50, 'height' => 50]],
+            [
+                'width' => 100,
+                'height' => 1,
+                'target_x' => 0,
+                'target_y' => 50,
+                'target_width' => 100,
+                'target_height' => 100,
+            ],
+        ];
+
+        yield 'Do not round down to crop width zero' => [
+            [1, 1000, 100, 100, 'crop', 100, ['x' => 25, 'y' => 25, 'width' => 50, 'height' => 50]],
+            [
+                'width' => 1,
+                'height' => 100,
+                'target_x' => 50,
+                'target_y' => 0,
+                'target_width' => 100,
+                'target_height' => 100,
+            ],
+        ];
+
+        yield 'Do not round down to resize height zero' => [
+            [100, 100, 1000, 1, 'box', 100, ['x' => 250, 'y' => 0, 'width' => 500, 'height' => 1]],
+            [
+                'width' => 100,
+                'height' => 1,
+                'target_x' => 50,
+                'target_y' => 0,
+                'target_width' => 200,
+                'target_height' => 1,
+            ],
+        ];
+
+        yield 'Do not round down to resize width zero' => [
+            [100, 100, 1, 1000, 'box', 100, ['x' => 1, 'y' => 250, 'width' => 0, 'height' => 500]],
+            [
+                'width' => 1,
+                'height' => 100,
+                'target_x' => 0,
+                'target_y' => 50,
+                'target_width' => 1,
+                'target_height' => 200,
             ],
         ];
     }
