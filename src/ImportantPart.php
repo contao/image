@@ -16,9 +16,6 @@ use Contao\Image\Exception\CoordinatesOutOfBoundsException;
 
 class ImportantPart
 {
-    /**
-     * @var float
-     */
     private const ROUNDING_ERROR_THRESHOLD = 1 / 100000;
 
     /**
