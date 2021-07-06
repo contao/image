@@ -19,7 +19,7 @@ jobs:
             - name: Setup PHP
               uses: shivammathur/setup-php@v2
               with:
-                  php-version: 7.4
+                  php-version: 8.0
                   extensions: dom, fileinfo, filter, gd, hash, intl, json, mbstring, pcre, pdo, zlib
                   tools: prestissimo, flex
                   coverage: pcov
@@ -47,7 +47,7 @@ jobs:
             - name: Setup PHP
               uses: shivammathur/setup-php@v2
               with:
-                  php-version: 7.4
+                  php-version: 8.0
                   extensions: dom, fileinfo, filter, gd, hash, intl, json, mbstring, pcre, pdo, zlib
                   tools: prestissimo, flex
                   coverage: none
@@ -94,15 +94,15 @@ jobs:
             - name: Run the unit tests
               run: vendor/bin/phpunit --colors=always
 
-    prefer-lowest:
-        name: Prefer Lowest
+    nightly:
+        name: PHP 8.1
         runs-on: ubuntu-latest
         if: github.event_name != 'push'
         steps:
             - name: Setup PHP
               uses: shivammathur/setup-php@v2
               with:
-                  php-version: 7.4
+                  php-version: 8.1
                   extensions: dom, fileinfo, filter, gd, hash, intl, json, mbstring, pcre, pdo_mysql, zlib
                   tools: prestissimo, flex
                   coverage: none
@@ -111,7 +111,35 @@ jobs:
               uses: actions/checkout@v2
 
             - name: Install the dependencies
-              run: composer update --prefer-lowest --prefer-stable --no-interaction --no-suggest --no-progress
+              run: composer install --no-interaction --no-suggest --no-progress --ignore-platform-req=php
+
+            - name: Run the unit tests
+              run: vendor/bin/phpunit --colors=always
+
+    prefer-lowest:
+        name: Prefer Lowest PHP ${{ matrix.php }}
+        runs-on: ubuntu-latest
+        if: github.event_name != 'push'
+        strategy:
+            fail-fast: false
+            matrix:
+                php: [7.2, 7.4, 8]
+        steps:
+            - name: Setup PHP
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: ${{ matrix.php }}
+                  extensions: dom, fileinfo, filter, gd, hash, intl, json, mbstring, pcre, pdo_mysql, zlib
+                  tools: prestissimo, flex
+                  coverage: none
+
+            - name: Checkout
+              uses: actions/checkout@v2
+
+            - name: Install the dependencies
+              run: |
+                  if [ "${{ matrix.php }}" = "8" ]; then composer require imagine/imagine:1.2.4 contao/imagine-svg:1.0.2 --no-update; fi
+                  composer update --prefer-lowest --prefer-stable --no-interaction --no-suggest --no-progress
 
             - name: Run the unit tests
               run: vendor/bin/phpunit --colors=always
@@ -124,7 +152,7 @@ jobs:
             - name: Setup PHP
               uses: shivammathur/setup-php@v2
               with:
-                  php-version: 7.4
+                  php-version: 8.0
                   extensions: dom, fileinfo, filter, gd, hash, intl, json, mbstring, pcre, pdo_mysql, zlib
                   ini-values: memory_limit=1G
                   tools: prestissimo, flex
