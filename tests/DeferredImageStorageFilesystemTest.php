@@ -93,7 +93,7 @@ class DeferredImageStorageFilesystemTest extends TestCase
             $storage->getLocked($key, true);
             $this->fail('Self locked file should throw for blocking lock.');
         } catch (\RuntimeException $e) {
-            $this->assertRegExp('/already acquired/', $e->getMessage());
+            $this->assertMatchesRegularExpression('/already acquired/', $e->getMessage());
         }
 
         $storage->releaseLock($key);
@@ -212,5 +212,14 @@ class DeferredImageStorageFilesystemTest extends TestCase
         $storage = new DeferredImageStorageFilesystem('/path/does/not/exist');
 
         $this->assertCount(0, $storage->listPaths());
+    }
+
+    public static function assertMatchesRegularExpression(string $pattern, string $string, string $message = ''): void
+    {
+        if (method_exists(parent::class, 'assertMatchesRegularExpression')) {
+            parent::assertMatchesRegularExpression($pattern, $string, $message);
+        } else {
+            parent::assertRegExp($pattern, $string, $message);
+        }
     }
 }

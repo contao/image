@@ -2,3 +2,4 @@ parameters:
     ignoreErrors:
         - '#Contao\\ImagineSvg\\UndefinedBox#'
         - '#Contao\\ImagineSvg\\RelativeBox#'
+        - '#"ResizeConfigurationInterface" has been deprecated#'
