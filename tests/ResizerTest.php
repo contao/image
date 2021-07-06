@@ -113,7 +113,7 @@ class ResizerTest extends TestCase
                 );
 
                 $this->assertEquals(new ImageDimensions(new Box(100, 100)), $resizedImage->getDimensions());
-                $this->assertRegExp('(/[0-9a-f]/dummy-[0-9a-f]{8}.jpg$)', $resizedImage->getPath());
+                $this->assertMatchesRegularExpression('(/[0-9a-f]/dummy-[0-9a-f]{8}.jpg$)', $resizedImage->getPath());
                 $this->assertFilePermissions(0666, $resizedImage->getPath());
 
                 unlink($resizedImage->getPath());
@@ -202,7 +202,7 @@ class ResizerTest extends TestCase
         $this->assertSame(100, $resizedImage->getDimensions()->getSize()->getHeight());
         $this->assertFalse($resizedImage->getDimensions()->isRelative());
         $this->assertFalse($resizedImage->getDimensions()->isUndefined());
-        $this->assertRegExp('(/[0-9a-f]/dummy-[0-9a-f]{8}.svg$)', $resizedImage->getPath());
+        $this->assertMatchesRegularExpression('(/[0-9a-f]/dummy-[0-9a-f]{8}.svg$)', $resizedImage->getPath());
         $this->assertFilePermissions(0666, $resizedImage->getPath());
 
         unlink($resizedImage->getPath());
@@ -262,7 +262,7 @@ class ResizerTest extends TestCase
         $resizedImage = $resizer->resize($image, $configuration, new ResizeOptions());
 
         $this->assertEquals(new ImageDimensions(new Box(100, 100)), $resizedImage->getDimensions());
-        $this->assertRegExp('(/[0-9a-f]/dummy-[0-9a-f]{8}.jpg$)', $resizedImage->getPath());
+        $this->assertMatchesRegularExpression('(/[0-9a-f]/dummy-[0-9a-f]{8}.jpg$)', $resizedImage->getPath());
         $this->assertFilePermissions(0666, $resizedImage->getPath());
 
         $imagePath = $resizedImage->getPath();
@@ -418,7 +418,7 @@ class ResizerTest extends TestCase
 
         $resizedImage = $resizer->resize($image, $configuration, new ResizeOptions());
 
-        $this->assertRegExp('(/[0-9a-f]/dummy-[0-9a-f]{8}.jpg$)', $resizedImage->getPath());
+        $this->assertMatchesRegularExpression('(/[0-9a-f]/dummy-[0-9a-f]{8}.jpg$)', $resizedImage->getPath());
         $this->assertNotSame($image, $resizedImage);
     }
 
@@ -511,7 +511,7 @@ class ResizerTest extends TestCase
                 ->setImagineOptions(['format' => 'png'])
         );
 
-        $this->assertRegExp('(/[0-9a-f]/dummy-[0-9a-f]{8}.png$)', $resizedImage->getPath());
+        $this->assertMatchesRegularExpression('(/[0-9a-f]/dummy-[0-9a-f]{8}.png$)', $resizedImage->getPath());
         $this->assertNotSame($image, $resizedImage);
     }
 
@@ -615,7 +615,7 @@ class ResizerTest extends TestCase
         $this->assertSame(100, $resizedImage->getDimensions()->getSize()->getWidth());
         $this->assertSame(100, $resizedImage->getDimensions()->getSize()->getHeight());
         $this->assertFalse($resizedImage->getDimensions()->isRelative());
-        $this->assertRegExp('(/[0-9a-f]/dummy-[0-9a-f]{8}.svg$)', $resizedImage->getPath());
+        $this->assertMatchesRegularExpression('(/[0-9a-f]/dummy-[0-9a-f]{8}.svg$)', $resizedImage->getPath());
 
         unlink($resizedImage->getPath());
     }
@@ -659,7 +659,7 @@ class ResizerTest extends TestCase
 
         $resizedImage = $resizer->resize($image, $configuration, new ResizeOptions());
 
-        $this->assertRegExp('(/[0-9a-f]/dummy-[0-9a-f]{8}.jpg$)', $resizedImage->getPath());
+        $this->assertMatchesRegularExpression('(/[0-9a-f]/dummy-[0-9a-f]{8}.jpg$)', $resizedImage->getPath());
         $this->assertNotSame($image, $resizedImage);
     }
 
@@ -702,8 +702,17 @@ class ResizerTest extends TestCase
 
         $resizedImage = $resizer->resize($image, $configuration, new ResizeOptions());
 
-        $this->assertRegExp('(/[0-9a-f]/dummy-[0-9a-f]{8}.jpg$)', $resizedImage->getPath());
+        $this->assertMatchesRegularExpression('(/[0-9a-f]/dummy-[0-9a-f]{8}.jpg$)', $resizedImage->getPath());
         $this->assertNotSame($image, $resizedImage);
+    }
+
+    public static function assertMatchesRegularExpression(string $pattern, string $string, string $message = ''): void
+    {
+        if (method_exists(parent::class, 'assertMatchesRegularExpression')) {
+            parent::assertMatchesRegularExpression($pattern, $string, $message);
+        } else {
+            parent::assertRegExp($pattern, $string, $message);
+        }
     }
 
     private function createResizer(string $cacheDir = null, ResizeCalculator $calculator = null, Filesystem $filesystem = null): Resizer
