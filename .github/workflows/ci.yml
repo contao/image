@@ -75,7 +75,7 @@ jobs:
         strategy:
             fail-fast: false
             matrix:
-                php: [7.2, 7.3, 7.4, 8.0]
+                php: [7.1, 7.2, 7.3, 7.4, 8.0]
         steps:
             - name: Setup PHP
               uses: shivammathur/setup-php@v2
@@ -145,14 +145,18 @@ jobs:
               run: vendor/bin/phpunit --colors=always
 
     windows:
-        name: Windows
+        name: Windows PHP ${{ matrix.php }}
         runs-on: windows-latest
         if: github.event_name != 'push'
+        strategy:
+            fail-fast: false
+            matrix:
+                php: [7.1, 7.2, 7.3, 7.4, 8.0]
         steps:
             - name: Setup PHP
               uses: shivammathur/setup-php@v2
               with:
-                  php-version: 8.0
+                  php-version: ${{ matrix.php }}
                   extensions: dom, fileinfo, filter, gd, hash, intl, json, mbstring, pcre, pdo_mysql, zlib
                   ini-values: memory_limit=1G
                   tools: prestissimo, flex
