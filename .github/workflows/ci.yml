@@ -61,7 +61,7 @@ jobs:
                   composer bin all install --no-interaction --no-progress
 
             - name: Check the coding style
-              run: tools/ecs/vendor/bin/ecs check src tests --config tools/ecs/vendor/contao/easy-coding-standard/config/default.php --no-progress-bar --ansi
+              run: tools/ecs/vendor/bin/ecs check src tests --config ecs.php --no-progress-bar --ansi
 
             - name: Analyze the code
               run: |
@@ -123,7 +123,7 @@ jobs:
         strategy:
             fail-fast: false
             matrix:
-                php: [7.2, 7.4, 8]
+                php: [7.1, 7.2, 7.4, 8.0]
         steps:
             - name: Setup PHP
               uses: shivammathur/setup-php@v2

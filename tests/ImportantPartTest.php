@@ -41,7 +41,12 @@ class ImportantPartTest extends TestCase
     public function testInvalidValuesThrowsException(float $x, float $y, float $width, float $height, string $message): void
     {
         $this->expectException(CoordinatesOutOfBoundsException::class);
-        $this->expectExceptionMessageMatches('/'.$message.'/i');
+
+        if (method_exists($this, 'expectExceptionMessageRegExp')) {
+            $this->expectExceptionMessageRegExp('/'.$message.'/i');
+        } else {
+            $this->expectExceptionMessageMatches('/'.$message.'/i');
+        }
 
         new ImportantPart($x, $y, $width, $height);
     }

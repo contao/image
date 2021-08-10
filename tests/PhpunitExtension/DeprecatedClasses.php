@@ -15,6 +15,13 @@ namespace Contao\Image\Tests\PhpunitExtension;
 use Contao\TestCase\DeprecatedClassesPhpunitExtension;
 use Imagine\Image\Metadata\MetadataBag;
 
+// PHPUnit 7.5 compatibility
+if (!class_exists(DeprecatedClassesPhpunitExtension::class)) {
+    eval('namespace Contao\Image\Tests\PhpunitExtension; class DeprecatedClasses implements \PHPUnit\Runner\Hook{}');
+
+    return;
+}
+
 final class DeprecatedClasses extends DeprecatedClassesPhpunitExtension
 {
     protected function deprecationProvider(): array
