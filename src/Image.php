@@ -16,14 +16,12 @@ use Contao\Image\Exception\FileNotExistsException;
 use Contao\Image\Exception\InvalidArgumentException;
 use Contao\ImagineSvg\Image as SvgImage;
 use Contao\ImagineSvg\Imagine as SvgImagine;
-use DOMDocument;
 use Imagine\Image\Box;
 use Imagine\Image\BoxInterface;
 use Imagine\Image\ImagineInterface;
 use Imagine\Image\Metadata\MetadataBag;
 use Symfony\Component\Filesystem\Filesystem;
 use Webmozart\PathUtil\Path;
-use XMLReader;
 
 class Image implements ImageInterface
 {
@@ -206,14 +204,14 @@ class Image implements ImageInterface
      */
     private function getSvgSize(): ?BoxInterface
     {
-        if (!class_exists(SvgImage::class) || !class_exists(XMLReader::class) || !class_exists(DOMDocument::class)) {
+        if (!class_exists(SvgImage::class) || !class_exists(\XMLReader::class) || !class_exists(\DOMDocument::class)) {
             return null;
         }
 
         static $zlibSupport;
 
         if (null === $zlibSupport) {
-            $reader = new XMLReader();
+            $reader = new \XMLReader();
             $zlibSupport = \in_array('compress.zlib', stream_get_wrappers(), true)
                 && true === @$reader->open('compress.zlib://data:text/xml,<x/>')
                 && true === @$reader->read()
@@ -221,7 +219,7 @@ class Image implements ImageInterface
         }
 
         $size = null;
-        $reader = new XMLReader();
+        $reader = new \XMLReader();
         $path = $this->path;
 
         if ($zlibSupport) {
@@ -262,16 +260,16 @@ class Image implements ImageInterface
     /**
      * Extracts the SVG image size from the given XMLReader object.
      */
-    private function getSvgSizeFromReader(XMLReader $reader): ?BoxInterface
+    private function getSvgSizeFromReader(\XMLReader $reader): ?BoxInterface
     {
         // Move the pointer to the first element in the document
-        while ($reader->read() && XMLReader::ELEMENT !== $reader->nodeType);
+        while ($reader->read() && \XMLReader::ELEMENT !== $reader->nodeType);
 
-        if (XMLReader::ELEMENT !== $reader->nodeType || 'svg' !== $reader->name) {
+        if (\XMLReader::ELEMENT !== $reader->nodeType || 'svg' !== $reader->name) {
             return null;
         }
 
-        $document = new DOMDocument();
+        $document = new \DOMDocument();
         $svg = $document->createElement('svg');
         $document->appendChild($svg);
 

@@ -18,7 +18,6 @@ use Contao\Image\Image;
 use Contao\Image\ImageDimensions;
 use Contao\Image\ImportantPart;
 use Contao\ImagineSvg\Imagine;
-use Exception;
 use Imagine\Gd\Imagine as GdImagine;
 use Imagine\Image\Box;
 use Imagine\Image\ImageInterface;
@@ -335,7 +334,7 @@ class ImageTest extends TestCase
         $imagine = $this->createMock(Imagine::class);
         $imagine
             ->method('open')
-            ->willThrowException(new Exception())
+            ->willThrowException(new \Exception())
         ;
 
         $image = $this->createImage($this->rootDir.'/dummy.svg', $imagine);
