@@ -18,7 +18,7 @@ use Contao\Image\Exception\JsonException;
 use Contao\Image\Exception\RuntimeException;
 use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Filesystem\Filesystem;
-use Webmozart\PathUtil\Path;
+use Symfony\Component\Filesystem\Path;
 
 class DeferredImageStorageFilesystem implements DeferredImageStorageInterface
 {

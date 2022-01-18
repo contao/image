@@ -21,7 +21,7 @@ use Imagine\Image\BoxInterface;
 use Imagine\Image\ImagineInterface;
 use Imagine\Image\Metadata\MetadataBag;
 use Symfony\Component\Filesystem\Filesystem;
-use Webmozart\PathUtil\Path;
+use Symfony\Component\Filesystem\Path;
 
 class Image implements ImageInterface
 {

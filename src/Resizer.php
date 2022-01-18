@@ -16,7 +16,7 @@ use Imagine\Exception\RuntimeException as ImagineRuntimeException;
 use Imagine\Filter\Basic\Autorotate;
 use Imagine\Image\Palette\RGB;
 use Symfony\Component\Filesystem\Filesystem;
-use Webmozart\PathUtil\Path;
+use Symfony\Component\Filesystem\Path;
 
 class Resizer implements ResizerInterface
 {
