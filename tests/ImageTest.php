@@ -26,6 +26,7 @@ use Imagine\Image\Metadata\MetadataBag;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Filesystem\Path;
 
 class ImageTest extends TestCase
 {
@@ -41,7 +42,7 @@ class ImageTest extends TestCase
     {
         parent::setUp();
 
-        $this->rootDir = __DIR__.'/tmp';
+        $this->rootDir = Path::canonicalize(__DIR__.'/tmp');
     }
 
     /**
@@ -201,9 +202,9 @@ class ImageTest extends TestCase
             ->get('jpg')
         ;
 
-        file_put_contents($this->rootDir.'/dummy.jpg', $this->addImageOrientation($image, $orientation));
+        file_put_contents(Path::join($this->rootDir, 'dummy.jpg'), $this->addImageOrientation($image, $orientation));
 
-        $image = $this->createImage($this->rootDir.'/dummy.jpg');
+        $image = $this->createImage(Path::join($this->rootDir, 'dummy.jpg'));
 
         $dimensions = $image->getDimensions();
 
@@ -270,9 +271,9 @@ class ImageTest extends TestCase
         ;
 
         // Only store the first 500 bytes of the image
-        file_put_contents($this->rootDir.'/dummy.jpg', substr($image, 0, 500));
+        file_put_contents(Path::join($this->rootDir, 'dummy.jpg'), substr($image, 0, 500));
 
-        $image = $this->createImage($this->rootDir.'/dummy.jpg');
+        $image = $this->createImage(Path::join($this->rootDir, 'dummy.jpg'));
 
         $this->assertEquals(new ImageDimensions(new Box(1000, 1000)), $image->getDimensions());
     }
@@ -290,9 +291,9 @@ class ImageTest extends TestCase
         }
 
         // Only store a partial SVG file without an end tag
-        file_put_contents($this->rootDir.'/dummy.svg', '<svg width="1000" height="1000">');
+        file_put_contents(Path::join($this->rootDir, 'dummy.svg'), '<svg width="1000" height="1000">');
 
-        $image = $this->createImage($this->rootDir.'/dummy.svg', $imagine);
+        $image = $this->createImage(Path::join($this->rootDir, 'dummy.svg'), $imagine);
 
         $this->assertSame(1000, $image->getDimensions()->getSize()->getWidth());
         $this->assertSame(1000, $image->getDimensions()->getSize()->getHeight());
@@ -313,9 +314,9 @@ class ImageTest extends TestCase
         }
 
         // Only store a partial SVG file without an end tag
-        file_put_contents($this->rootDir.'/dummy.svgz', gzencode('<svg width="1000" height="1000">'));
+        file_put_contents(Path::join($this->rootDir, 'dummy.svgz'), gzencode('<svg width="1000" height="1000">'));
 
-        $image = $this->createImage($this->rootDir.'/dummy.svgz', $imagine);
+        $image = $this->createImage(Path::join($this->rootDir, 'dummy.svgz'), $imagine);
 
         $this->assertSame(1000, $image->getDimensions()->getSize()->getWidth());
         $this->assertSame(1000, $image->getDimensions()->getSize()->getHeight());
@@ -329,7 +330,7 @@ class ImageTest extends TestCase
             mkdir($this->rootDir, 0777, true);
         }
 
-        file_put_contents($this->rootDir.'/dummy.svg', '<nosvg width="1000" height="1000"></nosvg>');
+        file_put_contents(Path::join($this->rootDir, 'dummy.svg'), '<nosvg width="1000" height="1000"></nosvg>');
 
         $imagine = $this->createMock(Imagine::class);
         $imagine
@@ -337,7 +338,7 @@ class ImageTest extends TestCase
             ->willThrowException(new \Exception())
         ;
 
-        $image = $this->createImage($this->rootDir.'/dummy.svg', $imagine);
+        $image = $this->createImage(Path::join($this->rootDir, 'dummy.svg'), $imagine);
 
         $this->expectException('Exception');
         $image->getDimensions();

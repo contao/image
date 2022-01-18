@@ -18,6 +18,7 @@ use Contao\Image\Exception\JsonException;
 use Contao\Image\Exception\RuntimeException;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Filesystem\Path;
 
 class DeferredImageStorageFilesystemTest extends TestCase
 {
@@ -33,7 +34,7 @@ class DeferredImageStorageFilesystemTest extends TestCase
     {
         parent::setUp();
 
-        $this->rootDir = __DIR__.'/tmp';
+        $this->rootDir = Path::canonicalize(__DIR__.'/tmp');
     }
 
     /**
@@ -79,7 +80,7 @@ class DeferredImageStorageFilesystemTest extends TestCase
 
         $this->assertSame($value, $storage->getLocked($key));
 
-        $dataPath = $this->rootDir.'/deferred/'.$key.'.json';
+        $dataPath = Path::join($this->rootDir, 'deferred', $key.'.json');
         $handle = fopen($dataPath, 'r+');
 
         $this->assertFalse(flock($handle, LOCK_EX | LOCK_NB), 'Data file should be locked');
@@ -129,10 +130,10 @@ class DeferredImageStorageFilesystemTest extends TestCase
     {
         $storage = new DeferredImageStorageFilesystem($this->rootDir);
 
-        if (!is_dir($this->rootDir.'/deferred')) {
-            mkdir($this->rootDir.'/deferred', 0777, true);
+        if (!is_dir(Path::join($this->rootDir, 'deferred'))) {
+            mkdir(Path::join($this->rootDir, 'deferred'), 0777, true);
         }
-        file_put_contents($this->rootDir.'/deferred/test.json', 'invalid JSON');
+        file_put_contents(Path::join($this->rootDir, 'deferred/test.json'), 'invalid JSON');
 
         $this->expectException(JsonException::class);
 
@@ -143,10 +144,10 @@ class DeferredImageStorageFilesystemTest extends TestCase
     {
         $storage = new DeferredImageStorageFilesystem($this->rootDir);
 
-        if (!is_dir($this->rootDir.'/deferred')) {
-            mkdir($this->rootDir.'/deferred', 0777, true);
+        if (!is_dir(Path::join($this->rootDir, 'deferred'))) {
+            mkdir(Path::join($this->rootDir, 'deferred'), 0777, true);
         }
-        file_put_contents($this->rootDir.'/deferred/test.json', '"JSON string instead of an array"');
+        file_put_contents(Path::join($this->rootDir, 'deferred/test.json'), '"JSON string instead of an array"');
 
         $this->expectException(InvalidArgumentException::class);
 
