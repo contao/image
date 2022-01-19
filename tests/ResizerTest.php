@@ -29,6 +29,7 @@ use Imagine\Image\Point;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Filesystem\Path;
 
 class ResizerTest extends TestCase
 {
@@ -44,7 +45,7 @@ class ResizerTest extends TestCase
     {
         parent::setUp();
 
-        $this->rootDir = __DIR__.'/tmp';
+        $this->rootDir = Path::canonicalize(__DIR__.'/tmp');
     }
 
     /**
@@ -75,7 +76,7 @@ class ResizerTest extends TestCase
 
         (new GdImagine())
             ->create(new Box(100, 100))
-            ->save($this->rootDir.'/dummy.jpg')
+            ->save(Path::join($this->rootDir, 'dummy.jpg'))
         ;
 
         $image = $this->createMock(Image::class);
@@ -86,7 +87,7 @@ class ResizerTest extends TestCase
 
         $image
             ->method('getPath')
-            ->willReturn($this->rootDir.'/dummy.jpg')
+            ->willReturn(Path::join($this->rootDir, 'dummy.jpg'))
         ;
 
         $image
@@ -125,27 +126,27 @@ class ResizerTest extends TestCase
         $resizedImage = $resizer->resize(
             $image,
             $configuration,
-            (new ResizeOptions())->setTargetPath($this->rootDir.'/target-path.jpg')
+            (new ResizeOptions())->setTargetPath(Path::join($this->rootDir, 'target-path.jpg'))
         );
 
         $this->assertEquals(new ImageDimensions(new Box(100, 100)), $resizedImage->getDimensions());
-        $this->assertSame($this->rootDir.'/target-path.jpg', $resizedImage->getPath());
+        $this->assertSame(Path::join($this->rootDir, 'target-path.jpg'), $resizedImage->getPath());
         $this->assertFilePermissions(0666, $resizedImage->getPath());
 
         // Replace target image with larger image
         (new GdImagine())
             ->create(new Box(200, 200))
-            ->save($this->rootDir.'/target-path.jpg')
+            ->save(Path::join($this->rootDir, 'target-path.jpg'))
         ;
 
         // Resize with override
         $resizedImage = $resizer->resize(
             $image,
             $configuration,
-            (new ResizeOptions())->setTargetPath($this->rootDir.'/target-path.jpg')
+            (new ResizeOptions())->setTargetPath(Path::join($this->rootDir, 'target-path.jpg'))
         );
 
-        $this->assertSame($this->rootDir.'/target-path.jpg', $resizedImage->getPath());
+        $this->assertSame(Path::join($this->rootDir, 'target-path.jpg'), $resizedImage->getPath());
         $this->assertEquals(new ImageDimensions(new Box(100, 100)), $resizedImage->getDimensions());
         $this->assertFilePermissions(0666, $resizedImage->getPath());
     }
@@ -159,7 +160,7 @@ class ResizerTest extends TestCase
             mkdir($this->rootDir, 0777, true);
         }
 
-        file_put_contents($this->rootDir.'/dummy.svg', $xml);
+        file_put_contents(Path::join($this->rootDir, 'dummy.svg'), $xml);
 
         $calculator = $this->createMock(ResizeCalculator::class);
         $calculator
@@ -177,7 +178,7 @@ class ResizerTest extends TestCase
 
         $image
             ->method('getPath')
-            ->willReturn($this->rootDir.'/dummy.svg')
+            ->willReturn(Path::join($this->rootDir, 'dummy.svg'))
         ;
 
         $image
@@ -210,14 +211,14 @@ class ResizerTest extends TestCase
         $resizedImage = $resizer->resize(
             $image,
             $configuration,
-            (new ResizeOptions())->setTargetPath($this->rootDir.'/target-path.svg')
+            (new ResizeOptions())->setTargetPath(Path::join($this->rootDir, 'target-path.svg'))
         );
 
         $this->assertSame(100, $resizedImage->getDimensions()->getSize()->getWidth());
         $this->assertSame(100, $resizedImage->getDimensions()->getSize()->getHeight());
         $this->assertFalse($resizedImage->getDimensions()->isRelative());
         $this->assertFalse($resizedImage->getDimensions()->isUndefined());
-        $this->assertSame($this->rootDir.'/target-path.svg', $resizedImage->getPath());
+        $this->assertSame(Path::join($this->rootDir, 'target-path.svg'), $resizedImage->getPath());
         $this->assertFilePermissions(0666, $resizedImage->getPath());
 
         unlink($resizedImage->getPath());
@@ -239,7 +240,7 @@ class ResizerTest extends TestCase
 
         (new GdImagine())
             ->create(new Box(100, 100))
-            ->save($this->rootDir.'/dummy.jpg')
+            ->save(Path::join($this->rootDir, 'dummy.jpg'))
         ;
 
         $image = $this->createMock(Image::class);
@@ -250,7 +251,7 @@ class ResizerTest extends TestCase
 
         $image
             ->method('getPath')
-            ->willReturn($this->rootDir.'/dummy.jpg')
+            ->willReturn(Path::join($this->rootDir, 'dummy.jpg'))
         ;
 
         $image
@@ -280,7 +281,7 @@ class ResizerTest extends TestCase
         $this->assertSame(200, getimagesize($imagePath)[0], 'Cache file should no be overwritten');
 
         // With cache and target path
-        $targetPath = $this->rootDir.'/target-image.jpg';
+        $targetPath = Path::join($this->rootDir, 'target-image.jpg');
         $resizedImage = $resizer->resize($image, $configuration, (new ResizeOptions())->setTargetPath($targetPath));
 
         $this->assertSame($targetPath, $resizedImage->getPath());
@@ -297,11 +298,11 @@ class ResizerTest extends TestCase
         $this->assertSame(100, getimagesize($resizedImage->getPath())[0], 'New cache file should have been created');
 
         // With different paths, but same relative path
-        $subDir = $this->rootDir.'/sub/dir';
+        $subDir = Path::join($this->rootDir, 'sub/dir');
 
         mkdir($subDir, 0777, true);
-        copy($this->rootDir.'/dummy.jpg', $subDir.'/dummy.jpg');
-        touch($subDir.'/dummy.jpg', filemtime($this->rootDir.'/dummy.jpg'));
+        copy(Path::join($this->rootDir, 'dummy.jpg'), Path::join($subDir, 'dummy.jpg'));
+        touch(Path::join($subDir, 'dummy.jpg'), filemtime(Path::join($this->rootDir, 'dummy.jpg')));
 
         $subResizer = $this->createResizer($subDir, $calculator);
 
@@ -313,7 +314,7 @@ class ResizerTest extends TestCase
 
         $subImage
             ->method('getPath')
-            ->willReturn($subDir.'/dummy.jpg')
+            ->willReturn(Path::join($subDir, 'dummy.jpg'))
         ;
 
         $subImage
@@ -338,7 +339,7 @@ class ResizerTest extends TestCase
 
     public function testResizeUndefinedSize(): void
     {
-        $imagePath = $this->rootDir.'/dummy.jpg';
+        $imagePath = Path::join($this->rootDir, 'dummy.jpg');
         $resizer = $this->createResizer();
 
         if (!is_dir($this->rootDir)) {
@@ -381,7 +382,7 @@ class ResizerTest extends TestCase
 
     public function testResizeEmptyConfig(): void
     {
-        $imagePath = $this->rootDir.'/dummy.jpg';
+        $imagePath = Path::join($this->rootDir, 'dummy.jpg');
         $resizer = $this->createResizer();
 
         if (!is_dir($this->rootDir)) {
@@ -424,7 +425,7 @@ class ResizerTest extends TestCase
 
     public function testResizeEmptyConfigSkipsMatchingDimensions(): void
     {
-        $imagePath = $this->rootDir.'/dummy.jpg';
+        $imagePath = Path::join($this->rootDir, 'dummy.jpg');
         $resizer = $this->createResizer();
 
         if (!is_dir($this->rootDir)) {
@@ -468,7 +469,7 @@ class ResizerTest extends TestCase
 
     public function testResizeEmptyConfigWithFormat(): void
     {
-        $imagePath = $this->rootDir.'/dummy.jpg';
+        $imagePath = Path::join($this->rootDir, 'dummy.jpg');
         $resizer = $this->createResizer();
 
         if (!is_dir($this->rootDir)) {
@@ -517,7 +518,7 @@ class ResizerTest extends TestCase
 
     public function testResizeSameDimensions(): void
     {
-        $path = $this->rootDir.'/dummy.jpg';
+        $path = Path::join($this->rootDir, 'dummy.jpg');
 
         $calculator = $this->createMock(ResizeCalculator::class);
         $calculator
@@ -566,12 +567,12 @@ class ResizerTest extends TestCase
             $image,
             $configuration,
             (new ResizeOptions())
-                ->setTargetPath($this->rootDir.'/target-path.jpg')
+                ->setTargetPath(Path::join($this->rootDir, 'target-path.jpg'))
                 ->setSkipIfDimensionsMatch(true)
         );
 
         $this->assertEquals(new ImageDimensions(new Box(100, 100)), $resizedImage->getDimensions());
-        $this->assertSame($this->rootDir.'/target-path.jpg', $resizedImage->getPath());
+        $this->assertSame(Path::join($this->rootDir, 'target-path.jpg'), $resizedImage->getPath());
     }
 
     public function testResizeSameDimensionsRelative(): void
@@ -583,7 +584,7 @@ class ResizerTest extends TestCase
             mkdir($this->rootDir, 0777, true);
         }
 
-        file_put_contents($this->rootDir.'/dummy.svg', $xml);
+        file_put_contents(Path::join($this->rootDir, 'dummy.svg'), $xml);
 
         $calculator = $this->createMock(ResizeCalculator::class);
         $calculator
@@ -601,7 +602,7 @@ class ResizerTest extends TestCase
 
         $image
             ->method('getPath')
-            ->willReturn($this->rootDir.'/dummy.svg')
+            ->willReturn(Path::join($this->rootDir, 'dummy.svg'))
         ;
 
         $image
@@ -622,7 +623,7 @@ class ResizerTest extends TestCase
 
     public function testResizeEmptyConfigRotatedImage(): void
     {
-        $imagePath = $this->rootDir.'/dummy.jpg';
+        $imagePath = Path::join($this->rootDir, 'dummy.jpg');
         $resizer = $this->createResizer();
 
         if (!is_dir($this->rootDir)) {
@@ -665,7 +666,7 @@ class ResizerTest extends TestCase
 
     public function testResizeEmptyConfigNoSkip(): void
     {
-        $imagePath = $this->rootDir.'/dummy.jpg';
+        $imagePath = Path::join($this->rootDir, 'dummy.jpg');
         $resizer = $this->createResizer();
 
         if (!is_dir($this->rootDir)) {

@@ -18,11 +18,11 @@ use Contao\Image\Exception\JsonException;
 use Contao\Image\Exception\RuntimeException;
 use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Filesystem\Filesystem;
-use Webmozart\PathUtil\Path;
+use Symfony\Component\Filesystem\Path;
 
 class DeferredImageStorageFilesystem implements DeferredImageStorageInterface
 {
-    private const PATH_PREFIX = '/deferred';
+    private const PATH_PREFIX = 'deferred';
     private const PATH_SUFFIX = '.json';
 
     /**
@@ -46,7 +46,7 @@ class DeferredImageStorageFilesystem implements DeferredImageStorageInterface
             $filesystem = new Filesystem();
         }
 
-        $this->cacheDir = $cacheDir.self::PATH_PREFIX;
+        $this->cacheDir = Path::join($cacheDir, self::PATH_PREFIX);
         $this->filesystem = $filesystem;
     }
 
@@ -196,7 +196,7 @@ class DeferredImageStorageFilesystem implements DeferredImageStorageInterface
             throw new InvalidArgumentException(sprintf('Invalid storage key "%s"', $path));
         }
 
-        return $this->cacheDir.'/'.$path.self::PATH_SUFFIX;
+        return Path::join($this->cacheDir, $path.self::PATH_SUFFIX);
     }
 
     /**

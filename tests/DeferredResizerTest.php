@@ -32,6 +32,7 @@ use Imagine\Image\ImagineInterface;
 use Imagine\Image\Point;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Filesystem\Path;
 
 class DeferredResizerTest extends TestCase
 {
@@ -47,7 +48,7 @@ class DeferredResizerTest extends TestCase
     {
         parent::setUp();
 
-        $this->rootDir = __DIR__.'/tmp';
+        $this->rootDir = Path::canonicalize(__DIR__.'/tmp');
     }
 
     /**
@@ -86,7 +87,7 @@ class DeferredResizerTest extends TestCase
 
         (new GdImagine())
             ->create(new Box(100, 100))
-            ->save($this->rootDir.'/dummy.jpg')
+            ->save(Path::join($this->rootDir, 'dummy.jpg'))
         ;
 
         $image = $this->createMock(Image::class);
@@ -97,7 +98,7 @@ class DeferredResizerTest extends TestCase
 
         $image
             ->method('getPath')
-            ->willReturn($this->rootDir.'/dummy.jpg')
+            ->willReturn(Path::join($this->rootDir, 'dummy.jpg'))
         ;
 
         $image
@@ -123,7 +124,7 @@ class DeferredResizerTest extends TestCase
         $this->assertMatchesRegularExpression('(/[0-9a-f]/dummy-[0-9a-f]{8}.jpg$)', $deferredImage->getPath());
         $this->assertFileDoesNotExist($deferredImage->getPath());
         $this->assertFileExists(
-            $this->rootDir.'/deferred/'.substr($deferredImage->getPath(), \strlen($this->rootDir)).'.json'
+            Path::join($this->rootDir, 'deferred', substr($deferredImage->getPath(), \strlen($this->rootDir)).'.json')
         );
 
         /** @var DeferredImageInterface $deferredImage2 */
@@ -148,7 +149,7 @@ class DeferredResizerTest extends TestCase
         $this->assertEquals(new ImageDimensions(new Box(50, 50)), $resizedImage->getDimensions());
         $this->assertFileExists($resizedImage->getPath());
         $this->assertFileDoesNotExist(
-            $this->rootDir.'/deferred/'.substr($deferredImage->getPath(), \strlen($this->rootDir)).'.json'
+            Path::join($this->rootDir, 'deferred', substr($deferredImage->getPath(), \strlen($this->rootDir)).'.json')
         );
 
         // Calling resizeDeferredImage() a second time should return the already
@@ -165,12 +166,12 @@ class DeferredResizerTest extends TestCase
         $resizedImage = $resizer->resize(
             $image,
             (new ResizeConfiguration())->setWidth(100)->setHeight(100),
-            (new ResizeOptions())->setTargetPath($this->rootDir.'/target-path.jpg')
+            (new ResizeOptions())->setTargetPath(Path::join($this->rootDir, 'target-path.jpg'))
         );
 
         $this->assertNotInstanceOf(DeferredImageInterface::class, $resizedImage);
         $this->assertEquals(new ImageDimensions(new Box(100, 100)), $resizedImage->getDimensions());
-        $this->assertSame($this->rootDir.'/target-path.jpg', $resizedImage->getPath());
+        $this->assertSame(Path::join($this->rootDir, 'target-path.jpg'), $resizedImage->getPath());
         $this->assertFileExists($resizedImage->getPath());
     }
 
@@ -196,7 +197,7 @@ class DeferredResizerTest extends TestCase
 
         $imagine = $this->createMock(ImagineInterface::class);
         $resizer = $this->createResizer(null, null, null, $storage);
-        $imagePath = $this->rootDir.'/a/foo-5fc1c9f9.jpg';
+        $imagePath = Path::join($this->rootDir, 'a/foo-5fc1c9f9.jpg');
         $deferredImage = $resizer->getDeferredImage($imagePath, $imagine);
 
         $this->assertInstanceOf(DeferredImageInterface::class, $deferredImage);
@@ -218,7 +219,7 @@ class DeferredResizerTest extends TestCase
 
         $imagine = $this->createMock(ImagineInterface::class);
         $resizer = $this->createResizer(null, null, null, $storage);
-        $imagePath = $this->rootDir.'/a/foo-5fc1c9f9.jpg';
+        $imagePath = Path::join($this->rootDir, 'a/foo-5fc1c9f9.jpg');
 
         $this->assertNull($resizer->getDeferredImage($imagePath, $imagine));
     }
@@ -230,7 +231,7 @@ class DeferredResizerTest extends TestCase
         $deferredImage = $this->createMock(DeferredImageInterface::class);
         $deferredImage
             ->method('getPath')
-            ->willReturn($this->rootDir.'/../foo.jpg')
+            ->willReturn(Path::join($this->rootDir, '../foo.jpg'))
         ;
 
         $this->expectException(InvalidArgumentException::class);
@@ -244,7 +245,7 @@ class DeferredResizerTest extends TestCase
         $deferredImage = $this->createMock(DeferredImageInterface::class);
         $deferredImage
             ->method('getPath')
-            ->willReturn($this->rootDir.'/foo.jpg')
+            ->willReturn(Path::join($this->rootDir, '/foo.jpg'))
         ;
 
         $this->expectException(FileNotExistsException::class);
@@ -259,7 +260,7 @@ class DeferredResizerTest extends TestCase
             ->method('getLocked')
             ->with('foo.jpg', true)
             ->willReturn([
-                'path' => $this->rootDir.'/foo.jpg',
+                'path' => Path::join($this->rootDir, 'foo.jpg'),
                 'coordinates' => [
                     'size' => [
                         'width' => 100,
@@ -289,7 +290,7 @@ class DeferredResizerTest extends TestCase
         $deferredImage = $this->createMock(DeferredImageInterface::class);
         $deferredImage
             ->method('getPath')
-            ->willReturn($this->rootDir.'/foo.jpg')
+            ->willReturn(Path::join($this->rootDir, 'foo.jpg'))
         ;
 
         $this->expectException(FileNotExistsException::class);
@@ -312,7 +313,7 @@ class DeferredResizerTest extends TestCase
         $deferredImage = $this->createMock(DeferredImageInterface::class);
         $deferredImage
             ->method('getPath')
-            ->willReturn($this->rootDir.'/foo.jpg')
+            ->willReturn(Path::join($this->rootDir, 'foo.jpg'))
         ;
 
         $this->expectExceptionObject($storageException);
@@ -333,7 +334,7 @@ class DeferredResizerTest extends TestCase
         $deferredImage = $this->createMock(DeferredImageInterface::class);
         $deferredImage
             ->method('getPath')
-            ->willReturn($this->rootDir.'/foo.jpg')
+            ->willReturn(Path::join($this->rootDir, 'foo.jpg'))
         ;
 
         $this->assertNull($resizer->resizeDeferredImage($deferredImage, false));
@@ -352,7 +353,7 @@ class DeferredResizerTest extends TestCase
         $deferredImage = $this->createMock(DeferredImageInterface::class);
         $deferredImage
             ->method('getPath')
-            ->willReturn($this->rootDir.'/foo.jpg')
+            ->willReturn(Path::join($this->rootDir, 'foo.jpg'))
         ;
 
         $this->expectException(RuntimeException::class);
@@ -367,7 +368,7 @@ class DeferredResizerTest extends TestCase
             ->method('getLocked')
             ->with('foo.jpg', true)
             ->willReturn([
-                'path' => $this->rootDir.'/foo.jpg',
+                'path' => Path::join($this->rootDir, 'foo.jpg'),
                 'coordinates' => [
                     'size' => [
                         'width' => 100,
@@ -397,7 +398,7 @@ class DeferredResizerTest extends TestCase
         $deferredImage = $this->createMock(DeferredImageInterface::class);
         $deferredImage
             ->method('getPath')
-            ->willReturn($this->rootDir.'/foo.jpg')
+            ->willReturn(Path::join($this->rootDir, 'foo.jpg'))
         ;
 
         $this->expectException(InvalidArgumentException::class);

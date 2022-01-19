@@ -18,7 +18,7 @@ use Imagine\Image\Box;
 use Imagine\Image\ImagineInterface;
 use Imagine\Image\Point;
 use Symfony\Component\Filesystem\Filesystem;
-use Webmozart\PathUtil\Path;
+use Symfony\Component\Filesystem\Path;
 
 class DeferredResizer extends Resizer implements DeferredResizerInterface
 {
@@ -63,7 +63,7 @@ class DeferredResizer extends Resizer implements DeferredResizerInterface
         $config = $this->storage->get($targetPath);
 
         return new DeferredImage(
-            $this->cacheDir.'/'.$targetPath,
+            Path::join($this->cacheDir, $targetPath),
             $imagine,
             new ImageDimensions(
                 new Box(
@@ -182,12 +182,12 @@ class DeferredResizer extends Resizer implements DeferredResizerInterface
         $options = new ResizeOptions();
         $options->setImagineOptions($config['options']['imagine_options']);
 
-        $path = Path::canonicalize($this->cacheDir.'/'.$config['path']);
+        $path = Path::join($this->cacheDir, $config['path']);
 
         return parent::executeResize(
             new Image($path, $imagine, $this->filesystem),
             $coordinates,
-            $this->cacheDir.'/'.$targetPath,
+            Path::join($this->cacheDir, $targetPath),
             $options
         );
     }

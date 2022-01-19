@@ -16,7 +16,7 @@ use Imagine\Exception\RuntimeException as ImagineRuntimeException;
 use Imagine\Filter\Basic\Autorotate;
 use Imagine\Image\Palette\RGB;
 use Symfony\Component\Filesystem\Filesystem;
-use Webmozart\PathUtil\Path;
+use Symfony\Component\Filesystem\Path;
 
 class Resizer implements ResizerInterface
 {
@@ -157,7 +157,7 @@ class Resizer implements ResizerInterface
             return $this->createImage($image, $image->getPath());
         }
 
-        $cachePath = $this->cacheDir.'/'.$this->createCachePath($image->getPath(), $coordinates, $options);
+        $cachePath = Path::join($this->cacheDir, $this->createCachePath($image->getPath(), $coordinates, $options));
 
         if ($this->filesystem->exists($cachePath) && !$options->getBypassCache()) {
             return $this->createImage($image, $cachePath);
@@ -213,6 +213,6 @@ class Resizer implements ResizerInterface
         $pathinfo = pathinfo($path);
         $extension = $options->getImagineOptions()['format'] ?? strtolower($pathinfo['extension']);
 
-        return $hash[0].'/'.$pathinfo['filename'].'-'.substr($hash, 1).'.'.$extension;
+        return Path::join($hash[0], $pathinfo['filename'].'-'.substr($hash, 1).'.'.$extension);
     }
 }
