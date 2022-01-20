@@ -12,21 +12,17 @@ declare(strict_types=1);
 
 namespace Contao\Image\Tests\PhpunitExtension;
 
+use Contao\Image\ResizeConfigurationInterface;
 use Contao\TestCase\DeprecatedClassesPhpunitExtension;
 use Imagine\Image\Metadata\MetadataBag;
-
-// PHPUnit 7.5 compatibility
-if (!class_exists(DeprecatedClassesPhpunitExtension::class)) {
-    eval('namespace Contao\Image\Tests\PhpunitExtension; class DeprecatedClasses implements \PHPUnit\Runner\Hook{}');
-
-    return;
-}
 
 final class DeprecatedClasses extends DeprecatedClassesPhpunitExtension
 {
     protected function deprecationProvider(): array
     {
-        $deprecations = [];
+        $deprecations = [
+            ResizeConfigurationInterface::class => ['%sResizeConfigurationInterface%shas been deprecated%s'],
+        ];
 
         if (\PHP_VERSION_ID >= 80100) {
             $deprecations[MetadataBag::class] = [

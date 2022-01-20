@@ -2,4 +2,11 @@ parameters:
     ignoreErrors:
         - '#Contao\\ImagineSvg\\UndefinedBox#'
         - '#Contao\\ImagineSvg\\RelativeBox#'
-        - '#"ResizeConfigurationInterface" has been deprecated#'
+        -
+            # Ignore the forward compatible phpDoc comment
+            message: '#PHPDoc tag @param references unknown parameter:#'
+            path: %currentWorkingDirectory%/src/Resizer.php
+        -
+            # Ignore the forward compatible phpDoc comment
+            message: '#PHPDoc tag @param references unknown parameter:#'
+            path: %currentWorkingDirectory%/src/DeferredResizer.php

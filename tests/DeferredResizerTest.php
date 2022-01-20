@@ -121,7 +121,7 @@ class DeferredResizerTest extends TestCase
 
         $this->assertInstanceOf(DeferredImageInterface::class, $deferredImage);
         $this->assertEquals(new ImageDimensions(new Box(100, 100)), $deferredImage->getDimensions());
-        $this->assertMatchesRegularExpression('(/[0-9a-f]/dummy-[0-9a-f]{8}.jpg$)', $deferredImage->getPath());
+        $this->assertMatchesRegularExpression('(/[0-9a-z]/dummy-[0-9a-z]{15}.jpg$)', $deferredImage->getPath());
         $this->assertFileDoesNotExist($deferredImage->getPath());
         $this->assertFileExists(
             Path::join($this->rootDir, 'deferred', substr($deferredImage->getPath(), \strlen($this->rootDir)).'.json')
@@ -429,6 +429,6 @@ class DeferredResizerTest extends TestCase
             $cacheDir = $this->rootDir;
         }
 
-        return new DeferredResizer($cacheDir, $calculator, $filesystem, $storage);
+        return new DeferredResizer($cacheDir, 'secret', $calculator, $filesystem, $storage);
     }
 }

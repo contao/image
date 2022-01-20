@@ -30,14 +30,61 @@ class DeferredResizer extends Resizer implements DeferredResizerInterface
     private $storage;
 
     /**
-     * {@inheritdoc}
+     * @param string                             $cacheDir
+     * @param string                             $secret
+     * @param ResizeCalculator|null              $calculator
+     * @param Filesystem|null                    $filesystem
+     * @param DeferredImageStorageInterface|null $storage
      */
-    public function __construct(string $cacheDir, ResizeCalculator $calculator = null, Filesystem $filesystem = null, DeferredImageStorageInterface $storage = null)
+    public function __construct(string $cacheDir /*, string $secret, ResizeCalculator $calculator = null, Filesystem $filesystem = null, DeferredImageStorageInterface $storage = null*/)
     {
-        parent::__construct($cacheDir, $calculator, $filesystem);
+        if (\func_num_args() > 1 && \is_string(func_get_arg(1))) {
+            $secret = func_get_arg(1);
+            $calculator = \func_num_args() > 2 ? func_get_arg(2) : null;
+            $filesystem = \func_num_args() > 3 ? func_get_arg(3) : null;
+            $storage = \func_num_args() > 4 ? func_get_arg(4) : null;
+        } else {
+            trigger_deprecation('contao/image', '1.2', 'Not passing a secret to "%s()" has been deprecated and will no longer work in version 2.0.', __METHOD__);
+            $secret = null;
+            $calculator = \func_num_args() > 1 ? func_get_arg(1) : null;
+            $filesystem = \func_num_args() > 2 ? func_get_arg(2) : null;
+            $storage = \func_num_args() > 3 ? func_get_arg(3) : null;
+        }
+
+        if (null === $calculator) {
+            $calculator = new ResizeCalculator();
+        }
+
+        if (null === $filesystem) {
+            $filesystem = new Filesystem();
+        }
 
         if (null === $storage) {
             $storage = new DeferredImageStorageFilesystem($cacheDir);
+        }
+
+        if (!$calculator instanceof ResizeCalculator) {
+            $type = \is_object($calculator) ? \get_class($calculator) : \gettype($calculator);
+
+            throw new \TypeError(sprintf('%s(): Argument #3 ($calculator) must be of type ResizeCalculator|null, %s given', __METHOD__, $type));
+        }
+
+        if (!$filesystem instanceof Filesystem) {
+            $type = \is_object($filesystem) ? \get_class($filesystem) : \gettype($filesystem);
+
+            throw new \TypeError(sprintf('%s(): Argument #4 ($filesystem) must be of type Filesystem|null, %s given', __METHOD__, $type));
+        }
+
+        if (!$storage instanceof DeferredImageStorageInterface) {
+            $type = \is_object($storage) ? \get_class($storage) : \gettype($storage);
+
+            throw new \TypeError(sprintf('%s(): Argument #5 ($storage) must be of type DeferredImageStorageInterface|null, %s given', __METHOD__, $type));
+        }
+
+        if (null === $secret) {
+            parent::__construct($cacheDir, $calculator, $filesystem);
+        } else {
+            parent::__construct($cacheDir, $secret, $calculator, $filesystem);
         }
 
         $this->storage = $storage;

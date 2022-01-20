@@ -28,5 +28,10 @@
                 <referencedClass name="Contao\ImagineSvg\UndefinedBoxInterface" />
             </errorLevel>
         </UndefinedDocblockClass>
+        <UndefinedTrait>
+            <errorLevel type="suppress">
+                <file name="vendor/symfony/phpunit-bridge/ExpectDeprecationTrait.php" />
+            </errorLevel>
+        </UndefinedTrait>
     </issueHandlers>
 </psalm>
