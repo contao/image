@@ -14,27 +14,13 @@ namespace Contao\Image\Tests\PhpunitExtension;
 
 use Contao\Image\ResizeConfigurationInterface;
 use Contao\TestCase\DeprecatedClassesPhpunitExtension;
-use Imagine\Image\Metadata\MetadataBag;
 
 final class DeprecatedClasses extends DeprecatedClassesPhpunitExtension
 {
     protected function deprecationProvider(): array
     {
-        $deprecations = [
+        return [
             ResizeConfigurationInterface::class => ['%sResizeConfigurationInterface%shas been deprecated%s'],
         ];
-
-        if (\PHP_VERSION_ID >= 80100) {
-            $deprecations[MetadataBag::class] = [
-                '%s::offsetExists%s#[\ReturnTypeWillChange]%s',
-                '%s::offsetGet%s#[\ReturnTypeWillChange]%s',
-                '%s::offsetSet%s#[\ReturnTypeWillChange]%s',
-                '%s::offsetUnset%s#[\ReturnTypeWillChange]%s',
-                '%s::getIterator%s#[\ReturnTypeWillChange]%s',
-                '%s::count%s#[\ReturnTypeWillChange]%s',
-            ];
-        }
-
-        return $deprecations;
     }
 }
