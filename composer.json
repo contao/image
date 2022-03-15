@@ -63,5 +63,10 @@
         "unit-tests": [
             "vendor/bin/phpunit --colors=always"
         ]
+    },
+    "config": {
+        "allow-plugins": {
+            "bamarni/composer-bin-plugin": true
+        }
     }
 }

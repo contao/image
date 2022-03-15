@@ -75,7 +75,7 @@ jobs:
         strategy:
             fail-fast: false
             matrix:
-                php: [7.2, 7.3, 7.4, 8.0]
+                php: [7.2, 7.3, 7.4, 8.0, 8.1]
         steps:
             - name: Setup PHP
               uses: shivammathur/setup-php@v2
@@ -95,7 +95,7 @@ jobs:
               run: vendor/bin/phpunit --colors=always
 
     nightly:
-        name: PHP 8.1
+        name: PHP 8.2
         runs-on: ubuntu-latest
         if: github.event_name != 'push'
         steps:
@@ -151,7 +151,7 @@ jobs:
         strategy:
             fail-fast: false
             matrix:
-                php: [7.2, 7.3, 7.4, 8.0]
+                php: [7.2, 7.3, 7.4, 8.0, 8.1]
         steps:
             - name: Setup PHP
               uses: shivammathur/setup-php@v2
