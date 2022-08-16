@@ -5,6 +5,10 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 ## [Unreleased]
 
 
+## [1.1.2] (2022-08-16)
+
+ * Switch to Symfony's version of the Path helper. [#89]
+
 ## [1.1.1] (2021-07-06)
 
  * Fix resize calculation ending up with zero. [#82]
@@ -126,7 +130,8 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
  * Initial release
 
-[Unreleased]: https://github.com/contao/image/compare/1.1.1...HEAD
+[Unreleased]: https://github.com/contao/image/compare/1.1.2...HEAD
+[1.1.2]: https://github.com/contao/image/compare/1.1.1...1.1.2
 [1.1.1]: https://github.com/contao/image/compare/1.1.0...1.1.1
 [1.1.0]: https://github.com/contao/image/compare/1.0.3...1.1.0
 [1.0.3]: https://github.com/contao/image/compare/1.0.2...1.0.3
@@ -150,6 +155,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 [0.2.0]: https://github.com/contao/image/compare/0.1.0...0.2.0
 [0.1.0]: https://github.com/contao/image/commits/0.1.0
 
+[#89]: https://github.com/contao/image/issues/89
 [#82]: https://github.com/contao/image/issues/82
 [#79]: https://github.com/contao/image/issues/79
 [#74]: https://github.com/contao/image/issues/74
