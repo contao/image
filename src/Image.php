@@ -40,6 +40,11 @@ class Image implements ImageInterface
     protected $dimensions;
 
     /**
+     * @internal
+     */
+    protected ImageMetadata $metadata;
+
+    /**
      * @var ImagineInterface
      *
      * @internal
@@ -157,6 +162,14 @@ class Image implements ImageInterface
         $this->importantPart = $importantPart;
 
         return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getMetadata(): ImageMetadata
+    {
+        return $this->metadata ??= ImageMetadata::fromPath($this->getPath());
     }
 
     /**
