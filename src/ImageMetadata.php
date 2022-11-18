@@ -14,12 +14,17 @@ namespace Contao\Image;
 
 use Contao\Image\Exception\RuntimeException;
 
-class ImageMetadata
+final class ImageMetadata
 {
+    private int $byteSize = 0;
+    private array $xmp = [];
+    private array $iptc = [];
+    private array $exif = [];
+
     public static function fromPath(string $path): static
     {
         if (!$stream = @fopen($path, 'r')) {
-            return new static();
+            return new self();
         }
 
         return self::fromStream($stream);
@@ -34,10 +39,81 @@ class ImageMetadata
             throw new \TypeError(sprintf('Argument 1 passed to %s() must be of the type resource, %s given', __METHOD__, get_debug_type($stream)));
         }
 
-        $metadata = new static();
+        $metadata = new self();
         $metadata->parseStream($stream);
 
         return $metadata;
+    }
+
+    public function getCopyright(): string
+    {
+        return implode(
+            ', ',
+            (array) (
+                $this->xmp['http://purl.org/dc/elements/1.1/']['rights']
+                ?? $this->iptc['2#116']
+                ?? $this->exif['IFD0']['Copyright']
+                ?? $this->xmp['http://purl.org/dc/elements/1.1/']['creator']
+                ?? $this->iptc['2#080']
+                ?? $this->exif['IFD0']['Artist']
+                ?? $this->iptc['2#110']
+                ?? []
+            ),
+        );
+    }
+
+    public function getCreator(): string
+    {
+        return implode(
+            ', ',
+            (array) (
+                $this->xmp['http://purl.org/dc/elements/1.1/']['creator']
+                ?? $this->iptc['2#080']
+                ?? $this->exif['IFD0']['Artist']
+                ?? []
+            ),
+        );
+    }
+
+    public function getSource(): string
+    {
+        return implode(
+            ', ',
+            (array) (
+                $this->xmp['http://ns.adobe.com/photoshop/1.0/']['GettyImagesGIFT:AssetID']
+                ?? $this->xmp['http://ns.adobe.com/photoshop/1.0/']['Source']
+                ?? $this->iptc['2#115']
+                ?? $this->iptc['2#005']
+                ?? []
+            ),
+        );
+    }
+
+    public function getCredit(): string
+    {
+        return implode(
+            ', ',
+            (array) (
+                $this->xmp['http://ns.adobe.com/photoshop/1.0/']['Credit']
+                ?? $this->iptc['2#110']
+                ?? $this->xmp['http://prismstandard.org/namespaces/prismusagerights/2.1/']['creditLine']
+                ?? []
+            ),
+        );
+    }
+
+    public function getRawData(): array
+    {
+        return [
+            'xmp' => $this->xmp,
+            'iptc' => $this->iptc,
+            'exif' => $this->exif,
+        ];
+    }
+
+    public function getByteSize(): int
+    {
+        return $this->byteSize;
     }
 
     /**
@@ -128,7 +204,9 @@ class ImageMetadata
      */
     private function parseWebp($stream): void
     {
-        if ('RIFF' !== fread($stream, 4) || !fread($stream, 4) || 'WEBP' !== fread($stream, 4)) {
+        $head = fread($stream, 12);
+
+        if (!str_starts_with($head, 'RIFF') || 'WEBP' !== substr($head, 8)) {
             throw new RuntimeException('Invalid WEBP');
         }
 
@@ -168,7 +246,7 @@ class ImageMetadata
     {
         if (str_starts_with($app13, "Photoshop 3.0\x00")) {
             $this->parseIptc(substr($app13, 14));
-        } elseif (str_starts_with($app13, "Adobe_Photoshop2.5:")) {
+        } elseif (str_starts_with($app13, 'Adobe_Photoshop2.5:')) {
             $this->parseIptc(substr($app13, 19));
         }
     }
@@ -209,19 +287,8 @@ class ImageMetadata
             return;
         }
 
-        echo "\n\nEXIF:\n";
-        var_dump($data);
-    }
-
-    private function parseXmp(string $xmpPacket): void
-    {
-        $dom = new \DOMDocument();
-        $dom->preserveWhiteSpace = false;
-        $dom->formatOutput = true;
-        $dom->loadXML($xmpPacket);
-
-        echo "\n\nXMP:\n";
-        var_dump($dom->saveXML());
+        $this->byteSize += \strlen($exif);
+        $this->exif = $data;
     }
 
     private function parseIptc(string $resourceDataBlocks): void
@@ -232,7 +299,56 @@ class ImageMetadata
             return;
         }
 
-        echo "\n\nIPTC:\n";
-        var_dump($data);
+        $this->byteSize += \strlen($resourceDataBlocks);
+        $this->iptc = $data;
+    }
+
+    private function parseXmp(string $xmpPacket): void
+    {
+        $dom = new \DOMDocument();
+        $dom->loadXML($xmpPacket);
+
+        foreach ($dom->documentElement->childNodes as $rdf) {
+            if ('RDF' !== $rdf->localName || 'http://www.w3.org/1999/02/22-rdf-syntax-ns#' !== $rdf->namespaceURI) {
+                continue;
+            }
+
+            foreach ($rdf->childNodes ?? [] as $desc) {
+                if ('Description' !== $desc->localName || 'http://www.w3.org/1999/02/22-rdf-syntax-ns#' !== $desc->namespaceURI) {
+                    continue;
+                }
+
+                foreach ($desc->attributes ?? [] as $attr) {
+                    $this->setXmpValue($attr->namespaceURI, $attr->localName, $attr->value);
+                }
+
+                foreach ($desc->childNodes ?? [] as $node) {
+                    if ($node instanceof \DOMElement && $node->firstElementChild) {
+                        $this->setXmpValue($node->namespaceURI, $node->localName, $node->firstElementChild);
+                    }
+                }
+            }
+        }
+
+        $this->byteSize += \strlen($xmpPacket);
+    }
+
+    private function setXmpValue(string $namespace, string $attr, string|\DOMElement $value): void
+    {
+        if ($value instanceof \DOMElement) {
+            if ($value->firstElementChild) {
+                $values = [];
+
+                foreach ($value->getElementsByTagNameNS('http://www.w3.org/1999/02/22-rdf-syntax-ns#', 'li') as $valueNode) {
+                    $values[] = $valueNode->textContent;
+                }
+            } else {
+                $values = [$value->textContent];
+            }
+        } else {
+            $values = [$value];
+        }
+
+        $this->xmp[$namespace][$attr] = array_values(array_unique(array_filter($values)));
     }
 }
