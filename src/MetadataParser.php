@@ -57,7 +57,7 @@ final class MetadataParser
             default => null,
         };
 
-        return new ImageMetadata($this->xmp, $this->iptc, $this->exif);
+        return new ImageMetadata($this->xmp, $this->iptc, $this->exif, $this->byteSize);
     }
 
     /**
@@ -234,11 +234,7 @@ final class MetadataParser
         $dom = new \DOMDocument();
         $dom->loadXML($xmpPacket);
 
-        foreach ($dom->documentElement->childNodes as $rdf) {
-            if ('RDF' !== $rdf->localName || 'http://www.w3.org/1999/02/22-rdf-syntax-ns#' !== $rdf->namespaceURI) {
-                continue;
-            }
-
+        foreach ($dom->getElementsByTagNameNS('http://www.w3.org/1999/02/22-rdf-syntax-ns#', 'RDF') as $rdf) {
             foreach ($rdf->childNodes ?? [] as $desc) {
                 if ('Description' !== $desc->localName || 'http://www.w3.org/1999/02/22-rdf-syntax-ns#' !== $desc->namespaceURI) {
                     continue;
