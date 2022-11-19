@@ -42,6 +42,11 @@ class Image implements ImageInterface
     /**
      * @internal
      */
+    protected MetadataParser $metadataParser;
+
+    /**
+     * @internal
+     */
     protected ImageMetadata $metadata;
 
     /**
@@ -56,7 +61,7 @@ class Image implements ImageInterface
      */
     private $importantPart;
 
-    public function __construct(string $path, ImagineInterface $imagine, Filesystem $filesystem = null)
+    public function __construct(string $path, ImagineInterface $imagine, Filesystem $filesystem = null, MetadataParser $metadataParser = null)
     {
         if (null === $filesystem) {
             $filesystem = new Filesystem();
@@ -72,6 +77,7 @@ class Image implements ImageInterface
 
         $this->path = $path;
         $this->imagine = $imagine;
+        $this->metadataParser = $metadataParser ?? new MetadataParser();
     }
 
     /**
@@ -169,7 +175,7 @@ class Image implements ImageInterface
      */
     public function getMetadata(): ImageMetadata
     {
-        return $this->metadata ??= ImageMetadata::fromPath($this->getPath());
+        return $this->metadata ??= $this->metadataParser->parse($this->getPath());
     }
 
     /**
