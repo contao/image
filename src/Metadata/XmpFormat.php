@@ -123,7 +123,10 @@ class XmpFormat extends AbstractFormat
         return $dom->saveXML();
     }
 
-    private function parseValue(string $namespace, string $attr, string|\DOMElement $value): array
+    /**
+     * @param string|\DOMElement $value
+     */
+    private function parseValue(string $namespace, string $attr, $value): array
     {
         if ($value instanceof \DOMElement) {
             if ($value->firstElementChild) {

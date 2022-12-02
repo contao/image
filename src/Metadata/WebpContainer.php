@@ -16,8 +16,14 @@ use Contao\Image\Exception\RuntimeException;
 
 class WebpContainer extends AbstractContainer
 {
-    public function __construct(private MetadataParser $parser)
+    /**
+     * @var MetadataParser
+     */
+    private $parser;
+
+    public function __construct(MetadataParser $parser)
     {
+        $this->parser = $parser;
     }
 
     public function getMagicBytes(): string

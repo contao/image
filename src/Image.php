@@ -42,14 +42,18 @@ class Image implements ImageInterface
     protected $dimensions;
 
     /**
+     * @var MetadataParser
+     *
      * @internal
      */
-    protected MetadataParser $metadataParser;
+    protected $metadataParser;
 
     /**
+     * @var ImageMetadata
+     *
      * @internal
      */
-    protected ImageMetadata $metadata;
+    protected $metadata;
 
     /**
      * @var ImagineInterface
@@ -177,7 +181,11 @@ class Image implements ImageInterface
      */
     public function getMetadata(): ImageMetadata
     {
-        return $this->metadata ??= $this->metadataParser->parse($this->getPath());
+        if (null === $this->metadata) {
+            $this->metadata = $this->metadataParser->parse($this->getPath());
+        }
+
+        return $this->metadata;
     }
 
     /**

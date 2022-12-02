@@ -16,8 +16,14 @@ use Contao\Image\Exception\RuntimeException;
 
 class JpegContainer extends AbstractContainer
 {
-    public function __construct(private MetadataParser $parser)
+    /**
+     * @var MetadataParser
+     */
+    private $parser;
+
+    public function __construct(MetadataParser $parser)
     {
+        $this->parser = $parser;
     }
 
     public function getMagicBytes(): string
@@ -98,6 +104,10 @@ class JpegContainer extends AbstractContainer
 
             // Skip to the next marker
             fseek($stream, $size - 2, SEEK_CUR);
+        }
+
+        if (!$metadata) {
+            return [];
         }
 
         return array_merge(...$metadata);

@@ -28,7 +28,7 @@ class ExifFormat extends AbstractFormat
                 ?? $metadata->getFormat(XmpFormat::NAME)['http://prismstandard.org/namespaces/prismusagerights/2.1/']['creditLine']
                 ?? $metadata->getFormat(IptcFormat::NAME)['2#110']
                 ?? []
-            ),
+            )
         );
 
         $creator = implode(
@@ -43,7 +43,7 @@ class ExifFormat extends AbstractFormat
                 ?? $metadata->getFormat(XmpFormat::NAME)['http://xmp.gettyimages.com/gift/1.0/']['AssetID']
                 ?? $metadata->getFormat(XmpFormat::NAME)['http://purl.org/dc/elements/1.1/']['title']
                 ?? []
-            ),
+            )
         );
 
         return $this->buildExif($copyright, $creator);

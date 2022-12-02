@@ -16,8 +16,14 @@ use Contao\Image\Exception\RuntimeException;
 
 class PngContainer extends AbstractContainer
 {
-    public function __construct(private MetadataParser $parser)
+    /**
+     * @var MetadataParser
+     */
+    private $parser;
+
+    public function __construct(MetadataParser $parser)
     {
+        $this->parser = $parser;
     }
 
     public function getMagicBytes(): string
@@ -116,7 +122,7 @@ class PngContainer extends AbstractContainer
 
         return $this->buildChunk(
             'iTXt',
-            "$keyword\x00\x01\x00\x00\x00$content",
+            "$keyword\x00\x01\x00\x00\x00$content"
         );
     }
 

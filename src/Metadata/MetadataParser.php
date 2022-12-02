@@ -17,27 +17,33 @@ use Contao\Image\Exception\RuntimeException;
 final class MetadataParser
 {
     /**
-     * @param array<string,AbstractFormat> $formats
+     * @var list<AbstractContainer>
      */
-    private array $formats;
+    private $containers;
+
+    /**
+     * @var array<string,AbstractFormat>
+     */
+    private $formats;
 
     /**
      * @param list<AbstractFormat>    $formats
      * @param list<AbstractContainer> $containers
      */
-    public function __construct(array $formats = [], private array $containers = [])
+    public function __construct(array $formats = [], array $containers = [])
     {
         array_unshift(
             $formats,
             new XmpFormat(),
             new IptcFormat(),
-            new ExifFormat(),
+            new ExifFormat()
         );
 
         foreach ($formats as $format) {
             $this->formats[$format->getName()] = $format;
         }
 
+        $this->containers = $containers;
         $this->containers[] = new JpegContainer($this);
         $this->containers[] = new PngContainer($this);
         $this->containers[] = new WebpContainer($this);
