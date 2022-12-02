@@ -51,6 +51,12 @@ class ExifFormat extends AbstractFormat
 
     public function parse(string $binaryChunk): array
     {
+        if (!\is_callable('exif_read_data')) {
+            trigger_error('Missing PHP Exif extension. Install the extension or disable the preserveCopyrightMetadata option to get rid of this warning.', E_USER_WARNING);
+
+            return [];
+        }
+
         $app1 = "Exif\x00\x00$binaryChunk";
 
         $jpegStream = fopen('php://memory', 'r+');
