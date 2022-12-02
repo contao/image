@@ -37,6 +37,11 @@ class ResizeOptions
      */
     private $skipIfDimensionsMatch = false;
 
+    /**
+     * @var bool
+     */
+    private $preserveCopyrightMetadata = true;
+
     public function getImagineOptions(): array
     {
         return $this->imagineOptions;
@@ -85,6 +90,18 @@ class ResizeOptions
     public function setSkipIfDimensionsMatch(bool $skipIfDimensionsMatch): self
     {
         $this->skipIfDimensionsMatch = $skipIfDimensionsMatch;
+
+        return $this;
+    }
+
+    public function getPreserveCopyrightMetadata(): bool
+    {
+        return $this->preserveCopyrightMetadata;
+    }
+
+    public function setPreserveCopyrightMetadata(bool $preserveCopyrightMetadata): self
+    {
+        $this->preserveCopyrightMetadata = $preserveCopyrightMetadata;
 
         return $this;
     }

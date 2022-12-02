@@ -136,7 +136,7 @@ class Resizer implements ResizerInterface
         $tmpPath2 = $this->filesystem->tempnam($dir, 'img');
         $this->filesystem->chmod([$tmpPath1, $tmpPath2], 0666, umask());
 
-        if ($metadata->getAll()) {
+        if ($options->getPreserveCopyrightMetadata() && $metadata->getAll()) {
             $imagineImage->save($tmpPath1, $imagineOptions);
             $this->metadataParser->applyCopyrightToFile($metadata, $tmpPath1, $tmpPath2);
         } else {
