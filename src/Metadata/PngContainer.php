@@ -33,6 +33,7 @@ class PngContainer extends AbstractContainer
 
     public function apply($inputStream, $outputStream, ImageMetadata $metadata): void
     {
+        $png = $this->parser->serializeFormat(PngFormat::NAME, $metadata);
         $xmp = $this->parser->serializeFormat(XmpFormat::NAME, $metadata);
         $iptc = $this->parser->serializeFormat(IptcFormat::NAME, $metadata);
         $exif = $this->parser->serializeFormat(ExifFormat::NAME, $metadata);
@@ -58,9 +59,10 @@ class PngContainer extends AbstractContainer
             $type = substr($marker, 4, 4);
 
             if ('IDAT' === $type) {
+                fwrite($outputStream, $png);
                 fwrite($outputStream, $this->buildItxt('XML:com.adobe.xmp', $xmp));
                 fwrite($outputStream, $this->buildChunk('eXIf', $exif));
-                // Non-standard exiftool/exiv2 format
+                // Non-standard ImageMagick/exiftool/exiv2 format
                 fwrite($outputStream, $this->buildItxt('Raw profile type iptc', sprintf("\nIPTC profile\n%8d\n%s", \strlen($iptc), bin2hex($iptc))));
             }
 
@@ -113,16 +115,27 @@ class PngContainer extends AbstractContainer
             fseek($stream, 4, SEEK_CUR);
         }
 
-        return array_merge(...$metadata);
+        if (!$metadata) {
+            return [];
+        }
+
+        return array_merge_recursive(...$metadata);
     }
 
     private function buildItxt(string $keyword, string $content): string
     {
-        $content = gzcompress($content, 9, ZLIB_ENCODING_DEFLATE);
+        $compressed = gzcompress($content, 9, ZLIB_ENCODING_DEFLATE);
+
+        if (\strlen($compressed) < \strlen($content)) {
+            return $this->buildChunk(
+                'iTXt',
+                "$keyword\x00\x01\x00\x00\x00$compressed"
+            );
+        }
 
         return $this->buildChunk(
             'iTXt',
-            "$keyword\x00\x01\x00\x00\x00$content"
+            "$keyword\x00\x00\x00\x00\x00$content"
         );
     }
 
@@ -173,21 +186,32 @@ class PngContainer extends AbstractContainer
             return [XmpFormat::NAME => $this->parser->parseFormat(XmpFormat::NAME, $text)];
         }
 
-        // Non-standard exiftool/exiv2 format
-        if ('Raw profile type iptc' === $keyword) {
+        // Non-standard ImageMagick/exiftool/exiv2 format
+        if (str_starts_with($keyword, 'Raw profile type ') && \in_array(substr($keyword, 17), ['iptc', 'exif', 'APP1'], true)) {
             $chunks = explode("\n", trim($text));
 
             if (
                 3 === \count($chunks)
-                && 'IPTC profile' === $chunks[0]
                 && ($length = (int) $chunks[1])
-                && ($iptc = hex2bin($chunks[2]))
-                && \strlen($iptc) === $length
+                && ($profile = hex2bin($chunks[2]))
+                && \strlen($profile) === $length
             ) {
-                return [IptcFormat::NAME => $this->parser->parseFormat(IptcFormat::NAME, $iptc)];
+                if ('Raw profile type iptc' === $keyword) {
+                    return [IptcFormat::NAME => $this->parser->parseFormat(IptcFormat::NAME, $profile)];
+                }
+
+                if (str_starts_with($profile, "Exif\x00\x00")) {
+                    return [ExifFormat::NAME => $this->parser->parseFormat(ExifFormat::NAME, substr($profile, 6))];
+                }
+
+                if (str_starts_with($profile, "http://ns.adobe.com/xap/1.0/\x00")) {
+                    return [XmpFormat::NAME => $this->parser->parseFormat(XmpFormat::NAME, substr($profile, 29))];
+                }
+
+                return [ExifFormat::NAME => $this->parser->parseFormat(ExifFormat::NAME, $profile)];
             }
         }
 
-        return [];
+        return [PngFormat::NAME => $this->parser->parseFormat(PngFormat::NAME, "$keyword\x00$text")];
     }
 }

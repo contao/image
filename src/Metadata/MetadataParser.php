@@ -36,7 +36,8 @@ final class MetadataParser
             $formats,
             new XmpFormat(),
             new IptcFormat(),
-            new ExifFormat()
+            new ExifFormat(),
+            new PngFormat()
         );
 
         foreach ($formats as $format) {

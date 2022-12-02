@@ -24,6 +24,7 @@ class IptcFormat extends AbstractFormat
             $metadata->getFormat(self::NAME)['2#116']
             ?? $metadata->getFormat(XmpFormat::NAME)['http://purl.org/dc/elements/1.1/']['rights']
             ?? $metadata->getFormat(ExifFormat::NAME)['Copyright']
+            ?? $metadata->getFormat(PngFormat::NAME)['Copyright']
             ?? []
         );
 
@@ -31,24 +32,28 @@ class IptcFormat extends AbstractFormat
             $metadata->getFormat(self::NAME)['2#080']
             ?? $metadata->getFormat(XmpFormat::NAME)['http://purl.org/dc/elements/1.1/']['creator']
             ?? $metadata->getFormat(ExifFormat::NAME)['Artist']
+            ?? $metadata->getFormat(PngFormat::NAME)['Author']
             ?? []
         );
 
         $iptc[5] = (array) (
             $metadata->getFormat(self::NAME)['2#005']
             ?? $metadata->getFormat(XmpFormat::NAME)['http://purl.org/dc/elements/1.1/']['title']
+            ?? $metadata->getFormat(PngFormat::NAME)['Title']
             ?? []
         );
 
         $iptc[115] = (array) (
             $metadata->getFormat(self::NAME)['2#115']
             ?? $metadata->getFormat(XmpFormat::NAME)['http://ns.adobe.com/photoshop/1.0/']['Source']
+            ?? $metadata->getFormat(PngFormat::NAME)['Source']
             ?? []
         );
 
         $iptc[110] = (array) (
             $metadata->getFormat(self::NAME)['2#110']
             ?? $metadata->getFormat(XmpFormat::NAME)['http://ns.adobe.com/photoshop/1.0/']['Credit']
+            ?? $metadata->getFormat(PngFormat::NAME)['Disclaimer']
             ?? []
         );
 

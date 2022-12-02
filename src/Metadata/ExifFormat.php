@@ -24,9 +24,11 @@ class ExifFormat extends AbstractFormat
                 $metadata->getFormat(self::NAME)['Copyright']
                 ?? $metadata->getFormat(XmpFormat::NAME)['http://purl.org/dc/elements/1.1/']['rights']
                 ?? $metadata->getFormat(IptcFormat::NAME)['2#116']
+                ?? $metadata->getFormat(PngFormat::NAME)['Copyright']
                 ?? $metadata->getFormat(XmpFormat::NAME)['http://ns.adobe.com/photoshop/1.0/']['Credit']
                 ?? $metadata->getFormat(XmpFormat::NAME)['http://prismstandard.org/namespaces/prismusagerights/2.1/']['creditLine']
                 ?? $metadata->getFormat(IptcFormat::NAME)['2#110']
+                ?? $metadata->getFormat(PngFormat::NAME)['Disclaimer']
                 ?? []
             )
         );
@@ -37,11 +39,14 @@ class ExifFormat extends AbstractFormat
                 $metadata->getFormat(self::NAME)['Artist']
                 ?? $metadata->getFormat(XmpFormat::NAME)['http://purl.org/dc/elements/1.1/']['creator']
                 ?? $metadata->getFormat(IptcFormat::NAME)['2#080']
+                ?? $metadata->getFormat(PngFormat::NAME)['Author']
                 ?? $metadata->getFormat(XmpFormat::NAME)['http://ns.adobe.com/photoshop/1.0/']['Source']
                 ?? $metadata->getFormat(IptcFormat::NAME)['2#115']
+                ?? $metadata->getFormat(PngFormat::NAME)['Source']
                 ?? $metadata->getFormat(IptcFormat::NAME)['2#005']
                 ?? $metadata->getFormat(XmpFormat::NAME)['http://xmp.gettyimages.com/gift/1.0/']['AssetID']
                 ?? $metadata->getFormat(XmpFormat::NAME)['http://purl.org/dc/elements/1.1/']['title']
+                ?? $metadata->getFormat(PngFormat::NAME)['Title']
                 ?? []
             )
         );
