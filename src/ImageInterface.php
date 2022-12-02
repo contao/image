@@ -12,8 +12,12 @@ declare(strict_types=1);
 
 namespace Contao\Image;
 
+use Contao\Image\Metadata\ImageMetadata;
 use Imagine\Image\ImagineInterface;
 
+/**
+ * @method ImageMetadata getMetadata()
+ */
 interface ImageInterface
 {
     /**

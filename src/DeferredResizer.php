@@ -70,7 +70,8 @@ class DeferredResizer extends Resizer implements DeferredResizerInterface
                     $config['coordinates']['crop']['width'],
                     $config['coordinates']['crop']['height']
                 )
-            )
+            ),
+            Path::join($this->cacheDir, $config['path'])
         );
     }
 
@@ -140,7 +141,7 @@ class DeferredResizer extends Resizer implements DeferredResizerInterface
 
         $this->storeResizeData($image->getPath(), $path, $coordinates, $options);
 
-        return new DeferredImage($path, $image->getImagine(), new ImageDimensions($coordinates->getCropSize()));
+        return new DeferredImage($path, $image->getImagine(), new ImageDimensions($coordinates->getCropSize()), $image->getPath());
     }
 
     private function storeResizeData(string $sourcePath, string $targetPath, ResizeCoordinates $coordinates, ResizeOptions $options): void
@@ -167,6 +168,7 @@ class DeferredResizer extends Resizer implements DeferredResizerInterface
             ],
             'options' => [
                 'imagine_options' => $options->getImagineOptions(),
+                'preserve_copyright' => $options->getPreserveCopyrightMetadata(),
             ],
         ]);
     }
@@ -181,6 +183,10 @@ class DeferredResizer extends Resizer implements DeferredResizerInterface
 
         $options = new ResizeOptions();
         $options->setImagineOptions($config['options']['imagine_options']);
+
+        if (isset($config['options']['preserve_copyright'])) {
+            $options->setPreserveCopyrightMetadata($config['options']['preserve_copyright']);
+        }
 
         $path = Path::join($this->cacheDir, $config['path']);
 
