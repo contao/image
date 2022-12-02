@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Contao\Image;
 
+use Contao\Image\Metadata\MetadataParser;
 use Imagine\Exception\RuntimeException as ImagineRuntimeException;
 use Imagine\Filter\Basic\Autorotate;
 use Imagine\Image\Palette\RGB;
@@ -39,7 +40,12 @@ class Resizer implements ResizerInterface
      */
     private $calculator;
 
-    public function __construct(string $cacheDir, ResizeCalculator $calculator = null, Filesystem $filesystem = null)
+    /**
+     * @var MetadataParser
+     */
+    private $metadataParser;
+
+    public function __construct(string $cacheDir, ResizeCalculator $calculator = null, Filesystem $filesystem = null, MetadataParser $metadataParser = null)
     {
         if (null === $calculator) {
             $calculator = new ResizeCalculator();
@@ -49,9 +55,14 @@ class Resizer implements ResizerInterface
             $filesystem = new Filesystem();
         }
 
+        if (null === $metadataParser) {
+            $metadataParser = new MetadataParser();
+        }
+
         $this->cacheDir = $cacheDir;
         $this->calculator = $calculator;
         $this->filesystem = $filesystem;
+        $this->metadataParser = $metadataParser;
     }
 
     /**
@@ -91,6 +102,7 @@ class Resizer implements ResizerInterface
 
         $imagineOptions = $options->getImagineOptions();
         $imagineImage = $image->getImagine()->open($image->getPath());
+        $metadata = $this->metadataParser->parse($image->getPath());
 
         if (ImageDimensions::ORIENTATION_NORMAL !== $image->getDimensions()->getOrientation()) {
             (new Autorotate())->apply($imagineImage);
@@ -120,11 +132,21 @@ class Resizer implements ResizerInterface
             $imagineOptions['webp_quality'] = 80;
         }
 
+        $tmpPath1 = $this->filesystem->tempnam($dir, 'img');
+        $tmpPath2 = $this->filesystem->tempnam($dir, 'img');
+        $this->filesystem->chmod([$tmpPath1, $tmpPath2], 0666, umask());
+
+        if ($metadata->getAll()) {
+            $imagineImage->save($tmpPath1, $imagineOptions);
+            $this->metadataParser->applyCopyrightToFile($metadata, $tmpPath1, $tmpPath2);
+        } else {
+            $imagineImage->save($tmpPath2, $imagineOptions);
+        }
+
+        $this->filesystem->remove($tmpPath1);
+
         // Atomic write operation
-        $tmpPath = $this->filesystem->tempnam($dir, 'img');
-        $this->filesystem->chmod($tmpPath, 0666, umask());
-        $imagineImage->save($tmpPath, $imagineOptions);
-        $this->filesystem->rename($tmpPath, $path, true);
+        $this->filesystem->rename($tmpPath2, $path, true);
 
         return $this->createImage($image, $path);
     }

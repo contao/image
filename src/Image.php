@@ -14,6 +14,8 @@ namespace Contao\Image;
 
 use Contao\Image\Exception\FileNotExistsException;
 use Contao\Image\Exception\InvalidArgumentException;
+use Contao\Image\Metadata\ImageMetadata;
+use Contao\Image\Metadata\MetadataParser;
 use Contao\ImagineSvg\Image as SvgImage;
 use Contao\ImagineSvg\Imagine as SvgImagine;
 use Imagine\Image\Box;
