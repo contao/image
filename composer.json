@@ -14,7 +14,8 @@
         "ext-json": "*",
         "imagine/imagine": "^0.7.1 || ^1.0",
         "symfony/filesystem": "^5.4 || ^6.0",
-        "symfony/polyfill-php73": "^1.11"
+        "symfony/polyfill-php73": "^1.27",
+        "symfony/polyfill-php80": "^1.27"
     },
     "conflict": {
         "contao/imagine-svg": "<0.1.4 || >=2.0"
