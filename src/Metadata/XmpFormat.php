@@ -120,8 +120,6 @@ class XmpFormat extends AbstractFormat
             }
         }
 
-        echo $dom->saveXML();
-
         return $dom->saveXML();
     }
 

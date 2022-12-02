@@ -85,19 +85,26 @@ class PngContainer extends AbstractContainer
             $size = unpack('N', substr($marker, 0, 4))[1];
             $type = substr($marker, 4, 4);
 
-            if ('iTXt' === $type) {
-                $metadata[] = $this->parseItxt(fread($stream, $size));
-                fseek($stream, 4, SEEK_CUR);
+            // Skip to the next chunk
+            if (!\in_array($type, ['tEXt', 'zTXt', 'iTXt', 'eXIf'], true)) {
+                fseek($stream, $size + 4, SEEK_CUR);
                 continue;
             }
 
-            // TODO: eXIf http://ftp-osl.osuosl.org/pub/libpng/documents/pngext-1.5.0.html#C.eXIf
+            $data = fread($stream, $size);
 
-            // TODO: tEXt "Raw profile type iptc": https://github.com/exiftool/exiftool/blob/3de0f8ce75c7916567e6354a837faefea207730b/lib/Image/ExifTool/WritePNG.pl#L96-L99
-            // $data = sprintf("\nIPTC profile\n%8d\n", strlen($data)).bin2hex($data);
+            if ('tEXt' === $type) {
+                $metadata[] = $this->parseText($data);
+            } elseif ('zTXt' === $type) {
+                $metadata[] = $this->parseZtxt($data);
+            } elseif ('iTXt' === $type) {
+                $metadata[] = $this->parseItxt($data);
+            } elseif ('eXIf' === $type) {
+                $metadata[] = $this->parseExif($data);
+            }
 
-            // Skip to the next chunk
-            fseek($stream, $size + 4, SEEK_CUR);
+            // Skip CRC value
+            fseek($stream, 4, SEEK_CUR);
         }
 
         return array_merge(...$metadata);
@@ -122,20 +129,59 @@ class PngContainer extends AbstractContainer
         return "$length$data$crc";
     }
 
+    private function parseExif(string $exif): array
+    {
+        return [ExifFormat::NAME => $this->parser->parseFormat(ExifFormat::NAME, $exif)];
+    }
+
+    private function parseText(string $text): array
+    {
+        [$keyword, $text] = explode("\x00", $text, 2) + ['', ''];
+
+        return $this->parseTextualData($keyword, $text);
+    }
+
+    private function parseZtxt(string $ztxt): array
+    {
+        [$keyword, $text] = explode("\x00\x00", $ztxt, 2) + ['', ''];
+
+        return $this->parseTextualData($keyword, gzuncompress($text));
+    }
+
     private function parseItxt(string $itxt): array
     {
         $keyword = substr($itxt, 0, strpos($itxt, "\x00"));
         $compressionFlag = "\x00" !== $itxt[\strlen($keyword) + 1];
         $text = substr($itxt, strpos($itxt, "\x00", strpos($itxt, "\x00", \strlen($keyword) + 3) + 1) + 1);
 
-        if ('XML:com.adobe.xmp' !== $keyword) {
-            return [];
-        }
-
         if ($compressionFlag) {
             $text = gzuncompress($text);
         }
 
-        return [XmpFormat::NAME => $this->parser->parseFormat(XmpFormat::NAME, $text)];
+        return $this->parseTextualData($keyword, $text);
+    }
+
+    private function parseTextualData(string $keyword, string $text): array
+    {
+        if ('XML:com.adobe.xmp' === $keyword) {
+            return [XmpFormat::NAME => $this->parser->parseFormat(XmpFormat::NAME, $text)];
+        }
+
+        // Non-standard exiftool/exiv2 format
+        if ('Raw profile type iptc' === $keyword) {
+            $chunks = explode("\n", trim($text));
+
+            if (
+                3 === \count($chunks)
+                && 'IPTC profile' === $chunks[0]
+                && ($length = (int) $chunks[1])
+                && ($iptc = hex2bin($chunks[2]))
+                && \strlen($iptc) === $length
+            ) {
+                return [IptcFormat::NAME => $this->parser->parseFormat(IptcFormat::NAME, $iptc)];
+            }
+        }
+
+        return [];
     }
 }
