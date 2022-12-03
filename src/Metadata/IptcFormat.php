@@ -20,7 +20,7 @@ class IptcFormat extends AbstractFormat
     {
         $iptc = [];
 
-        $iptc[116] = (array) (
+        $iptc[116] = $this->filterValue(
             $metadata->getFormat(self::NAME)['2#116']
             ?? $metadata->getFormat(XmpFormat::NAME)['http://purl.org/dc/elements/1.1/']['rights']
             ?? $metadata->getFormat(ExifFormat::NAME)['Copyright']
@@ -28,7 +28,7 @@ class IptcFormat extends AbstractFormat
             ?? []
         );
 
-        $iptc[80] = (array) (
+        $iptc[80] = $this->filterValue(
             $metadata->getFormat(self::NAME)['2#080']
             ?? $metadata->getFormat(XmpFormat::NAME)['http://purl.org/dc/elements/1.1/']['creator']
             ?? $metadata->getFormat(ExifFormat::NAME)['Artist']
@@ -36,26 +36,28 @@ class IptcFormat extends AbstractFormat
             ?? []
         );
 
-        $iptc[5] = (array) (
-            $metadata->getFormat(self::NAME)['2#005']
-            ?? $metadata->getFormat(XmpFormat::NAME)['http://purl.org/dc/elements/1.1/']['title']
-            ?? $metadata->getFormat(PngFormat::NAME)['Title']
-            ?? []
-        );
-
-        $iptc[115] = (array) (
+        $iptc[115] = $this->filterValue(
             $metadata->getFormat(self::NAME)['2#115']
             ?? $metadata->getFormat(XmpFormat::NAME)['http://ns.adobe.com/photoshop/1.0/']['Source']
             ?? $metadata->getFormat(PngFormat::NAME)['Source']
             ?? []
         );
 
-        $iptc[110] = (array) (
+        $iptc[110] = $this->filterValue(
             $metadata->getFormat(self::NAME)['2#110']
             ?? $metadata->getFormat(XmpFormat::NAME)['http://ns.adobe.com/photoshop/1.0/']['Credit']
             ?? $metadata->getFormat(PngFormat::NAME)['Disclaimer']
             ?? []
         );
+
+        if (!$iptc[116] && !$iptc[80] && !$iptc[110]) {
+            $iptc[5] = $this->filterValue(
+                $metadata->getFormat(self::NAME)['2#005']
+                ?? $metadata->getFormat(XmpFormat::NAME)['http://purl.org/dc/elements/1.1/']['title']
+                ?? $metadata->getFormat(PngFormat::NAME)['Title']
+                ?? []
+            );
+        }
 
         return $this->buildIptc($iptc);
     }

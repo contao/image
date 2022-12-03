@@ -25,7 +25,7 @@ class XmpFormat extends AbstractFormat
     {
         $xmp = [];
 
-        $xmp['http://purl.org/dc/elements/1.1/']['rights'] = (array) (
+        $xmp['http://purl.org/dc/elements/1.1/']['rights'] = $this->filterValue(
             $metadata->getFormat(self::NAME)['http://purl.org/dc/elements/1.1/']['rights']
             ?? $metadata->getFormat(IptcFormat::NAME)['2#116']
             ?? $metadata->getFormat(ExifFormat::NAME)['Copyright']
@@ -33,7 +33,7 @@ class XmpFormat extends AbstractFormat
             ?? []
         );
 
-        $xmp['http://purl.org/dc/elements/1.1/']['creator'] = (array) (
+        $xmp['http://purl.org/dc/elements/1.1/']['creator'] = $this->filterValue(
             $metadata->getFormat(self::NAME)['http://purl.org/dc/elements/1.1/']['creator']
             ?? $metadata->getFormat(IptcFormat::NAME)['2#080']
             ?? $metadata->getFormat(ExifFormat::NAME)['Artist']
@@ -41,29 +41,35 @@ class XmpFormat extends AbstractFormat
             ?? []
         );
 
-        $xmp['http://purl.org/dc/elements/1.1/']['title'] = (array) (
-            $metadata->getFormat(self::NAME)['http://purl.org/dc/elements/1.1/']['title']
-            ?? $metadata->getFormat(IptcFormat::NAME)['2#005']
-            ?? $metadata->getFormat(PngFormat::NAME)['Title']
-            ?? []
-        );
-
-        $xmp['http://ns.adobe.com/photoshop/1.0/']['Source'] = (array) (
+        $xmp['http://ns.adobe.com/photoshop/1.0/']['Source'] = $this->filterValue(
             $metadata->getFormat(self::NAME)['http://ns.adobe.com/photoshop/1.0/']['Source']
             ?? $metadata->getFormat(IptcFormat::NAME)['2#115']
             ?? $metadata->getFormat(PngFormat::NAME)['Source']
             ?? []
         );
 
-        $xmp['http://ns.adobe.com/photoshop/1.0/']['Credit'] = (array) (
+        $xmp['http://ns.adobe.com/photoshop/1.0/']['Credit'] = $this->filterValue(
             $metadata->getFormat(self::NAME)['http://ns.adobe.com/photoshop/1.0/']['Credit']
             ?? $metadata->getFormat(IptcFormat::NAME)['2#110']
             ?? $metadata->getFormat(PngFormat::NAME)['Disclaimer']
             ?? []
         );
 
+        if (
+            !$xmp['http://purl.org/dc/elements/1.1/']['rights']
+            && !$xmp['http://purl.org/dc/elements/1.1/']['creator']
+            && !$xmp['http://ns.adobe.com/photoshop/1.0/']['Credit']
+        ) {
+            $xmp['http://purl.org/dc/elements/1.1/']['title'] = $this->filterValue(
+                $metadata->getFormat(self::NAME)['http://purl.org/dc/elements/1.1/']['title']
+                ?? $metadata->getFormat(IptcFormat::NAME)['2#005']
+                ?? $metadata->getFormat(PngFormat::NAME)['Title']
+                ?? []
+            );
+        }
+
         // TODO remove this?
-        $xmp['http://xmp.gettyimages.com/gift/1.0/']['AssetID'] = (array) (
+        $xmp['http://xmp.gettyimages.com/gift/1.0/']['AssetID'] = $this->filterValue(
             $metadata->getFormat(self::NAME)['http://xmp.gettyimages.com/gift/1.0/']['AssetID']
             ?? []
         );

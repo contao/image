@@ -24,4 +24,24 @@ abstract class AbstractFormat
     abstract public function serialize(ImageMetadata $metadata): string;
 
     abstract public function parse(string $binaryChunk): array;
+
+    /**
+     * @param array|string $values
+     */
+    protected function filterValue($values): array
+    {
+        $return = [];
+
+        foreach ((array) $values as $value) {
+            $value = trim((string) $value);
+
+            if (!\strlen($value)) {
+                continue;
+            }
+
+            $return[] = $value;
+        }
+
+        return $return;
+    }
 }

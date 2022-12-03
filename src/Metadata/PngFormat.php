@@ -18,7 +18,7 @@ class PngFormat extends AbstractFormat
 
     public function serialize(ImageMetadata $metadata): string
     {
-        $png['Copyright'] = (array) (
+        $png['Copyright'] = $this->filterValue(
             $metadata->getFormat(self::NAME)['Copyright']
             ?? $metadata->getFormat(XmpFormat::NAME)['http://purl.org/dc/elements/1.1/']['rights']
             ?? $metadata->getFormat(IptcFormat::NAME)['2#116']
@@ -26,7 +26,7 @@ class PngFormat extends AbstractFormat
             ?? []
         );
 
-        $png['Author'] = (array) (
+        $png['Author'] = $this->filterValue(
             $metadata->getFormat(self::NAME)['Author']
             ?? $metadata->getFormat(XmpFormat::NAME)['http://purl.org/dc/elements/1.1/']['creator']
             ?? $metadata->getFormat(IptcFormat::NAME)['2#080']
@@ -34,26 +34,28 @@ class PngFormat extends AbstractFormat
             ?? []
         );
 
-        $png['Title'] = (array) (
-            $metadata->getFormat(self::NAME)['Title']
-            ?? $metadata->getFormat(XmpFormat::NAME)['http://purl.org/dc/elements/1.1/']['title']
-            ?? $metadata->getFormat(IptcFormat::NAME)['2#005']
-            ?? []
-        );
-
-        $png['Source'] = (array) (
+        $png['Source'] = $this->filterValue(
             $metadata->getFormat(self::NAME)['Source']
             ?? $metadata->getFormat(XmpFormat::NAME)['http://ns.adobe.com/photoshop/1.0/']['Source']
             ?? $metadata->getFormat(IptcFormat::NAME)['2#115']
             ?? []
         );
 
-        $png['Disclaimer'] = (array) (
+        $png['Disclaimer'] = $this->filterValue(
             $metadata->getFormat(self::NAME)['Disclaimer']
             ?? $metadata->getFormat(XmpFormat::NAME)['http://ns.adobe.com/photoshop/1.0/']['Credit']
             ?? $metadata->getFormat(IptcFormat::NAME)['2#110']
             ?? []
         );
+
+        if (!$png['Copyright'] && !$png['Author'] && !$png['Disclaimer']) {
+            $png['Title'] = $this->filterValue(
+                $metadata->getFormat(self::NAME)['Title']
+                ?? $metadata->getFormat(XmpFormat::NAME)['http://purl.org/dc/elements/1.1/']['title']
+                ?? $metadata->getFormat(IptcFormat::NAME)['2#005']
+                ?? []
+            );
+        }
 
         return $this->buildChunks($png);
     }

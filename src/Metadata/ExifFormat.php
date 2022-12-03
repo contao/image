@@ -20,7 +20,7 @@ class ExifFormat extends AbstractFormat
     {
         $copyright = implode(
             ', ',
-            (array) (
+            $this->filterValue(
                 $metadata->getFormat(self::NAME)['Copyright']
                 ?? $metadata->getFormat(XmpFormat::NAME)['http://purl.org/dc/elements/1.1/']['rights']
                 ?? $metadata->getFormat(IptcFormat::NAME)['2#116']
@@ -35,7 +35,7 @@ class ExifFormat extends AbstractFormat
 
         $creator = implode(
             ', ',
-            (array) (
+            $this->filterValue(
                 $metadata->getFormat(self::NAME)['Artist']
                 ?? $metadata->getFormat(XmpFormat::NAME)['http://purl.org/dc/elements/1.1/']['creator']
                 ?? $metadata->getFormat(IptcFormat::NAME)['2#080']
@@ -43,13 +43,26 @@ class ExifFormat extends AbstractFormat
                 ?? $metadata->getFormat(XmpFormat::NAME)['http://ns.adobe.com/photoshop/1.0/']['Source']
                 ?? $metadata->getFormat(IptcFormat::NAME)['2#115']
                 ?? $metadata->getFormat(PngFormat::NAME)['Source']
-                ?? $metadata->getFormat(IptcFormat::NAME)['2#005']
                 ?? $metadata->getFormat(XmpFormat::NAME)['http://xmp.gettyimages.com/gift/1.0/']['AssetID']
-                ?? $metadata->getFormat(XmpFormat::NAME)['http://purl.org/dc/elements/1.1/']['title']
-                ?? $metadata->getFormat(PngFormat::NAME)['Title']
                 ?? []
             )
         );
+
+        if ('' === $creator && '' === $copyright) {
+            $creator = implode(
+                ', ',
+                $this->filterValue(
+                    $metadata->getFormat(XmpFormat::NAME)['http://purl.org/dc/elements/1.1/']['title']
+                    ?? $metadata->getFormat(IptcFormat::NAME)['2#005']
+                    ?? $metadata->getFormat(PngFormat::NAME)['Title']
+                    ?? []
+                )
+            );
+        }
+
+        if ($creator === $copyright && !$metadata->getFormat(self::NAME)['Artist']) {
+            $creator = '';
+        }
 
         return $this->buildExif($copyright, $creator);
     }
@@ -84,49 +97,50 @@ class ExifFormat extends AbstractFormat
         return $data;
     }
 
-    private function buildExif(string $copyright, string $artist)
+    private function buildExif(string $copyright, string $artist): string
     {
-        $copyright = $copyright ?: ' ';
-        $artist = $artist ?: ' ';
+        $data = [];
+
+        if ('' !== $copyright) {
+            $data["\x98\x82"] = $copyright;
+        }
+
+        if ('' !== $artist) {
+            $data["\x3B\x01"] = $artist;
+        }
+
+        if (!$data) {
+            return '';
+        }
 
         // TODO: handle maxlength
 
         // Offset to data area
-        $offset = 38;
+        $offset = \count($data) * 12 + 14;
 
         $exif = "II\x2A\x00"; // TIFF header Intel byte order (little endian)
         $exif .= pack('V', 8); // Offset to first IFD
-        $exif .= pack('v', 2); // Number of directory entries
+        $exif .= pack('v', \count($data)); // Number of directory entries
 
-        $exif .= "\x98\x82"; // Copyright 0x8298
-        $exif .= "\x02\x00"; // ASCII string
-        $exif .= pack('V', \strlen($copyright)); // String size
+        foreach ($data as $key => $value) {
+            $exif .= (string) $key;
+            $exif .= "\x02\x00"; // ASCII string
+            $exif .= pack('V', \strlen($value)); // String size
 
-        if (\strlen($copyright) > 4) {
-            $exif .= pack('V', $offset); // Offset to data value
-            $offset += \strlen($copyright);
-        } else {
-            $exif .= str_pad($copyright, 4, "\x00"); // 4 byte string
-        }
-
-        $exif .= "\x3B\x01"; // Artist 0x013B
-        $exif .= "\x02\x00"; // ASCII string
-        $exif .= pack('V', \strlen($artist)); // String size
-
-        if (\strlen($artist) > 4) {
-            $exif .= pack('V', $offset); // Offset to data value
-        } else {
-            $exif .= str_pad($artist, 4, "\x00"); // 4 byte string
+            if (\strlen($value) > 4) {
+                $exif .= pack('V', $offset); // Offset to data value
+                $offset += \strlen($value);
+            } else {
+                $exif .= str_pad($value, 4, "\x00"); // 4 byte string
+            }
         }
 
         $exif .= "\x00\x00\x00\x00"; // Last IFD
 
-        if (\strlen($copyright) > 4) {
-            $exif .= $copyright; // Data area
-        }
-
-        if (\strlen($artist) > 4) {
-            $exif .= $artist; // Data area
+        foreach ($data as $value) {
+            if (\strlen($value) > 4) {
+                $exif .= $value; // Data area
+            }
         }
 
         return $exif;
