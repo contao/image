@@ -73,8 +73,12 @@ final class MetadataParser
             $magicBytes = $container->getMagicBytes();
             $bytes = fread($stream, \strlen($magicBytes));
 
-            // TODO: rewind not supported by all streams
-            fseek($stream, -\strlen($magicBytes), SEEK_CUR);
+            // TODO: is there a way to implement this without seeking?
+            if (0 !== fseek($stream, -\strlen($magicBytes), SEEK_CUR)) {
+                $streamMeta = stream_get_meta_data($stream);
+
+                throw new RuntimeException(sprintf('Unable to rewind "%s" stream "%s"', $streamMeta['stream_type'], $streamMeta['uri']));
+            }
 
             if ($bytes === $magicBytes) {
                 return new ImageMetadata($container->parse($stream));
@@ -126,8 +130,12 @@ final class MetadataParser
             $magicBytes = $container->getMagicBytes();
             $bytes = fread($inputStream, \strlen($magicBytes));
 
-            // TODO: rewind not supported by all streams
-            fseek($inputStream, -\strlen($magicBytes), SEEK_CUR);
+            // TODO: is there a way to implement this without seeking?
+            if (0 !== fseek($inputStream, -\strlen($magicBytes), SEEK_CUR)) {
+                $streamMeta = stream_get_meta_data($inputStream);
+
+                throw new RuntimeException(sprintf('Unable to rewind "%s" stream "%s"', $streamMeta['stream_type'], $streamMeta['uri']));
+            }
 
             if ($bytes === $magicBytes) {
                 $container->apply($inputStream, $outputStream, $metadata);
