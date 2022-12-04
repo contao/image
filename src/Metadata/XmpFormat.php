@@ -81,10 +81,7 @@ class XmpFormat extends AbstractFormat
     {
         $metadata = [];
 
-        $dom = new \DOMDocument();
-        $dom->loadXML($binaryChunk);
-
-        foreach ($dom->getElementsByTagNameNS('http://www.w3.org/1999/02/22-rdf-syntax-ns#', 'RDF') as $rdf) {
+        foreach ($this->loadXml($binaryChunk)->getElementsByTagNameNS('http://www.w3.org/1999/02/22-rdf-syntax-ns#', 'RDF') as $rdf) {
             foreach ($rdf->childNodes ?? [] as $desc) {
                 if ('Description' !== $desc->localName || 'http://www.w3.org/1999/02/22-rdf-syntax-ns#' !== $desc->namespaceURI) {
                     continue;
@@ -107,8 +104,7 @@ class XmpFormat extends AbstractFormat
 
     private function buildXmp(array $metadata): string
     {
-        $dom = new \DOMDocument();
-        $dom->loadXML(
+        $dom = $this->loadXml(
             '<x:xmpmeta xmlns:x="adobe:ns:meta/">'
             .'<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">'
             .'<rdf:Description/>'
@@ -155,5 +151,28 @@ class XmpFormat extends AbstractFormat
         }
 
         return [$namespace => [$attr => array_values(array_unique(array_filter($values)))]];
+    }
+
+    private function loadXml(string $xml): \DOMDocument
+    {
+        $internalErrors = libxml_use_internal_errors(true);
+        libxml_clear_errors();
+        $disableEntities = null;
+
+        if (LIBXML_VERSION < 20900) {
+            $disableEntities = libxml_disable_entity_loader();
+        }
+
+        $document = new \DOMDocument();
+        $document->loadXML($xml, LIBXML_NONET);
+
+        libxml_clear_errors();
+        libxml_use_internal_errors($internalErrors);
+
+        if (LIBXML_VERSION < 20900) {
+            libxml_disable_entity_loader($disableEntities);
+        }
+
+        return $document;
     }
 }
