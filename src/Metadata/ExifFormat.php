@@ -69,7 +69,7 @@ class ExifFormat extends AbstractFormat
 
     public function parse(string $binaryChunk): array
     {
-        if (!\is_callable('exif_read_data')) {
+        if (!\function_exists('exif_read_data') && !class_exists('Imagick')) {
             trigger_error('Missing PHP Exif extension. Install the extension or disable the preserveCopyrightMetadata option to get rid of this warning.', E_USER_WARNING);
 
             return [];
@@ -82,9 +82,34 @@ class ExifFormat extends AbstractFormat
         fwrite($jpegStream, "\xFF\xD8\xFF\xE1");
         fwrite($jpegStream, pack('n', \strlen($app1) + 2));
         fwrite($jpegStream, $app1);
-        fwrite($jpegStream, "\xFF\xDA\x00\x02\xFF\xD9");
+        fwrite(
+            $jpegStream,
+            "\xFF\xDB\x00\x43\x00\x03\x02\x02\x02\x02\x02\x03\x02\x02\x02\x03"
+            ."\x03\x03\x03\x04\x06\x04\x04\x04\x04\x04\x08\x06\x06\x05\x06\x09"
+            ."\x08\x0A\x0A\x09\x08\x09\x09\x0A\x0C\x0F\x0C\x0A\x0B\x0E\x0B\x09"
+            ."\x09\x0D\x11\x0D\x0E\x0F\x10\x10\x11\x10\x0A\x0C\x12\x13\x12\x10"
+            ."\x13\x0F\x10\x10\x10\xFF\xC9\x00\x0B\x08\x00\x01\x00\x01\x01\x01"
+            ."\x11\x00\xFF\xCC\x00\x06\x00\x10\x10\x05\xFF\xDA\x00\x08\x01\x01"
+            ."\x00\x00\x3F\x00\xD2\xCF\x20\xFF\xD9"
+        );
 
         rewind($jpegStream);
+
+        $data = [];
+
+        // Fallback to Imagick if ext-exif is missing
+        if (!\function_exists('exif_read_data')) {
+            $image = new \Imagick();
+            $image->readImageFile($jpegStream);
+
+            foreach ($image->getImageProperties('exif:*') as $key => $value) {
+                if ($value) {
+                    $data['IFD0'][substr($key, 5)] = $value;
+                }
+            }
+
+            return $data;
+        }
 
         $data = @exif_read_data($jpegStream, '', true);
 
