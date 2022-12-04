@@ -109,14 +109,13 @@ class XmpFormat extends AbstractFormat
     {
         $dom = new \DOMDocument();
         $dom->loadXML(
-            "<?xpacket begin=\"\u{FEFF}\" id=\"W5M0MpCehiHzreSzNTczkc9d\"?>"
-            .'<x:xmpmeta xmlns:x="adobe:ns:meta/">'
+            '<x:xmpmeta xmlns:x="adobe:ns:meta/">'
             .'<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">'
             .'<rdf:Description/>'
             .'</rdf:RDF>'
             .'</x:xmpmeta>'
-            .'<?xpacket end="w"?>'
         );
+
         $dom->encoding = 'UTF-8';
 
         /** @var \DOMElement $description */
@@ -131,7 +130,9 @@ class XmpFormat extends AbstractFormat
             }
         }
 
-        return $dom->saveXML();
+        $xmp = $dom->saveXML($dom->documentElement);
+
+        return "<?xpacket begin=\"\u{FEFF}\" id=\"W5M0MpCehiHzreSzNTczkc9d\"?>$xmp<?xpacket end=\"w\"?>";
     }
 
     /**
