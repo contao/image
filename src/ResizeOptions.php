@@ -14,6 +14,7 @@ namespace Contao\Image;
 
 use Contao\Image\Exception\InvalidArgumentException;
 use Contao\Image\Metadata\ExifFormat;
+use Contao\Image\Metadata\GifFormat;
 use Contao\Image\Metadata\IptcFormat;
 use Contao\Image\Metadata\PngFormat;
 use Contao\Image\Metadata\XmpFormat;
@@ -49,6 +50,7 @@ class ResizeOptions
         IptcFormat::NAME => IptcFormat::DEFAULT_PRESERVE_KEYS,
         ExifFormat::NAME => ExifFormat::DEFAULT_PRESERVE_KEYS,
         PngFormat::NAME => PngFormat::DEFAULT_PRESERVE_KEYS,
+        GifFormat::NAME => GifFormat::DEFAULT_PRESERVE_KEYS,
     ];
 
     public function getImagineOptions(): array

@@ -36,6 +36,7 @@ class XmpFormat extends AbstractFormat
             ?? $metadata->getFormat(IptcFormat::NAME)['2#116']
             ?? $metadata->getFormat(ExifFormat::NAME)['Copyright']
             ?? $metadata->getFormat(PngFormat::NAME)['Copyright']
+            ?? $metadata->getFormat(GifFormat::NAME)['Comment']
             ?? []
         );
 

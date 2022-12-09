@@ -37,7 +37,8 @@ final class MetadataParser
             new XmpFormat(),
             new IptcFormat(),
             new ExifFormat(),
-            new PngFormat()
+            new PngFormat(),
+            new GifFormat()
         );
 
         foreach ($formats as $format) {
@@ -48,6 +49,7 @@ final class MetadataParser
         $this->containers[] = new JpegContainer($this);
         $this->containers[] = new PngContainer($this);
         $this->containers[] = new WebpContainer($this);
+        $this->containers[] = new GifContainer($this);
     }
 
     /**

@@ -26,6 +26,7 @@ class PngFormat extends AbstractFormat
             ?? $metadata->getFormat(XmpFormat::NAME)['http://purl.org/dc/elements/1.1/']['rights']
             ?? $metadata->getFormat(IptcFormat::NAME)['2#116']
             ?? $metadata->getFormat(ExifFormat::NAME)['Copyright']
+            ?? $metadata->getFormat(GifFormat::NAME)['Comment']
             ?? []
         );
 

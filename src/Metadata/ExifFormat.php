@@ -32,6 +32,7 @@ class ExifFormat extends AbstractFormat
                 ?? $metadata->getFormat(XmpFormat::NAME)['http://prismstandard.org/namespaces/prismusagerights/2.1/']['creditLine']
                 ?? $metadata->getFormat(IptcFormat::NAME)['2#110']
                 ?? $metadata->getFormat(PngFormat::NAME)['Disclaimer']
+                ?? $metadata->getFormat(GifFormat::NAME)['Comment']
                 ?? []
             )
         );

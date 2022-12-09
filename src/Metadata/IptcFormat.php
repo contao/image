@@ -26,6 +26,7 @@ class IptcFormat extends AbstractFormat
             ?? $metadata->getFormat(XmpFormat::NAME)['http://purl.org/dc/elements/1.1/']['rights']
             ?? $metadata->getFormat(ExifFormat::NAME)['Copyright']
             ?? $metadata->getFormat(PngFormat::NAME)['Copyright']
+            ?? $metadata->getFormat(GifFormat::NAME)['Comment']
             ?? []
         );
 
