@@ -15,13 +15,14 @@ namespace Contao\Image\Metadata;
 abstract class AbstractFormat
 {
     public const NAME = null;
+    public const DEFAULT_PRESERVE_KEYS = [];
 
     public function getName(): string
     {
         return static::NAME;
     }
 
-    abstract public function serialize(ImageMetadata $metadata): string;
+    abstract public function serialize(ImageMetadata $metadata, array $preserveKeys): string;
 
     abstract public function parse(string $binaryChunk): array;
 
@@ -43,5 +44,32 @@ abstract class AbstractFormat
         }
 
         return $return;
+    }
+
+    protected function toUtf8(array $values): array
+    {
+        return filter_var(
+            $values,
+            FILTER_CALLBACK,
+            [
+                'options' => static function (string $value): string {
+                    $value = str_replace("\x00", "\u{FFFD}", $value);
+
+                    // Already valid UTF-8
+                    if (1 === preg_match('//u', $value)) {
+                        return $value;
+                    }
+
+                    $substituteCharacter = mb_substitute_character();
+                    mb_substitute_character(0xFFFD);
+
+                    $value = mb_convert_encoding($value, 'UTF-8', 'UTF-8');
+
+                    mb_substitute_character($substituteCharacter);
+
+                    return $value;
+                },
+            ]
+        );
     }
 }

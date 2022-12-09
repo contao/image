@@ -15,15 +15,21 @@ namespace Contao\Image\Metadata;
 class XmpFormat extends AbstractFormat
 {
     public const NAME = 'xmp';
+
+    public const DEFAULT_PRESERVE_KEYS = [
+        'http://purl.org/dc/elements/1.1/' => ['rights', 'creator'],
+        'http://ns.adobe.com/photoshop/1.0/' => ['Source', 'Credit'],
+    ];
+
     private const NAMESPACE_ALIAS = [
         'http://purl.org/dc/elements/1.1/' => 'dc',
         'http://ns.adobe.com/photoshop/1.0/' => 'photoshop',
         'http://xmp.gettyimages.com/gift/1.0/' => 'GettyImagesGIFT',
     ];
 
-    public function serialize(ImageMetadata $metadata): string
+    public function serialize(ImageMetadata $metadata, array $preserveKeys): string
     {
-        $xmp = [];
+        $xmp = $metadata->getFormat(self::NAME);
 
         $xmp['http://purl.org/dc/elements/1.1/']['rights'] = $this->filterValue(
             $metadata->getFormat(self::NAME)['http://purl.org/dc/elements/1.1/']['rights']
@@ -55,26 +61,22 @@ class XmpFormat extends AbstractFormat
             ?? []
         );
 
-        if (
-            !$xmp['http://purl.org/dc/elements/1.1/']['rights']
-            && !$xmp['http://purl.org/dc/elements/1.1/']['creator']
-            && !$xmp['http://ns.adobe.com/photoshop/1.0/']['Credit']
-        ) {
-            $xmp['http://purl.org/dc/elements/1.1/']['title'] = $this->filterValue(
-                $metadata->getFormat(self::NAME)['http://purl.org/dc/elements/1.1/']['title']
-                ?? $metadata->getFormat(IptcFormat::NAME)['2#005']
-                ?? $metadata->getFormat(PngFormat::NAME)['Title']
-                ?? []
-            );
-        }
-
-        // TODO remove this?
-        $xmp['http://xmp.gettyimages.com/gift/1.0/']['AssetID'] = $this->filterValue(
-            $metadata->getFormat(self::NAME)['http://xmp.gettyimages.com/gift/1.0/']['AssetID']
+        $xmp['http://purl.org/dc/elements/1.1/']['title'] = $this->filterValue(
+            $metadata->getFormat(self::NAME)['http://purl.org/dc/elements/1.1/']['title']
+            ?? $metadata->getFormat(IptcFormat::NAME)['2#005']
+            ?? $metadata->getFormat(PngFormat::NAME)['Title']
             ?? []
         );
 
-        return $this->buildXmp($xmp);
+        $filtered = [];
+
+        foreach ($preserveKeys as $namespace => $properties) {
+            foreach ($properties as $property) {
+                $filtered[$namespace][$property] = $this->filterValue($xmp[$namespace][$property] ?? []);
+            }
+        }
+
+        return $this->buildXmp($filtered);
     }
 
     public function parse(string $binaryChunk): array
@@ -99,7 +101,7 @@ class XmpFormat extends AbstractFormat
             }
         }
 
-        return array_merge_recursive(...$metadata);
+        return $this->toUtf8(array_merge_recursive(...$metadata));
     }
 
     private function buildXmp(array $metadata): string
@@ -116,14 +118,20 @@ class XmpFormat extends AbstractFormat
 
         /** @var \DOMElement $description */
         $description = $dom->documentElement->firstChild->firstChild;
+        $empty = true;
 
         foreach ($metadata as $namespace => $attributes) {
             foreach ($attributes as $attribute => $values) {
                 // TODO: support multiple values?
                 if ($value = implode(', ', $values)) {
                     $description->setAttributeNS($namespace, self::NAMESPACE_ALIAS[$namespace].':'.$attribute, $value);
+                    $empty = false;
                 }
             }
+        }
+
+        if ($empty) {
+            return '';
         }
 
         $xmp = $dom->saveXML($dom->documentElement);

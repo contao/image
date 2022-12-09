@@ -15,8 +15,9 @@ namespace Contao\Image\Metadata;
 class IptcFormat extends AbstractFormat
 {
     public const NAME = 'iptc';
+    public const DEFAULT_PRESERVE_KEYS = ['2#116', '2#080', '2#115', '2#110'];
 
-    public function serialize(ImageMetadata $metadata): string
+    public function serialize(ImageMetadata $metadata, array $preserveKeys): string
     {
         $iptc = [];
 
@@ -50,16 +51,22 @@ class IptcFormat extends AbstractFormat
             ?? []
         );
 
-        if (!$iptc[116] && !$iptc[80] && !$iptc[110]) {
-            $iptc[5] = $this->filterValue(
-                $metadata->getFormat(self::NAME)['2#005']
-                ?? $metadata->getFormat(XmpFormat::NAME)['http://purl.org/dc/elements/1.1/']['title']
-                ?? $metadata->getFormat(PngFormat::NAME)['Title']
-                ?? []
-            );
+        $iptc[5] = $this->filterValue(
+            $metadata->getFormat(self::NAME)['2#005']
+            ?? $metadata->getFormat(XmpFormat::NAME)['http://purl.org/dc/elements/1.1/']['title']
+            ?? $metadata->getFormat(PngFormat::NAME)['Title']
+            ?? []
+        );
+
+        $filtered = [];
+
+        foreach ($preserveKeys as $property) {
+            if (str_starts_with($property, '2#') && ($key = (int) substr($property, 2)) && isset($iptc[$key])) {
+                $filtered[$key] = $iptc[$key];
+            }
         }
 
-        return $this->buildIptc($iptc);
+        return $this->buildIptc($filtered);
     }
 
     public function parse(string $binaryChunk): array
@@ -70,7 +77,7 @@ class IptcFormat extends AbstractFormat
             return [];
         }
 
-        return $data;
+        return $this->toUtf8($data);
     }
 
     private function buildIptc(array $metadata): string
@@ -91,6 +98,10 @@ class IptcFormat extends AbstractFormat
                 $iptc .= pack('n', \strlen($value));
                 $iptc .= $value;
             }
+        }
+
+        if (\strlen($iptc) < 9) {
+            return '';
         }
 
         // Image resource block

@@ -15,9 +15,12 @@ namespace Contao\Image\Metadata;
 class PngFormat extends AbstractFormat
 {
     public const NAME = 'png';
+    public const DEFAULT_PRESERVE_KEYS = ['Copyright', 'Author', 'Source', 'Disclaimer'];
 
-    public function serialize(ImageMetadata $metadata): string
+    public function serialize(ImageMetadata $metadata, array $preserveKeys): string
     {
+        $png = $metadata->getFormat(self::NAME);
+
         $png['Copyright'] = $this->filterValue(
             $metadata->getFormat(self::NAME)['Copyright']
             ?? $metadata->getFormat(XmpFormat::NAME)['http://purl.org/dc/elements/1.1/']['rights']
@@ -48,23 +51,27 @@ class PngFormat extends AbstractFormat
             ?? []
         );
 
-        if (!$png['Copyright'] && !$png['Author'] && !$png['Disclaimer']) {
-            $png['Title'] = $this->filterValue(
-                $metadata->getFormat(self::NAME)['Title']
-                ?? $metadata->getFormat(XmpFormat::NAME)['http://purl.org/dc/elements/1.1/']['title']
-                ?? $metadata->getFormat(IptcFormat::NAME)['2#005']
-                ?? []
-            );
+        $png['Title'] = $this->filterValue(
+            $metadata->getFormat(self::NAME)['Title']
+            ?? $metadata->getFormat(XmpFormat::NAME)['http://purl.org/dc/elements/1.1/']['title']
+            ?? $metadata->getFormat(IptcFormat::NAME)['2#005']
+            ?? []
+        );
+
+        $filtered = [];
+
+        foreach ($preserveKeys as $property) {
+            $filtered[$property] = $this->filterValue($png[$property] ?? []);
         }
 
-        return $this->buildChunks($png);
+        return $this->buildChunks($filtered);
     }
 
     public function parse(string $binaryChunk): array
     {
         [$keyword, $text] = explode("\x00", $binaryChunk, 2) + ['', ''];
 
-        return [$keyword => [$text]];
+        return $this->toUtf8([$keyword => [$text]]);
     }
 
     private function buildChunks(array $metadata): string

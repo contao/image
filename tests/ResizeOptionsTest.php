@@ -66,8 +66,8 @@ class ResizeOptionsTest extends TestCase
     {
         $options = new ResizeOptions();
 
-        $this->assertTrue($options->getPreserveCopyrightMetadata());
-        $this->assertSame($options, $options->setPreserveCopyrightMetadata(false));
-        $this->assertFalse($options->getPreserveCopyrightMetadata());
+        $this->assertNotEmpty($options->getPreserveCopyrightMetadata());
+        $this->assertSame($options, $options->setPreserveCopyrightMetadata([]));
+        $this->assertEmpty($options->getPreserveCopyrightMetadata());
     }
 }

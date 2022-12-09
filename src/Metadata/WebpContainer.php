@@ -31,7 +31,7 @@ class WebpContainer extends AbstractContainer
         return "\x52\x49\x46\x46";
     }
 
-    public function apply($inputStream, $outputStream, ImageMetadata $metadata): void
+    public function apply($inputStream, $outputStream, ImageMetadata $metadata, array $preserveKeysByFormat): void
     {
         $head = fread($inputStream, 12);
         $size = unpack('V', substr($head, 4, 4))[1];
@@ -40,18 +40,26 @@ class WebpContainer extends AbstractContainer
             throw new RuntimeException('Invalid WEBP');
         }
 
-        $xmp = $this->buildChunk('XMP ', $this->parser->serializeFormat(XmpFormat::NAME, $metadata));
-        $exif = $this->buildChunk('EXIF', $this->parser->serializeFormat(ExifFormat::NAME, $metadata));
+        $xmpChunk = '';
+        $exifChunk = '';
+
+        if ($xmp = $this->parser->serializeFormat(XmpFormat::NAME, $metadata, $preserveKeysByFormat[XmpFormat::NAME] ?? [])) {
+            $xmpChunk = $this->buildChunk('XMP ', $xmp);
+        }
+
+        if ($exif = $this->parser->serializeFormat(ExifFormat::NAME, $metadata, $preserveKeysByFormat[ExifFormat::NAME] ?? [])) {
+            $exifChunk = $this->buildChunk('EXIF', $exif);
+        }
 
         // Update file size field
-        $head = pack('A4VA4', 'RIFF', $size + \strlen($xmp) + \strlen($exif), 'WEBP');
+        $head = pack('A4VA4', 'RIFF', $size + \strlen($xmpChunk) + \strlen($exifChunk), 'WEBP');
 
         fwrite($outputStream, $head);
 
         stream_copy_to_stream($inputStream, $outputStream, $size - 4);
 
-        fwrite($outputStream, $xmp);
-        fwrite($outputStream, $exif);
+        fwrite($outputStream, $xmpChunk);
+        fwrite($outputStream, $exifChunk);
 
         stream_copy_to_stream($inputStream, $outputStream);
     }

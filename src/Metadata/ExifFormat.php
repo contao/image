@@ -15,13 +15,16 @@ namespace Contao\Image\Metadata;
 class ExifFormat extends AbstractFormat
 {
     public const NAME = 'exif';
+    public const DEFAULT_PRESERVE_KEYS = [
+        'IFD0' => ['Copyright', 'Artist'],
+    ];
 
-    public function serialize(ImageMetadata $metadata): string
+    public function serialize(ImageMetadata $metadata, array $preserveKeys): string
     {
         $copyright = implode(
             ', ',
             $this->filterValue(
-                $metadata->getFormat(self::NAME)['Copyright']
+                $metadata->getFormat(self::NAME)['IFD0']['Copyright']
                 ?? $metadata->getFormat(XmpFormat::NAME)['http://purl.org/dc/elements/1.1/']['rights']
                 ?? $metadata->getFormat(IptcFormat::NAME)['2#116']
                 ?? $metadata->getFormat(PngFormat::NAME)['Copyright']
@@ -36,7 +39,7 @@ class ExifFormat extends AbstractFormat
         $creator = implode(
             ', ',
             $this->filterValue(
-                $metadata->getFormat(self::NAME)['Artist']
+                $metadata->getFormat(self::NAME)['IFD0']['Artist']
                 ?? $metadata->getFormat(XmpFormat::NAME)['http://purl.org/dc/elements/1.1/']['creator']
                 ?? $metadata->getFormat(IptcFormat::NAME)['2#080']
                 ?? $metadata->getFormat(PngFormat::NAME)['Author']
@@ -48,19 +51,15 @@ class ExifFormat extends AbstractFormat
             )
         );
 
-        if ('' === $creator && '' === $copyright) {
-            $creator = implode(
-                ', ',
-                $this->filterValue(
-                    $metadata->getFormat(XmpFormat::NAME)['http://purl.org/dc/elements/1.1/']['title']
-                    ?? $metadata->getFormat(IptcFormat::NAME)['2#005']
-                    ?? $metadata->getFormat(PngFormat::NAME)['Title']
-                    ?? []
-                )
-            );
+        if ($creator === $copyright && !$metadata->getFormat(self::NAME)['IFD0']['Artist']) {
+            $creator = '';
         }
 
-        if ($creator === $copyright && !$metadata->getFormat(self::NAME)['Artist']) {
+        if (!\in_array('Copyright', $preserveKeys['IFD0'] ?? [], true)) {
+            $copyright = '';
+        }
+
+        if (!\in_array('Artist', $preserveKeys['IFD0'] ?? [], true)) {
             $creator = '';
         }
 
@@ -108,7 +107,7 @@ class ExifFormat extends AbstractFormat
                 }
             }
 
-            return $data;
+            return $this->toUtf8($data);
         }
 
         $data = @exif_read_data($jpegStream, '', true);
@@ -119,7 +118,7 @@ class ExifFormat extends AbstractFormat
 
         unset($data['FILE'], $data['COMPUTED']);
 
-        return $data;
+        return $this->toUtf8($data);
     }
 
     private function buildExif(string $copyright, string $artist): string

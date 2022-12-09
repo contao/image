@@ -138,7 +138,7 @@ class Resizer implements ResizerInterface
 
         if ($options->getPreserveCopyrightMetadata() && $metadata->getAll()) {
             $imagineImage->save($tmpPath1, $imagineOptions);
-            $this->metadataParser->applyCopyrightToFile($metadata, $tmpPath1, $tmpPath2);
+            $this->metadataParser->applyCopyrightToFile($tmpPath1, $tmpPath2, $metadata, $options->getPreserveCopyrightMetadata());
         } else {
             $imagineImage->save($tmpPath2, $imagineOptions);
         }

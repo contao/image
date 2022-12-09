@@ -88,7 +88,7 @@ final class MetadataParser
         return new ImageMetadata([]);
     }
 
-    public function applyCopyrightToFile(ImageMetadata $metadata, string $inputPath, string $outputPath): void
+    public function applyCopyrightToFile(string $inputPath, string $outputPath, ImageMetadata $metadata, array $preserveKeysByFormat): void
     {
         $input = fopen($inputPath, 'r');
 
@@ -102,14 +102,14 @@ final class MetadataParser
             throw new RuntimeException(sprintf('Unable to write image to path "%s"', $outputPath));
         }
 
-        $this->applyCopyrightToStream($metadata, $input, $output);
+        $this->applyCopyrightToStream($input, $output, $metadata, $preserveKeysByFormat);
     }
 
     /**
      * @param resource $inputStream
      * @param resource $outputStream
      */
-    public function applyCopyrightToStream(ImageMetadata $metadata, $inputStream, $outputStream): void
+    public function applyCopyrightToStream($inputStream, $outputStream, ImageMetadata $metadata, array $preserveKeysByFormat): void
     {
         if (!\is_resource($inputStream) || 'stream' !== get_resource_type($inputStream)) {
             throw new \TypeError(sprintf('Argument 2 passed to %s() must be of the type resource, %s given', __METHOD__, get_debug_type($inputStream)));
@@ -138,7 +138,7 @@ final class MetadataParser
             }
 
             if ($bytes === $magicBytes) {
-                $container->apply($inputStream, $outputStream, $metadata);
+                $container->apply($inputStream, $outputStream, $metadata, $preserveKeysByFormat);
 
                 return;
             }
@@ -150,8 +150,8 @@ final class MetadataParser
         return $this->formats[$format]->parse($binaryChunk);
     }
 
-    public function serializeFormat(string $format, ImageMetadata $metadata): string
+    public function serializeFormat(string $format, ImageMetadata $metadata, array $preserveKeys): string
     {
-        return $this->formats[$format]->serialize($metadata);
+        return $this->formats[$format]->serialize($metadata, $preserveKeys);
     }
 }

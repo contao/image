@@ -20,7 +20,7 @@ abstract class AbstractContainer
      * @param resource $inputStream
      * @param resource $outputStream
      */
-    abstract public function apply($inputStream, $outputStream, ImageMetadata $metadata): void;
+    abstract public function apply($inputStream, $outputStream, ImageMetadata $metadata, array $preserveKeysByFormat): void;
 
     /**
      * @param resource $stream

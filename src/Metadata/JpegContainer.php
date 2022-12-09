@@ -31,11 +31,11 @@ class JpegContainer extends AbstractContainer
         return "\xFF\xD8\xFF";
     }
 
-    public function apply($inputStream, $outputStream, ImageMetadata $metadata): void
+    public function apply($inputStream, $outputStream, ImageMetadata $metadata, array $preserveKeysByFormat): void
     {
-        $xmp = $this->parser->serializeFormat(XmpFormat::NAME, $metadata);
-        $exif = $this->parser->serializeFormat(ExifFormat::NAME, $metadata);
-        $iptc = $this->parser->serializeFormat(IptcFormat::NAME, $metadata);
+        $xmp = $this->parser->serializeFormat(XmpFormat::NAME, $metadata, $preserveKeysByFormat[XmpFormat::NAME] ?? []);
+        $exif = $this->parser->serializeFormat(ExifFormat::NAME, $metadata, $preserveKeysByFormat[ExifFormat::NAME] ?? []);
+        $iptc = $this->parser->serializeFormat(IptcFormat::NAME, $metadata, $preserveKeysByFormat[IptcFormat::NAME] ?? []);
 
         while (false !== $marker = fread($inputStream, 2)) {
             if (2 !== \strlen($marker) || "\xFF" !== $marker[0]) {
@@ -44,9 +44,17 @@ class JpegContainer extends AbstractContainer
 
             // Start of scan marker
             if ("\xDA" === $marker[1]) {
-                fwrite($outputStream, $this->buildMarkerSegment("\xE1", "http://ns.adobe.com/xap/1.0/\x00$xmp"));
-                fwrite($outputStream, $this->buildMarkerSegment("\xE1", "Exif\x00\x00$exif"));
-                fwrite($outputStream, $this->buildMarkerSegment("\xED", "Photoshop 3.0\x00$iptc"));
+                if ($xmp) {
+                    fwrite($outputStream, $this->buildMarkerSegment("\xE1", "http://ns.adobe.com/xap/1.0/\x00$xmp"));
+                }
+
+                if ($exif) {
+                    fwrite($outputStream, $this->buildMarkerSegment("\xE1", "Exif\x00\x00$exif"));
+                }
+
+                if ($iptc) {
+                    fwrite($outputStream, $this->buildMarkerSegment("\xED", "Photoshop 3.0\x00$iptc"));
+                }
 
                 // Copy the rest of the image
                 fwrite($outputStream, $marker);

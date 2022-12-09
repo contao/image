@@ -13,6 +13,10 @@ declare(strict_types=1);
 namespace Contao\Image;
 
 use Contao\Image\Exception\InvalidArgumentException;
+use Contao\Image\Metadata\ExifFormat;
+use Contao\Image\Metadata\IptcFormat;
+use Contao\Image\Metadata\PngFormat;
+use Contao\Image\Metadata\XmpFormat;
 use Symfony\Component\Filesystem\Filesystem;
 
 class ResizeOptions
@@ -38,9 +42,14 @@ class ResizeOptions
     private $skipIfDimensionsMatch = false;
 
     /**
-     * @var bool
+     * @var array
      */
-    private $preserveCopyrightMetadata = true;
+    private $preserveCopyrightMetadata = [
+        XmpFormat::NAME => XmpFormat::DEFAULT_PRESERVE_KEYS,
+        IptcFormat::NAME => IptcFormat::DEFAULT_PRESERVE_KEYS,
+        ExifFormat::NAME => ExifFormat::DEFAULT_PRESERVE_KEYS,
+        PngFormat::NAME => PngFormat::DEFAULT_PRESERVE_KEYS,
+    ];
 
     public function getImagineOptions(): array
     {
@@ -94,12 +103,12 @@ class ResizeOptions
         return $this;
     }
 
-    public function getPreserveCopyrightMetadata(): bool
+    public function getPreserveCopyrightMetadata(): array
     {
         return $this->preserveCopyrightMetadata;
     }
 
-    public function setPreserveCopyrightMetadata(bool $preserveCopyrightMetadata): self
+    public function setPreserveCopyrightMetadata(array $preserveCopyrightMetadata): self
     {
         $this->preserveCopyrightMetadata = $preserveCopyrightMetadata;
 
