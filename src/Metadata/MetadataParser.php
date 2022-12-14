@@ -50,6 +50,9 @@ final class MetadataParser
         $this->containers[] = new PngContainer($this);
         $this->containers[] = new WebpContainer($this);
         $this->containers[] = new GifContainer($this);
+        $this->containers[] = new AvifContainer($this);
+        $this->containers[] = new HeicContainer($this);
+        $this->containers[] = new JxlContainer($this);
     }
 
     /**
@@ -73,10 +76,12 @@ final class MetadataParser
 
         foreach ($this->containers as $container) {
             $magicBytes = $container->getMagicBytes();
-            $bytes = fread($stream, \strlen($magicBytes));
+            $offset = $container->getMagicBytesOffset();
+            $length = $offset + \strlen($magicBytes);
+            $bytes = substr(fread($stream, $length), $offset);
 
             // TODO: is there a way to implement this without seeking?
-            if (0 !== fseek($stream, -\strlen($magicBytes), SEEK_CUR)) {
+            if (0 !== fseek($stream, -$length, SEEK_CUR)) {
                 $streamMeta = stream_get_meta_data($stream);
 
                 throw new RuntimeException(sprintf('Unable to rewind "%s" stream "%s"', $streamMeta['stream_type'], $streamMeta['uri']));

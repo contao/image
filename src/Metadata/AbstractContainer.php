@@ -16,6 +16,11 @@ abstract class AbstractContainer
 {
     abstract public function getMagicBytes(): string;
 
+    public function getMagicBytesOffset(): int
+    {
+        return 0;
+    }
+
     /**
      * @param resource $inputStream
      * @param resource $outputStream
