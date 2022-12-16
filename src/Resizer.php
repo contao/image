@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Contao\Image;
 
+use Contao\Image\Metadata\ImageMetadata;
 use Contao\Image\Metadata\MetadataParser;
 use Imagine\Exception\RuntimeException as ImagineRuntimeException;
 use Imagine\Filter\Basic\Autorotate;
@@ -102,7 +103,12 @@ class Resizer implements ResizerInterface
 
         $imagineOptions = $options->getImagineOptions();
         $imagineImage = $image->getImagine()->open($image->getPath());
-        $metadata = $this->metadataParser->parse($image->getPath());
+
+        try {
+            $metadata = $this->metadataParser->parse($image->getPath());
+        } catch (\Throwable $exception) {
+            $metadata = new ImageMetadata([]);
+        }
 
         if (ImageDimensions::ORIENTATION_NORMAL !== $image->getDimensions()->getOrientation()) {
             (new Autorotate())->apply($imagineImage);
@@ -138,7 +144,12 @@ class Resizer implements ResizerInterface
 
         if ($options->getPreserveCopyrightMetadata() && $metadata->getAll()) {
             $imagineImage->save($tmpPath1, $imagineOptions);
-            $this->metadataParser->applyCopyrightToFile($tmpPath1, $tmpPath2, $metadata, $options->getPreserveCopyrightMetadata());
+
+            try {
+                $this->metadataParser->applyCopyrightToFile($tmpPath1, $tmpPath2, $metadata, $options->getPreserveCopyrightMetadata());
+            } catch (\Throwable $exception) {
+                $this->filesystem->rename($tmpPath1, $tmpPath2, true);
+            }
         } else {
             $imagineImage->save($tmpPath2, $imagineOptions);
         }
