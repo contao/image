@@ -71,6 +71,8 @@ class GifContainer extends AbstractContainer
                 fwrite($outputStream, $subBlockSize);
                 stream_copy_to_stream($inputStream, $outputStream, \ord($subBlockSize));
             }
+
+            fwrite($outputStream, $subBlockSize);
         }
 
         if ($xmp) {
@@ -136,9 +138,6 @@ class GifContainer extends AbstractContainer
             }
 
             if ("\x21" !== $marker) {
-                var_dump(ftell($stream));
-                var_dump(bin2hex($marker));
-
                 throw new RuntimeException('Invalid GIF block');
             }
 
