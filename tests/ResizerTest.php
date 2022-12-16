@@ -14,6 +14,10 @@ namespace Contao\Image\Tests;
 
 use Contao\Image\Image;
 use Contao\Image\ImageDimensions;
+use Contao\Image\Metadata\ImageMetadata;
+use Contao\Image\Metadata\MetadataParser;
+use Contao\Image\PictureConfiguration;
+use Contao\Image\PictureGenerator;
 use Contao\Image\ResizeCalculator;
 use Contao\Image\ResizeConfiguration;
 use Contao\Image\ResizeCoordinates;
@@ -22,10 +26,13 @@ use Contao\Image\Resizer;
 use Contao\ImagineSvg\Imagine as SvgImagine;
 use Contao\ImagineSvg\SvgBox;
 use Contao\ImagineSvg\UndefinedBox;
+use Imagine\Driver\InfoProvider;
 use Imagine\Gd\Imagine as GdImagine;
 use Imagine\Image\Box;
 use Imagine\Image\ImageInterface as ImagineImageInterface;
+use Imagine\Image\ImagineInterface;
 use Imagine\Image\Point;
+use Imagine\Imagick\Imagine as ImagickImagine;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
@@ -46,6 +53,8 @@ class ResizerTest extends TestCase
         parent::setUp();
 
         $this->rootDir = Path::canonicalize(__DIR__.'/tmp');
+
+        (new Filesystem())->mkdir($this->rootDir);
     }
 
     /**
@@ -58,6 +67,280 @@ class ResizerTest extends TestCase
         if (file_exists($this->rootDir)) {
             (new Filesystem())->remove($this->rootDir);
         }
+    }
+
+    public function testMetadataDifferentFormats(): void
+    {
+        $iptcSource = [
+            '2#116' => ['Copyright 💩'],
+            '2#080' => ['Creator 💩'],
+            '2#115' => ['Source 💩'],
+            '2#110' => ['Credit 💩'],
+        ];
+
+        $xmpExpected = [
+            'http://purl.org/dc/elements/1.1/' => [
+                'rights' => ['Copyright 💩'],
+                'creator' => ['Creator 💩'],
+            ],
+            'http://ns.adobe.com/photoshop/1.0/' => [
+                'Source' => ['Source 💩'],
+                'Credit' => ['Credit 💩'],
+            ],
+        ];
+
+        $exifExpected = [
+            'IFD0' => [
+                'Copyright' => 'Copyright 💩',
+                'Artist' => 'Creator 💩',
+            ],
+        ];
+
+        $gifExpected = [
+            'Comment' => ['Copyright 💩'],
+        ];
+
+        $supportedFormat = false;
+
+        /** @var class-string<ImagineInterface&InfoProvider> $imagineClass */
+        foreach ([GdImagine::class, ImagickImagine::class] as $imagineClass) {
+            if (!($driverInfo = $imagineClass::getDriverInfo(false)) || !$driverInfo->isFormatSupported('jpg') || !$driverInfo->isFormatSupported('gif') || !$driverInfo->isFormatSupported('webp')) {
+                continue;
+            }
+
+            $imagine = new $imagineClass();
+
+            $supportedFormat = true;
+            $path = "$this->rootDir/without-metadata.jpg";
+            $pathWithMeta = "$this->rootDir/with-metadata.jpg";
+
+            $imagine->create(new Box(100, 100))->save($path);
+            (new MetadataParser())->applyCopyrightToFile(
+                $path,
+                $pathWithMeta,
+                new ImageMetadata([
+                    'iptc' => $iptcSource,
+                ]),
+                (new ResizeOptions())->getPreserveCopyrightMetadata()
+            );
+
+            $resized = (new PictureGenerator($this->createResizer()))
+                ->generate(
+                    new Image($pathWithMeta, $imagine),
+                    (new PictureConfiguration())
+                        ->setFormats(['jpg' => ['webp', 'gif', 'jpg']]),
+                    new ResizeOptions()
+                )
+            ;
+
+            $this->assertExpectedArrayRecursive(
+                ['xmp' => $xmpExpected, 'exif' => $exifExpected],
+                (new MetadataParser())->parse($resized->getSources()[0]['src']->getPath())->getAll()
+            );
+
+            $this->assertExpectedArrayRecursive(
+                ['xmp' => $xmpExpected, 'gif' => $gifExpected],
+                (new MetadataParser())->parse($resized->getSources()[1]['src']->getPath())->getAll()
+            );
+
+            (new Filesystem())->remove($path);
+            (new Filesystem())->remove($pathWithMeta);
+        }
+
+        if (!$supportedFormat) {
+            $this->markTestSkipped('Format jpg, gif and webp is not supported on this system by GD and Imagick');
+        }
+    }
+
+    /**
+     * @dataProvider getMetadata
+     */
+    public function testMetadataRoundtrip($imageFormat, ImageMetadata $metadata, array $expected): void
+    {
+        $supportedFormat = false;
+
+        /** @var class-string<ImagineInterface&InfoProvider> $imagineClass */
+        foreach ([GdImagine::class, ImagickImagine::class] as $imagineClass) {
+            if (!($driverInfo = $imagineClass::getDriverInfo(false)) || !$driverInfo->isFormatSupported($imageFormat)) {
+                continue;
+            }
+
+            $imagine = new $imagineClass();
+
+            $supportedFormat = true;
+            $path = "$this->rootDir/without-metadata.$imageFormat";
+            $pathWithMeta = "$this->rootDir/with-metadata.$imageFormat";
+
+            $imagine->create(new Box(100, 100))->save($path);
+            (new MetadataParser())->applyCopyrightToFile(
+                $path,
+                $pathWithMeta,
+                $metadata,
+                (new ResizeOptions())->getPreserveCopyrightMetadata()
+            );
+
+            $resized = $this
+                ->createResizer()
+                ->resize(
+                    new Image($pathWithMeta, $imagine),
+                    (new ResizeConfiguration())
+                        ->setWidth(50),
+                    new ResizeOptions()
+                )
+                ->getPath()
+            ;
+
+            $this->assertExpectedArrayRecursive($expected, (new MetadataParser())->parse($pathWithMeta)->getAll());
+            $this->assertExpectedArrayRecursive($expected, (new MetadataParser())->parse($resized)->getAll());
+
+            (new Filesystem())->remove($path);
+            (new Filesystem())->remove($pathWithMeta);
+            (new Filesystem())->remove($resized);
+        }
+
+        if (!$supportedFormat) {
+            $this->markTestSkipped("Format $imageFormat is not supported on this system by GD and Imagick");
+        }
+    }
+
+    public function getMetadata(): \Generator
+    {
+        $sourceSingle = [
+            'iptc' => [
+                '2#116' => ['Copyright 💩'],
+                '2#080' => ['Creator 💩'],
+                '2#115' => ['Source 💩'],
+                '2#110' => ['Credit 💩'],
+                '2#005' => ['Title 💩'],
+            ],
+        ];
+
+        $expectedSingle = [
+            'iptc' => [
+                '2#116' => ['Copyright 💩'],
+                '2#080' => ['Creator 💩'],
+                '2#115' => ['Source 💩'],
+                '2#110' => ['Credit 💩'],
+            ],
+            'xmp' => [
+                'http://purl.org/dc/elements/1.1/' => [
+                    'rights' => ['Copyright 💩'],
+                    'creator' => ['Creator 💩'],
+                ],
+                'http://ns.adobe.com/photoshop/1.0/' => [
+                    'Source' => ['Source 💩'],
+                    'Credit' => ['Credit 💩'],
+                ],
+            ],
+            'exif' => [
+                'IFD0' => [
+                    'Copyright' => 'Copyright 💩',
+                    'Artist' => 'Creator 💩',
+                ],
+            ],
+            'gif' => [
+                'Comment' => ['Copyright 💩'],
+            ],
+            'png' => [
+                'Copyright' => ['Copyright 💩'],
+                'Author' => ['Creator 💩'],
+                'Source' => ['Source 💩'],
+                'Disclaimer' => ['Credit 💩'],
+            ],
+        ];
+
+        yield [
+            'jpg',
+            new ImageMetadata($sourceSingle),
+            array_intersect_key($expectedSingle, ['xmp' => null, 'iptc' => null, 'exif' => null]),
+        ];
+
+        yield [
+            'png',
+            new ImageMetadata($sourceSingle),
+            array_intersect_key($expectedSingle, ['png' => null, 'xmp' => null, 'iptc' => null, 'exif' => null]),
+        ];
+
+        yield [
+            'gif',
+            new ImageMetadata($sourceSingle),
+            array_intersect_key($expectedSingle, ['gif' => null, 'xmp' => null]),
+        ];
+
+        yield [
+            'webp',
+            new ImageMetadata($sourceSingle),
+            array_intersect_key($expectedSingle, ['xmp' => null, 'exif' => null]),
+        ];
+
+        $sourceFull = [
+            'iptc' => [
+                '2#116' => ['IPTC: Copyright 💩'],
+                '2#080' => ['IPTC: Creator 💩'],
+                '2#115' => ['IPTC: Source 💩'],
+                '2#110' => ['IPTC: Credit 💩'],
+                '2#005' => ['IPTC: Title 💩'],
+            ],
+            'xmp' => [
+                'http://purl.org/dc/elements/1.1/' => [
+                    'rights' => ['XMP: Copyright 💩'],
+                    'creator' => ['XMP: Creator 💩'],
+                    'title' => ['XMP: Title 💩'],
+                ],
+                'http://ns.adobe.com/photoshop/1.0/' => [
+                    'Source' => ['XMP: Source 💩'],
+                    'Credit' => ['XMP: Credit 💩'],
+                ],
+            ],
+            'exif' => [
+                'IFD0' => [
+                    'Copyright' => 'EXIF: Copyright 💩',
+                    'Artist' => 'EXIF: Creator 💩',
+                ],
+            ],
+            'gif' => [
+                'Comment' => ['GIF: Comment 💩'],
+            ],
+            'png' => [
+                'Copyright' => ['PNG: Copyright 💩'],
+                'Author' => ['PNG: Creator 💩'],
+                'Source' => ['PNG: Source 💩'],
+                'Disclaimer' => ['PNG: Credit 💩'],
+                'Title' => ['PNG: Title 💩'],
+            ],
+        ];
+
+        $expectedFull = $sourceFull;
+
+        unset(
+            $expectedFull['iptc']['2#005'],
+            $expectedFull['xmp']['http://purl.org/dc/elements/1.1/']['title'],
+            $expectedFull['png']['Title']
+        );
+
+        yield [
+            'jpg',
+            new ImageMetadata($sourceFull),
+            array_intersect_key($expectedFull, ['xmp' => null, 'iptc' => null, 'exif' => null]),
+        ];
+
+        yield [
+            'png',
+            new ImageMetadata($sourceFull),
+            array_intersect_key($expectedFull, ['png' => null, 'xmp' => null, 'iptc' => null, 'exif' => null]),
+        ];
+
+        yield [
+            'gif',
+            new ImageMetadata($sourceFull),
+            array_intersect_key($expectedFull, ['gif' => null, 'xmp' => null]),
+        ];
+
+        yield [
+            'webp',
+            new ImageMetadata($sourceFull),
+            array_intersect_key($expectedFull, ['xmp' => null, 'exif' => null]),
+        ];
     }
 
     public function testResize(): void
@@ -713,6 +996,22 @@ class ResizerTest extends TestCase
             parent::assertMatchesRegularExpression($pattern, $string, $message);
         } else {
             parent::assertRegExp($pattern, $string, $message);
+        }
+    }
+
+    private function assertExpectedArrayRecursive(array $expected, array $actual): void
+    {
+        foreach ($expected as $key => $value) {
+            $this->assertArrayHasKey($key, $actual);
+
+            if (\is_array($value) && !array_is_list($value)) {
+                $this->assertIsArray($actual[$key]);
+                $this->assertExpectedArrayRecursive($value, $actual[$key]);
+
+                continue;
+            }
+
+            $this->assertSame($value, $actual[$key]);
         }
     }
 
