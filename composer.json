@@ -28,7 +28,8 @@
         "bamarni/composer-bin-plugin": "^1.4",
         "contao/imagine-svg": "^0.1.4 || ^0.2 || ^1.0",
         "contao/test-case": "^3.1 || ^4.4",
-        "phpunit/phpunit": "^7.5.20 || ^8.5 || ^9.5"
+        "phpunit/phpunit": "^7.5.20 || ^8.5 || ^9.5",
+        "symfony/polyfill-php81": "^1.27"
     },
     "suggest": {
         "ext-exif": "To support EXIF auto-rotation and preserve copyright metadata"
