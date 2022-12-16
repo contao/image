@@ -52,7 +52,7 @@ class ExifFormat extends AbstractFormat
             )
         );
 
-        if ($creator === $copyright && !$metadata->getFormat(self::NAME)['IFD0']['Artist']) {
+        if ($creator === $copyright && !($metadata->getFormat(self::NAME)['IFD0']['Artist'] ?? null)) {
             $creator = '';
         }
 
