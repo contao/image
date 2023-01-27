@@ -25,7 +25,7 @@ class GifFormat extends AbstractFormat
             $metadata->getFormat(self::NAME)['Comment']
             ?? $metadata->getFormat(XmpFormat::NAME)['http://purl.org/dc/elements/1.1/']['rights']
             ?? $metadata->getFormat(IptcFormat::NAME)['2#116']
-            ?? $metadata->getFormat(ExifFormat::NAME)['Copyright']
+            ?? $metadata->getFormat(ExifFormat::NAME)['IFD0']['Copyright']
             ?? $metadata->getFormat(PngFormat::NAME)['Copyright']
             ?? $metadata->getFormat(XmpFormat::NAME)['http://ns.adobe.com/photoshop/1.0/']['Credit']
             ?? $metadata->getFormat(XmpFormat::NAME)['http://prismstandard.org/namespaces/prismusagerights/2.1/']['creditLine']

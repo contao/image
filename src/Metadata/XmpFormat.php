@@ -34,7 +34,7 @@ class XmpFormat extends AbstractFormat
         $xmp['http://purl.org/dc/elements/1.1/']['rights'] = $this->filterValue(
             $metadata->getFormat(self::NAME)['http://purl.org/dc/elements/1.1/']['rights']
             ?? $metadata->getFormat(IptcFormat::NAME)['2#116']
-            ?? $metadata->getFormat(ExifFormat::NAME)['Copyright']
+            ?? $metadata->getFormat(ExifFormat::NAME)['IFD0']['Copyright']
             ?? $metadata->getFormat(PngFormat::NAME)['Copyright']
             ?? $metadata->getFormat(GifFormat::NAME)['Comment']
             ?? []
@@ -43,7 +43,7 @@ class XmpFormat extends AbstractFormat
         $xmp['http://purl.org/dc/elements/1.1/']['creator'] = $this->filterValue(
             $metadata->getFormat(self::NAME)['http://purl.org/dc/elements/1.1/']['creator']
             ?? $metadata->getFormat(IptcFormat::NAME)['2#080']
-            ?? $metadata->getFormat(ExifFormat::NAME)['Artist']
+            ?? $metadata->getFormat(ExifFormat::NAME)['IFD0']['Artist']
             ?? $metadata->getFormat(PngFormat::NAME)['Author']
             ?? []
         );
@@ -123,10 +123,27 @@ class XmpFormat extends AbstractFormat
 
         foreach ($metadata as $namespace => $attributes) {
             foreach ($attributes as $attribute => $values) {
-                // TODO: support multiple values?
-                if ($value = implode(', ', $values)) {
-                    $description->setAttributeNS($namespace, self::NAMESPACE_ALIAS[$namespace].':'.$attribute, $value);
-                    $empty = false;
+                if (!$values = array_filter($values, 'strlen')) {
+                    continue;
+                }
+
+                $empty = false;
+
+                if (1 === \count($values)) {
+                    $description->setAttributeNS($namespace, self::NAMESPACE_ALIAS[$namespace].':'.$attribute, implode('', $values));
+                    continue;
+                }
+
+                $wrap = $dom->createElementNS($namespace, self::NAMESPACE_ALIAS[$namespace].':'.$attribute);
+                $bag = $dom->createElementNS('http://www.w3.org/1999/02/22-rdf-syntax-ns#', 'rdf:Bag');
+
+                $description->appendChild($wrap);
+                $wrap->appendChild($bag);
+
+                foreach ($values as $value) {
+                    $bag->appendChild(
+                        $dom->createElementNS('http://www.w3.org/1999/02/22-rdf-syntax-ns#', 'rdf:li', $value)
+                    );
                 }
             }
         }

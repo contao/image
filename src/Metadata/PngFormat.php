@@ -25,7 +25,7 @@ class PngFormat extends AbstractFormat
             $metadata->getFormat(self::NAME)['Copyright']
             ?? $metadata->getFormat(XmpFormat::NAME)['http://purl.org/dc/elements/1.1/']['rights']
             ?? $metadata->getFormat(IptcFormat::NAME)['2#116']
-            ?? $metadata->getFormat(ExifFormat::NAME)['Copyright']
+            ?? $metadata->getFormat(ExifFormat::NAME)['IFD0']['Copyright']
             ?? $metadata->getFormat(GifFormat::NAME)['Comment']
             ?? []
         );
@@ -34,7 +34,7 @@ class PngFormat extends AbstractFormat
             $metadata->getFormat(self::NAME)['Author']
             ?? $metadata->getFormat(XmpFormat::NAME)['http://purl.org/dc/elements/1.1/']['creator']
             ?? $metadata->getFormat(IptcFormat::NAME)['2#080']
-            ?? $metadata->getFormat(ExifFormat::NAME)['Artist']
+            ?? $metadata->getFormat(ExifFormat::NAME)['IFD0']['Artist']
             ?? []
         );
 

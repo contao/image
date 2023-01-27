@@ -24,7 +24,7 @@ class IptcFormat extends AbstractFormat
         $iptc[116] = $this->filterValue(
             $metadata->getFormat(self::NAME)['2#116']
             ?? $metadata->getFormat(XmpFormat::NAME)['http://purl.org/dc/elements/1.1/']['rights']
-            ?? $metadata->getFormat(ExifFormat::NAME)['Copyright']
+            ?? $metadata->getFormat(ExifFormat::NAME)['IFD0']['Copyright']
             ?? $metadata->getFormat(PngFormat::NAME)['Copyright']
             ?? $metadata->getFormat(GifFormat::NAME)['Comment']
             ?? []
@@ -33,7 +33,7 @@ class IptcFormat extends AbstractFormat
         $iptc[80] = $this->filterValue(
             $metadata->getFormat(self::NAME)['2#080']
             ?? $metadata->getFormat(XmpFormat::NAME)['http://purl.org/dc/elements/1.1/']['creator']
-            ?? $metadata->getFormat(ExifFormat::NAME)['Artist']
+            ?? $metadata->getFormat(ExifFormat::NAME)['IFD0']['Artist']
             ?? $metadata->getFormat(PngFormat::NAME)['Author']
             ?? []
         );
