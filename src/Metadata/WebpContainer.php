@@ -12,20 +12,10 @@ declare(strict_types=1);
 
 namespace Contao\Image\Metadata;
 
-use Contao\Image\Exception\RuntimeException;
+use Contao\Image\Exception\InvalidImageContainerException;
 
 class WebpContainer extends AbstractContainer
 {
-    /**
-     * @var MetadataParser
-     */
-    private $parser;
-
-    public function __construct(MetadataParser $parser)
-    {
-        $this->parser = $parser;
-    }
-
     public function getMagicBytes(): string
     {
         return "\x52\x49\x46\x46";
@@ -37,7 +27,7 @@ class WebpContainer extends AbstractContainer
         $size = unpack('V', substr($head, 4, 4))[1];
 
         if ($size % 2 || !str_starts_with($head, 'RIFF') || 'WEBP' !== substr($head, 8)) {
-            throw new RuntimeException('Invalid WEBP');
+            throw new InvalidImageContainerException('Invalid WEBP head');
         }
 
         $xmpChunk = '';
@@ -71,7 +61,7 @@ class WebpContainer extends AbstractContainer
         $head = fread($stream, 12);
 
         if (!str_starts_with($head, 'RIFF') || 'WEBP' !== substr($head, 8)) {
-            throw new RuntimeException('Invalid WEBP');
+            throw new InvalidImageContainerException('Invalid WEBP head');
         }
 
         while (false !== $marker = fread($stream, 8)) {
@@ -80,16 +70,16 @@ class WebpContainer extends AbstractContainer
             }
 
             if (8 !== \strlen($marker)) {
-                throw new RuntimeException(sprintf('Invalid chunk "%s"', '0x'.bin2hex($marker)));
+                throw new InvalidImageContainerException(sprintf('Invalid WEBP chunk "%s"', '0x'.bin2hex($marker)));
             }
 
             $type = substr($marker, 0, 4);
             $size = unpack('V', substr($marker, 4, 4))[1];
 
             if ('EXIF' === $type) {
-                $metadata[ExifFormat::NAME] = $this->parser->parseFormat(ExifFormat::NAME, fread($stream, $size));
+                $metadata[ExifFormat::NAME] = $this->parseFormat(ExifFormat::NAME, fread($stream, $size));
             } elseif ('XMP ' === $type) {
-                $metadata[XmpFormat::NAME] = $this->parser->parseFormat(XmpFormat::NAME, fread($stream, $size));
+                $metadata[XmpFormat::NAME] = $this->parseFormat(XmpFormat::NAME, fread($stream, $size));
             } else {
                 // Skip to the next chunk
                 fseek($stream, $size, SEEK_CUR);

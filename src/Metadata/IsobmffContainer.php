@@ -12,15 +12,10 @@ declare(strict_types=1);
 
 namespace Contao\Image\Metadata;
 
-use Contao\Image\Exception\RuntimeException;
+use Contao\Image\Exception\InvalidImageContainerException;
 
 abstract class IsobmffContainer extends AbstractContainer
 {
-    /**
-     * @var MetadataParser
-     */
-    private $parser;
-
     /**
      * @var array
      */
@@ -35,11 +30,6 @@ abstract class IsobmffContainer extends AbstractContainer
      * @var string
      */
     private $idat = '';
-
-    public function __construct(MetadataParser $parser)
-    {
-        $this->parser = $parser;
-    }
 
     public function apply($inputStream, $outputStream, ImageMetadata $metadata, array $preserveKeysByFormat): void
     {
@@ -69,7 +59,7 @@ abstract class IsobmffContainer extends AbstractContainer
             }
 
             if (8 !== \strlen($head)) {
-                throw new RuntimeException('Invalid ISOBMFF box');
+                throw new InvalidImageContainerException('Invalid ISOBMFF box');
             }
             $length -= 8;
             $size = unpack('N', substr($head, 0, 4))[1];
@@ -87,7 +77,7 @@ abstract class IsobmffContainer extends AbstractContainer
             $length -= $size;
 
             if ($size < 0 || $length < 0) {
-                throw new RuntimeException('Invalid ISOBMFF box');
+                throw new InvalidImageContainerException('Invalid ISOBMFF box');
             }
 
             // TODO: support brotli-compressed boxes (brob)
@@ -267,11 +257,11 @@ abstract class IsobmffContainer extends AbstractContainer
             $exif = substr($exif, $offset + 4);
         }
 
-        $this->metadata[] = [ExifFormat::NAME => $this->parser->parseFormat(ExifFormat::NAME, $exif)];
+        $this->metadata[] = [ExifFormat::NAME => $this->parseFormat(ExifFormat::NAME, $exif)];
     }
 
     private function parseXmp(string $xmp): void
     {
-        $this->metadata[] = [XmpFormat::NAME => $this->parser->parseFormat(XmpFormat::NAME, $xmp)];
+        $this->metadata[] = [XmpFormat::NAME => $this->parseFormat(XmpFormat::NAME, $xmp)];
     }
 }

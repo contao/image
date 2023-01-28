@@ -12,6 +12,8 @@ declare(strict_types=1);
 
 namespace Contao\Image\Metadata;
 
+use Contao\Image\Exception\InvalidImageMetadataException;
+
 class IptcFormat extends AbstractFormat
 {
     public const NAME = 'iptc';
@@ -75,7 +77,7 @@ class IptcFormat extends AbstractFormat
         $data = @iptcparse("Photoshop 3.0\x00$binaryChunk");
 
         if (!\is_array($data)) {
-            return [];
+            throw new InvalidImageMetadataException('Parsing IPTC metadata failed');
         }
 
         return $this->toUtf8($data);

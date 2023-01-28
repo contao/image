@@ -12,7 +12,9 @@ declare(strict_types=1);
 
 namespace Contao\Image\Metadata;
 
-use Contao\Image\Exception\RuntimeException;
+use Contao\Image\Exception\InvalidArgumentException;
+use Contao\Image\Exception\InvalidImageContainerException;
+use Contao\Image\Exception\InvalidImageMetadataException;
 
 final class MetadataParser
 {
@@ -57,6 +59,8 @@ final class MetadataParser
 
     /**
      * @param resource|string $pathOrStream
+     *
+     * @throws InvalidImageContainerException
      */
     public function parse($pathOrStream): ImageMetadata
     {
@@ -80,11 +84,10 @@ final class MetadataParser
             $length = $offset + \strlen($magicBytes);
             $bytes = substr(fread($stream, $length), $offset);
 
-            // TODO: is there a way to implement this without seeking?
             if (0 !== fseek($stream, -$length, SEEK_CUR)) {
                 $streamMeta = stream_get_meta_data($stream);
 
-                throw new RuntimeException(sprintf('Unable to rewind "%s" stream "%s"', $streamMeta['stream_type'], $streamMeta['uri']));
+                throw new InvalidArgumentException(sprintf('Unable to rewind "%s" stream "%s"', $streamMeta['stream_type'], $streamMeta['uri']));
             }
 
             if ($bytes === $magicBytes) {
@@ -100,13 +103,13 @@ final class MetadataParser
         $input = fopen($inputPath, 'r');
 
         if (!$input) {
-            throw new RuntimeException(sprintf('Unable to open image path "%s"', $inputPath));
+            throw new InvalidArgumentException(sprintf('Unable to open image path "%s"', $inputPath));
         }
 
         $output = fopen($outputPath, 'w');
 
         if (!$output) {
-            throw new RuntimeException(sprintf('Unable to write image to path "%s"', $outputPath));
+            throw new InvalidArgumentException(sprintf('Unable to write image to path "%s"', $outputPath));
         }
 
         $this->applyCopyrightToStream($input, $output, $metadata, $preserveKeysByFormat);
@@ -137,11 +140,10 @@ final class MetadataParser
             $magicBytes = $container->getMagicBytes();
             $bytes = fread($inputStream, \strlen($magicBytes));
 
-            // TODO: is there a way to implement this without seeking?
             if (0 !== fseek($inputStream, -\strlen($magicBytes), SEEK_CUR)) {
                 $streamMeta = stream_get_meta_data($inputStream);
 
-                throw new RuntimeException(sprintf('Unable to rewind "%s" stream "%s"', $streamMeta['stream_type'], $streamMeta['uri']));
+                throw new InvalidArgumentException(sprintf('Unable to rewind "%s" stream "%s"', $streamMeta['stream_type'], $streamMeta['uri']));
             }
 
             if ($bytes === $magicBytes) {
@@ -152,6 +154,9 @@ final class MetadataParser
         }
     }
 
+    /**
+     * @throws InvalidImageMetadataException
+     */
     public function parseFormat(string $format, string $binaryChunk): array
     {
         return $this->formats[$format]->parse($binaryChunk);

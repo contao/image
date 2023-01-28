@@ -12,20 +12,10 @@ declare(strict_types=1);
 
 namespace Contao\Image\Metadata;
 
-use Contao\Image\Exception\RuntimeException;
+use Contao\Image\Exception\InvalidImageContainerException;
 
 class GifContainer extends AbstractContainer
 {
-    /**
-     * @var MetadataParser
-     */
-    private $parser;
-
-    public function __construct(MetadataParser $parser)
-    {
-        $this->parser = $parser;
-    }
-
     public function getMagicBytes(): string
     {
         return "\x47\x49\x46\x38";
@@ -39,13 +29,15 @@ class GifContainer extends AbstractContainer
         $head = fread($inputStream, 13);
 
         if (!str_starts_with($head, 'GIF') || 13 !== \strlen($head)) {
-            throw new RuntimeException('Invalid GIF');
+            throw new InvalidImageContainerException('Invalid GIF head');
         }
 
         if (!\in_array(substr($head, 3, 3), ['87a', '89a'], true)) {
-            trigger_error(sprintf('Unrecognized GIF version "%s".', substr($head, 3, 3)), E_USER_WARNING);
-        } elseif ($xmp || $gif) {
-            // Application and comment extension require version 89a
+            throw new InvalidImageContainerException(sprintf('Unrecognized GIF version "%s".', substr($head, 3, 3)));
+        }
+
+        // Application and comment extension require version 89a
+        if ($xmp || $gif) {
             $head[4] = '9';
         }
 
@@ -65,7 +57,7 @@ class GifContainer extends AbstractContainer
 
             while ("\x00" !== $subBlockSize = fread($inputStream, 1)) {
                 if (1 !== \strlen($subBlockSize)) {
-                    throw new RuntimeException('Invalid GIF sub block');
+                    throw new InvalidImageContainerException('Invalid GIF sub block');
                 }
 
                 fwrite($outputStream, $subBlockSize);
@@ -96,11 +88,11 @@ class GifContainer extends AbstractContainer
         $head = fread($stream, 13);
 
         if (!str_starts_with($head, 'GIF') || 13 !== \strlen($head)) {
-            throw new RuntimeException('Invalid GIF');
+            throw new InvalidImageContainerException('Invalid GIF head');
         }
 
         if (!\in_array(substr($head, 3, 3), ['87a', '89a'], true)) {
-            trigger_error(sprintf('Unrecognized GIF version "%s".', substr($head, 3, 3)), E_USER_WARNING);
+            throw new InvalidImageContainerException(sprintf('Unrecognized GIF version "%s".', substr($head, 3, 3)));
         }
 
         // Skip Global Color Table
@@ -128,7 +120,7 @@ class GifContainer extends AbstractContainer
 
                 while ("\x00" !== $subBlockSize = fread($stream, 1)) {
                     if (1 !== \strlen($subBlockSize)) {
-                        throw new RuntimeException('Invalid GIF sub block');
+                        throw new InvalidImageContainerException('Invalid GIF sub block');
                     }
 
                     fseek($stream, \ord($subBlockSize), SEEK_CUR);
@@ -138,7 +130,7 @@ class GifContainer extends AbstractContainer
             }
 
             if ("\x21" !== $marker) {
-                throw new RuntimeException('Invalid GIF block');
+                throw new InvalidImageContainerException('Invalid GIF block');
             }
 
             // Extension block
@@ -149,14 +141,14 @@ class GifContainer extends AbstractContainer
 
                 while ("\x00" !== $subBlockSize = fread($stream, 1)) {
                     if (1 !== \strlen($subBlockSize)) {
-                        throw new RuntimeException('Invalid GIF sub block');
+                        throw new InvalidImageContainerException('Invalid GIF sub block');
                     }
 
                     $block .= $subBlockSize;
                     $block .= fread($stream, \ord($subBlockSize));
                 }
 
-                $metadata[] = [GifFormat::NAME => $this->parser->parseFormat(GifFormat::NAME, $block)];
+                $metadata[] = [GifFormat::NAME => $this->parseFormat(GifFormat::NAME, $block)];
 
                 continue;
             }
@@ -167,7 +159,7 @@ class GifContainer extends AbstractContainer
             if ("\xFF" !== $label || 'XMP DataXMP' !== $block) {
                 while ("\x00" !== $subBlockSize = fread($stream, 1)) {
                     if (1 !== \strlen($subBlockSize)) {
-                        throw new RuntimeException('Invalid GIF sub block');
+                        throw new InvalidImageContainerException('Invalid GIF sub block');
                     }
 
                     fseek($stream, \ord($subBlockSize), SEEK_CUR);
@@ -180,7 +172,7 @@ class GifContainer extends AbstractContainer
 
             while ("\x00" !== $subBlockSize = fread($stream, 1)) {
                 if (1 !== \strlen($subBlockSize)) {
-                    throw new RuntimeException('Invalid GIF sub block');
+                    throw new InvalidImageContainerException('Invalid GIF sub block');
                 }
 
                 // According to section 1.1.2 in the XMP Specification
@@ -194,7 +186,7 @@ class GifContainer extends AbstractContainer
                 $xmp = substr($xmp, 0, $trailerPos);
             }
 
-            $metadata[] = [XmpFormat::NAME => $this->parser->parseFormat(XmpFormat::NAME, $xmp)];
+            $metadata[] = [XmpFormat::NAME => $this->parseFormat(XmpFormat::NAME, $xmp)];
         }
 
         if (!$metadata) {

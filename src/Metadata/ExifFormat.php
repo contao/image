@@ -12,6 +12,8 @@ declare(strict_types=1);
 
 namespace Contao\Image\Metadata;
 
+use Contao\Image\Exception\InvalidImageMetadataException;
+
 class ExifFormat extends AbstractFormat
 {
     public const NAME = 'exif';
@@ -108,16 +110,20 @@ class ExifFormat extends AbstractFormat
                 }
             }
 
+            if (!$data) {
+                throw new InvalidImageMetadataException('Parsing Exif metadata failed');
+            }
+
             return $this->toUtf8($data);
         }
 
-        $data = @exif_read_data($jpegStream, '', true);
-
-        if (!\is_array($data)) {
-            return [];
-        }
+        $data = @exif_read_data($jpegStream, '', true) ?: [];
 
         unset($data['FILE'], $data['COMPUTED']);
+
+        if (!$data) {
+            throw new InvalidImageMetadataException('Parsing Exif metadata failed');
+        }
 
         return $this->toUtf8($data);
     }

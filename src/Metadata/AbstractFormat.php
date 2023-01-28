@@ -12,6 +12,8 @@ declare(strict_types=1);
 
 namespace Contao\Image\Metadata;
 
+use Contao\Image\Exception\InvalidImageMetadataException;
+
 abstract class AbstractFormat
 {
     public const NAME = null;
@@ -24,6 +26,9 @@ abstract class AbstractFormat
 
     abstract public function serialize(ImageMetadata $metadata, array $preserveKeys): string;
 
+    /**
+     * @throws InvalidImageMetadataException
+     */
     abstract public function parse(string $binaryChunk): array;
 
     /**

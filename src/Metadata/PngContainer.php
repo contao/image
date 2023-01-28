@@ -12,20 +12,10 @@ declare(strict_types=1);
 
 namespace Contao\Image\Metadata;
 
-use Contao\Image\Exception\RuntimeException;
+use Contao\Image\Exception\InvalidImageContainerException;
 
 class PngContainer extends AbstractContainer
 {
-    /**
-     * @var MetadataParser
-     */
-    private $parser;
-
-    public function __construct(MetadataParser $parser)
-    {
-        $this->parser = $parser;
-    }
-
     public function getMagicBytes(): string
     {
         return "\x89\x50\x4E\x47\x0D\x0A\x1A\x0A";
@@ -41,7 +31,7 @@ class PngContainer extends AbstractContainer
         $head = fread($inputStream, 8);
 
         if ($head !== $this->getMagicBytes()) {
-            throw new RuntimeException('Invalid PNG');
+            throw new InvalidImageContainerException('Invalid PNG head');
         }
 
         fwrite($outputStream, $head);
@@ -52,7 +42,7 @@ class PngContainer extends AbstractContainer
             }
 
             if (8 !== \strlen($marker)) {
-                throw new RuntimeException(sprintf('Invalid chunk "%s"', '0x'.bin2hex($marker)));
+                throw new InvalidImageContainerException(sprintf('Invalid PNG chunk "%s"', '0x'.bin2hex($marker)));
             }
 
             $size = unpack('N', substr($marker, 0, 4))[1];
@@ -78,7 +68,7 @@ class PngContainer extends AbstractContainer
         $head = fread($stream, 8);
 
         if ($head !== $this->getMagicBytes()) {
-            throw new RuntimeException('Invalid PNG');
+            throw new InvalidImageContainerException('Invalid PNG head');
         }
 
         while (false !== $marker = fread($stream, 8)) {
@@ -87,7 +77,7 @@ class PngContainer extends AbstractContainer
             }
 
             if (8 !== \strlen($marker)) {
-                throw new RuntimeException(sprintf('Invalid chunk "%s"', '0x'.bin2hex($marker)));
+                throw new InvalidImageContainerException(sprintf('Invalid PNG chunk "%s"', '0x'.bin2hex($marker)));
             }
 
             $size = unpack('N', substr($marker, 0, 4))[1];
@@ -150,7 +140,7 @@ class PngContainer extends AbstractContainer
 
     private function parseExif(string $exif): array
     {
-        return [ExifFormat::NAME => $this->parser->parseFormat(ExifFormat::NAME, $exif)];
+        return [ExifFormat::NAME => $this->parseFormat(ExifFormat::NAME, $exif)];
     }
 
     private function parseText(string $text): array
@@ -183,7 +173,7 @@ class PngContainer extends AbstractContainer
     private function parseTextualData(string $keyword, string $text): array
     {
         if ('XML:com.adobe.xmp' === $keyword) {
-            return [XmpFormat::NAME => $this->parser->parseFormat(XmpFormat::NAME, $text)];
+            return [XmpFormat::NAME => $this->parseFormat(XmpFormat::NAME, $text)];
         }
 
         // Non-standard ImageMagick/exiftool/exiv2 format
@@ -197,21 +187,21 @@ class PngContainer extends AbstractContainer
                 && \strlen($profile) === $length
             ) {
                 if ('Raw profile type iptc' === $keyword) {
-                    return [IptcFormat::NAME => $this->parser->parseFormat(IptcFormat::NAME, $profile)];
+                    return [IptcFormat::NAME => $this->parseFormat(IptcFormat::NAME, $profile)];
                 }
 
                 if (str_starts_with($profile, "Exif\x00\x00")) {
-                    return [ExifFormat::NAME => $this->parser->parseFormat(ExifFormat::NAME, substr($profile, 6))];
+                    return [ExifFormat::NAME => $this->parseFormat(ExifFormat::NAME, substr($profile, 6))];
                 }
 
                 if (str_starts_with($profile, "http://ns.adobe.com/xap/1.0/\x00")) {
-                    return [XmpFormat::NAME => $this->parser->parseFormat(XmpFormat::NAME, substr($profile, 29))];
+                    return [XmpFormat::NAME => $this->parseFormat(XmpFormat::NAME, substr($profile, 29))];
                 }
 
-                return [ExifFormat::NAME => $this->parser->parseFormat(ExifFormat::NAME, $profile)];
+                return [ExifFormat::NAME => $this->parseFormat(ExifFormat::NAME, $profile)];
             }
         }
 
-        return [PngFormat::NAME => $this->parser->parseFormat(PngFormat::NAME, "$keyword\x00$text")];
+        return [PngFormat::NAME => $this->parseFormat(PngFormat::NAME, "$keyword\x00$text")];
     }
 }

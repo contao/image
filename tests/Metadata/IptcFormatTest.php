@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Contao\Image\Tests\Metadata;
 
+use Contao\Image\Exception\InvalidImageMetadataException;
 use Contao\Image\Metadata\ImageMetadata;
 use Contao\Image\Metadata\IptcFormat;
 use PHPUnit\Framework\TestCase;
@@ -23,6 +24,10 @@ class IptcFormatTest extends TestCase
      */
     public function testParse(string $source, array $expected): void
     {
+        if (!$expected) {
+            $this->expectException(InvalidImageMetadataException::class);
+        }
+
         $this->assertSame($expected, (new IptcFormat())->parse($source));
     }
 

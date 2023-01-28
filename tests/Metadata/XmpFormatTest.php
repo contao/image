@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Contao\Image\Tests\Metadata;
 
+use Contao\Image\Exception\InvalidImageMetadataException;
 use Contao\Image\Metadata\ImageMetadata;
 use Contao\Image\Metadata\XmpFormat;
 use PHPUnit\Framework\TestCase;
@@ -30,6 +31,10 @@ class XmpFormatTest extends TestCase
             .'</x:xmpmeta>'
             .'<?xpacket end="w"?>'
         ;
+
+        if (!$expected) {
+            $this->expectException(InvalidImageMetadataException::class);
+        }
 
         $this->assertSame($expected, (new XmpFormat())->parse($source));
         $this->assertSame($expected, (new XmpFormat())->parse($wrapped));

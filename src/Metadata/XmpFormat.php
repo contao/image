@@ -12,6 +12,8 @@ declare(strict_types=1);
 
 namespace Contao\Image\Metadata;
 
+use Contao\Image\Exception\InvalidImageMetadataException;
+
 class XmpFormat extends AbstractFormat
 {
     public const NAME = 'xmp';
@@ -82,6 +84,7 @@ class XmpFormat extends AbstractFormat
 
     public function parse(string $binaryChunk): array
     {
+        $foundDescription = false;
         $metadata = [];
 
         foreach ($this->loadXml($binaryChunk)->getElementsByTagNameNS('http://www.w3.org/1999/02/22-rdf-syntax-ns#', 'RDF') as $rdf) {
@@ -89,6 +92,8 @@ class XmpFormat extends AbstractFormat
                 if ('Description' !== $desc->localName || 'http://www.w3.org/1999/02/22-rdf-syntax-ns#' !== $desc->namespaceURI) {
                     continue;
                 }
+
+                $foundDescription = true;
 
                 foreach ($desc->attributes ?? [] as $attr) {
                     $metadata[] = $this->parseValue($attr->namespaceURI, $attr->localName, $attr->value);
@@ -100,6 +105,10 @@ class XmpFormat extends AbstractFormat
                     }
                 }
             }
+        }
+
+        if (!$foundDescription) {
+            throw new InvalidImageMetadataException('Parsing XMP metadata failed');
         }
 
         return $this->toUtf8(array_merge_recursive(...$metadata));

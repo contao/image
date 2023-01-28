@@ -12,20 +12,10 @@ declare(strict_types=1);
 
 namespace Contao\Image\Metadata;
 
-use Contao\Image\Exception\RuntimeException;
+use Contao\Image\Exception\InvalidImageContainerException;
 
 class JpegContainer extends AbstractContainer
 {
-    /**
-     * @var MetadataParser
-     */
-    private $parser;
-
-    public function __construct(MetadataParser $parser)
-    {
-        $this->parser = $parser;
-    }
-
     public function getMagicBytes(): string
     {
         return "\xFF\xD8\xFF";
@@ -39,7 +29,7 @@ class JpegContainer extends AbstractContainer
 
         while (false !== $marker = fread($inputStream, 2)) {
             if (2 !== \strlen($marker) || "\xFF" !== $marker[0]) {
-                throw new RuntimeException('Invalid JPEG marker');
+                throw new InvalidImageContainerException('Invalid JPEG marker');
             }
 
             // Start of scan marker
@@ -85,7 +75,7 @@ class JpegContainer extends AbstractContainer
 
         while (false !== $marker = fread($stream, 2)) {
             if (2 !== \strlen($marker) || "\xFF" !== $marker[0]) {
-                throw new RuntimeException('Invalid JPEG marker');
+                throw new InvalidImageContainerException('Invalid JPEG marker');
             }
 
             // Skip two byte markers
@@ -131,11 +121,11 @@ class JpegContainer extends AbstractContainer
     private function parseApp1(string $app1): array
     {
         if (str_starts_with($app1, "Exif\x00\x00")) {
-            return [ExifFormat::NAME => $this->parser->parseFormat(ExifFormat::NAME, substr($app1, 6))];
+            return [ExifFormat::NAME => $this->parseFormat(ExifFormat::NAME, substr($app1, 6))];
         }
 
         if (str_starts_with($app1, "http://ns.adobe.com/xap/1.0/\x00")) {
-            return [XmpFormat::NAME => $this->parser->parseFormat(XmpFormat::NAME, substr($app1, 29))];
+            return [XmpFormat::NAME => $this->parseFormat(XmpFormat::NAME, substr($app1, 29))];
         }
 
         return [];
@@ -144,11 +134,11 @@ class JpegContainer extends AbstractContainer
     private function parseApp13(string $app13): array
     {
         if (str_starts_with($app13, "Photoshop 3.0\x00")) {
-            return [IptcFormat::NAME => $this->parser->parseFormat(IptcFormat::NAME, substr($app13, 14))];
+            return [IptcFormat::NAME => $this->parseFormat(IptcFormat::NAME, substr($app13, 14))];
         }
 
         if (str_starts_with($app13, 'Adobe_Photoshop2.5:')) {
-            return [IptcFormat::NAME => $this->parser->parseFormat(IptcFormat::NAME, substr($app13, 19))];
+            return [IptcFormat::NAME => $this->parseFormat(IptcFormat::NAME, substr($app13, 19))];
         }
 
         return [];
