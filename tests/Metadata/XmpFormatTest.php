@@ -58,6 +58,7 @@ class XmpFormatTest extends TestCase
             .'<dc:creator><rdf:Seq><rdf:li>Creator 1</rdf:li><rdf:li>Creator 2</rdf:li></rdf:Seq></dc:creator>'
             .'<dc:title><rdf:Alt><rdf:li xml:lang="de">Bild</rdf:li><rdf:li xml:lang="en">Image</rdf:li></rdf:Alt></dc:title>'
             .'<photoshop:Credit><rdf:Bag><rdf:li>Credit 1</rdf:li><rdf:li>Credit 2</rdf:li></rdf:Bag></photoshop:Credit>'
+            .'<xmpl:node>Node Test</xmpl:node>'
             .'</rdf:Description>'
             .'</rdf:RDF>',
             [
@@ -68,6 +69,7 @@ class XmpFormatTest extends TestCase
                 ],
                 'https://example.com/' => [
                     'test' => ['Test'],
+                    'node' => ['Node Test'],
                 ],
                 'http://ns.adobe.com/photoshop/1.0/' => [
                     'Credit' => ['Credit 1', 'Credit 2'],

@@ -95,8 +95,8 @@ class XmpFormat extends AbstractFormat
                 }
 
                 foreach ($desc->childNodes ?? [] as $node) {
-                    if ($node instanceof \DOMElement && $node->firstElementChild) {
-                        $metadata[] = $this->parseValue($node->namespaceURI, $node->localName, $node->firstElementChild);
+                    if ($node instanceof \DOMElement) {
+                        $metadata[] = $this->parseValue($node->namespaceURI, $node->localName, $node);
                     }
                 }
             }
@@ -163,14 +163,14 @@ class XmpFormat extends AbstractFormat
     private function parseValue(string $namespace, string $attr, $value): array
     {
         if ($value instanceof \DOMElement) {
-            if ($value->firstElementChild) {
+            if (1 === $value->childNodes->length && $value->firstChild instanceof \DOMText) {
+                $values = [$value->textContent];
+            } else {
                 $values = [];
 
                 foreach ($value->getElementsByTagNameNS('http://www.w3.org/1999/02/22-rdf-syntax-ns#', 'li') as $valueNode) {
                     $values[] = $valueNode->textContent;
                 }
-            } else {
-                $values = [$value->textContent];
             }
         } else {
             $values = [$value];
