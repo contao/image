@@ -162,18 +162,18 @@ class XmpFormat extends AbstractFormat
      */
     private function parseValue(string $namespace, string $attr, $value): array
     {
-        if ($value instanceof \DOMElement) {
-            if (1 === $value->childNodes->length && $value->firstChild instanceof \DOMText) {
-                $values = [$value->textContent];
-            } else {
-                $values = [];
+        $values = [];
 
-                foreach ($value->getElementsByTagNameNS('http://www.w3.org/1999/02/22-rdf-syntax-ns#', 'li') as $valueNode) {
-                    $values[] = $valueNode->textContent;
-                }
+        if ($value instanceof \DOMElement) {
+            foreach ($value->getElementsByTagNameNS('http://www.w3.org/1999/02/22-rdf-syntax-ns#', 'li') as $valueNode) {
+                $values[] = $valueNode->textContent;
+            }
+
+            if (!$values) {
+                $values[] = $value->textContent;
             }
         } else {
-            $values = [$value];
+            $values[] = $value;
         }
 
         return [$namespace => [$attr => array_values(array_unique(array_filter($values)))]];
