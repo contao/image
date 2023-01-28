@@ -70,8 +70,7 @@ class DeferredResizer extends Resizer implements DeferredResizerInterface
                     $config['coordinates']['crop']['width'],
                     $config['coordinates']['crop']['height']
                 )
-            ),
-            Path::join($this->cacheDir, $config['path'])
+            )
         );
     }
 
@@ -141,7 +140,7 @@ class DeferredResizer extends Resizer implements DeferredResizerInterface
 
         $this->storeResizeData($image->getPath(), $path, $coordinates, $options);
 
-        return new DeferredImage($path, $image->getImagine(), new ImageDimensions($coordinates->getCropSize()), $image->getPath());
+        return new DeferredImage($path, $image->getImagine(), new ImageDimensions($coordinates->getCropSize()));
     }
 
     private function storeResizeData(string $sourcePath, string $targetPath, ResizeCoordinates $coordinates, ResizeOptions $options): void

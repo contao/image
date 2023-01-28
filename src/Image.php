@@ -14,8 +14,6 @@ namespace Contao\Image;
 
 use Contao\Image\Exception\FileNotExistsException;
 use Contao\Image\Exception\InvalidArgumentException;
-use Contao\Image\Metadata\ImageMetadata;
-use Contao\Image\Metadata\MetadataParser;
 use Contao\ImagineSvg\Image as SvgImage;
 use Contao\ImagineSvg\Imagine as SvgImagine;
 use Imagine\Image\Box;
@@ -42,20 +40,6 @@ class Image implements ImageInterface
     protected $dimensions;
 
     /**
-     * @var MetadataParser
-     *
-     * @internal
-     */
-    protected $metadataParser;
-
-    /**
-     * @var ImageMetadata
-     *
-     * @internal
-     */
-    protected $metadata;
-
-    /**
      * @var ImagineInterface
      *
      * @internal
@@ -67,7 +51,7 @@ class Image implements ImageInterface
      */
     private $importantPart;
 
-    public function __construct(string $path, ImagineInterface $imagine, Filesystem $filesystem = null, MetadataParser $metadataParser = null)
+    public function __construct(string $path, ImagineInterface $imagine, Filesystem $filesystem = null)
     {
         if (null === $filesystem) {
             $filesystem = new Filesystem();
@@ -83,7 +67,6 @@ class Image implements ImageInterface
 
         $this->path = $path;
         $this->imagine = $imagine;
-        $this->metadataParser = $metadataParser ?? new MetadataParser();
     }
 
     /**
@@ -174,18 +157,6 @@ class Image implements ImageInterface
         $this->importantPart = $importantPart;
 
         return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getMetadata(): ImageMetadata
-    {
-        if (null === $this->metadata) {
-            $this->metadata = $this->metadataParser->parse($this->getPath());
-        }
-
-        return $this->metadata;
     }
 
     /**

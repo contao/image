@@ -104,12 +104,6 @@ class Resizer implements ResizerInterface
         $imagineOptions = $options->getImagineOptions();
         $imagineImage = $image->getImagine()->open($image->getPath());
 
-        try {
-            $metadata = $this->metadataParser->parse($image->getPath());
-        } catch (\Throwable $exception) {
-            $metadata = new ImageMetadata([]);
-        }
-
         if (ImageDimensions::ORIENTATION_NORMAL !== $image->getDimensions()->getOrientation()) {
             (new Autorotate())->apply($imagineImage);
         }
@@ -142,7 +136,7 @@ class Resizer implements ResizerInterface
         $tmpPath2 = $this->filesystem->tempnam($dir, 'img');
         $this->filesystem->chmod([$tmpPath1, $tmpPath2], 0666, umask());
 
-        if ($options->getPreserveCopyrightMetadata() && $metadata->getAll()) {
+        if ($options->getPreserveCopyrightMetadata() && ($metadata = $this->getMetadata($image))->getAll()) {
             $imagineImage->save($tmpPath1, $imagineOptions);
 
             try {
@@ -247,5 +241,14 @@ class Resizer implements ResizerInterface
         $extension = $options->getImagineOptions()['format'] ?? strtolower($pathinfo['extension']);
 
         return Path::join($hash[0], $pathinfo['filename'].'-'.substr($hash, 1).'.'.$extension);
+    }
+
+    private function getMetadata(ImageInterface $image): ImageMetadata
+    {
+        try {
+            return $this->metadataParser->parse($image->getPath());
+        } catch (\Throwable $exception) {
+            return new ImageMetadata([]);
+        }
     }
 }
