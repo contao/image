@@ -55,6 +55,11 @@ class ExifFormatTest extends TestCase
                 ],
             ],
         ];
+
+        yield [
+            'NOT EXIF',
+            [],
+        ];
     }
 
     /**

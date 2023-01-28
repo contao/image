@@ -28,6 +28,7 @@ use Contao\ImagineSvg\SvgBox;
 use Contao\ImagineSvg\UndefinedBox;
 use Imagine\Driver\InfoProvider;
 use Imagine\Gd\Imagine as GdImagine;
+use Imagine\Gmagick\Imagine as GmagickImagine;
 use Imagine\Image\Box;
 use Imagine\Image\ImageInterface as ImagineImageInterface;
 use Imagine\Image\ImagineInterface;
@@ -103,7 +104,7 @@ class ResizerTest extends TestCase
         $supportedFormat = false;
 
         /** @var class-string<ImagineInterface&InfoProvider> $imagineClass */
-        foreach ([GdImagine::class, ImagickImagine::class] as $imagineClass) {
+        foreach ([GdImagine::class, ImagickImagine::class, GmagickImagine::class] as $imagineClass) {
             if (!($driverInfo = $imagineClass::getDriverInfo(false)) || !$driverInfo->isFormatSupported('jpg') || !$driverInfo->isFormatSupported('gif') || !$driverInfo->isFormatSupported('webp')) {
                 continue;
             }
@@ -143,12 +144,17 @@ class ResizerTest extends TestCase
                 (new MetadataParser())->parse($resized->getSources()[1]['src']->getPath())->getAll()
             );
 
+            $this->assertExpectedArrayRecursive(
+                ['xmp' => $xmpExpected, 'exif' => $exifExpected, 'iptc' => $iptcSource],
+                (new MetadataParser())->parse($resized->getImg()['src']->getPath())->getAll()
+            );
+
             (new Filesystem())->remove($path);
             (new Filesystem())->remove($pathWithMeta);
         }
 
         if (!$supportedFormat) {
-            $this->markTestSkipped('Format jpg, gif and webp is not supported on this system by GD and Imagick');
+            $this->markTestSkipped('Format jpg, gif and webp is not supported on this system by GD, Gmagick and Imagick');
         }
     }
 
@@ -160,7 +166,7 @@ class ResizerTest extends TestCase
         $supportedFormat = false;
 
         /** @var class-string<ImagineInterface&InfoProvider> $imagineClass */
-        foreach ([GdImagine::class, ImagickImagine::class] as $imagineClass) {
+        foreach ([GdImagine::class, ImagickImagine::class, GmagickImagine::class] as $imagineClass) {
             if (!($driverInfo = $imagineClass::getDriverInfo(false)) || !$driverInfo->isFormatSupported($imageFormat)) {
                 continue;
             }

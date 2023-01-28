@@ -76,6 +76,16 @@ class XmpFormatTest extends TestCase
                 ],
             ],
         ];
+
+        yield [
+            '<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">malformed',
+            [],
+        ];
+
+        yield [
+            'NOT XMP',
+            [],
+        ];
     }
 
     /**

@@ -60,6 +60,11 @@ class IptcFormatTest extends TestCase
                 '2#110' => ['Credit', 'Credit'],
             ],
         ];
+
+        yield [
+            'NOT IPTC',
+            [],
+        ];
     }
 
     /**
@@ -78,7 +83,7 @@ class IptcFormatTest extends TestCase
                     '2#116' => ['Copyright'],
                     '2#080' => ['Creator'],
                     '2#115' => ['Source'],
-                    '2#110' => ['Credit'],
+                    '2#110' => ['', 'Credit'],
                 ],
             ]),
             IptcFormat::DEFAULT_PRESERVE_KEYS,
