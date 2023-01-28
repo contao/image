@@ -349,6 +349,56 @@ class ResizerTest extends TestCase
         ];
     }
 
+    public function testResizeIgnoresMetadataParserErrors(): void
+    {
+        $metadataParser = $this->createMock(MetadataParser::class);
+        $metadataParser
+            ->method('parse')
+            ->willThrowException(new \RuntimeException('Should be ignored'))
+        ;
+
+        $imagine = new GdImagine();
+        $path = "$this->rootDir/image.jpg";
+
+        $imagine->create(new Box(100, 100))->save($path);
+
+        $resized = $this
+            ->createResizer(null, null, null, $metadataParser)
+            ->resize(
+                new Image($path, $imagine),
+                (new ResizeConfiguration())
+                    ->setWidth(50),
+                new ResizeOptions()
+            )
+        ;
+
+        $this->assertSame(50, $resized->getDimensions()->getSize()->getWidth());
+
+        $metadataParser = $this->createMock(MetadataParser::class);
+
+        $metadataParser
+            ->method('parse')
+            ->willReturn(new ImageMetadata(['iptc' => ['2#116' => ['Copyright 💩']]]))
+        ;
+
+        $metadataParser
+            ->method('applyCopyrightToFile')
+            ->willThrowException(new \RuntimeException('Should be ignored'))
+        ;
+
+        $resized = $this
+            ->createResizer(null, null, null, $metadataParser)
+            ->resize(
+                new Image($path, $imagine),
+                (new ResizeConfiguration())
+                    ->setWidth(25),
+                new ResizeOptions()
+            )
+        ;
+
+        $this->assertSame(25, $resized->getDimensions()->getSize()->getWidth());
+    }
+
     public function testResize(): void
     {
         $calculator = $this->createMock(ResizeCalculator::class);
@@ -1021,13 +1071,13 @@ class ResizerTest extends TestCase
         }
     }
 
-    private function createResizer(string $cacheDir = null, ResizeCalculator $calculator = null, Filesystem $filesystem = null): Resizer
+    private function createResizer(string $cacheDir = null, ResizeCalculator $calculator = null, Filesystem $filesystem = null, MetadataParser $metadataParser = null): Resizer
     {
         if (null === $cacheDir) {
             $cacheDir = $this->rootDir;
         }
 
-        return new Resizer($cacheDir, $calculator, $filesystem);
+        return new Resizer($cacheDir, $calculator, $filesystem, $metadataParser);
     }
 
     private function assertFilePermissions(int $expectedPermissions, string $path): void

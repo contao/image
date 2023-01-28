@@ -16,7 +16,10 @@ use Contao\Image\Exception\InvalidArgumentException;
 use Contao\Image\Exception\InvalidImageContainerException;
 use Contao\Image\Exception\InvalidImageMetadataException;
 
-final class MetadataParser
+/**
+ * @final
+ */
+class MetadataParser
 {
     /**
      * @var list<AbstractContainer>
