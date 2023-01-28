@@ -25,7 +25,7 @@ class MetadataParserTest extends TestCase
     {
         $this->assertExpectedArrayRecursive(
             $expected,
-            (new MetadataParser())->parse($sourcePath)->getAll(),
+            (new MetadataParser())->parse($sourcePath)->getAll()
         );
     }
 
