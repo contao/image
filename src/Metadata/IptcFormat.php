@@ -95,7 +95,15 @@ class IptcFormat extends AbstractFormat
                     continue;
                 }
 
-                // TODO: handle maxlength
+                if (116 === $id) {
+                    $maxlength = 128;
+                } elseif (5 === $id) {
+                    $maxlength = 64;
+                } else {
+                    $maxlength = 32;
+                }
+
+                $value = substr($value, 0, $maxlength);
 
                 $iptc .= "\x1C\x02".\chr($id);
                 $iptc .= pack('n', \strlen($value));

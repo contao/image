@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Contao\Image\Metadata;
 
 use Contao\Image\Exception\InvalidImageMetadataException;
+use Contao\Image\Exception\RuntimeException;
 
 class ExifFormat extends AbstractFormat
 {
@@ -144,8 +145,6 @@ class ExifFormat extends AbstractFormat
             return '';
         }
 
-        // TODO: handle maxlength
-
         // Offset to data area
         $offset = \count($data) * 12 + 14;
 
@@ -164,6 +163,10 @@ class ExifFormat extends AbstractFormat
             } else {
                 $exif .= str_pad($value, 4, "\x00"); // 4 byte string
             }
+        }
+
+        if ($offset >= 2 ** 32) {
+            throw new RuntimeException('Exif data too long');
         }
 
         $exif .= "\x00\x00\x00\x00"; // Last IFD

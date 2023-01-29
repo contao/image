@@ -123,6 +123,20 @@ class IptcFormatTest extends TestCase
 
         yield [
             new ImageMetadata([
+                'iptc' => [
+                    '2#116' => ['Maxlength'.str_repeat('.', 256)],
+                    '2#080' => ['Maxlength'.str_repeat('.', 256)],
+                ],
+            ]),
+            IptcFormat::DEFAULT_PRESERVE_KEYS,
+            "8BIM\x04\x04\x00\x00\x00\x00\x00\xb2"
+            ."\x1c\x01\x5a\x00\x03\x1b\x25\x47"
+            ."\x1c\x02\x74\x00\x80Maxlength".str_repeat('.', 128 - 9)
+            ."\x1c\x02\x50\x00\x20Maxlength".str_repeat('.', 32 - 9),
+        ];
+
+        yield [
+            new ImageMetadata([
                 'xmp' => [
                     'http://purl.org/dc/elements/1.1/' => [
                         'title' => ['Title'],
