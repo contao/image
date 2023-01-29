@@ -81,21 +81,8 @@ class MetadataParser
             $stream = $pathOrStream;
         }
 
-        foreach ($this->containers as $container) {
-            $magicBytes = $container->getMagicBytes();
-            $offset = $container->getMagicBytesOffset();
-            $length = $offset + \strlen($magicBytes);
-            $bytes = substr(fread($stream, $length), $offset);
-
-            if (0 !== fseek($stream, -$length, SEEK_CUR)) {
-                $streamMeta = stream_get_meta_data($stream);
-
-                throw new InvalidArgumentException(sprintf('Unable to rewind "%s" stream "%s"', $streamMeta['stream_type'], $streamMeta['uri']));
-            }
-
-            if ($bytes === $magicBytes) {
-                return new ImageMetadata($container->parse($stream));
-            }
+        if ($container = $this->findContainer($stream)) {
+            return new ImageMetadata($container->parse($stream));
         }
 
         return new ImageMetadata([]);
@@ -132,29 +119,13 @@ class MetadataParser
             throw new \TypeError(sprintf('Argument 3 passed to %s() must be of the type resource, %s given', __METHOD__, get_debug_type($outputStream)));
         }
 
-        // Empty metadata
-        if (!$metadata->getAll()) {
-            stream_copy_to_stream($inputStream, $outputStream);
+        if ($metadata->getAll() && $container = $this->findContainer($inputStream)) {
+            $container->apply($inputStream, $outputStream, $metadata, $preserveKeysByFormat);
 
             return;
         }
 
-        foreach ($this->containers as $container) {
-            $magicBytes = $container->getMagicBytes();
-            $bytes = fread($inputStream, \strlen($magicBytes));
-
-            if (0 !== fseek($inputStream, -\strlen($magicBytes), SEEK_CUR)) {
-                $streamMeta = stream_get_meta_data($inputStream);
-
-                throw new InvalidArgumentException(sprintf('Unable to rewind "%s" stream "%s"', $streamMeta['stream_type'], $streamMeta['uri']));
-            }
-
-            if ($bytes === $magicBytes) {
-                $container->apply($inputStream, $outputStream, $metadata, $preserveKeysByFormat);
-
-                return;
-            }
-        }
+        stream_copy_to_stream($inputStream, $outputStream);
     }
 
     /**
@@ -168,5 +139,30 @@ class MetadataParser
     public function serializeFormat(string $format, ImageMetadata $metadata, array $preserveKeys): string
     {
         return $this->formats[$format]->serialize($metadata, $preserveKeys);
+    }
+
+    /**
+     * @param resource $stream
+     */
+    private function findContainer($stream): ?AbstractContainer
+    {
+        foreach ($this->containers as $container) {
+            $magicBytes = $container->getMagicBytes();
+            $offset = $container->getMagicBytesOffset();
+            $length = $offset + \strlen($magicBytes);
+            $bytes = substr(fread($stream, $length), $offset);
+
+            if (0 !== fseek($stream, -$length, SEEK_CUR)) {
+                $streamMeta = stream_get_meta_data($stream);
+
+                throw new InvalidArgumentException(sprintf('Unable to rewind "%s" stream "%s"', $streamMeta['stream_type'], $streamMeta['uri']));
+            }
+
+            if ($bytes === $magicBytes) {
+                return $container;
+            }
+        }
+
+        return null;
     }
 }
