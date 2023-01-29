@@ -178,12 +178,12 @@ class PngContainer extends AbstractContainer
 
         // Non-standard ImageMagick/exiftool/exiv2 format
         if (str_starts_with($keyword, 'Raw profile type ') && \in_array(substr($keyword, 17), ['iptc', 'exif', 'APP1'], true)) {
-            $chunks = explode("\n", trim($text));
+            $chunks = explode("\n", trim($text), 3);
 
             if (
                 3 === \count($chunks)
                 && ($length = (int) $chunks[1])
-                && ($profile = hex2bin($chunks[2]))
+                && ($profile = hex2bin(preg_replace('/\s+/', '', $chunks[2])))
                 && \strlen($profile) === $length
             ) {
                 if ('Raw profile type iptc' === $keyword) {

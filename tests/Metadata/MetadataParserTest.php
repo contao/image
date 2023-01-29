@@ -80,6 +80,14 @@ class MetadataParserTest extends TestCase
                     'xmp' => ['http://purl.org/dc/elements/1.1/' => ['description' => ['Classic View']]],
                 ],
             ],
+            'png.png' => [
+                'url' => 'https://github.com/Exiv2/exiv2/raw/a7a9835/test/data/imagemagick.png',
+                'meta' => [
+                    'png' => ['Software' => ['digiKam 0.9.0-svn ( libpng version 1.2.8 - December 3, 2004 (header) )']],
+                    'exif' => ['IFD0' => ['Software' => 'digiKam-0.9.0-svn']],
+                    'iptc' => ['2#110' => ['Spielberg']],
+                ],
+            ],
         ];
 
         foreach ($paths as $filename => $data) {
