@@ -236,6 +236,13 @@ class Resizer implements ResizerInterface
             )
         );
 
+        $preserveMeta = $options->getPreserveCopyrightMetadata();
+
+        if ($preserveMeta !== (new ResizeOptions())->getPreserveCopyrightMetadata()) {
+            ksort($preserveMeta, SORT_STRING);
+            $hashData[] = json_encode($preserveMeta);
+        }
+
         $hash = substr(md5(implode('|', $hashData)), 0, 9);
         $pathinfo = pathinfo($path);
         $extension = $options->getImagineOptions()['format'] ?? strtolower($pathinfo['extension']);
