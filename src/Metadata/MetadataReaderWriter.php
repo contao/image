@@ -32,25 +32,24 @@ class MetadataReaderWriter
     private $formats;
 
     /**
-     * @param list<AbstractFormat>    $formats
-     * @param list<AbstractContainer> $containers
+     * @param iterable<AbstractFormat>    $formats
+     * @param iterable<AbstractContainer> $containers
      */
-    public function __construct(array $formats = [], array $containers = [])
+    public function __construct(iterable $formats = [], iterable $containers = [])
     {
-        array_unshift(
-            $formats,
-            new XmpFormat(),
-            new IptcFormat(),
-            new ExifFormat(),
-            new PngFormat(),
-            new GifFormat()
-        );
+        foreach ([new XmpFormat(), new IptcFormat(), new ExifFormat(), new PngFormat(), new GifFormat()] as $format) {
+            $this->formats[$format->getName()] = $format;
+        }
 
         foreach ($formats as $format) {
             $this->formats[$format->getName()] = $format;
         }
 
-        $this->containers = $containers;
+        $this->containers = \is_array($containers)
+            ? array_values($containers)
+            : iterator_to_array($containers, false)
+        ;
+
         $this->containers[] = new JpegContainer($this);
         $this->containers[] = new PngContainer($this);
         $this->containers[] = new WebpContainer($this);
