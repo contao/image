@@ -15,7 +15,7 @@ namespace Contao\Image\Tests;
 use Contao\Image\Image;
 use Contao\Image\ImageDimensions;
 use Contao\Image\Metadata\ImageMetadata;
-use Contao\Image\Metadata\MetadataParser;
+use Contao\Image\Metadata\MetadataReaderWriter;
 use Contao\Image\PictureConfiguration;
 use Contao\Image\PictureGenerator;
 use Contao\Image\ResizeCalculator;
@@ -116,7 +116,7 @@ class ResizerTest extends TestCase
             $pathWithMeta = "$this->rootDir/with-metadata.jpg";
 
             $imagine->create(new Box(100, 100))->save($path);
-            (new MetadataParser())->applyCopyrightToFile(
+            (new MetadataReaderWriter())->applyCopyrightToFile(
                 $path,
                 $pathWithMeta,
                 new ImageMetadata([
@@ -136,17 +136,17 @@ class ResizerTest extends TestCase
 
             $this->assertExpectedArrayRecursive(
                 ['xmp' => $xmpExpected, 'exif' => $exifExpected],
-                (new MetadataParser())->parse($resized->getSources()[0]['src']->getPath())->getAll()
+                (new MetadataReaderWriter())->parse($resized->getSources()[0]['src']->getPath())->getAll()
             );
 
             $this->assertExpectedArrayRecursive(
                 ['xmp' => $xmpExpected, 'gif' => $gifExpected],
-                (new MetadataParser())->parse($resized->getSources()[1]['src']->getPath())->getAll()
+                (new MetadataReaderWriter())->parse($resized->getSources()[1]['src']->getPath())->getAll()
             );
 
             $this->assertExpectedArrayRecursive(
                 ['xmp' => $xmpExpected, 'exif' => $exifExpected, 'iptc' => $iptcSource],
-                (new MetadataParser())->parse($resized->getImg()['src']->getPath())->getAll()
+                (new MetadataReaderWriter())->parse($resized->getImg()['src']->getPath())->getAll()
             );
 
             (new Filesystem())->remove($path);
@@ -178,7 +178,7 @@ class ResizerTest extends TestCase
             $pathWithMeta = "$this->rootDir/with-metadata.$imageFormat";
 
             $imagine->create(new Box(100, 100))->save($path);
-            (new MetadataParser())->applyCopyrightToFile(
+            (new MetadataReaderWriter())->applyCopyrightToFile(
                 $path,
                 $pathWithMeta,
                 $metadata,
@@ -196,8 +196,8 @@ class ResizerTest extends TestCase
                 ->getPath()
             ;
 
-            $this->assertExpectedArrayRecursive($expected, (new MetadataParser())->parse($pathWithMeta)->getAll());
-            $this->assertExpectedArrayRecursive($expected, (new MetadataParser())->parse($resized)->getAll());
+            $this->assertExpectedArrayRecursive($expected, (new MetadataReaderWriter())->parse($pathWithMeta)->getAll());
+            $this->assertExpectedArrayRecursive($expected, (new MetadataReaderWriter())->parse($resized)->getAll());
 
             (new Filesystem())->remove($path);
             (new Filesystem())->remove($pathWithMeta);
@@ -349,10 +349,10 @@ class ResizerTest extends TestCase
         ];
     }
 
-    public function testResizeIgnoresMetadataParserErrors(): void
+    public function testResizeIgnoresMetadataReaderWriterErrors(): void
     {
-        $metadataParser = $this->createMock(MetadataParser::class);
-        $metadataParser
+        $metadataReaderWriter = $this->createMock(MetadataReaderWriter::class);
+        $metadataReaderWriter
             ->method('parse')
             ->willThrowException(new \RuntimeException('Should be ignored'))
         ;
@@ -363,7 +363,7 @@ class ResizerTest extends TestCase
         $imagine->create(new Box(100, 100))->save($path);
 
         $resized = $this
-            ->createResizer(null, null, null, $metadataParser)
+            ->createResizer(null, null, null, $metadataReaderWriter)
             ->resize(
                 new Image($path, $imagine),
                 (new ResizeConfiguration())
@@ -374,20 +374,20 @@ class ResizerTest extends TestCase
 
         $this->assertSame(50, $resized->getDimensions()->getSize()->getWidth());
 
-        $metadataParser = $this->createMock(MetadataParser::class);
+        $metadataReaderWriter = $this->createMock(MetadataReaderWriter::class);
 
-        $metadataParser
+        $metadataReaderWriter
             ->method('parse')
             ->willReturn(new ImageMetadata(['iptc' => ['2#116' => ['Copyright 💩']]]))
         ;
 
-        $metadataParser
+        $metadataReaderWriter
             ->method('applyCopyrightToFile')
             ->willThrowException(new \RuntimeException('Should be ignored'))
         ;
 
         $resized = $this
-            ->createResizer(null, null, null, $metadataParser)
+            ->createResizer(null, null, null, $metadataReaderWriter)
             ->resize(
                 new Image($path, $imagine),
                 (new ResizeConfiguration())
@@ -1071,13 +1071,13 @@ class ResizerTest extends TestCase
         }
     }
 
-    private function createResizer(string $cacheDir = null, ResizeCalculator $calculator = null, Filesystem $filesystem = null, MetadataParser $metadataParser = null): Resizer
+    private function createResizer(string $cacheDir = null, ResizeCalculator $calculator = null, Filesystem $filesystem = null, MetadataReaderWriter $metadataReaderWriter = null): Resizer
     {
         if (null === $cacheDir) {
             $cacheDir = $this->rootDir;
         }
 
-        return new Resizer($cacheDir, $calculator, $filesystem, $metadataParser);
+        return new Resizer($cacheDir, $calculator, $filesystem, $metadataReaderWriter);
     }
 
     private function assertFilePermissions(int $expectedPermissions, string $path): void

@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace Contao\Image;
 
 use Contao\Image\Metadata\ImageMetadata;
-use Contao\Image\Metadata\MetadataParser;
+use Contao\Image\Metadata\MetadataReaderWriter;
 use Imagine\Exception\RuntimeException as ImagineRuntimeException;
 use Imagine\Filter\Basic\Autorotate;
 use Imagine\Image\Palette\RGB;
@@ -42,11 +42,11 @@ class Resizer implements ResizerInterface
     private $calculator;
 
     /**
-     * @var MetadataParser
+     * @var MetadataReaderWriter
      */
-    private $metadataParser;
+    private $metadataReaderWriter;
 
-    public function __construct(string $cacheDir, ResizeCalculator $calculator = null, Filesystem $filesystem = null, MetadataParser $metadataParser = null)
+    public function __construct(string $cacheDir, ResizeCalculator $calculator = null, Filesystem $filesystem = null, MetadataReaderWriter $metadataReaderWriter = null)
     {
         if (null === $calculator) {
             $calculator = new ResizeCalculator();
@@ -56,14 +56,14 @@ class Resizer implements ResizerInterface
             $filesystem = new Filesystem();
         }
 
-        if (null === $metadataParser) {
-            $metadataParser = new MetadataParser();
+        if (null === $metadataReaderWriter) {
+            $metadataReaderWriter = new MetadataReaderWriter();
         }
 
         $this->cacheDir = $cacheDir;
         $this->calculator = $calculator;
         $this->filesystem = $filesystem;
-        $this->metadataParser = $metadataParser;
+        $this->metadataReaderWriter = $metadataReaderWriter;
     }
 
     /**
@@ -140,7 +140,7 @@ class Resizer implements ResizerInterface
             $imagineImage->save($tmpPath1, $imagineOptions);
 
             try {
-                $this->metadataParser->applyCopyrightToFile($tmpPath1, $tmpPath2, $metadata, $options->getPreserveCopyrightMetadata());
+                $this->metadataReaderWriter->applyCopyrightToFile($tmpPath1, $tmpPath2, $metadata, $options->getPreserveCopyrightMetadata());
             } catch (\Throwable $exception) {
                 $this->filesystem->rename($tmpPath1, $tmpPath2, true);
             }
@@ -253,7 +253,7 @@ class Resizer implements ResizerInterface
     private function getMetadata(ImageInterface $image): ImageMetadata
     {
         try {
-            return $this->metadataParser->parse($image->getPath());
+            return $this->metadataReaderWriter->parse($image->getPath());
         } catch (\Throwable $exception) {
             return new ImageMetadata([]);
         }

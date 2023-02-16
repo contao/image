@@ -12,11 +12,11 @@ declare(strict_types=1);
 
 namespace Contao\Image\Tests\Metadata;
 
-use Contao\Image\Metadata\MetadataParser;
+use Contao\Image\Metadata\MetadataReaderWriter;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
 
-class MetadataParserTest extends TestCase
+class MetadataReaderWriterTest extends TestCase
 {
     /**
      * @dataProvider getParse
@@ -25,7 +25,7 @@ class MetadataParserTest extends TestCase
     {
         $this->assertExpectedArrayRecursive(
             $expected,
-            (new MetadataParser())->parse($sourcePath)->getAll()
+            (new MetadataReaderWriter())->parse($sourcePath)->getAll()
         );
     }
 

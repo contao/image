@@ -19,7 +19,7 @@ use Contao\Image\Exception\InvalidImageMetadataException;
 /**
  * @final
  */
-class MetadataParser
+class MetadataReaderWriter
 {
     /**
      * @var list<AbstractContainer>

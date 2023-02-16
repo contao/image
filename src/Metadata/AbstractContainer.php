@@ -18,11 +18,11 @@ use Contao\Image\Exception\InvalidImageMetadataException;
 abstract class AbstractContainer
 {
     /**
-     * @var MetadataParser
+     * @var MetadataReaderWriter
      */
     protected $parser;
 
-    public function __construct(MetadataParser $parser)
+    public function __construct(MetadataReaderWriter $parser)
     {
         $this->parser = $parser;
     }
