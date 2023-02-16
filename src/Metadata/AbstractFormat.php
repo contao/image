@@ -12,25 +12,8 @@ declare(strict_types=1);
 
 namespace Contao\Image\Metadata;
 
-use Contao\Image\Exception\InvalidImageMetadataException;
-
-abstract class AbstractFormat
+abstract class AbstractFormat implements MetadataFormatInterface
 {
-    public const NAME = null;
-    public const DEFAULT_PRESERVE_KEYS = [];
-
-    public function getName(): string
-    {
-        return static::NAME;
-    }
-
-    abstract public function serialize(ImageMetadata $metadata, array $preserveKeys): string;
-
-    /**
-     * @throws InvalidImageMetadataException
-     */
-    abstract public function parse(string $binaryChunk): array;
-
     /**
      * @param array|string $values
      */

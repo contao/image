@@ -22,27 +22,27 @@ use Contao\Image\Exception\InvalidImageMetadataException;
 class MetadataReaderWriter
 {
     /**
-     * @var list<AbstractContainer>
+     * @var list<ImageContainerInterface>
      */
     private $containers;
 
     /**
-     * @var array<string,AbstractFormat>
+     * @var array<string,MetadataFormatInterface>
      */
     private $formats;
 
     /**
-     * @param iterable<AbstractFormat>    $formats
-     * @param iterable<AbstractContainer> $containers
+     * @param iterable<MetadataFormatInterface> $formats
+     * @param iterable<ImageContainerInterface> $containers
      */
     public function __construct(iterable $formats = [], iterable $containers = [])
     {
         foreach ([new XmpFormat(), new IptcFormat(), new ExifFormat(), new PngFormat(), new GifFormat()] as $format) {
-            $this->formats[$format->getName()] = $format;
+            $this->formats[$format::NAME] = $format;
         }
 
         foreach ($formats as $format) {
-            $this->formats[$format->getName()] = $format;
+            $this->formats[$format::NAME] = $format;
         }
 
         $this->containers = \is_array($containers)
@@ -143,7 +143,7 @@ class MetadataReaderWriter
     /**
      * @param resource $stream
      */
-    private function findContainer($stream): ?AbstractContainer
+    private function findContainer($stream): ?ImageContainerInterface
     {
         foreach ($this->containers as $container) {
             $magicBytes = $container->getMagicBytes();

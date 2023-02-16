@@ -12,10 +12,9 @@ declare(strict_types=1);
 
 namespace Contao\Image\Metadata;
 
-use Contao\Image\Exception\InvalidImageContainerException;
 use Contao\Image\Exception\InvalidImageMetadataException;
 
-abstract class AbstractContainer
+abstract class AbstractContainer implements ImageContainerInterface
 {
     /**
      * @var MetadataReaderWriter
@@ -27,27 +26,10 @@ abstract class AbstractContainer
         $this->parser = $parser;
     }
 
-    abstract public function getMagicBytes(): string;
-
     public function getMagicBytesOffset(): int
     {
         return 0;
     }
-
-    /**
-     * @param resource $inputStream
-     * @param resource $outputStream
-     *
-     * @throws InvalidImageContainerException
-     */
-    abstract public function apply($inputStream, $outputStream, ImageMetadata $metadata, array $preserveKeysByFormat): void;
-
-    /**
-     * @param resource $stream
-     *
-     * @throws InvalidImageContainerException
-     */
-    abstract public function parse($stream): array;
 
     protected function parseFormat(string $format, string $binaryChunk): array
     {
