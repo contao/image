@@ -58,7 +58,7 @@ class DeferredResizerTest extends TestCase
     {
         parent::tearDown();
 
-        if (file_exists($this->rootDir)) {
+        if ((new Filesystem())->exists($this->rootDir)) {
             (new Filesystem())->remove($this->rootDir);
         }
     }
@@ -82,7 +82,7 @@ class DeferredResizerTest extends TestCase
         $resizer = $this->createResizer(null, $calculator);
 
         if (!is_dir($this->rootDir)) {
-            mkdir($this->rootDir, 0777, true);
+            (new Filesystem())->mkdir($this->rootDir);
         }
 
         (new GdImagine())

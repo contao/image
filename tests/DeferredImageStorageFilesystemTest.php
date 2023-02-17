@@ -44,7 +44,7 @@ class DeferredImageStorageFilesystemTest extends TestCase
     {
         parent::tearDown();
 
-        if (file_exists($this->rootDir)) {
+        if ((new Filesystem())->exists($this->rootDir)) {
             (new Filesystem())->remove($this->rootDir);
         }
     }
@@ -131,9 +131,9 @@ class DeferredImageStorageFilesystemTest extends TestCase
         $storage = new DeferredImageStorageFilesystem($this->rootDir);
 
         if (!is_dir(Path::join($this->rootDir, 'deferred'))) {
-            mkdir(Path::join($this->rootDir, 'deferred'), 0777, true);
+            (new Filesystem())->mkdir(Path::join($this->rootDir, 'deferred'));
         }
-        file_put_contents(Path::join($this->rootDir, 'deferred/test.json'), 'invalid JSON');
+        (new Filesystem())->dumpFile(Path::join($this->rootDir, 'deferred/test.json'), 'invalid JSON');
 
         $this->expectException(JsonException::class);
 
@@ -145,9 +145,9 @@ class DeferredImageStorageFilesystemTest extends TestCase
         $storage = new DeferredImageStorageFilesystem($this->rootDir);
 
         if (!is_dir(Path::join($this->rootDir, 'deferred'))) {
-            mkdir(Path::join($this->rootDir, 'deferred'), 0777, true);
+            (new Filesystem())->mkdir(Path::join($this->rootDir, 'deferred'));
         }
-        file_put_contents(Path::join($this->rootDir, 'deferred/test.json'), '"JSON string instead of an array"');
+        (new Filesystem())->dumpFile(Path::join($this->rootDir, 'deferred/test.json'), '"JSON string instead of an array"');
 
         $this->expectException(InvalidArgumentException::class);
 

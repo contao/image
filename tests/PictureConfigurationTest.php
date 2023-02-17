@@ -39,7 +39,6 @@ class PictureConfigurationTest extends TestCase
 
         $this->expectException(InvalidArgumentException::class);
 
-        /** @psalm-suppress InvalidArgument */
         $config->setSizeItems([$configItem, 'not a PictureConfigurationItem']);
     }
 

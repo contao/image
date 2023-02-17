@@ -210,9 +210,9 @@ class ResizeCalculator
     /**
      * Builds a resize coordinates object.
      *
-     * @param array<int> $size
-     * @param array<int> $cropStart
-     * @param array<int> $cropSize
+     * @param array<int|float> $size
+     * @param array<int|float> $cropStart
+     * @param array<int|float> $cropSize
      */
     private function buildCoordinates(array $size, array $cropStart, array $cropSize, ImageDimensions $original): ResizeCoordinates
     {

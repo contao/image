@@ -64,9 +64,7 @@ jobs:
               run: tools/ecs/vendor/bin/ecs check src tests --config tools/ecs/config/default.php --no-progress-bar --ansi
 
             - name: Analyze the code
-              run: |
-                  tools/phpstan/vendor/bin/phpstan analyse src tests --level=4 --no-progress
-                  tools/psalm/vendor/bin/psalm --no-suggestions --threads=4 --no-progress
+              run: tools/phpstan/vendor/bin/phpstan analyse --no-progress
 
     tests:
         name: PHP ${{ matrix.php }}

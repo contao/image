@@ -68,7 +68,7 @@ class ResizerTest extends TestCase
     {
         parent::tearDown();
 
-        if (file_exists($this->rootDir)) {
+        if ((new Filesystem())->exists($this->rootDir)) {
             (new Filesystem())->remove($this->rootDir);
         }
     }
@@ -419,7 +419,7 @@ class ResizerTest extends TestCase
         $resizer = $this->createResizer($withSecret, null, $calculator);
 
         if (!is_dir($this->rootDir)) {
-            mkdir($this->rootDir, 0777, true);
+            (new Filesystem())->mkdir($this->rootDir);
         }
 
         (new GdImagine())
@@ -470,7 +470,7 @@ class ResizerTest extends TestCase
                 }
                 $this->assertFilePermissions(0666, $resizedImage->getPath());
 
-                unlink($resizedImage->getPath());
+                (new Filesystem())->remove($resizedImage->getPath());
             }
         } finally {
             umask($defaultUmask);
@@ -513,10 +513,10 @@ class ResizerTest extends TestCase
             .'<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="100" height="100"></svg>';
 
         if (!is_dir($this->rootDir)) {
-            mkdir($this->rootDir, 0777, true);
+            (new Filesystem())->mkdir($this->rootDir);
         }
 
-        file_put_contents(Path::join($this->rootDir, 'dummy.svg'), $xml);
+        (new Filesystem())->dumpFile(Path::join($this->rootDir, 'dummy.svg'), $xml);
 
         $calculator = $this->createMock(ResizeCalculator::class);
         $calculator
@@ -567,7 +567,7 @@ class ResizerTest extends TestCase
             $this->assertMatchesRegularExpression('(/[0-9a-f]/dummy-[0-9a-f]{8}.svg$)', $resizedImage->getPath());
         }
 
-        unlink($resizedImage->getPath());
+        (new Filesystem())->remove($resizedImage->getPath());
 
         $resizedImage = $resizer->resize(
             $image,
@@ -582,7 +582,7 @@ class ResizerTest extends TestCase
         $this->assertSame(Path::join($this->rootDir, 'target-path.svg'), $resizedImage->getPath());
         $this->assertFilePermissions(0666, $resizedImage->getPath());
 
-        unlink($resizedImage->getPath());
+        (new Filesystem())->remove($resizedImage->getPath());
     }
 
     /**
@@ -599,7 +599,7 @@ class ResizerTest extends TestCase
         $resizer = $this->createResizer($withSecret, null, $calculator);
 
         if (!is_dir($this->rootDir)) {
-            mkdir($this->rootDir, 0777, true);
+            (new Filesystem())->mkdir($this->rootDir);
         }
 
         (new GdImagine())
@@ -669,9 +669,8 @@ class ResizerTest extends TestCase
         // With different paths, but same relative path
         $subDir = Path::join($this->rootDir, 'sub/dir');
 
-        mkdir($subDir, 0777, true);
-        copy(Path::join($this->rootDir, 'dummy.jpg'), Path::join($subDir, 'dummy.jpg'));
-        touch(Path::join($subDir, 'dummy.jpg'), filemtime(Path::join($this->rootDir, 'dummy.jpg')));
+        (new Filesystem())->copy(Path::join($this->rootDir, 'dummy.jpg'), Path::join($subDir, 'dummy.jpg'));
+        (new Filesystem())->touch(Path::join($subDir, 'dummy.jpg'), filemtime(Path::join($this->rootDir, 'dummy.jpg')));
 
         $subResizer = $this->createResizer($withSecret, $subDir, $calculator);
 
@@ -712,10 +711,10 @@ class ResizerTest extends TestCase
         $resizer = $this->createResizer();
 
         if (!is_dir($this->rootDir)) {
-            mkdir($this->rootDir, 0777, true);
+            (new Filesystem())->mkdir($this->rootDir);
         }
 
-        file_put_contents($imagePath, '');
+        (new Filesystem())->dumpFile($imagePath, '');
 
         $image = $this->createMock(Image::class);
         $image
@@ -758,7 +757,7 @@ class ResizerTest extends TestCase
         $resizer = $this->createResizer($withSecret);
 
         if (!is_dir($this->rootDir)) {
-            mkdir($this->rootDir, 0777, true);
+            (new Filesystem())->mkdir($this->rootDir);
         }
 
         (new GdImagine())
@@ -806,10 +805,10 @@ class ResizerTest extends TestCase
         $resizer = $this->createResizer();
 
         if (!is_dir($this->rootDir)) {
-            mkdir($this->rootDir, 0777, true);
+            (new Filesystem())->mkdir($this->rootDir);
         }
 
-        file_put_contents($imagePath, '');
+        (new Filesystem())->dumpFile($imagePath, '');
 
         /** @var Image|MockObject $image */
         $image = $this->createMock(Image::class);
@@ -853,7 +852,7 @@ class ResizerTest extends TestCase
         $resizer = $this->createResizer($withSecret);
 
         if (!is_dir($this->rootDir)) {
-            mkdir($this->rootDir, 0777, true);
+            (new Filesystem())->mkdir($this->rootDir);
         }
 
         (new GdImagine())
@@ -914,7 +913,7 @@ class ResizerTest extends TestCase
         $resizer = $this->createResizer(true, null, $calculator);
 
         if (!is_dir($this->rootDir)) {
-            mkdir($this->rootDir, 0777, true);
+            (new Filesystem())->mkdir($this->rootDir);
         }
 
         (new GdImagine())
@@ -969,10 +968,10 @@ class ResizerTest extends TestCase
             '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 100 100"></svg>';
 
         if (!is_dir($this->rootDir)) {
-            mkdir($this->rootDir, 0777, true);
+            (new Filesystem())->mkdir($this->rootDir);
         }
 
-        file_put_contents(Path::join($this->rootDir, 'dummy.svg'), $xml);
+        (new Filesystem())->dumpFile(Path::join($this->rootDir, 'dummy.svg'), $xml);
 
         $calculator = $this->createMock(ResizeCalculator::class);
         $calculator
@@ -1011,7 +1010,7 @@ class ResizerTest extends TestCase
             $this->assertMatchesRegularExpression('(/[0-9a-f]/dummy-[0-9a-f]{8}.svg$)', $resizedImage->getPath());
         }
 
-        unlink($resizedImage->getPath());
+        (new Filesystem())->remove($resizedImage->getPath());
     }
 
     /**
@@ -1023,7 +1022,7 @@ class ResizerTest extends TestCase
         $resizer = $this->createResizer($withSecret);
 
         if (!is_dir($this->rootDir)) {
-            mkdir($this->rootDir, 0777, true);
+            (new Filesystem())->mkdir($this->rootDir);
         }
 
         (new GdImagine())
@@ -1074,7 +1073,7 @@ class ResizerTest extends TestCase
         $resizer = $this->createResizer($withSecret);
 
         if (!is_dir($this->rootDir)) {
-            mkdir($this->rootDir, 0777, true);
+            (new Filesystem())->mkdir($this->rootDir);
         }
 
         (new GdImagine())

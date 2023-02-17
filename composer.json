@@ -56,21 +56,11 @@
         "all": [
             "@unit-tests",
             "@cs-fixer",
-            "@phpstan",
-            "@psalm"
+            "@phpstan"
         ],
-        "cs-fixer": [
-            "tools/ecs/vendor/bin/ecs check src tests tools/ecs/config --config tools/ecs/config/default.php --fix --ansi"
-        ],
-        "phpstan": [
-            "tools/phpstan/vendor/bin/phpstan analyze src tests --level=4 --memory-limit=1G --ansi"
-        ],
-        "psalm": [
-            "tools/psalm/vendor/bin/psalm --no-suggestions --threads=4"
-        ],
-        "unit-tests": [
-            "vendor/bin/phpunit --colors=always"
-        ]
+        "cs-fixer": "@php tools/ecs/vendor/bin/ecs check src tests tools/ecs/config --config tools/ecs/config/default.php --fix --ansi",
+        "phpstan": "@php tools/phpstan/vendor/bin/phpstan analyze --ansi",
+        "unit-tests": "vendor/bin/phpunit --colors=always"
     },
     "config": {
         "allow-plugins": {

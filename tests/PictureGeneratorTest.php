@@ -696,7 +696,7 @@ class PictureGeneratorTest extends TestCase
 
     public function testGenerateWithLocale(): void
     {
-        $locale = setlocale(LC_NUMERIC, 0);
+        $locale = setlocale(LC_NUMERIC, '0');
 
         if (false === $locale) {
             $this->markTestSkipped('Your platform does not support locales.');
