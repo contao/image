@@ -47,7 +47,7 @@ class Image implements ImageInterface
     protected $imagine;
 
     /**
-     * @var ImportantPart
+     * @var ImportantPart|null
      */
     private $importantPart;
 

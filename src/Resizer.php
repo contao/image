@@ -14,12 +14,16 @@ namespace Contao\Image;
 
 use Contao\Image\Metadata\ImageMetadata;
 use Contao\Image\Metadata\MetadataReaderWriter;
+use Imagine\Exception\InvalidArgumentException as ImagineInvalidArgumentException;
 use Imagine\Exception\RuntimeException as ImagineRuntimeException;
 use Imagine\Filter\Basic\Autorotate;
 use Imagine\Image\Palette\RGB;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Path;
 
+/**
+ * @method __construct(string $cacheDir, string $secret, ResizeCalculator $calculator = null, Filesystem $filesystem = null, MetadataReaderWriter $metadataReaderWriter = null)
+ */
 class Resizer implements ResizerInterface
 {
     /**
@@ -58,7 +62,7 @@ class Resizer implements ResizerInterface
      * @param Filesystem|null           $filesystem
      * @param MetadataReaderWriter|null $metadataReaderWriter
      */
-    public function __construct(string $cacheDir /*, string $secret, ResizeCalculator $calculator = null, Filesystem $filesystem = null, MetadataReaderWriter $metadataReaderWriter = null*/)
+    public function __construct(string $cacheDir/*, string $secret, ResizeCalculator $calculator = null, Filesystem $filesystem = null, MetadataReaderWriter $metadataReaderWriter = null*/)
     {
         if (\func_num_args() > 1 && \is_string(func_get_arg(1))) {
             $secret = func_get_arg(1);
@@ -166,7 +170,7 @@ class Resizer implements ResizerInterface
         if (isset($imagineOptions['interlace'])) {
             try {
                 $imagineImage->interlace($imagineOptions['interlace']);
-            } catch (ImagineRuntimeException $e) {
+            } catch (ImagineInvalidArgumentException|ImagineRuntimeException $e) {
                 // Ignore failed interlacing
             }
         }
