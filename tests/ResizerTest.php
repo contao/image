@@ -25,7 +25,6 @@ use Contao\Image\ResizeOptions;
 use Contao\Image\Resizer;
 use Contao\ImagineSvg\Imagine as SvgImagine;
 use Contao\ImagineSvg\SvgBox;
-use Contao\ImagineSvg\UndefinedBox;
 use Imagine\Driver\InfoProvider;
 use Imagine\Gd\Imagine as GdImagine;
 use Imagine\Gmagick\Imagine as GmagickImagine;
@@ -719,9 +718,7 @@ class ResizerTest extends TestCase
         $image = $this->createMock(Image::class);
         $image
             ->method('getDimensions')
-            ->willReturn(new ImageDimensions(
-                class_exists(SvgBox::class) ? SvgBox::createTypeNone() : new UndefinedBox()
-            ))
+            ->willReturn(new ImageDimensions(SvgBox::createTypeNone()))
         ;
 
         $image
