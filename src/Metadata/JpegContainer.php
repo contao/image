@@ -23,9 +23,9 @@ class JpegContainer extends AbstractContainer
 
     public function apply($inputStream, $outputStream, ImageMetadata $metadata, array $preserveKeysByFormat): void
     {
-        $xmp = $this->parser->serializeFormat(XmpFormat::NAME, $metadata, $preserveKeysByFormat[XmpFormat::NAME] ?? []);
-        $exif = $this->parser->serializeFormat(ExifFormat::NAME, $metadata, $preserveKeysByFormat[ExifFormat::NAME] ?? []);
-        $iptc = $this->parser->serializeFormat(IptcFormat::NAME, $metadata, $preserveKeysByFormat[IptcFormat::NAME] ?? []);
+        $xmp = $this->metadataReaderWriter->serializeFormat(XmpFormat::NAME, $metadata, $preserveKeysByFormat[XmpFormat::NAME] ?? []);
+        $exif = $this->metadataReaderWriter->serializeFormat(ExifFormat::NAME, $metadata, $preserveKeysByFormat[ExifFormat::NAME] ?? []);
+        $iptc = $this->metadataReaderWriter->serializeFormat(IptcFormat::NAME, $metadata, $preserveKeysByFormat[IptcFormat::NAME] ?? []);
 
         while (false !== $marker = fread($inputStream, 2)) {
             if (2 !== \strlen($marker) || "\xFF" !== $marker[0]) {

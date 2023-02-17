@@ -33,11 +33,11 @@ class WebpContainer extends AbstractContainer
         $xmpChunk = '';
         $exifChunk = '';
 
-        if ($xmp = $this->parser->serializeFormat(XmpFormat::NAME, $metadata, $preserveKeysByFormat[XmpFormat::NAME] ?? [])) {
+        if ($xmp = $this->metadataReaderWriter->serializeFormat(XmpFormat::NAME, $metadata, $preserveKeysByFormat[XmpFormat::NAME] ?? [])) {
             $xmpChunk = $this->buildChunk('XMP ', $xmp);
         }
 
-        if ($exif = $this->parser->serializeFormat(ExifFormat::NAME, $metadata, $preserveKeysByFormat[ExifFormat::NAME] ?? [])) {
+        if ($exif = $this->metadataReaderWriter->serializeFormat(ExifFormat::NAME, $metadata, $preserveKeysByFormat[ExifFormat::NAME] ?? [])) {
             $exifChunk = $this->buildChunk('EXIF', $exif);
         }
 

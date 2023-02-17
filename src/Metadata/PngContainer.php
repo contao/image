@@ -23,10 +23,10 @@ class PngContainer extends AbstractContainer
 
     public function apply($inputStream, $outputStream, ImageMetadata $metadata, array $preserveKeysByFormat): void
     {
-        $png = $this->parser->serializeFormat(PngFormat::NAME, $metadata, $preserveKeysByFormat[PngFormat::NAME] ?? []);
-        $xmp = $this->parser->serializeFormat(XmpFormat::NAME, $metadata, $preserveKeysByFormat[XmpFormat::NAME] ?? []);
-        $iptc = $this->parser->serializeFormat(IptcFormat::NAME, $metadata, $preserveKeysByFormat[IptcFormat::NAME] ?? []);
-        $exif = $this->parser->serializeFormat(ExifFormat::NAME, $metadata, $preserveKeysByFormat[ExifFormat::NAME] ?? []);
+        $png = $this->metadataReaderWriter->serializeFormat(PngFormat::NAME, $metadata, $preserveKeysByFormat[PngFormat::NAME] ?? []);
+        $xmp = $this->metadataReaderWriter->serializeFormat(XmpFormat::NAME, $metadata, $preserveKeysByFormat[XmpFormat::NAME] ?? []);
+        $iptc = $this->metadataReaderWriter->serializeFormat(IptcFormat::NAME, $metadata, $preserveKeysByFormat[IptcFormat::NAME] ?? []);
+        $exif = $this->metadataReaderWriter->serializeFormat(ExifFormat::NAME, $metadata, $preserveKeysByFormat[ExifFormat::NAME] ?? []);
 
         $head = fread($inputStream, 8);
 

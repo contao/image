@@ -19,11 +19,11 @@ abstract class AbstractContainer implements ImageContainerInterface
     /**
      * @var MetadataReaderWriter
      */
-    protected $parser;
+    protected $metadataReaderWriter;
 
     public function __construct(MetadataReaderWriter $parser)
     {
-        $this->parser = $parser;
+        $this->metadataReaderWriter = $parser;
     }
 
     public function getMagicBytesOffset(): int
@@ -34,7 +34,7 @@ abstract class AbstractContainer implements ImageContainerInterface
     protected function parseFormat(string $format, string $binaryChunk): array
     {
         try {
-            return $this->parser->parseFormat($format, $binaryChunk);
+            return $this->metadataReaderWriter->parseFormat($format, $binaryChunk);
         } catch (InvalidImageMetadataException $exception) {
             return [];
         }

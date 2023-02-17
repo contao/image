@@ -23,8 +23,8 @@ class GifContainer extends AbstractContainer
 
     public function apply($inputStream, $outputStream, ImageMetadata $metadata, array $preserveKeysByFormat): void
     {
-        $xmp = $this->parser->serializeFormat(XmpFormat::NAME, $metadata, $preserveKeysByFormat[XmpFormat::NAME] ?? []);
-        $gif = $this->parser->serializeFormat(GifFormat::NAME, $metadata, $preserveKeysByFormat[GifFormat::NAME] ?? []);
+        $xmp = $this->metadataReaderWriter->serializeFormat(XmpFormat::NAME, $metadata, $preserveKeysByFormat[XmpFormat::NAME] ?? []);
+        $gif = $this->metadataReaderWriter->serializeFormat(GifFormat::NAME, $metadata, $preserveKeysByFormat[GifFormat::NAME] ?? []);
 
         $head = fread($inputStream, 13);
 
