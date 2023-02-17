@@ -167,6 +167,7 @@ class DeferredResizer extends Resizer implements DeferredResizerInterface
             ],
             'options' => [
                 'imagine_options' => $options->getImagineOptions(),
+                'preserve_copyright' => $options->getPreserveCopyrightMetadata(),
             ],
         ]);
     }
@@ -181,6 +182,10 @@ class DeferredResizer extends Resizer implements DeferredResizerInterface
 
         $options = new ResizeOptions();
         $options->setImagineOptions($config['options']['imagine_options']);
+
+        if (isset($config['options']['preserve_copyright'])) {
+            $options->setPreserveCopyrightMetadata($config['options']['preserve_copyright']);
+        }
 
         $path = Path::join($this->cacheDir, $config['path']);
 

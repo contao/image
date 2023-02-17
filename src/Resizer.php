@@ -12,6 +12,8 @@ declare(strict_types=1);
 
 namespace Contao\Image;
 
+use Contao\Image\Metadata\ImageMetadata;
+use Contao\Image\Metadata\MetadataReaderWriter;
 use Imagine\Exception\RuntimeException as ImagineRuntimeException;
 use Imagine\Filter\Basic\Autorotate;
 use Imagine\Image\Palette\RGB;
@@ -39,7 +41,12 @@ class Resizer implements ResizerInterface
      */
     private $calculator;
 
-    public function __construct(string $cacheDir, ResizeCalculator $calculator = null, Filesystem $filesystem = null)
+    /**
+     * @var MetadataReaderWriter
+     */
+    private $metadataReaderWriter;
+
+    public function __construct(string $cacheDir, ResizeCalculator $calculator = null, Filesystem $filesystem = null, MetadataReaderWriter $metadataReaderWriter = null)
     {
         if (null === $calculator) {
             $calculator = new ResizeCalculator();
@@ -49,9 +56,14 @@ class Resizer implements ResizerInterface
             $filesystem = new Filesystem();
         }
 
+        if (null === $metadataReaderWriter) {
+            $metadataReaderWriter = new MetadataReaderWriter();
+        }
+
         $this->cacheDir = $cacheDir;
         $this->calculator = $calculator;
         $this->filesystem = $filesystem;
+        $this->metadataReaderWriter = $metadataReaderWriter;
     }
 
     /**
@@ -120,11 +132,26 @@ class Resizer implements ResizerInterface
             $imagineOptions['webp_quality'] = 80;
         }
 
+        $tmpPath1 = $this->filesystem->tempnam($dir, 'img');
+        $tmpPath2 = $this->filesystem->tempnam($dir, 'img');
+        $this->filesystem->chmod([$tmpPath1, $tmpPath2], 0666, umask());
+
+        if ($options->getPreserveCopyrightMetadata() && ($metadata = $this->getMetadata($image))->getAll()) {
+            $imagineImage->save($tmpPath1, $imagineOptions);
+
+            try {
+                $this->metadataReaderWriter->applyCopyrightToFile($tmpPath1, $tmpPath2, $metadata, $options->getPreserveCopyrightMetadata());
+            } catch (\Throwable $exception) {
+                $this->filesystem->rename($tmpPath1, $tmpPath2, true);
+            }
+        } else {
+            $imagineImage->save($tmpPath2, $imagineOptions);
+        }
+
+        $this->filesystem->remove($tmpPath1);
+
         // Atomic write operation
-        $tmpPath = $this->filesystem->tempnam($dir, 'img');
-        $this->filesystem->chmod($tmpPath, 0666, umask());
-        $imagineImage->save($tmpPath, $imagineOptions);
-        $this->filesystem->rename($tmpPath, $path, true);
+        $this->filesystem->rename($tmpPath2, $path, true);
 
         return $this->createImage($image, $path);
     }
@@ -209,10 +236,26 @@ class Resizer implements ResizerInterface
             )
         );
 
+        $preserveMeta = $options->getPreserveCopyrightMetadata();
+
+        if ($preserveMeta !== (new ResizeOptions())->getPreserveCopyrightMetadata()) {
+            ksort($preserveMeta, SORT_STRING);
+            $hashData[] = json_encode($preserveMeta);
+        }
+
         $hash = substr(md5(implode('|', $hashData)), 0, 9);
         $pathinfo = pathinfo($path);
         $extension = $options->getImagineOptions()['format'] ?? strtolower($pathinfo['extension']);
 
         return Path::join($hash[0], $pathinfo['filename'].'-'.substr($hash, 1).'.'.$extension);
+    }
+
+    private function getMetadata(ImageInterface $image): ImageMetadata
+    {
+        try {
+            return $this->metadataReaderWriter->parse($image->getPath());
+        } catch (\Throwable $exception) {
+            return new ImageMetadata([]);
+        }
     }
 }
