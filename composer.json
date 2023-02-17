@@ -60,7 +60,7 @@
             "@psalm"
         ],
         "cs-fixer": [
-            "tools/ecs/vendor/bin/ecs check src tests --config ecs.php --fix --ansi"
+            "tools/ecs/vendor/bin/ecs check src tests tools/ecs/config --config tools/ecs/config/default.php --fix --ansi"
         ],
         "phpstan": [
             "tools/phpstan/vendor/bin/phpstan analyze src tests --level=4 --memory-limit=1G --ansi"
