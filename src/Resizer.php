@@ -12,6 +12,8 @@ declare(strict_types=1);
 
 namespace Contao\Image;
 
+use Contao\Image\Metadata\ImageMetadata;
+use Contao\Image\Metadata\MetadataReaderWriter;
 use Imagine\Exception\RuntimeException as ImagineRuntimeException;
 use Imagine\Filter\Basic\Autorotate;
 use Imagine\Image\Palette\RGB;
@@ -40,27 +42,35 @@ class Resizer implements ResizerInterface
     private $calculator;
 
     /**
+     * @var MetadataReaderWriter
+     */
+    private $metadataReaderWriter;
+
+    /**
      * @var string|null
      */
     private $secret;
 
     /**
-     * @param string                $cacheDir
-     * @param string                $secret
-     * @param ResizeCalculator|null $calculator
-     * @param Filesystem|null       $filesystem
+     * @param string                    $cacheDir
+     * @param string                    $secret
+     * @param ResizeCalculator|null     $calculator
+     * @param Filesystem|null           $filesystem
+     * @param MetadataReaderWriter|null $metadataReaderWriter
      */
-    public function __construct(string $cacheDir /*, string $secret, ResizeCalculator $calculator = null, Filesystem $filesystem = null*/)
+    public function __construct(string $cacheDir /*, string $secret, ResizeCalculator $calculator = null, Filesystem $filesystem = null, MetadataReaderWriter $metadataReaderWriter = null*/)
     {
         if (\func_num_args() > 1 && \is_string(func_get_arg(1))) {
             $secret = func_get_arg(1);
             $calculator = \func_num_args() > 2 ? func_get_arg(2) : null;
             $filesystem = \func_num_args() > 3 ? func_get_arg(3) : null;
+            $metadataReaderWriter = \func_num_args() > 4 ? func_get_arg(4) : null;
         } else {
             trigger_deprecation('contao/image', '1.2', 'Not passing a secret to "%s()" has been deprecated and will no longer work in version 2.0.', __METHOD__);
             $secret = null;
             $calculator = \func_num_args() > 1 ? func_get_arg(1) : null;
             $filesystem = \func_num_args() > 2 ? func_get_arg(2) : null;
+            $metadataReaderWriter = \func_num_args() > 3 ? func_get_arg(3) : null;
         }
 
         if (null === $calculator) {
@@ -69,6 +79,10 @@ class Resizer implements ResizerInterface
 
         if (null === $filesystem) {
             $filesystem = new Filesystem();
+        }
+
+        if (null === $metadataReaderWriter) {
+            $metadataReaderWriter = new MetadataReaderWriter();
         }
 
         if (!$calculator instanceof ResizeCalculator) {
@@ -83,6 +97,12 @@ class Resizer implements ResizerInterface
             throw new \TypeError(sprintf('%s(): Argument #4 ($filesystem) must be of type ResizeCalculator|null, %s given', __METHOD__, $type));
         }
 
+        if (!$metadataReaderWriter instanceof MetadataReaderWriter) {
+            $type = \is_object($metadataReaderWriter) ? \get_class($metadataReaderWriter) : \gettype($metadataReaderWriter);
+
+            throw new \TypeError(sprintf('%s(): Argument #5 ($metadataReaderWriter) must be of type MetadataReaderWriter|null, %s given', __METHOD__, $type));
+        }
+
         if ('' === $secret) {
             throw new \InvalidArgumentException('$secret must not be empty');
         }
@@ -90,6 +110,7 @@ class Resizer implements ResizerInterface
         $this->cacheDir = $cacheDir;
         $this->calculator = $calculator;
         $this->filesystem = $filesystem;
+        $this->metadataReaderWriter = $metadataReaderWriter;
         $this->secret = $secret;
     }
 
@@ -159,11 +180,26 @@ class Resizer implements ResizerInterface
             $imagineOptions['webp_quality'] = 80;
         }
 
+        $tmpPath1 = $this->filesystem->tempnam($dir, 'img');
+        $tmpPath2 = $this->filesystem->tempnam($dir, 'img');
+        $this->filesystem->chmod([$tmpPath1, $tmpPath2], 0666, umask());
+
+        if ($options->getPreserveCopyrightMetadata() && ($metadata = $this->getMetadata($image))->getAll()) {
+            $imagineImage->save($tmpPath1, $imagineOptions);
+
+            try {
+                $this->metadataReaderWriter->applyCopyrightToFile($tmpPath1, $tmpPath2, $metadata, $options->getPreserveCopyrightMetadata());
+            } catch (\Throwable $exception) {
+                $this->filesystem->rename($tmpPath1, $tmpPath2, true);
+            }
+        } else {
+            $imagineImage->save($tmpPath2, $imagineOptions);
+        }
+
+        $this->filesystem->remove($tmpPath1);
+
         // Atomic write operation
-        $tmpPath = $this->filesystem->tempnam($dir, 'img');
-        $this->filesystem->chmod($tmpPath, 0666, umask());
-        $imagineImage->save($tmpPath, $imagineOptions);
-        $this->filesystem->rename($tmpPath, $path, true);
+        $this->filesystem->rename($tmpPath2, $path, true);
 
         return $this->createImage($image, $path);
     }
@@ -258,6 +294,13 @@ class Resizer implements ResizerInterface
             )
         );
 
+        $preserveMeta = $options->getPreserveCopyrightMetadata();
+
+        if ($preserveMeta !== (new ResizeOptions())->getPreserveCopyrightMetadata()) {
+            ksort($preserveMeta, SORT_STRING);
+            $hashData[] = json_encode($preserveMeta);
+        }
+
         if ($useLegacyHash || null === $this->secret) {
             $hash = substr(md5(implode('|', $hashData)), 0, 9);
         } else {
@@ -269,6 +312,15 @@ class Resizer implements ResizerInterface
         $extension = $options->getImagineOptions()['format'] ?? strtolower($pathinfo['extension']);
 
         return Path::join($hash[0], $pathinfo['filename'].'-'.substr($hash, 1).'.'.$extension);
+    }
+
+    private function getMetadata(ImageInterface $image): ImageMetadata
+    {
+        try {
+            return $this->metadataReaderWriter->parse($image->getPath());
+        } catch (\Throwable $exception) {
+            return new ImageMetadata([]);
+        }
     }
 
     /**

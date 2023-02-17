@@ -186,6 +186,7 @@ class DeferredResizerTest extends TestCase
         $storage
             ->method('get')
             ->willReturn([
+                'path' => '../source/image.jpg',
                 'coordinates' => [
                     'crop' => [
                         'width' => 200,

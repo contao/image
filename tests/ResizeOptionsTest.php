@@ -61,4 +61,13 @@ class ResizeOptionsTest extends TestCase
         $this->assertSame($options, $options->setSkipIfDimensionsMatch(true));
         $this->assertTrue($options->getSkipIfDimensionsMatch());
     }
+
+    public function testSetPreserveCopyrightMetadata(): void
+    {
+        $options = new ResizeOptions();
+
+        $this->assertNotEmpty($options->getPreserveCopyrightMetadata());
+        $this->assertSame($options, $options->setPreserveCopyrightMetadata([]));
+        $this->assertEmpty($options->getPreserveCopyrightMetadata());
+    }
 }
