@@ -23,11 +23,11 @@
         "symfony/polyfill-php80": "^1.27"
     },
     "conflict": {
-        "contao/imagine-svg": "<0.1.4 || >=2.0"
+        "contao/imagine-svg": "<1.0 || >=2.0"
     },
     "require-dev": {
         "bamarni/composer-bin-plugin": "^1.4",
-        "contao/imagine-svg": "^0.1.4 || ^0.2 || ^1.0",
+        "contao/imagine-svg": "^1.0",
         "contao/test-case": "^4.5",
         "phpunit/phpunit": "^8.5 || ^9.5",
         "symfony/phpunit-bridge": "^5.4",
@@ -56,21 +56,11 @@
         "all": [
             "@unit-tests",
             "@cs-fixer",
-            "@phpstan",
-            "@psalm"
+            "@phpstan"
         ],
-        "cs-fixer": [
-            "tools/ecs/vendor/bin/ecs check src tests --config ecs.php --fix --ansi"
-        ],
-        "phpstan": [
-            "tools/phpstan/vendor/bin/phpstan analyze src tests --level=4 --memory-limit=1G --ansi"
-        ],
-        "psalm": [
-            "tools/psalm/vendor/bin/psalm --no-suggestions --threads=4"
-        ],
-        "unit-tests": [
-            "vendor/bin/phpunit --colors=always"
-        ]
+        "cs-fixer": "@php tools/ecs/vendor/bin/ecs check src tests tools/ecs/config --config tools/ecs/config/default.php --fix --ansi",
+        "phpstan": "@php tools/phpstan/vendor/bin/phpstan analyze --ansi",
+        "unit-tests": "vendor/bin/phpunit --colors=always"
     },
     "config": {
         "allow-plugins": {

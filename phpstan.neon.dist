@@ -1,7 +1,22 @@
+includes:
+    - tools/phpstan/vendor/phpstan/phpstan-phpunit/extension.neon
+    - tools/phpstan/vendor/phpstan/phpstan-phpunit/rules.neon
+    - tools/phpstan/vendor/phpstan/phpstan-symfony/extension.neon
+    - tools/phpstan/vendor/phpstan/phpstan-symfony/rules.neon
+    - tools/phpstan/vendor/slam/phpstan-extensions/conf/symfony-rules.neon
+
+rules:
+    - TheCodingMachine\PHPStan\Rules\Exceptions\DoNotThrowExceptionBaseClassRule
+    - TheCodingMachine\PHPStan\Rules\Exceptions\ThrowMustBundlePreviousExceptionRule
+
 parameters:
+    level: 5
+
+    paths:
+        - %currentWorkingDirectory%/src
+        - %currentWorkingDirectory%/tests
+
     ignoreErrors:
-        - '#Contao\\ImagineSvg\\UndefinedBox#'
-        - '#Contao\\ImagineSvg\\RelativeBox#'
         -
             # Ignore the forward compatible phpDoc comment
             message: '#PHPDoc tag @param references unknown parameter:#'
@@ -10,3 +25,9 @@ parameters:
             # Ignore the forward compatible phpDoc comment
             message: '#PHPDoc tag @param references unknown parameter:#'
             path: %currentWorkingDirectory%/src/DeferredResizer.php
+        -
+            message: '#class Imagine\\Image\\(Box|Point) constructor expects int, float given#'
+            path: %currentWorkingDirectory%/tests/ResizeCoordinatesTest.php
+        -
+            message: '#ResizeCoordinates::isEqualTo\(\) expects .*, stdClass given#'
+            path: %currentWorkingDirectory%/tests/ResizeCoordinatesTest.php

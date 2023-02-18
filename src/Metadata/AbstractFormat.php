@@ -36,7 +36,7 @@ abstract class AbstractFormat implements MetadataFormatInterface
 
     protected function toUtf8(array $values): array
     {
-        return filter_var(
+        return (array) filter_var(
             $values,
             FILTER_CALLBACK,
             [

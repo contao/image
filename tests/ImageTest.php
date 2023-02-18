@@ -52,7 +52,7 @@ class ImageTest extends TestCase
     {
         parent::tearDown();
 
-        if (file_exists($this->rootDir)) {
+        if ((new Filesystem())->exists($this->rootDir)) {
             (new Filesystem())->remove($this->rootDir);
         }
     }
@@ -194,7 +194,7 @@ class ImageTest extends TestCase
         }
 
         if (!is_dir($this->rootDir)) {
-            mkdir($this->rootDir, 0777, true);
+            (new Filesystem())->mkdir($this->rootDir);
         }
 
         $image = (new GdImagine())
@@ -202,7 +202,7 @@ class ImageTest extends TestCase
             ->get('jpg')
         ;
 
-        file_put_contents(Path::join($this->rootDir, 'dummy.jpg'), $this->addImageOrientation($image, $orientation));
+        (new Filesystem())->dumpFile(Path::join($this->rootDir, 'dummy.jpg'), $this->addImageOrientation($image, $orientation));
 
         $image = $this->createImage(Path::join($this->rootDir, 'dummy.jpg'));
 
@@ -262,7 +262,7 @@ class ImageTest extends TestCase
     public function testGetDimensionsFromPartialFile(): void
     {
         if (!is_dir($this->rootDir)) {
-            mkdir($this->rootDir, 0777, true);
+            (new Filesystem())->mkdir($this->rootDir);
         }
 
         $image = (new GdImagine())
@@ -271,7 +271,7 @@ class ImageTest extends TestCase
         ;
 
         // Only store the first 500 bytes of the image
-        file_put_contents(Path::join($this->rootDir, 'dummy.jpg'), substr($image, 0, 500));
+        (new Filesystem())->dumpFile(Path::join($this->rootDir, 'dummy.jpg'), substr($image, 0, 500));
 
         $image = $this->createImage(Path::join($this->rootDir, 'dummy.jpg'));
 
@@ -287,11 +287,11 @@ class ImageTest extends TestCase
         ;
 
         if (!is_dir($this->rootDir)) {
-            mkdir($this->rootDir, 0777, true);
+            (new Filesystem())->mkdir($this->rootDir);
         }
 
         // Only store a partial SVG file without an end tag
-        file_put_contents(Path::join($this->rootDir, 'dummy.svg'), '<svg width="1000" height="1000">');
+        (new Filesystem())->dumpFile(Path::join($this->rootDir, 'dummy.svg'), '<svg width="1000" height="1000">');
 
         $image = $this->createImage(Path::join($this->rootDir, 'dummy.svg'), $imagine);
 
@@ -310,11 +310,11 @@ class ImageTest extends TestCase
         ;
 
         if (!is_dir($this->rootDir)) {
-            mkdir($this->rootDir, 0777, true);
+            (new Filesystem())->mkdir($this->rootDir);
         }
 
         // Only store a partial SVG file without an end tag
-        file_put_contents(Path::join($this->rootDir, 'dummy.svgz'), gzencode('<svg width="1000" height="1000">'));
+        (new Filesystem())->dumpFile(Path::join($this->rootDir, 'dummy.svgz'), gzencode('<svg width="1000" height="1000">'));
 
         $image = $this->createImage(Path::join($this->rootDir, 'dummy.svgz'), $imagine);
 
@@ -327,10 +327,10 @@ class ImageTest extends TestCase
     public function testGetDimensionsInvalidSvg(): void
     {
         if (!is_dir($this->rootDir)) {
-            mkdir($this->rootDir, 0777, true);
+            (new Filesystem())->mkdir($this->rootDir);
         }
 
-        file_put_contents(Path::join($this->rootDir, 'dummy.svg'), '<nosvg width="1000" height="1000"></nosvg>');
+        (new Filesystem())->dumpFile(Path::join($this->rootDir, 'dummy.svg'), '<nosvg width="1000" height="1000"></nosvg>');
 
         $imagine = $this->createMock(Imagine::class);
         $imagine

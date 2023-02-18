@@ -78,6 +78,8 @@ class Picture implements PictureInterface
 
     /**
      * Converts image objects in an attributes array to URLs.
+     *
+     * @param array{src:ImageInterface|null, srcset:list<array{0:ImageInterface, 1:string}>} $img
      */
     private function buildUrls(array $img, string $rootDir, string $prefix): array
     {
@@ -86,8 +88,8 @@ class Picture implements PictureInterface
         }
 
         $img['srcset'] = array_map(
+            /** @param array{0:ImageInterface, 1:string} $src */
             static function (array $src) use ($rootDir, $prefix) {
-                /** @var array<ImageInterface> $src */
                 $src[0] = $src[0]->getUrl($rootDir, $prefix);
 
                 return implode(' ', $src);

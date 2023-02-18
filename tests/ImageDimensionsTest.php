@@ -14,9 +14,7 @@ namespace Contao\Image\Tests;
 
 use Contao\Image\Exception\InvalidArgumentException;
 use Contao\Image\ImageDimensions;
-use Contao\ImagineSvg\RelativeBoxInterface;
 use Contao\ImagineSvg\SvgBox;
-use Contao\ImagineSvg\UndefinedBoxInterface;
 use Imagine\Image\BoxInterface;
 use PHPUnit\Framework\TestCase;
 
@@ -53,11 +51,7 @@ class ImageDimensionsTest extends TestCase
 
         $this->assertTrue($dimensions->isRelative());
 
-        if (class_exists(SvgBox::class)) {
-            $size = SvgBox::createTypeAspectRatio(100, 100);
-        } else {
-            $size = $this->createMock(RelativeBoxInterface::class);
-        }
+        $size = SvgBox::createTypeAspectRatio(100, 100);
         $dimensions = new ImageDimensions($size);
 
         $this->assertTrue($dimensions->isRelative());
@@ -78,11 +72,7 @@ class ImageDimensionsTest extends TestCase
 
         $this->assertTrue($dimensions->isUndefined());
 
-        if (class_exists(SvgBox::class)) {
-            $size = SvgBox::createTypeNone();
-        } else {
-            $size = $this->createMock(UndefinedBoxInterface::class);
-        }
+        $size = SvgBox::createTypeNone();
         $dimensions = new ImageDimensions($size);
 
         $this->assertTrue($dimensions->isUndefined());

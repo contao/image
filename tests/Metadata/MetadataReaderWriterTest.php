@@ -93,9 +93,8 @@ class MetadataReaderWriterTest extends TestCase
         foreach ($paths as $filename => $data) {
             $path = __DIR__.'/../fixtures/'.$filename;
 
-            if (!file_exists($path)) {
-                (new Filesystem())->mkdir(\dirname($path));
-                copy($data['url'], $path);
+            if (!(new Filesystem())->exists($path)) {
+                (new Filesystem())->copy($data['url'], $path);
             }
 
             yield [$path, $data['meta']];

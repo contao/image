@@ -13,9 +13,7 @@ declare(strict_types=1);
 namespace Contao\Image;
 
 use Contao\Image\Exception\InvalidArgumentException;
-use Contao\ImagineSvg\RelativeBoxInterface;
 use Contao\ImagineSvg\SvgBox;
-use Contao\ImagineSvg\UndefinedBoxInterface;
 use Imagine\Image\BoxInterface;
 
 class ImageDimensions
@@ -61,13 +59,11 @@ class ImageDimensions
         }
 
         if (null === $relative) {
-            $relative = $size instanceof RelativeBoxInterface
-                || ($size instanceof SvgBox && SvgBox::TYPE_ASPECT_RATIO === $size->getType());
+            $relative = $size instanceof SvgBox && SvgBox::TYPE_ASPECT_RATIO === $size->getType();
         }
 
         if (null === $undefined) {
-            $undefined = $size instanceof UndefinedBoxInterface
-                || ($size instanceof SvgBox && SvgBox::TYPE_NONE === $size->getType());
+            $undefined = $size instanceof SvgBox && SvgBox::TYPE_NONE === $size->getType();
         }
 
         $this->size = $size;
