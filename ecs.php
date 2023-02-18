@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use PhpCsFixer\Fixer\FunctionNotation\UseArrowFunctionsFixer;
 use PhpCsFixer\Fixer\PhpUnit\PhpUnitExpectationFixer;
+use PhpCsFixer\Fixer\Phpdoc\NoSuperfluousPhpdocTagsFixer;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Symplify\EasyCodingStandard\ValueObject\Option;
 
@@ -14,6 +15,7 @@ return static function (ContainerConfigurator $containerConfigurator): void {
 
     // Arrow functions require at least PHP 7.4
     $services->remove(UseArrowFunctionsFixer::class);
+    $services->remove(NoSuperfluousPhpdocTagsFixer::class);
 
     $parameters = $containerConfigurator->parameters();
 

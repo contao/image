@@ -8,6 +8,7 @@
 >
     <php>
         <ini name="error_reporting" value="-1" />
+        <env name="SYMFONY_DEPRECATIONS_HELPER" value="max[total]=0" />
     </php>
 
     <testsuites>
@@ -21,4 +22,8 @@
             <directory>./src</directory>
         </whitelist>
     </filter>
+
+    <extensions>
+        <extension class="Contao\Image\Tests\PhpunitExtension\DeprecatedClasses"/>
+    </extensions>
 </phpunit>
