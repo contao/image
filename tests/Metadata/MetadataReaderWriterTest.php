@@ -12,7 +12,18 @@ declare(strict_types=1);
 
 namespace Contao\Image\Tests\Metadata;
 
+use Contao\Image\Metadata\ExifFormat;
+use Contao\Image\Metadata\GifFormat;
+use Contao\Image\Metadata\ImageMetadata;
+use Contao\Image\Metadata\IptcFormat;
 use Contao\Image\Metadata\MetadataReaderWriter;
+use Contao\Image\Metadata\PngFormat;
+use Contao\Image\Metadata\XmpFormat;
+use Contao\Image\ResizeOptions;
+use Imagine\Gd\Imagine as GdImagine;
+use Imagine\Gmagick\Imagine as GmagickImagine;
+use Imagine\Image\Box;
+use Imagine\Imagick\Imagine as ImagickImagine;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -99,6 +110,53 @@ class MetadataReaderWriterTest extends TestCase
 
             yield [$path, $data['meta']];
         }
+    }
+
+    /**
+     * @dataProvider getFormats
+     */
+    public function testApplyDoesNotChangeForEmptyData(string $format): void
+    {
+        $supported = false;
+
+        foreach ([GdImagine::class, ImagickImagine::class, GmagickImagine::class] as $imagineClass) {
+            if (!($driverInfo = $imagineClass::getDriverInfo(false)) || !$driverInfo->isFormatSupported($format)) {
+                continue;
+            }
+
+            $supported = true;
+            $sourcePath = (new Filesystem())->tempnam(sys_get_temp_dir(), 'img');
+            $targetPath = (new Filesystem())->tempnam(sys_get_temp_dir(), 'img');
+            $imagine = new $imagineClass();
+
+            $imagine->create(new Box(100, 100))->save($sourcePath, ['format' => $format]);
+
+            (new MetadataReaderWriter())->applyCopyrightToFile(
+                $sourcePath,
+                $targetPath,
+                new ImageMetadata([
+                    XmpFormat::NAME => [],
+                    IptcFormat::NAME => [],
+                    ExifFormat::NAME => [],
+                    PngFormat::NAME => [],
+                    GifFormat::NAME => [],
+                ]),
+                (new ResizeOptions())->getPreserveCopyrightMetadata()
+            );
+
+            $this->assertFileEquals($sourcePath, $targetPath);
+
+            (new Filesystem())->remove([$sourcePath, $targetPath]);
+        }
+
+        if (!$supported) {
+            $this->markTestSkipped(sprintf('Format "%s" not supported on this system', $format));
+        }
+    }
+
+    public function getFormats(): \Generator
+    {
+        yield ['png', 'gif', 'jpg', 'webp'];
     }
 
     private function assertExpectedArrayRecursive(array $expected, array $actual): void
