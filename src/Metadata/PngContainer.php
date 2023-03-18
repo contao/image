@@ -50,10 +50,25 @@ class PngContainer extends AbstractContainer
 
             if ('IDAT' === $type) {
                 fwrite($outputStream, $png);
-                fwrite($outputStream, $this->buildItxt('XML:com.adobe.xmp', $xmp));
-                fwrite($outputStream, $this->buildChunk('eXIf', $exif));
-                // Non-standard ImageMagick/exiftool/exiv2 format
-                fwrite($outputStream, $this->buildItxt('Raw profile type iptc', sprintf("\nIPTC profile\n%8d\n%s", \strlen($iptc), bin2hex($iptc))));
+
+                if ($xmp) {
+                    fwrite($outputStream, $this->buildItxt('XML:com.adobe.xmp', $xmp));
+                }
+
+                if ($exif) {
+                    fwrite($outputStream, $this->buildChunk('eXIf', $exif));
+                }
+
+                if ($iptc) {
+                    // Non-standard ImageMagick/exiftool/exiv2 format
+                    fwrite($outputStream, $this->buildItxt('Raw profile type iptc', sprintf("\nIPTC profile\n%8d\n%s", \strlen($iptc), bin2hex($iptc))));
+                }
+
+                // Copy the rest of the image
+                fwrite($outputStream, $marker);
+                stream_copy_to_stream($inputStream, $outputStream);
+
+                return;
             }
 
             fwrite($outputStream, $marker);
