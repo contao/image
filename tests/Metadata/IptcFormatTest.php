@@ -49,7 +49,6 @@ class IptcFormatTest extends TestCase
                 '2#110' => ['Credit'],
             ],
             [
-                '1#090' => ["\x1b\x25\x47"],
                 'CopyrightNotice' => ['Copyright'],
                 'By-line' => ['Creator'],
                 'Source' => ['Source'],
@@ -73,7 +72,6 @@ class IptcFormatTest extends TestCase
                 '2#110' => ['Credit', 'Credit'],
             ],
             [
-                '1#090' => ["\x1b\x25\x47"],
                 'CopyrightNotice' => ['Copyright 💩'],
                 'By-line' => ['Creator'],
                 'Source' => ['Source'],
