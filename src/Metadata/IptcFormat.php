@@ -85,10 +85,11 @@ class IptcFormat extends AbstractFormat
 
     public function toReadable(array $data): array
     {
+        unset($data['1#090'], $data['2#000']);
+
         $keys = array_map(
             static function ($key) {
                 return [
-                    '2#000' => 'ApplicationRecordVersion',
                     '2#003' => 'ObjectTypeReference',
                     '2#004' => 'ObjectAttributeReference',
                     '2#005' => 'ObjectName',
