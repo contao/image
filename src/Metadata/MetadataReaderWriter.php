@@ -141,7 +141,7 @@ class MetadataReaderWriter
     }
 
     /**
-     * @return array<string,array<string,list<string>>>
+     * @return array<string,array<string,list<string>>> One array per format with labels as keys, values as string lists
      */
     public function toReadable(ImageMetadata $metadata): array
     {

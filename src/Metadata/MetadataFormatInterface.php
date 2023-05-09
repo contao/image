@@ -27,7 +27,7 @@ interface MetadataFormatInterface
     public function parse(string $binaryChunk): array;
 
     /**
-     * @return array<string,list<string>>
+     * @return array<string,list<string>> Labels as keys, values as string lists
      */
     public function toReadable(array $data): array;
 }
