@@ -4,7 +4,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
- * Add EXIF, IPTC, XMP metadata handling for JPEG, PNG, WEBP, GIF, HEIC, JXL, AVIF. [#93]
+ * Add EXIF, IPTC, XMP metadata handling for JPEG, PNG, WEBP, GIF, HEIC, JXL, AVIF. [#93], [#95], [#96]
  * Improve file name hashing algorithm. [#90]
 
 ## [1.1.2] (2022-08-16)
@@ -157,6 +157,8 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 [0.2.0]: https://github.com/contao/image/compare/0.1.0...0.2.0
 [0.1.0]: https://github.com/contao/image/commits/0.1.0
 
+[#96]: https://github.com/contao/image/issues/96
+[#95]: https://github.com/contao/image/issues/95
 [#93]: https://github.com/contao/image/issues/93
 [#90]: https://github.com/contao/image/issues/90
 [#89]: https://github.com/contao/image/issues/89
