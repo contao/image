@@ -22,13 +22,14 @@ class ExifFormatTest extends TestCase
     /**
      * @dataProvider getParse
      */
-    public function testParse(string $source, array $expected): void
+    public function testParse(string $source, array $expected, array $expectedReadable): void
     {
         if (!$expected) {
             $this->expectException(InvalidImageMetadataException::class);
         }
 
         $this->assertSame($expected, (new ExifFormat())->parse($source));
+        $this->assertSame($expectedReadable, (new ExifFormat())->toReadable((new ExifFormat())->parse($source)));
     }
 
     public function getParse(): \Generator
@@ -45,6 +46,10 @@ class ExifFormatTest extends TestCase
                     'Artist' => 'Arti',
                 ],
             ],
+            [
+                'Copyright' => ['Copyright'],
+                'Artist' => ['Arti'],
+            ],
         ];
 
         yield [
@@ -59,10 +64,15 @@ class ExifFormatTest extends TestCase
                     'Artist' => 'Arti',
                 ],
             ],
+            [
+                'Copyright' => ['Copyright'],
+                'Artist' => ['Arti'],
+            ],
         ];
 
         yield [
             'NOT EXIF',
+            [],
             [],
         ];
     }
@@ -122,5 +132,28 @@ class ExifFormatTest extends TestCase
             ExifFormat::DEFAULT_PRESERVE_KEYS,
             '',
         ];
+    }
+
+    public function testToReadable(): void
+    {
+        $source = [
+            'IFD0' => [
+                'Copyright' => 'Copyright',
+                'Artist' => [[['Arti', 123, .4, [true]]]],
+                'test',
+                ['test'],
+                [['key' => 'test']],
+            ],
+        ];
+
+        $expected = [
+            'Copyright' => ['Copyright'],
+            'Artist' => ['Arti, 123, 0.4, 1'],
+            'exif_0' => ['test'],
+            'exif_1' => ['test'],
+            'exif_2' => ['test'],
+        ];
+
+        $this->assertSame($expected, (new ExifFormat())->toReadable($source));
     }
 }

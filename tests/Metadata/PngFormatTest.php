@@ -24,6 +24,7 @@ class PngFormatTest extends TestCase
     public function testParse(string $source, array $expected): void
     {
         $this->assertSame($expected, (new PngFormat())->parse($source));
+        $this->assertSame($expected, (new PngFormat())->toReadable((new PngFormat())->parse($source)));
     }
 
     public function getParse(): \Generator

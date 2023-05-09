@@ -32,11 +32,16 @@ class MetadataReaderWriterTest extends TestCase
     /**
      * @dataProvider getParse
      */
-    public function testParse(string $sourcePath, array $expected): void
+    public function testParse(string $sourcePath, array $expected, array $expectedReadable): void
     {
         $this->assertExpectedArrayRecursive(
             $expected,
             (new MetadataReaderWriter())->parse($sourcePath)->getAll()
+        );
+
+        $this->assertExpectedArrayRecursive(
+            $expectedReadable,
+            (new MetadataReaderWriter())->toReadable((new MetadataReaderWriter())->parse($sourcePath))
         );
     }
 
@@ -49,12 +54,20 @@ class MetadataReaderWriterTest extends TestCase
                     'exif' => ['IFD0' => ['Artist' => 'Photographerís Mate 3rd Class (A']],
                     'xmp' => ['http://purl.org/dc/elements/1.1/' => ['creator' => ['Photographerís Mate 3rd Class (A']]],
                 ],
+                'readable' => [
+                    'exif' => ['Artist' => ['Photographerís Mate 3rd Class (A']],
+                    'xmp' => ['dc:creator' => ['Photographerís Mate 3rd Class (A']],
+                ],
             ],
             'jxl2.jxl' => [
                 'url' => 'https://github.com/Exiv2/exiv2/raw/a7a9835/test/data/issue_2233_poc1.jxl',
                 'meta' => [
                     'exif' => ['IFD0' => ['Software' => 'GIMP 2.99.11']],
                     'xmp' => ['http://purl.org/dc/elements/1.1/' => ['creator' => ['exiv2.org']]],
+                ],
+                'readable' => [
+                    'exif' => ['Software' => ['GIMP 2.99.11']],
+                    'xmp' => ['dc:creator' => ['exiv2.org']],
                 ],
             ],
             'jxl3.jxl' => [
@@ -63,12 +76,20 @@ class MetadataReaderWriterTest extends TestCase
                     'exif' => ['IFD0' => ['Software' => 'GIMP 2.99.11']],
                     'xmp' => ['http://purl.org/dc/elements/1.1/' => ['creator' => ['exiv2.org']]],
                 ],
+                'readable' => [
+                    'exif' => ['Software' => ['GIMP 2.99.11']],
+                    'xmp' => ['dc:creator' => ['exiv2.org']],
+                ],
             ],
             'avif1.avif' => [
                 'url' => 'https://github.com/Exiv2/exiv2/raw/a7a9835/test/data/avif_exif_xmp.avif',
                 'meta' => [
                     'exif' => ['IFD0' => ['Software' => 'GIMP 2.99.5']],
                     'xmp' => ['http://purl.org/dc/elements/1.1/' => ['creator' => ['type="Seq" Developer']]],
+                ],
+                'readable' => [
+                    'exif' => ['Software' => ['GIMP 2.99.5']],
+                    'xmp' => ['dc:creator' => ['type="Seq" Developer']],
                 ],
             ],
             'avif2.avif' => [
@@ -77,11 +98,18 @@ class MetadataReaderWriterTest extends TestCase
                     'exif' => ['IFD0' => ['Software' => 'GIMP 2.99.5']],
                     'xmp' => ['http://purl.org/dc/elements/1.1/' => ['creator' => ['type="Seq" me']]],
                 ],
+                'readable' => [
+                    'exif' => ['Software' => ['GIMP 2.99.5']],
+                    'xmp' => ['dc:creator' => ['type="Seq" me']],
+                ],
             ],
             'heic1.heic' => [
                 'url' => 'https://github.com/Exiv2/exiv2/raw/a7a9835/test/data/IMG_3578.heic',
                 'meta' => [
                     'exif' => ['IFD0' => ['Software' => '13.4.1']],
+                ],
+                'readable' => [
+                    'exif' => ['Software' => ['13.4.1']],
                 ],
             ],
             'heic2.heic' => [
@@ -90,6 +118,10 @@ class MetadataReaderWriterTest extends TestCase
                     'exif' => ['IFD0' => ['Software' => 'Ver.1.00 ']],
                     'xmp' => ['http://purl.org/dc/elements/1.1/' => ['description' => ['Classic View']]],
                 ],
+                'readable' => [
+                    'exif' => ['Software' => ['Ver.1.00']],
+                    'xmp' => ['dc:description' => ['Classic View']],
+                ],
             ],
             'png.png' => [
                 'url' => 'https://github.com/Exiv2/exiv2/raw/a7a9835/test/data/imagemagick.png',
@@ -97,6 +129,11 @@ class MetadataReaderWriterTest extends TestCase
                     'png' => ['Software' => ['digiKam 0.9.0-svn ( libpng version 1.2.8 - December 3, 2004 (header) )']],
                     'exif' => ['IFD0' => ['Software' => 'digiKam-0.9.0-svn']],
                     'iptc' => ['2#110' => ['Spielberg']],
+                ],
+                'readable' => [
+                    'png' => ['Software' => ['digiKam 0.9.0-svn ( libpng version 1.2.8 - December 3, 2004 (header) )']],
+                    'exif' => ['Software' => ['digiKam-0.9.0-svn']],
+                    'iptc' => ['Credit' => ['Spielberg']],
                 ],
             ],
         ];
@@ -108,7 +145,7 @@ class MetadataReaderWriterTest extends TestCase
                 (new Filesystem())->copy($data['url'], $path);
             }
 
-            yield [$path, $data['meta']];
+            yield [$path, $data['meta'], $data['readable']];
         }
     }
 

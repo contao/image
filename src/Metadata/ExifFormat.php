@@ -129,6 +129,11 @@ class ExifFormat extends AbstractFormat
         return $this->toUtf8($data);
     }
 
+    public function toReadable(array $data): array
+    {
+        return parent::toReadable(array_merge([], ...array_values($data)));
+    }
+
     private function buildExif(string $copyright, string $artist): string
     {
         $data = [];

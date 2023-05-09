@@ -22,13 +22,14 @@ class IptcFormatTest extends TestCase
     /**
      * @dataProvider getParse
      */
-    public function testParse(string $source, array $expected): void
+    public function testParse(string $source, array $expected, array $expectedReadable): void
     {
         if (!$expected) {
             $this->expectException(InvalidImageMetadataException::class);
         }
 
         $this->assertSame($expected, (new IptcFormat())->parse($source));
+        $this->assertSame($expectedReadable, (new IptcFormat())->toReadable((new IptcFormat())->parse($source)));
     }
 
     public function getParse(): \Generator
@@ -47,6 +48,12 @@ class IptcFormatTest extends TestCase
                 '2#115' => ['Source'],
                 '2#110' => ['Credit'],
             ],
+            [
+                'CopyrightNotice' => ['Copyright'],
+                'By-line' => ['Creator'],
+                'Source' => ['Source'],
+                'Credit' => ['Credit'],
+            ],
         ];
 
         yield [
@@ -64,10 +71,17 @@ class IptcFormatTest extends TestCase
                 '2#115' => ['Source'],
                 '2#110' => ['Credit', 'Credit'],
             ],
+            [
+                'CopyrightNotice' => ['Copyright 💩'],
+                'By-line' => ['Creator'],
+                'Source' => ['Source'],
+                'Credit' => ['Credit', 'Credit'],
+            ],
         ];
 
         yield [
             'NOT IPTC',
+            [],
             [],
         ];
     }

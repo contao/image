@@ -24,6 +24,7 @@ class GifFormatTest extends TestCase
     public function testParse(string $source, array $expected): void
     {
         $this->assertSame($expected, (new GifFormat())->parse($source));
+        $this->assertSame($expected, (new GifFormat())->toReadable((new GifFormat())->parse($source)));
     }
 
     public function getParse(): \Generator
