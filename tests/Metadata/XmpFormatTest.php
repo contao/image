@@ -22,7 +22,7 @@ class XmpFormatTest extends TestCase
     /**
      * @dataProvider getParse
      */
-    public function testParse(string $source, array $expected): void
+    public function testParse(string $source, array $expected, array $expectedReadable): void
     {
         $wrapped =
             "<?xpacket begin=\"\u{FEFF}\" id=\"W5M0MpCehiHzreSzNTczkc9d\"?>"
@@ -38,6 +38,7 @@ class XmpFormatTest extends TestCase
 
         $this->assertSame($expected, (new XmpFormat())->parse($source));
         $this->assertSame($expected, (new XmpFormat())->parse($wrapped));
+        $this->assertSame($expectedReadable, (new XmpFormat())->toReadable((new XmpFormat())->parse($source)));
     }
 
     public function getParse(): \Generator
@@ -50,6 +51,9 @@ class XmpFormatTest extends TestCase
                 'http://purl.org/dc/elements/1.1/' => [
                     'rights' => ['Minimal'],
                 ],
+            ],
+            [
+                'dc:rights' => ['Minimal'],
             ],
         ];
 
@@ -80,15 +84,25 @@ class XmpFormatTest extends TestCase
                     'Credit' => ['Credit 1', 'Credit 2'],
                 ],
             ],
+            [
+                'dc:rights' => ['Rights'],
+                'dc:creator' => ['Creator 1', 'Creator 2'],
+                'dc:title' => ['Bild', 'Image'],
+                'https://example.com/:test' => ['Test'],
+                'https://example.com/:node' => ['Node Test'],
+                'photoshop:Credit' => ['Credit 1', 'Credit 2'],
+            ],
         ];
 
         yield [
             '<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">malformed',
             [],
+            [],
         ];
 
         yield [
             'NOT XMP',
+            [],
             [],
         ];
     }

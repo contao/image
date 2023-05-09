@@ -25,4 +25,9 @@ interface MetadataFormatInterface
      * @throws InvalidImageMetadataException
      */
     public function parse(string $binaryChunk): array;
+
+    /**
+     * @return array<string,list<string>>
+     */
+    public function toReadable(array $data): array;
 }

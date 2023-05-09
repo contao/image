@@ -141,6 +141,20 @@ class MetadataReaderWriter
     }
 
     /**
+     * @return array<string,array<string,list<string>>>
+     */
+    public function toReadable(ImageMetadata $metadata): array
+    {
+        $readable = [];
+
+        foreach ($metadata->getAll() as $format => $data) {
+            $readable[$format] = $this->formats[$format]->toReadable($data);
+        }
+
+        return $readable;
+    }
+
+    /**
      * @param resource $stream
      */
     private function findContainer($stream): ?ImageContainerInterface

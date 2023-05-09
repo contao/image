@@ -14,6 +14,18 @@ namespace Contao\Image\Metadata;
 
 abstract class AbstractFormat implements MetadataFormatInterface
 {
+    public function toReadable(array $data): array
+    {
+        $data = $this->prefixIntKeys($data, static::NAME.'_');
+
+        return array_map(
+            function ($value) {
+                return $this->ensureStringList($value);
+            },
+            $data
+        );
+    }
+
     /**
      * @param array|string $values
      */
@@ -58,6 +70,44 @@ abstract class AbstractFormat implements MetadataFormatInterface
                     return $value;
                 },
             ]
+        );
+    }
+
+    protected function prefixIntKeys(array $data, string $prefix): array
+    {
+        foreach ($data as $key => $value) {
+            if (\is_int($key)) {
+                $data[$prefix.$key] = $value;
+                unset($data[$key]);
+            }
+        }
+
+        return $data;
+    }
+
+    /**
+     * @return list<string>
+     */
+    protected function ensureStringList($value): array
+    {
+        $value = array_map(
+            function ($value) {
+                if (\is_array($value)) {
+                    return implode(', ', $this->ensureStringList($value));
+                }
+
+                return trim((string) $value);
+            },
+            (array) $value
+        );
+
+        return array_values(
+            array_filter(
+                $value,
+                static function ($value) {
+                    return '' !== $value;
+                }
+            )
         );
     }
 }
