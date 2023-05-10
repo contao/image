@@ -67,6 +67,7 @@ class ResizeConfigurationTest extends TestCase
 
         $this->expectException(InvalidArgumentException::class);
 
+        /** @phpstan-ignore-next-line */
         $config->setWidth(-1);
     }
 
@@ -80,6 +81,7 @@ class ResizeConfigurationTest extends TestCase
 
         $this->expectException(InvalidArgumentException::class);
 
+        /** @phpstan-ignore-next-line */
         $config->setHeight(-1);
     }
 
@@ -93,6 +95,7 @@ class ResizeConfigurationTest extends TestCase
 
         $this->expectException(InvalidArgumentException::class);
 
+        /** @phpstan-ignore-next-line */
         $config->setMode('invalid');
     }
 
@@ -106,6 +109,7 @@ class ResizeConfigurationTest extends TestCase
 
         $this->expectException(InvalidArgumentException::class);
 
+        /** @phpstan-ignore-next-line */
         $config->setZoomLevel(-1);
     }
 
@@ -115,6 +119,7 @@ class ResizeConfigurationTest extends TestCase
 
         $this->expectException(InvalidArgumentException::class);
 
+        /** @phpstan-ignore-next-line */
         $config->setZoomLevel(101);
     }
 }

@@ -28,6 +28,9 @@ class DeferredResizer extends Resizer implements DeferredResizerInterface
      */
     private readonly DeferredImageStorageInterface $storage;
 
+    /**
+     * @param non-empty-string $secret
+     */
     public function __construct(string $cacheDir, string $secret, ResizeCalculator $calculator = null, Filesystem $filesystem = null, DeferredImageStorageInterface $storage = null, MetadataReaderWriter $metadataReaderWriter = null)
     {
         if (null === $storage) {

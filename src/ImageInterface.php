@@ -16,14 +16,8 @@ use Imagine\Image\ImagineInterface;
 
 interface ImageInterface
 {
-    /**
-     * Returns the imagine instance.
-     */
     public function getImagine(): ImagineInterface;
 
-    /**
-     * Returns the path.
-     */
     public function getPath(): string;
 
     /**
@@ -32,18 +26,9 @@ interface ImageInterface
      */
     public function getUrl(string $rootDir, string $prefix = ''): string;
 
-    /**
-     * Returns the dimensions.
-     */
     public function getDimensions(): ImageDimensions;
 
-    /**
-     * Returns the important part.
-     */
     public function getImportantPart(): ImportantPart;
 
-    /**
-     * Sets the important part.
-     */
-    public function setImportantPart(ImportantPart $importantPart = null): self;
+    public function setImportantPart(ImportantPart $importantPart = null): static;
 }

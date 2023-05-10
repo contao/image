@@ -38,13 +38,11 @@ class DeferredImageStorageFilesystem implements DeferredImageStorageInterface
 
     public function set(string $path, array $value): void
     {
-        $json = json_encode($value);
-
-        if (JSON_ERROR_NONE !== json_last_error()) {
-            throw new JsonException(json_last_error_msg());
+        try {
+            $this->filesystem->dumpFile($this->getConfigPath($path), json_encode($value, JSON_THROW_ON_ERROR));
+        } catch (\JsonException $e) {
+            throw new JsonException($e->getMessage(), $e->getCode(), $e);
         }
-
-        $this->filesystem->dumpFile($this->getConfigPath($path), $json);
     }
 
     public function get(string $path): array
@@ -161,14 +159,14 @@ class DeferredImageStorageFilesystem implements DeferredImageStorageInterface
      */
     private function decode(string $contents): array
     {
-        $content = json_decode($contents, true);
-
-        if (JSON_ERROR_NONE !== json_last_error()) {
-            throw new JsonException(json_last_error_msg());
+        try {
+            $content = json_decode($contents, true, 512, JSON_THROW_ON_ERROR);
+        } catch (\JsonException $e) {
+            throw new JsonException($e->getMessage(), $e->getCode(), $e);
         }
 
         if (!\is_array($content)) {
-            throw new InvalidArgumentException(sprintf('Invalid JSON data: expected array, got "%s"', \gettype($content)));
+            throw new InvalidArgumentException(sprintf('Invalid JSON data: expected array, got "%s"', get_debug_type($content)));
         }
 
         return $content;

@@ -126,17 +126,17 @@ class ResizerTest extends TestCase
 
             $this->assertExpectedArrayRecursive(
                 ['xmp' => $xmpExpected, 'exif' => $exifExpected],
-                (new MetadataReaderWriter())->parse($resized->getSources()[0]['src']->getPath())->getAll()
+                (new MetadataReaderWriter())->parse($resized->getRawSources()[0]['srcset'][0][0]->getPath())->getAll()
             );
 
             $this->assertExpectedArrayRecursive(
                 ['xmp' => $xmpExpected, 'gif' => $gifExpected],
-                (new MetadataReaderWriter())->parse($resized->getSources()[1]['src']->getPath())->getAll()
+                (new MetadataReaderWriter())->parse($resized->getRawSources()[1]['srcset'][0][0]->getPath())->getAll()
             );
 
             $this->assertExpectedArrayRecursive(
                 ['xmp' => $xmpExpected, 'exif' => $exifExpected, 'iptc' => $iptcSource],
-                (new MetadataReaderWriter())->parse($resized->getImg()['src']->getPath())->getAll()
+                (new MetadataReaderWriter())->parse($resized->getRawImg()['src']->getPath())->getAll()
             );
 
             (new Filesystem())->remove($path);
@@ -151,7 +151,7 @@ class ResizerTest extends TestCase
     /**
      * @dataProvider getMetadata
      */
-    public function testMetadataRoundtrip($imageFormat, ImageMetadata $metadata, array $expected): void
+    public function testMetadataRoundtrip(string $imageFormat, ImageMetadata $metadata, array $expected): void
     {
         $supportedFormat = false;
 

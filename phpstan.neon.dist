@@ -10,7 +10,8 @@ rules:
     - TheCodingMachine\PHPStan\Rules\Exceptions\ThrowMustBundlePreviousExceptionRule
 
 parameters:
-    level: 5
+    level: 6
+    treatPhpDocTypesAsCertain: false
 
     paths:
         - %currentWorkingDirectory%/src
@@ -21,5 +22,6 @@ parameters:
             message: '#class Imagine\\Image\\(Box|Point) constructor expects int, float given#'
             path: %currentWorkingDirectory%/tests/ResizeCoordinatesTest.php
         -
-            message: '#ResizeCoordinates::isEqualTo\(\) expects .*, stdClass given#'
-            path: %currentWorkingDirectory%/tests/ResizeCoordinatesTest.php
+            message: '#Access to an undefined property XMLReader::#'
+        -
+            message: '#no value type specified#'

@@ -111,7 +111,7 @@ class JpegContainer extends AbstractContainer
         return array_merge(...$metadata);
     }
 
-    private function buildMarkerSegment($marker, $content): string
+    private function buildMarkerSegment(string $marker, string $content): string
     {
         $size = pack('n', \strlen((string) $content) + 2);
 

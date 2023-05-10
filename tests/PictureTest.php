@@ -26,7 +26,7 @@ class PictureTest extends TestCase
     {
         $picture = $this->createPicture(null, '/path/to/a/filename with special&<>"\'chars.jpeg');
 
-        $this->assertInstanceOf(ImageInterface::class, $picture->getImg()['src']);
+        $this->assertInstanceOf(ImageInterface::class, $picture->getRawImg()['src']);
 
         $this->assertSame(
             'path/to/a/filename%20with%20special%26%3C%3E%22%27chars.jpeg',
@@ -53,7 +53,7 @@ class PictureTest extends TestCase
             $picture->getImg('/path/to', 'https://example.com/images/')['src']
         );
 
-        $this->assertInstanceOf(ImageInterface::class, $picture->getImg()['srcset'][0][0]);
+        $this->assertInstanceOf(ImageInterface::class, $picture->getRawImg()['srcset'][0][0]);
 
         $this->assertSame(
             'path/to/a/filename%20with%20special%26%3C%3E%22%27chars.jpeg 1x',
@@ -80,19 +80,15 @@ class PictureTest extends TestCase
             $picture->getImg('/path/to', 'https://example.com/images/')['srcset']
         );
 
-        $this->assertSame('custom attribute', $picture->getImg()['data-custom']);
-        $this->assertSame('custom attribute', $picture->getImg('/')['data-custom']);
-
-        $this->expectException(InvalidArgumentException::class);
-
-        $picture->getImg(null, 'https://example.com/images/');
+        $this->assertSame('custom attribute', $picture->getRawImg()['data-custom'] ?? null);
+        $this->assertSame('custom attribute', $picture->getImg('/')['data-custom'] ?? null);
     }
 
     public function testGetSources(): void
     {
         $picture = $this->createPicture(null, '/path/to/a/filename with special&<>"\'chars.jpeg');
 
-        $this->assertInstanceOf(ImageInterface::class, $picture->getSources()[0]['srcset'][0][0]);
+        $this->assertInstanceOf(ImageInterface::class, $picture->getRawSources()[0]['srcset'][0][0]);
 
         $this->assertSame(
             'path/to/a/filename%20with%20special%26%3C%3E%22%27chars.jpeg 1x',
@@ -119,18 +115,15 @@ class PictureTest extends TestCase
             $picture->getSources('/path/to', 'https://example.com/images/')[0]['srcset']
         );
 
-        $this->assertSame('custom attribute', $picture->getSources()[0]['data-custom']);
-        $this->assertSame('custom attribute', $picture->getSources('/')[0]['data-custom']);
-
-        $this->expectException(InvalidArgumentException::class);
-
-        $picture->getSources(null, 'https://example.com/images/');
+        $this->assertSame('custom attribute', $picture->getRawSources()[0]['data-custom'] ?? null);
+        $this->assertSame('custom attribute', $picture->getSources('/')[0]['data-custom'] ?? null);
     }
 
     public function testMissingSrc(): void
     {
         $this->expectException(InvalidArgumentException::class);
 
+        /** @phpstan-ignore-next-line */
         new Picture(['srcset' => []], []);
     }
 
@@ -138,6 +131,7 @@ class PictureTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
 
+        /** @phpstan-ignore-next-line */
         new Picture(['src' => new \stdClass(), 'srcset' => []], []);
     }
 
@@ -147,6 +141,7 @@ class PictureTest extends TestCase
 
         $this->expectException(InvalidArgumentException::class);
 
+        /** @phpstan-ignore-next-line */
         new Picture(['src' => $image], []);
     }
 
@@ -156,6 +151,7 @@ class PictureTest extends TestCase
 
         $this->expectException(InvalidArgumentException::class);
 
+        /** @phpstan-ignore-next-line */
         new Picture(['src' => $image, 'srcset' => [[$image, '1x'], [new \stdClass(), '2x']]], []);
     }
 

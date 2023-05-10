@@ -71,6 +71,7 @@ class ResizeCoordinatesTest extends TestCase
 
         $this->expectException(\TypeError::class);
 
+        /** @phpstan-ignore-next-line */
         $coordinates->isEqualTo(new \stdClass());
     }
 }

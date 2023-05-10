@@ -157,7 +157,7 @@ class DeferredImageStorageFilesystemTest extends TestCase
     /**
      * @dataProvider invalidKeys
      */
-    public function testSetInvalidKeyThrows($key): void
+    public function testSetInvalidKeyThrows(string $key): void
     {
         $storage = new DeferredImageStorageFilesystem($this->rootDir);
 

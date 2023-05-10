@@ -43,7 +43,7 @@ class ResizeOptions
         return $this->imagineOptions;
     }
 
-    public function setImagineOptions(array $imagineOptions): self
+    public function setImagineOptions(array $imagineOptions): static
     {
         $this->imagineOptions = $imagineOptions;
 
@@ -55,7 +55,7 @@ class ResizeOptions
         return $this->targetPath;
     }
 
-    public function setTargetPath(string|null $targetPath): self
+    public function setTargetPath(string|null $targetPath): static
     {
         if (null !== $targetPath && !(new Filesystem())->isAbsolutePath($targetPath)) {
             throw new InvalidArgumentException('"'.$targetPath.'" is not an absolute target path');
@@ -71,7 +71,7 @@ class ResizeOptions
         return $this->bypassCache;
     }
 
-    public function setBypassCache(bool $bypassCache): self
+    public function setBypassCache(bool $bypassCache): static
     {
         $this->bypassCache = $bypassCache;
 
@@ -83,7 +83,7 @@ class ResizeOptions
         return $this->skipIfDimensionsMatch;
     }
 
-    public function setSkipIfDimensionsMatch(bool $skipIfDimensionsMatch): self
+    public function setSkipIfDimensionsMatch(bool $skipIfDimensionsMatch): static
     {
         $this->skipIfDimensionsMatch = $skipIfDimensionsMatch;
 
@@ -95,7 +95,7 @@ class ResizeOptions
         return $this->preserveCopyrightMetadata;
     }
 
-    public function setPreserveCopyrightMetadata(array $preserveCopyrightMetadata): self
+    public function setPreserveCopyrightMetadata(array $preserveCopyrightMetadata): static
     {
         $this->preserveCopyrightMetadata = $preserveCopyrightMetadata;
 

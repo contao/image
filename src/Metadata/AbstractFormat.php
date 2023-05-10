@@ -86,7 +86,7 @@ abstract class AbstractFormat implements MetadataFormatInterface
     /**
      * @return list<string>
      */
-    protected function ensureStringList($value): array
+    protected function ensureStringList(mixed $value): array
     {
         $value = array_map(
             function ($value) {

@@ -42,6 +42,9 @@ abstract class IsobmffContainer extends AbstractContainer
         }
     }
 
+    /**
+     * @param resource $stream
+     */
     private function parseBoxList($stream, int $length, string $path = ''): void
     {
         while ($length > 0 && false !== $head = fread($stream, 8)) {
@@ -208,6 +211,9 @@ abstract class IsobmffContainer extends AbstractContainer
         $this->items[$itemID]['encoding'] = $contentEncoding;
     }
 
+    /**
+     * @param resource $stream
+     */
     private function parseItems($stream): void
     {
         foreach ($this->items as $item) {

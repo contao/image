@@ -27,7 +27,7 @@ class PictureConfigurationItem
         return $this->resizeConfig ??= new ResizeConfiguration();
     }
 
-    public function setResizeConfig(ResizeConfiguration $resizeConfig): self
+    public function setResizeConfig(ResizeConfiguration $resizeConfig): static
     {
         $this->resizeConfig = $resizeConfig;
 
@@ -39,7 +39,7 @@ class PictureConfigurationItem
         return $this->sizes;
     }
 
-    public function setSizes(string $sizes): self
+    public function setSizes(string $sizes): static
     {
         $this->sizes = $sizes;
 
@@ -51,7 +51,7 @@ class PictureConfigurationItem
         return $this->densities;
     }
 
-    public function setDensities(string $densities): self
+    public function setDensities(string $densities): static
     {
         $this->densities = $densities;
 
@@ -63,7 +63,7 @@ class PictureConfigurationItem
         return $this->media;
     }
 
-    public function setMedia(string $media): self
+    public function setMedia(string $media): static
     {
         $this->media = $media;
 

@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Contao\Image;
 
 use Contao\Image\Exception\InvalidArgumentException;
+use Contao\Image\Exception\JsonException;
 use Contao\Image\Metadata\ImageMetadata;
 use Contao\Image\Metadata\MetadataReaderWriter;
 use Imagine\Exception\InvalidArgumentException as ImagineInvalidArgumentException;
@@ -38,8 +39,14 @@ class Resizer implements ResizerInterface
 
     private readonly MetadataReaderWriter $metadataReaderWriter;
 
+    /**
+     * @var non-empty-string
+     */
     private readonly string $secret;
 
+    /**
+     * @param non-empty-string $secret
+     */
     public function __construct(string $cacheDir, string $secret, ResizeCalculator $calculator = null, Filesystem $filesystem = null, MetadataReaderWriter $metadataReaderWriter = null)
     {
         if (null === $calculator) {
@@ -232,9 +239,13 @@ class Resizer implements ResizerInterface
 
         $preserveMeta = $options->getPreserveCopyrightMetadata();
 
-        if ($preserveMeta !== (new ResizeOptions())->getPreserveCopyrightMetadata()) {
-            ksort($preserveMeta, SORT_STRING);
-            $hashData[] = json_encode($preserveMeta, JSON_THROW_ON_ERROR);
+        try {
+            if ($preserveMeta !== (new ResizeOptions())->getPreserveCopyrightMetadata()) {
+                ksort($preserveMeta, SORT_STRING);
+                $hashData[] = json_encode($preserveMeta, JSON_THROW_ON_ERROR);
+            }
+        } catch (\JsonException $e) {
+            throw new JsonException($e->getMessage(), $e->getCode(), $e);
         }
 
         $hash = hash_hmac('sha256', implode('|', $hashData), $this->secret, true);

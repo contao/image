@@ -125,7 +125,7 @@ class Image implements ImageInterface
         return $this->importantPart ?? new ImportantPart();
     }
 
-    public function setImportantPart(ImportantPart $importantPart = null): ImageInterface
+    public function setImportantPart(ImportantPart $importantPart = null): static
     {
         $this->importantPart = $importantPart;
 
@@ -135,7 +135,7 @@ class Image implements ImageInterface
     /**
      * Corrects invalid EXIF orientation values.
      */
-    private function fixOrientation($orientation): int
+    private function fixOrientation(int|string|null $orientation): int
     {
         $orientation = (int) $orientation;
 
