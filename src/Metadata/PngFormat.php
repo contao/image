@@ -14,8 +14,8 @@ namespace Contao\Image\Metadata;
 
 class PngFormat extends AbstractFormat
 {
-    public const NAME = 'png';
-    public const DEFAULT_PRESERVE_KEYS = ['Copyright', 'Author', 'Source', 'Disclaimer'];
+    final public const NAME = 'png';
+    final public const DEFAULT_PRESERVE_KEYS = ['Copyright', 'Author', 'Source', 'Disclaimer'];
 
     public function serialize(ImageMetadata $metadata, array $preserveKeys): string
     {

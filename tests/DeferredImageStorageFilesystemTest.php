@@ -22,14 +22,8 @@ use Symfony\Component\Filesystem\Path;
 
 class DeferredImageStorageFilesystemTest extends TestCase
 {
-    /**
-     * @var string
-     */
-    private $rootDir;
+    private string $rootDir;
 
-    /**
-     * {@inheritdoc}
-     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -37,9 +31,6 @@ class DeferredImageStorageFilesystemTest extends TestCase
         $this->rootDir = Path::canonicalize(__DIR__.'/tmp');
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function tearDown(): void
     {
         parent::tearDown();

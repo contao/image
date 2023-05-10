@@ -16,9 +16,9 @@ use Contao\Image\Exception\InvalidImageMetadataException;
 
 class XmpFormat extends AbstractFormat
 {
-    public const NAME = 'xmp';
+    final public const NAME = 'xmp';
 
-    public const DEFAULT_PRESERVE_KEYS = [
+    final public const DEFAULT_PRESERVE_KEYS = [
         'http://purl.org/dc/elements/1.1/' => ['rights', 'creator'],
         'http://ns.adobe.com/photoshop/1.0/' => ['Source', 'Credit'],
     ];
@@ -273,10 +273,7 @@ class XmpFormat extends AbstractFormat
         return "<?xpacket begin=\"\u{FEFF}\" id=\"W5M0MpCehiHzreSzNTczkc9d\"?>$xmp<?xpacket end=\"w\"?>";
     }
 
-    /**
-     * @param string|\DOMElement $value
-     */
-    private function parseValue(string $namespace, string $attr, $value): array
+    private function parseValue(string $namespace, string $attr, \DOMElement|string $value): array
     {
         $values = [];
 

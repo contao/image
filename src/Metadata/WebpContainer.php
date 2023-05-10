@@ -96,7 +96,7 @@ class WebpContainer extends AbstractContainer
 
     private function buildChunk($type, $content): string
     {
-        $size = \strlen($content);
+        $size = \strlen((string) $content);
 
         // RIFF chunks are padded to an even number
         if ($size % 2) {

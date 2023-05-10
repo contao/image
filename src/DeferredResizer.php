@@ -24,11 +24,9 @@ use Symfony\Component\Filesystem\Path;
 class DeferredResizer extends Resizer implements DeferredResizerInterface
 {
     /**
-     * @var DeferredImageStorageInterface
-     *
      * @internal
      */
-    private $storage;
+    private readonly DeferredImageStorageInterface $storage;
 
     public function __construct(string $cacheDir, string $secret, ResizeCalculator $calculator = null, Filesystem $filesystem = null, DeferredImageStorageInterface $storage = null, MetadataReaderWriter $metadataReaderWriter = null)
     {
@@ -41,10 +39,7 @@ class DeferredResizer extends Resizer implements DeferredResizerInterface
         $this->storage = $storage;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getDeferredImage(string $targetPath, ImagineInterface $imagine): ?DeferredImageInterface
+    public function getDeferredImage(string $targetPath, ImagineInterface $imagine): DeferredImageInterface|null
     {
         if (Path::isAbsolute($targetPath)) {
             if (!Path::isBasePath($this->cacheDir, $targetPath)) {
@@ -72,10 +67,7 @@ class DeferredResizer extends Resizer implements DeferredResizerInterface
         );
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function resizeDeferredImage(DeferredImageInterface $image, bool $blocking = true): ?ImageInterface
+    public function resizeDeferredImage(DeferredImageInterface $image, bool $blocking = true): ImageInterface|null
     {
         if (!Path::isBasePath($this->cacheDir, $image->getPath())) {
             throw new InvalidArgumentException(sprintf('Path "%s" is not inside cache directory "%s"', $image->getPath(), $this->cacheDir));
@@ -114,9 +106,6 @@ class DeferredResizer extends Resizer implements DeferredResizerInterface
         return $resizedImage;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function processResize(ImageInterface $image, ResizeConfiguration $config, ResizeOptions $options): ImageInterface
     {
         // Resize the source image if it is deferred
@@ -127,9 +116,6 @@ class DeferredResizer extends Resizer implements DeferredResizerInterface
         return parent::processResize($image, $config, $options);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function executeResize(ImageInterface $image, ResizeCoordinates $coordinates, string $path, ResizeOptions $options): ImageInterface
     {
         if (null !== $options->getTargetPath() || $options->getBypassCache()) {

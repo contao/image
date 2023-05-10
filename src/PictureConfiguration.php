@@ -16,22 +16,19 @@ use Contao\Image\Exception\InvalidArgumentException;
 
 class PictureConfiguration
 {
-    public const FORMAT_DEFAULT = '.default';
+    final public const FORMAT_DEFAULT = '.default';
 
-    /**
-     * @var PictureConfigurationItem
-     */
-    private $size;
+    private PictureConfigurationItem|null $size = null;
 
     /**
      * @var array<PictureConfigurationItem>
      */
-    private $sizeItems = [];
+    private array $sizeItems = [];
 
     /**
      * @var array<array>
      */
-    private $formats = [];
+    private array $formats = [];
 
     public function getSize(): PictureConfigurationItem
     {

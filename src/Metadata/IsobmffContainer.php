@@ -16,20 +16,11 @@ use Contao\Image\Exception\InvalidImageContainerException;
 
 abstract class IsobmffContainer extends AbstractContainer
 {
-    /**
-     * @var array
-     */
-    private $metadata = [];
+    private array $metadata = [];
 
-    /**
-     * @var array
-     */
-    private $items = [];
+    private array $items = [];
 
-    /**
-     * @var string
-     */
-    private $idat = '';
+    private string $idat = '';
 
     public function apply($inputStream, $outputStream, ImageMetadata $metadata, array $preserveKeysByFormat): void
     {

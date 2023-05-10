@@ -14,8 +14,8 @@ namespace Contao\Image\Metadata;
 
 class GifFormat extends AbstractFormat
 {
-    public const NAME = 'gif';
-    public const DEFAULT_PRESERVE_KEYS = ['Comment'];
+    final public const NAME = 'gif';
+    final public const DEFAULT_PRESERVE_KEYS = ['Comment'];
 
     public function serialize(ImageMetadata $metadata, array $preserveKeys): string
     {
@@ -68,12 +68,12 @@ class GifFormat extends AbstractFormat
 
                 $gifChunks .= "\x21\xFE";
 
-                while (\strlen($item) > 255) {
-                    $gifChunks .= "\xFF".substr($item, 0, 255);
-                    $item = substr($item, 255);
+                while (\strlen((string) $item) > 255) {
+                    $gifChunks .= "\xFF".substr((string) $item, 0, 255);
+                    $item = substr((string) $item, 255);
                 }
 
-                $gifChunks .= \chr(\strlen($item)).$item."\x00";
+                $gifChunks .= \chr(\strlen((string) $item)).$item."\x00";
             }
         }
 

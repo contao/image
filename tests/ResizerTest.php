@@ -40,14 +40,8 @@ use Symfony\Component\Filesystem\Path;
 
 class ResizerTest extends TestCase
 {
-    /**
-     * @var string
-     */
-    private $rootDir;
+    private string $rootDir;
 
-    /**
-     * {@inheritdoc}
-     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -57,9 +51,6 @@ class ResizerTest extends TestCase
         (new Filesystem())->mkdir($this->rootDir);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function tearDown(): void
     {
         parent::tearDown();

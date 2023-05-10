@@ -14,33 +14,17 @@ namespace Contao\Image;
 
 class PictureConfigurationItem
 {
-    /**
-     * @var ResizeConfiguration
-     */
-    private $resizeConfig;
+    private ResizeConfiguration|null $resizeConfig = null;
 
-    /**
-     * @var string
-     */
-    private $sizes = '';
+    private string $sizes = '';
 
-    /**
-     * @var string
-     */
-    private $densities = '';
+    private string $densities = '';
 
-    /**
-     * @var string
-     */
-    private $media = '';
+    private string $media = '';
 
     public function getResizeConfig(): ResizeConfiguration
     {
-        if (null === $this->resizeConfig) {
-            $this->setResizeConfig(new ResizeConfiguration());
-        }
-
-        return $this->resizeConfig;
+        return $this->resizeConfig ??= new ResizeConfiguration();
     }
 
     public function setResizeConfig(ResizeConfiguration $resizeConfig): self

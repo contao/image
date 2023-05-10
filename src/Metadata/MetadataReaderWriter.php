@@ -24,12 +24,12 @@ class MetadataReaderWriter
     /**
      * @var list<ImageContainerInterface>
      */
-    private $containers;
+    private array $containers;
 
     /**
      * @var array<string,MetadataFormatInterface>
      */
-    private $formats;
+    private array|null $formats = null;
 
     /**
      * @param iterable<MetadataFormatInterface> $formats
@@ -156,7 +156,7 @@ class MetadataReaderWriter
     /**
      * @param resource $stream
      */
-    private function findContainer($stream): ?ImageContainerInterface
+    private function findContainer($stream): ImageContainerInterface|null
     {
         foreach ($this->containers as $container) {
             $magicBytes = $container->getMagicBytes();

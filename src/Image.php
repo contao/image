@@ -26,30 +26,21 @@ use Symfony\Component\Filesystem\Path;
 class Image implements ImageInterface
 {
     /**
-     * @var string
-     *
      * @internal
      */
-    protected $path;
+    protected string $path;
 
     /**
-     * @var ImageDimensions
-     *
      * @internal
      */
-    protected $dimensions;
+    protected ImageDimensions|null $dimensions = null;
 
     /**
-     * @var ImagineInterface
-     *
      * @internal
      */
-    protected $imagine;
+    protected ImagineInterface $imagine;
 
-    /**
-     * @var ImportantPart|null
-     */
-    private $importantPart;
+    private ImportantPart|null $importantPart = null;
 
     public function __construct(string $path, ImagineInterface $imagine, Filesystem $filesystem = null)
     {
@@ -69,25 +60,16 @@ class Image implements ImageInterface
         $this->imagine = $imagine;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getImagine(): ImagineInterface
     {
         return $this->imagine;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getPath(): string
     {
         return $this->path;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getUrl(string $rootDir, string $prefix = ''): string
     {
         if (!Path::isBasePath($rootDir, $this->path)) {
@@ -100,9 +82,6 @@ class Image implements ImageInterface
         return $prefix.$url;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getDimensions(): ImageDimensions
     {
         if (null === $this->dimensions) {
@@ -141,17 +120,11 @@ class Image implements ImageInterface
         return $this->dimensions;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getImportantPart(): ImportantPart
     {
         return $this->importantPart ?? new ImportantPart();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setImportantPart(ImportantPart $importantPart = null): ImageInterface
     {
         $this->importantPart = $importantPart;
@@ -202,7 +175,7 @@ class Image implements ImageInterface
      * This is faster than reading and parsing the whole SVG file just to get
      * the size of it, especially for large files.
      */
-    private function getSvgSize(): ?BoxInterface
+    private function getSvgSize(): BoxInterface|null
     {
         if (!class_exists(SvgImage::class) || !class_exists(\XMLReader::class) || !class_exists(\DOMDocument::class)) {
             return null;
@@ -260,7 +233,7 @@ class Image implements ImageInterface
     /**
      * Extracts the SVG image size from the given XMLReader object.
      */
-    private function getSvgSizeFromReader(\XMLReader $reader): ?BoxInterface
+    private function getSvgSizeFromReader(\XMLReader $reader): BoxInterface|null
     {
         // Move the pointer to the first element in the document
         while ($reader->read() && \XMLReader::ELEMENT !== $reader->nodeType);

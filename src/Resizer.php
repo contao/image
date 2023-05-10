@@ -24,33 +24,20 @@ use Symfony\Component\Filesystem\Path;
 class Resizer implements ResizerInterface
 {
     /**
-     * @var Filesystem
-     *
      * @internal
      */
-    protected $filesystem;
+    protected Filesystem $filesystem;
 
     /**
-     * @var string
-     *
      * @internal
      */
-    protected $cacheDir;
+    protected string $cacheDir;
 
-    /**
-     * @var ResizeCalculator
-     */
-    private $calculator;
+    private readonly ResizeCalculator $calculator;
 
-    /**
-     * @var MetadataReaderWriter
-     */
-    private $metadataReaderWriter;
+    private readonly MetadataReaderWriter $metadataReaderWriter;
 
-    /**
-     * @var string|null
-     */
-    private $secret;
+    private readonly string $secret;
 
     public function __construct(string $cacheDir, string $secret, ResizeCalculator $calculator = null, Filesystem $filesystem = null, MetadataReaderWriter $metadataReaderWriter = null)
     {
@@ -77,9 +64,6 @@ class Resizer implements ResizerInterface
         $this->secret = $secret;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function resize(ImageInterface $image, ResizeConfiguration $config, ResizeOptions $options): ImageInterface
     {
         if (
@@ -129,7 +113,7 @@ class Resizer implements ResizerInterface
         if (isset($imagineOptions['interlace'])) {
             try {
                 $imagineImage->interlace($imagineOptions['interlace']);
-            } catch (ImagineInvalidArgumentException|ImagineRuntimeException $e) {
+            } catch (ImagineInvalidArgumentException|ImagineRuntimeException) {
                 // Ignore failed interlacing
             }
         }
@@ -152,7 +136,7 @@ class Resizer implements ResizerInterface
 
             try {
                 $this->metadataReaderWriter->applyCopyrightToFile($tmpPath1, $tmpPath2, $metadata, $options->getPreserveCopyrightMetadata());
-            } catch (\Throwable $exception) {
+            } catch (\Throwable) {
                 $this->filesystem->rename($tmpPath1, $tmpPath2, true);
             }
         } else {
@@ -234,26 +218,22 @@ class Resizer implements ResizerInterface
         $imagineOptions = $options->getImagineOptions();
         ksort($imagineOptions);
 
-        $hashData = array_merge(
-            [
-                Path::makeRelative($path, $this->cacheDir),
-                filemtime($path),
-                $coordinates->getHash(),
-            ],
-            array_keys($imagineOptions),
-            array_map(
-                static function ($value) {
-                    return \is_array($value) ? implode(',', $value) : $value;
-                },
+        $hashData = [
+            Path::makeRelative($path, $this->cacheDir),
+            filemtime($path),
+            $coordinates->getHash(),
+            ...array_keys($imagineOptions),
+            ...array_map(
+                static fn ($value) => \is_array($value) ? implode(',', $value) : $value,
                 array_values($imagineOptions)
-            )
-        );
+            ),
+        ];
 
         $preserveMeta = $options->getPreserveCopyrightMetadata();
 
         if ($preserveMeta !== (new ResizeOptions())->getPreserveCopyrightMetadata()) {
             ksort($preserveMeta, SORT_STRING);
-            $hashData[] = json_encode($preserveMeta);
+            $hashData[] = json_encode($preserveMeta, JSON_THROW_ON_ERROR);
         }
 
         $hash = hash_hmac('sha256', implode('|', $hashData), $this->secret, true);
@@ -268,7 +248,7 @@ class Resizer implements ResizerInterface
     {
         try {
             return $this->metadataReaderWriter->parse($image->getPath());
-        } catch (\Throwable $exception) {
+        } catch (\Throwable) {
             return new ImageMetadata([]);
         }
     }

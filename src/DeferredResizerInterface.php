@@ -19,10 +19,10 @@ interface DeferredResizerInterface extends ResizerInterface
     /**
      * Gets a deferred image object for a not yet resized image.
      */
-    public function getDeferredImage(string $targetPath, ImagineInterface $imagine): ?DeferredImageInterface;
+    public function getDeferredImage(string $targetPath, ImagineInterface $imagine): DeferredImageInterface|null;
 
     /**
      * Resizes a deferred image.
      */
-    public function resizeDeferredImage(DeferredImageInterface $image, bool $blocking = true): ?ImageInterface;
+    public function resizeDeferredImage(DeferredImageInterface $image, bool $blocking = true): ImageInterface|null;
 }

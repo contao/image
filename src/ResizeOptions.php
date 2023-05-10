@@ -22,30 +22,15 @@ use Symfony\Component\Filesystem\Filesystem;
 
 class ResizeOptions
 {
-    /**
-     * @var array
-     */
-    private $imagineOptions = [];
+    private array $imagineOptions = [];
 
-    /**
-     * @var ?string
-     */
-    private $targetPath;
+    private string|null $targetPath = null;
 
-    /**
-     * @var bool
-     */
-    private $bypassCache = false;
+    private bool $bypassCache = false;
 
-    /**
-     * @var bool
-     */
-    private $skipIfDimensionsMatch = false;
+    private bool $skipIfDimensionsMatch = false;
 
-    /**
-     * @var array
-     */
-    private $preserveCopyrightMetadata = [
+    private array $preserveCopyrightMetadata = [
         XmpFormat::NAME => XmpFormat::DEFAULT_PRESERVE_KEYS,
         IptcFormat::NAME => IptcFormat::DEFAULT_PRESERVE_KEYS,
         ExifFormat::NAME => ExifFormat::DEFAULT_PRESERVE_KEYS,
@@ -65,12 +50,12 @@ class ResizeOptions
         return $this;
     }
 
-    public function getTargetPath(): ?string
+    public function getTargetPath(): string|null
     {
         return $this->targetPath;
     }
 
-    public function setTargetPath(?string $targetPath): self
+    public function setTargetPath(string|null $targetPath): self
     {
         if (null !== $targetPath && !(new Filesystem())->isAbsolutePath($targetPath)) {
             throw new InvalidArgumentException('"'.$targetPath.'" is not an absolute target path');

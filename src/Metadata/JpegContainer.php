@@ -113,7 +113,7 @@ class JpegContainer extends AbstractContainer
 
     private function buildMarkerSegment($marker, $content): string
     {
-        $size = pack('n', \strlen($content) + 2);
+        $size = pack('n', \strlen((string) $content) + 2);
 
         return "\xFF$marker$size$content";
     }

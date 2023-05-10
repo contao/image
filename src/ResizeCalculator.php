@@ -19,7 +19,7 @@ use Imagine\Image\Point;
 
 class ResizeCalculator
 {
-    public function calculate(ResizeConfiguration $config, ImageDimensions $dimensions, ImportantPart $importantPart = null): ResizeCoordinates
+    public function calculate(ResizeConfiguration $config, ImageDimensions $dimensions, ImportantPart $importantPart = new ImportantPart()): ResizeCoordinates
     {
         $zoom = max(0, min(1, $config->getZoomLevel() / 100));
         $importantPartArray = $this->importantPartAsArray($dimensions, $importantPart);
@@ -28,18 +28,12 @@ class ResizeCalculator
         if ($config->getWidth() && $config->getHeight()) {
             $widthHeight = [$config->getWidth(), $config->getHeight()];
 
-            switch ($config->getMode()) {
-                case ResizeConfiguration::MODE_CROP:
-                    return $this->calculateCrop($widthHeight, $dimensions, $importantPartArray, $zoom);
-
-                case ResizeConfiguration::MODE_PROPORTIONAL:
-                    return $this->calculateProportional($widthHeight, $dimensions, $importantPartArray, $zoom);
-
-                case ResizeConfiguration::MODE_BOX:
-                    return $this->calculateBox($widthHeight, $dimensions, $importantPartArray, $zoom);
-            }
-
-            throw new InvalidArgumentException(sprintf('Unsupported resize mode "%s"', $config->getMode()));
+            return match ($config->getMode()) {
+                ResizeConfiguration::MODE_CROP => $this->calculateCrop($widthHeight, $dimensions, $importantPartArray, $zoom),
+                ResizeConfiguration::MODE_PROPORTIONAL => $this->calculateProportional($widthHeight, $dimensions, $importantPartArray, $zoom),
+                ResizeConfiguration::MODE_BOX => $this->calculateBox($widthHeight, $dimensions, $importantPartArray, $zoom),
+                default => throw new InvalidArgumentException(sprintf('Unsupported resize mode "%s"', $config->getMode())),
+            };
         }
 
         // If no dimensions are specified, use the zoomed important part
@@ -168,12 +162,8 @@ class ResizeCalculator
      *
      * @return array<string,int>
      */
-    private function importantPartAsArray(ImageDimensions $dimensions, ImportantPart $importantPart = null): array
+    private function importantPartAsArray(ImageDimensions $dimensions, ImportantPart $importantPart): array
     {
-        if (null === $importantPart) {
-            $importantPart = new ImportantPart();
-        }
-
         $imageWidth = $dimensions->getSize()->getWidth();
         $imageHeight = $dimensions->getSize()->getHeight();
 

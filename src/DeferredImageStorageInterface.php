@@ -18,7 +18,7 @@ interface DeferredImageStorageInterface
 
     public function get(string $path): array;
 
-    public function getLocked(string $path, bool $blocking = true): ?array;
+    public function getLocked(string $path, bool $blocking = true): array|null;
 
     public function releaseLock(string $path): void;
 

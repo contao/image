@@ -41,9 +41,9 @@ class ResizeCalculatorTest extends TestCase
         $dimensions = new ImageDimensions(new Box($arguments[2], $arguments[3]), !empty($arguments[5]));
         $importantPart = null;
 
-        if ($arguments[4] && 1 === substr_count($arguments[4], '_')) {
+        if ($arguments[4] && 1 === substr_count((string) $arguments[4], '_')) {
             $importantPart = ['x' => 0, 'y' => 0, 'width' => 1, 'height' => 1];
-            $mode = explode('_', $arguments[4]);
+            $mode = explode('_', (string) $arguments[4]);
 
             if ('left' === $mode[0]) {
                 $importantPart['width'] = 0;
@@ -73,7 +73,7 @@ class ResizeCalculatorTest extends TestCase
             $config->setMode($arguments[4]);
         }
 
-        $this->assertSameCoordinates($expected, $calculator->calculate($config, $dimensions, $importantPart));
+        $this->assertSameCoordinates($expected, $calculator->calculate($config, $dimensions, $importantPart ?? new ImportantPart()));
 
         if (null !== $importantPart) {
             return;

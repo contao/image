@@ -16,32 +16,18 @@ use Contao\Image\Exception\InvalidArgumentException;
 
 class Picture implements PictureInterface
 {
-    /**
-     * @var array
-     */
-    private $img;
-
-    /**
-     * @var array
-     */
-    private $sources;
-
-    public function __construct(array $img, array $sources)
-    {
+    public function __construct(
+        private readonly array $img,
+        private readonly array $sources,
+    ) {
         $this->validateSrcAttribute($img);
         $this->validateSrcsetAttribute($img);
 
         foreach ($sources as $source) {
             $this->validateSrcsetAttribute($source);
         }
-
-        $this->img = $img;
-        $this->sources = $sources;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getImg(string $rootDir = null, string $prefix = ''): array
     {
         if (null === $rootDir) {
@@ -55,9 +41,6 @@ class Picture implements PictureInterface
         return $this->buildUrls($this->img, $rootDir, $prefix);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getSources(string $rootDir = null, string $prefix = ''): array
     {
         if (null === $rootDir) {
@@ -69,9 +52,7 @@ class Picture implements PictureInterface
         }
 
         return array_map(
-            function ($source) use ($rootDir, $prefix) {
-                return $this->buildUrls($source, $rootDir, $prefix);
-            },
+            fn ($source) => $this->buildUrls($source, $rootDir, $prefix),
             $this->sources
         );
     }

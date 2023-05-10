@@ -36,14 +36,8 @@ use Symfony\Component\Filesystem\Path;
 
 class DeferredResizerTest extends TestCase
 {
-    /**
-     * @var string
-     */
-    private $rootDir;
+    private string $rootDir;
 
-    /**
-     * {@inheritdoc}
-     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -51,9 +45,6 @@ class DeferredResizerTest extends TestCase
         $this->rootDir = Path::canonicalize(__DIR__.'/tmp');
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function tearDown(): void
     {
         parent::tearDown();
@@ -69,13 +60,11 @@ class DeferredResizerTest extends TestCase
         $calculator
             ->method('calculate')
             ->willReturnCallback(
-                static function (ResizeConfiguration $config, ImageDimensions $dimensions, ImportantPart $importantPart = null) {
-                    return new ResizeCoordinates(
-                        new Box($config->getWidth(), $config->getHeight()),
-                        new Point(0, 0),
-                        new Box($config->getWidth(), $config->getHeight())
-                    );
-                }
+                static fn (ResizeConfiguration $config, ImageDimensions $dimensions, ImportantPart $importantPart = null) => new ResizeCoordinates(
+                    new Box($config->getWidth(), $config->getHeight()),
+                    new Point(0, 0),
+                    new Box($config->getWidth(), $config->getHeight())
+                )
             )
         ;
 

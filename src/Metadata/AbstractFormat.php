@@ -19,9 +19,7 @@ abstract class AbstractFormat implements MetadataFormatInterface
         $data = $this->prefixIntKeys($data, static::NAME.'_');
 
         return array_map(
-            function ($value) {
-                return $this->ensureStringList($value);
-            },
+            fn ($value) => $this->ensureStringList($value),
             $data
         );
     }
@@ -104,9 +102,7 @@ abstract class AbstractFormat implements MetadataFormatInterface
         return array_values(
             array_filter(
                 $value,
-                static function ($value) {
-                    return '' !== $value;
-                }
+                static fn ($value) => '' !== $value
             )
         );
     }

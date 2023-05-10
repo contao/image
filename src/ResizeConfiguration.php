@@ -16,29 +16,17 @@ use Contao\Image\Exception\InvalidArgumentException;
 
 class ResizeConfiguration
 {
-    public const MODE_CROP = 'crop';
-    public const MODE_BOX = 'box';
-    public const MODE_PROPORTIONAL = 'proportional';
+    final public const MODE_CROP = 'crop';
+    final public const MODE_BOX = 'box';
+    final public const MODE_PROPORTIONAL = 'proportional';
 
-    /**
-     * @var int
-     */
-    private $width = 0;
+    private int $width = 0;
 
-    /**
-     * @var int
-     */
-    private $height = 0;
+    private int $height = 0;
 
-    /**
-     * @var string
-     */
-    private $mode = self::MODE_CROP;
+    private string $mode = self::MODE_CROP;
 
-    /**
-     * @var int
-     */
-    private $zoomLevel = 0;
+    private int $zoomLevel = 0;
 
     /**
      * Returns true if the resize would have no effect.

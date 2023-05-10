@@ -16,34 +16,14 @@ use Contao\ImagineSvg\Imagine as ImagineSvg;
 
 class PictureGenerator implements PictureGeneratorInterface
 {
-    /**
-     * @var ResizerInterface
-     */
-    private $resizer;
+    private ResizeOptions $resizeOptions;
 
-    /**
-     * @var ResizeCalculator
-     */
-    private $calculator;
-
-    /**
-     * @var ResizeOptions
-     */
-    private $resizeOptions;
-
-    public function __construct(ResizerInterface $resizer, ResizeCalculator $calculator = null)
-    {
-        if (null === $calculator) {
-            $calculator = new ResizeCalculator();
-        }
-
-        $this->resizer = $resizer;
-        $this->calculator = $calculator;
+    public function __construct(
+        private readonly ResizerInterface $resizer,
+        private readonly ResizeCalculator $calculator = new ResizeCalculator(),
+    ) {
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function generate(ImageInterface $image, PictureConfiguration $config, ResizeOptions $options): PictureInterface
     {
         $this->resizeOptions = clone $options;
@@ -93,7 +73,7 @@ class PictureGenerator implements PictureGeneratorInterface
             $config->getDensities()
             && ($config->getResizeConfig()->getWidth() || $config->getResizeConfig()->getHeight())
         ) {
-            if (!$sizesAttribute && false !== strpos($config->getDensities(), 'w')) {
+            if (!$sizesAttribute && str_contains($config->getDensities(), 'w')) {
                 $sizesAttribute = '100vw';
             }
 
@@ -221,7 +201,7 @@ class PictureGenerator implements PictureGeneratorInterface
             }
         ));
 
-        if (1 === \count($srcset) && isset($srcset[0][1]) && 'x' === substr($srcset[0][1], -1)) {
+        if (1 === \count($srcset) && isset($srcset[0][1]) && str_ends_with((string) $srcset[0][1], 'x')) {
             unset($srcset[0][1]);
         }
 
@@ -236,9 +216,7 @@ class PictureGenerator implements PictureGeneratorInterface
         $formatsConfig = $config->getFormats();
 
         return array_map(
-            static function ($format) use ($config, $sourceFormat) {
-                return $format === $config::FORMAT_DEFAULT ? $sourceFormat : $format;
-            },
+            static fn ($format) => $format === $config::FORMAT_DEFAULT ? $sourceFormat : $format,
             $formatsConfig[$sourceFormat] ?? $formatsConfig[$config::FORMAT_DEFAULT]
         );
     }
