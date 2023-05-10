@@ -47,8 +47,7 @@ class MetadataReaderWriter
 
         $this->containers = \is_array($containers)
             ? array_values($containers)
-            : iterator_to_array($containers, false)
-        ;
+            : iterator_to_array($containers, false);
 
         $this->containers[] = new JpegContainer($this);
         $this->containers[] = new PngContainer($this);

@@ -196,7 +196,7 @@ abstract class IsobmffContainer extends AbstractContainer
     private function parseInfe(string $content, int $version): void
     {
         $itemID = unpack('n', substr($content, 0, 2))[1];
-        //$itemProtectionIndex = unpack('n', substr($content, 2, 2))[1];
+        // $itemProtectionIndex = unpack('n', substr($content, 2, 2))[1];
         $content = substr($content, 4);
         $itemType = '';
 

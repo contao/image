@@ -264,8 +264,7 @@ class ResizeCalculator
             if ($zoomed['width'] > $part['width']) {
                 $zoomed['x'] = ($origSize->getWidth() - $zoomed['width'])
                     * $part['x']
-                    / ($origSize->getWidth() - $part['width'])
-                ;
+                    / ($origSize->getWidth() - $part['width']);
             } else {
                 $zoomed['x'] = $part['x'] + (($part['width'] - $zoomed['width']) / 2);
             }
@@ -275,8 +274,7 @@ class ResizeCalculator
             if ($zoomed['height'] > $part['height']) {
                 $zoomed['y'] = ($origSize->getHeight() - $zoomed['height'])
                     * $part['y']
-                    / ($origSize->getHeight() - $part['height'])
-                ;
+                    / ($origSize->getHeight() - $part['height']);
             } else {
                 $zoomed['y'] = $part['y'] + (($part['height'] - $zoomed['height']) / 2);
             }
@@ -304,8 +302,7 @@ class ResizeCalculator
             if ($origSize->getHeight() > $part['height']) {
                 $zoomed['y'] -= ($zoomed['height'] - $part['height'])
                     * $part['y']
-                    / ($origSize->getHeight() - $part['height'])
-                ;
+                    / ($origSize->getHeight() - $part['height']);
             }
         } else {
             $zoomed['width'] = $size[0] * $zoomed['height'] / $size[1];
@@ -313,8 +310,7 @@ class ResizeCalculator
             if ($origSize->getWidth() > $part['width']) {
                 $zoomed['x'] -= ($zoomed['width'] - $part['width'])
                     * $part['x']
-                    / ($origSize->getWidth() - $part['width'])
-                ;
+                    / ($origSize->getWidth() - $part['width']);
             }
         }
 

@@ -90,7 +90,6 @@ class ResizeCoordinates
             && $this->cropSize->getWidth() === $coordinates->getCropSize()->getWidth()
             && $this->cropSize->getHeight() === $coordinates->getCropSize()->getHeight()
             && $this->size->getWidth() === $coordinates->getSize()->getWidth()
-            && $this->size->getHeight() === $coordinates->getSize()->getHeight()
-        ;
+            && $this->size->getHeight() === $coordinates->getSize()->getHeight();
     }
 }
