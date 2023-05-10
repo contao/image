@@ -19,7 +19,7 @@ jobs:
             - name: Setup PHP
               uses: shivammathur/setup-php@v2
               with:
-                  php-version: 8.0
+                  php-version: 8.1
                   extensions: exif, dom, fileinfo, filter, gd, hash, intl, json, mbstring, pcre, pdo, zlib
                   tools: prestissimo, flex
                   coverage: pcov
@@ -73,7 +73,7 @@ jobs:
         strategy:
             fail-fast: false
             matrix:
-                php: [7.2, 7.3, 7.4, 8.0, 8.1, 8.2]
+                php: [8.1, 8.2]
         steps:
             - name: Setup PHP
               uses: shivammathur/setup-php@v2
@@ -121,7 +121,7 @@ jobs:
         strategy:
             fail-fast: false
             matrix:
-                php: [7.2, 7.4, 8.0]
+                php: [8.1]
         steps:
             - name: Setup PHP
               uses: shivammathur/setup-php@v2
@@ -136,7 +136,6 @@ jobs:
 
             - name: Install the dependencies
               run: |
-                  if [ "${{ matrix.php }}" = "8" ]; then composer require contao/imagine-svg:1.0.2 --no-update; fi
                   composer update --prefer-lowest --prefer-stable --no-interaction --no-suggest --no-progress
 
             - name: Run the unit tests
@@ -149,7 +148,7 @@ jobs:
         strategy:
             fail-fast: false
             matrix:
-                php: [7.2, 7.3, 7.4, 8.0, 8.1, 8.2]
+                php: [8.1, 8.2]
         steps:
             - name: Setup PHP
               uses: shivammathur/setup-php@v2
