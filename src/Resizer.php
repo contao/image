@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Contao\Image;
 
+use Contao\Image\Exception\InvalidArgumentException;
 use Contao\Image\Metadata\ImageMetadata;
 use Contao\Image\Metadata\MetadataReaderWriter;
 use Imagine\Exception\InvalidArgumentException as ImagineInvalidArgumentException;
@@ -108,7 +109,7 @@ class Resizer implements ResizerInterface
         }
 
         if ('' === $secret) {
-            throw new \InvalidArgumentException('$secret must not be empty');
+            throw new InvalidArgumentException('$secret must not be empty');
         }
 
         $this->cacheDir = $cacheDir;

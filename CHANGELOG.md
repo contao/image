@@ -6,6 +6,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
  * Add EXIF, IPTC, XMP metadata handling for JPEG, PNG, WEBP, GIF, HEIC, JXL, AVIF. [#93], [#95], [#96]
  * Improve file name hashing algorithm. [#90]
+ * Fix wrong exception class being thrown.
 
 ## [1.1.2] (2022-08-16)
 
