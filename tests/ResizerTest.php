@@ -35,14 +35,11 @@ use Imagine\Image\Point;
 use Imagine\Imagick\Imagine as ImagickImagine;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use Symfony\Bridge\PhpUnit\ExpectDeprecationTrait;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Path;
 
 class ResizerTest extends TestCase
 {
-    use ExpectDeprecationTrait;
-
     /**
      * @var string
      */
@@ -351,10 +348,7 @@ class ResizerTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider getWithOrWithoutSecret
-     */
-    public function testResizeIgnoresMetadataReaderWriterErrors(bool $withSecret): void
+    public function testResizeIgnoresMetadataReaderWriterErrors(): void
     {
         $metadataReaderWriter = $this->createMock(MetadataReaderWriter::class);
         $metadataReaderWriter
@@ -368,7 +362,7 @@ class ResizerTest extends TestCase
         $imagine->create(new Box(100, 100))->save($path);
 
         $resized = $this
-            ->createResizer($withSecret, null, null, null, $metadataReaderWriter)
+            ->createResizer(null, null, null, $metadataReaderWriter)
             ->resize(
                 new Image($path, $imagine),
                 (new ResizeConfiguration())
@@ -392,7 +386,7 @@ class ResizerTest extends TestCase
         ;
 
         $resized = $this
-            ->createResizer($withSecret, null, null, null, $metadataReaderWriter)
+            ->createResizer(null, null, null, $metadataReaderWriter)
             ->resize(
                 new Image($path, $imagine),
                 (new ResizeConfiguration())
@@ -404,10 +398,7 @@ class ResizerTest extends TestCase
         $this->assertSame(25, $resized->getDimensions()->getSize()->getWidth());
     }
 
-    /**
-     * @dataProvider getWithOrWithoutSecret
-     */
-    public function testResize(bool $withSecret): void
+    public function testResize(): void
     {
         $calculator = $this->createMock(ResizeCalculator::class);
         $calculator
@@ -415,7 +406,7 @@ class ResizerTest extends TestCase
             ->willReturn(new ResizeCoordinates(new Box(100, 100), new Point(0, 0), new Box(100, 100)))
         ;
 
-        $resizer = $this->createResizer($withSecret, null, $calculator);
+        $resizer = $this->createResizer(null, $calculator);
 
         if (!is_dir($this->rootDir)) {
             (new Filesystem())->mkdir($this->rootDir);
@@ -462,11 +453,7 @@ class ResizerTest extends TestCase
 
                 $this->assertEquals(new ImageDimensions(new Box(100, 100)), $resizedImage->getDimensions());
 
-                if ($withSecret) {
-                    $this->assertMatchesRegularExpression('(/[0-9a-z]/dummy-[0-9a-z]{15}.jpg$)', $resizedImage->getPath());
-                } else {
-                    $this->assertMatchesRegularExpression('(/[0-9a-f]/dummy-[0-9a-f]{8}.jpg$)', $resizedImage->getPath());
-                }
+                $this->assertMatchesRegularExpression('(/[0-9a-z]/dummy-[0-9a-z]{15}.jpg$)', $resizedImage->getPath());
                 $this->assertFilePermissions(0666, $resizedImage->getPath());
 
                 (new Filesystem())->remove($resizedImage->getPath());
@@ -503,10 +490,7 @@ class ResizerTest extends TestCase
         $this->assertFilePermissions(0666, $resizedImage->getPath());
     }
 
-    /**
-     * @dataProvider getWithOrWithoutSecret
-     */
-    public function testResizeSvg(bool $withSecret): void
+    public function testResizeSvg(): void
     {
         $xml = '<?xml version="1.0"?>'
             .'<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="100" height="100"></svg>';
@@ -523,7 +507,7 @@ class ResizerTest extends TestCase
             ->willReturn(new ResizeCoordinates(new Box(100, 100), new Point(0, 0), new Box(100, 100)))
         ;
 
-        $resizer = $this->createResizer($withSecret, null, $calculator);
+        $resizer = $this->createResizer(null, $calculator);
 
         $image = $this->createMock(Image::class);
         $image
@@ -560,11 +544,7 @@ class ResizerTest extends TestCase
         $this->assertFalse($resizedImage->getDimensions()->isUndefined());
         $this->assertFilePermissions(0666, $resizedImage->getPath());
 
-        if ($withSecret) {
-            $this->assertMatchesRegularExpression('(/[0-9a-z]/dummy-[0-9a-z]{15}.svg)', $resizedImage->getPath());
-        } else {
-            $this->assertMatchesRegularExpression('(/[0-9a-f]/dummy-[0-9a-f]{8}.svg$)', $resizedImage->getPath());
-        }
+        $this->assertMatchesRegularExpression('(/[0-9a-z]/dummy-[0-9a-z]{15}.svg)', $resizedImage->getPath());
 
         (new Filesystem())->remove($resizedImage->getPath());
 
@@ -584,10 +564,7 @@ class ResizerTest extends TestCase
         (new Filesystem())->remove($resizedImage->getPath());
     }
 
-    /**
-     * @dataProvider getWithOrWithoutSecret
-     */
-    public function testResizeCache(bool $withSecret): void
+    public function testResizeCache(): void
     {
         $calculator = $this->createMock(ResizeCalculator::class);
         $calculator
@@ -595,7 +572,7 @@ class ResizerTest extends TestCase
             ->willReturn(new ResizeCoordinates(new Box(100, 100), new Point(0, 0), new Box(100, 100)))
         ;
 
-        $resizer = $this->createResizer($withSecret, null, $calculator);
+        $resizer = $this->createResizer(null, $calculator);
 
         if (!is_dir($this->rootDir)) {
             (new Filesystem())->mkdir($this->rootDir);
@@ -628,11 +605,7 @@ class ResizerTest extends TestCase
         $this->assertEquals(new ImageDimensions(new Box(100, 100)), $resizedImage->getDimensions());
         $this->assertFilePermissions(0666, $resizedImage->getPath());
 
-        if ($withSecret) {
-            $this->assertMatchesRegularExpression('(/[0-9a-z]/dummy-[0-9a-z]{15}.jpg$)', $resizedImage->getPath());
-        } else {
-            $this->assertMatchesRegularExpression('(/[0-9a-f]/dummy-[0-9a-f]{8}.jpg$)', $resizedImage->getPath());
-        }
+        $this->assertMatchesRegularExpression('(/[0-9a-z]/dummy-[0-9a-z]{15}.jpg$)', $resizedImage->getPath());
 
         $imagePath = $resizedImage->getPath();
 
@@ -671,7 +644,7 @@ class ResizerTest extends TestCase
         (new Filesystem())->copy(Path::join($this->rootDir, 'dummy.jpg'), Path::join($subDir, 'dummy.jpg'));
         (new Filesystem())->touch(Path::join($subDir, 'dummy.jpg'), filemtime(Path::join($this->rootDir, 'dummy.jpg')));
 
-        $subResizer = $this->createResizer($withSecret, $subDir, $calculator);
+        $subResizer = $this->createResizer($subDir, $calculator);
 
         $subImage = $this->createMock(Image::class);
         $subImage
@@ -745,13 +718,10 @@ class ResizerTest extends TestCase
         $this->assertSame($imagePath, $resizedImage->getPath());
     }
 
-    /**
-     * @dataProvider getWithOrWithoutSecret
-     */
-    public function testResizeEmptyConfig(bool $withSecret): void
+    public function testResizeEmptyConfig(): void
     {
         $imagePath = Path::join($this->rootDir, 'dummy.jpg');
-        $resizer = $this->createResizer($withSecret);
+        $resizer = $this->createResizer();
 
         if (!is_dir($this->rootDir)) {
             (new Filesystem())->mkdir($this->rootDir);
@@ -787,11 +757,7 @@ class ResizerTest extends TestCase
 
         $resizedImage = $resizer->resize($image, $configuration, new ResizeOptions());
 
-        if ($withSecret) {
-            $this->assertMatchesRegularExpression('(/[0-9a-z]/dummy-[0-9a-z]{15}.jpg$)', $resizedImage->getPath());
-        } else {
-            $this->assertMatchesRegularExpression('(/[0-9a-f]/dummy-[0-9a-f]{8}.jpg$)', $resizedImage->getPath());
-        }
+        $this->assertMatchesRegularExpression('(/[0-9a-z]/dummy-[0-9a-z]{15}.jpg$)', $resizedImage->getPath());
 
         $this->assertNotSame($image, $resizedImage);
     }
@@ -840,13 +806,10 @@ class ResizerTest extends TestCase
         $this->assertNotSame($image, $resizedImage);
     }
 
-    /**
-     * @dataProvider getWithOrWithoutSecret
-     */
-    public function testResizeEmptyConfigWithFormat(bool $withSecret): void
+    public function testResizeEmptyConfigWithFormat(): void
     {
         $imagePath = Path::join($this->rootDir, 'dummy.jpg');
-        $resizer = $this->createResizer($withSecret);
+        $resizer = $this->createResizer();
 
         if (!is_dir($this->rootDir)) {
             (new Filesystem())->mkdir($this->rootDir);
@@ -888,11 +851,7 @@ class ResizerTest extends TestCase
                 ->setImagineOptions(['format' => 'png'])
         );
 
-        if ($withSecret) {
-            $this->assertMatchesRegularExpression('(/[0-9a-z]/dummy-[0-9a-z]{15}.png$)', $resizedImage->getPath());
-        } else {
-            $this->assertMatchesRegularExpression('(/[0-9a-f]/dummy-[0-9a-f]{8}.png$)', $resizedImage->getPath());
-        }
+        $this->assertMatchesRegularExpression('(/[0-9a-z]/dummy-[0-9a-z]{15}.png$)', $resizedImage->getPath());
 
         $this->assertNotSame($image, $resizedImage);
     }
@@ -907,7 +866,7 @@ class ResizerTest extends TestCase
             ->willReturn(new ResizeCoordinates(new Box(100, 100), new Point(0, 0), new Box(100, 100)))
         ;
 
-        $resizer = $this->createResizer(true, null, $calculator);
+        $resizer = $this->createResizer(null, $calculator);
 
         if (!is_dir($this->rootDir)) {
             (new Filesystem())->mkdir($this->rootDir);
@@ -956,10 +915,7 @@ class ResizerTest extends TestCase
         $this->assertSame(Path::join($this->rootDir, 'target-path.jpg'), $resizedImage->getPath());
     }
 
-    /**
-     * @dataProvider getWithOrWithoutSecret
-     */
-    public function testResizeSameDimensionsRelative(bool $withSecret): void
+    public function testResizeSameDimensionsRelative(): void
     {
         $xml = '<?xml version="1.0"?>'.
             '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 100 100"></svg>';
@@ -976,7 +932,7 @@ class ResizerTest extends TestCase
             ->willReturn(new ResizeCoordinates(new Box(100, 100), new Point(0, 0), new Box(100, 100)))
         ;
 
-        $resizer = $this->createResizer($withSecret, null, $calculator);
+        $resizer = $this->createResizer(null, $calculator);
 
         $image = $this->createMock(Image::class);
         $image
@@ -1001,22 +957,15 @@ class ResizerTest extends TestCase
         $this->assertSame(100, $resizedImage->getDimensions()->getSize()->getHeight());
         $this->assertFalse($resizedImage->getDimensions()->isRelative());
 
-        if ($withSecret) {
-            $this->assertMatchesRegularExpression('(/[0-9a-z]/dummy-[0-9a-z]{15}.svg$)', $resizedImage->getPath());
-        } else {
-            $this->assertMatchesRegularExpression('(/[0-9a-f]/dummy-[0-9a-f]{8}.svg$)', $resizedImage->getPath());
-        }
+        $this->assertMatchesRegularExpression('(/[0-9a-z]/dummy-[0-9a-z]{15}.svg$)', $resizedImage->getPath());
 
         (new Filesystem())->remove($resizedImage->getPath());
     }
 
-    /**
-     * @dataProvider getWithOrWithoutSecret
-     */
-    public function testResizeEmptyConfigRotatedImage(bool $withSecret): void
+    public function testResizeEmptyConfigRotatedImage(): void
     {
         $imagePath = Path::join($this->rootDir, 'dummy.jpg');
-        $resizer = $this->createResizer($withSecret);
+        $resizer = $this->createResizer();
 
         if (!is_dir($this->rootDir)) {
             (new Filesystem())->mkdir($this->rootDir);
@@ -1052,22 +1001,15 @@ class ResizerTest extends TestCase
 
         $resizedImage = $resizer->resize($image, $configuration, new ResizeOptions());
 
-        if ($withSecret) {
-            $this->assertMatchesRegularExpression('(/[0-9a-z]/dummy-[0-9a-z]{15}.jpg$)', $resizedImage->getPath());
-        } else {
-            $this->assertMatchesRegularExpression('(/[0-9a-f]/dummy-[0-9a-f]{8}.jpg$)', $resizedImage->getPath());
-        }
+        $this->assertMatchesRegularExpression('(/[0-9a-z]/dummy-[0-9a-z]{15}.jpg$)', $resizedImage->getPath());
 
         $this->assertNotSame($image, $resizedImage);
     }
 
-    /**
-     * @dataProvider getWithOrWithoutSecret
-     */
-    public function testResizeEmptyConfigNoSkip(bool $withSecret): void
+    public function testResizeEmptyConfigNoSkip(): void
     {
         $imagePath = Path::join($this->rootDir, 'dummy.jpg');
-        $resizer = $this->createResizer($withSecret);
+        $resizer = $this->createResizer();
 
         if (!is_dir($this->rootDir)) {
             (new Filesystem())->mkdir($this->rootDir);
@@ -1103,19 +1045,9 @@ class ResizerTest extends TestCase
 
         $resizedImage = $resizer->resize($image, $configuration, new ResizeOptions());
 
-        if ($withSecret) {
-            $this->assertMatchesRegularExpression('(/[0-9a-z]/dummy-[0-9a-z]{15}.jpg$)', $resizedImage->getPath());
-        } else {
-            $this->assertMatchesRegularExpression('(/[0-9a-f]/dummy-[0-9a-f]{8}.jpg$)', $resizedImage->getPath());
-        }
+        $this->assertMatchesRegularExpression('(/[0-9a-z]/dummy-[0-9a-z]{15}.jpg$)', $resizedImage->getPath());
 
         $this->assertNotSame($image, $resizedImage);
-    }
-
-    public function getWithOrWithoutSecret(): \Generator
-    {
-        yield [true];
-        yield [false];
     }
 
     /**
@@ -1177,19 +1109,13 @@ class ResizerTest extends TestCase
         }
     }
 
-    private function createResizer(bool $withSecret = true, string $cacheDir = null, ResizeCalculator $calculator = null, Filesystem $filesystem = null, MetadataReaderWriter $metadataReaderWriter = null): Resizer
+    private function createResizer(string $cacheDir = null, ResizeCalculator $calculator = null, Filesystem $filesystem = null, MetadataReaderWriter $metadataReaderWriter = null): Resizer
     {
         if (null === $cacheDir) {
             $cacheDir = $this->rootDir;
         }
 
-        if ($withSecret) {
-            return new Resizer($cacheDir, 'secret', $calculator, $filesystem, $metadataReaderWriter);
-        }
-
-        $this->expectDeprecation('Not passing a secret%s');
-
-        return new Resizer($cacheDir, $calculator, $filesystem, $metadataReaderWriter);
+        return new Resizer($cacheDir, 'secret', $calculator, $filesystem, $metadataReaderWriter);
     }
 
     private function assertFilePermissions(int $expectedPermissions, string $path): void

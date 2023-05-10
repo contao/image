@@ -18,14 +18,6 @@ parameters:
 
     ignoreErrors:
         -
-            # Ignore the forward compatible phpDoc comment
-            message: '#PHPDoc tag @param references unknown parameter:#'
-            path: %currentWorkingDirectory%/src/Resizer.php
-        -
-            # Ignore the forward compatible phpDoc comment
-            message: '#PHPDoc tag @param references unknown parameter:#'
-            path: %currentWorkingDirectory%/src/DeferredResizer.php
-        -
             message: '#class Imagine\\Image\\(Box|Point) constructor expects int, float given#'
             path: %currentWorkingDirectory%/tests/ResizeCoordinatesTest.php
         -

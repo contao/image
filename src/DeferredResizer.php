@@ -21,9 +21,6 @@ use Imagine\Image\Point;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Path;
 
-/**
- * @method __construct(string $cacheDir, string $secret, ResizeCalculator $calculator = null, Filesystem $filesystem = null, DeferredImageStorageInterface $storage = null, MetadataReaderWriter $metadataReaderWriter = null)
- */
 class DeferredResizer extends Resizer implements DeferredResizerInterface
 {
     /**
@@ -33,44 +30,13 @@ class DeferredResizer extends Resizer implements DeferredResizerInterface
      */
     private $storage;
 
-    /**
-     * @param string                             $cacheDir
-     * @param string                             $secret
-     * @param ResizeCalculator|null              $calculator
-     * @param Filesystem|null                    $filesystem
-     * @param DeferredImageStorageInterface|null $storage
-     * @param MetadataReaderWriter|null          $metadataReaderWriter
-     */
-    public function __construct(string $cacheDir/*, string $secret, ResizeCalculator $calculator = null, Filesystem $filesystem = null, DeferredImageStorageInterface $storage = null, MetadataReaderWriter $metadataReaderWriter = null*/)
+    public function __construct(string $cacheDir, string $secret, ResizeCalculator $calculator = null, Filesystem $filesystem = null, DeferredImageStorageInterface $storage = null, MetadataReaderWriter $metadataReaderWriter = null)
     {
-        if (\func_num_args() > 1 && \is_string(func_get_arg(1))) {
-            $secret = func_get_arg(1);
-            $calculator = \func_num_args() > 2 ? func_get_arg(2) : null;
-            $filesystem = \func_num_args() > 3 ? func_get_arg(3) : null;
-            $storage = \func_num_args() > 4 ? func_get_arg(4) : null;
-            $metadataReaderWriter = \func_num_args() > 5 ? func_get_arg(5) : null;
-        } else {
-            trigger_deprecation('contao/image', '1.2', 'Not passing a secret to "%s()" has been deprecated and will no longer work in version 2.0.', __METHOD__);
-            $secret = null;
-            $calculator = \func_num_args() > 1 ? func_get_arg(1) : null;
-            $filesystem = \func_num_args() > 2 ? func_get_arg(2) : null;
-            $storage = \func_num_args() > 3 ? func_get_arg(3) : null;
-            $metadataReaderWriter = \func_num_args() > 4 ? func_get_arg(4) : null;
-        }
-
         if (null === $storage) {
             $storage = new DeferredImageStorageFilesystem($cacheDir);
         }
 
-        if (!$storage instanceof DeferredImageStorageInterface) {
-            throw new \TypeError(sprintf('%s(): Argument #5 ($storage) must be of type DeferredImageStorageInterface|null, %s given', __METHOD__, get_debug_type($storage)));
-        }
-
-        if (null === $secret) {
-            parent::__construct($cacheDir, $calculator, $filesystem, $metadataReaderWriter);
-        } else {
-            parent::__construct($cacheDir, $secret, $calculator, $filesystem, $metadataReaderWriter);
-        }
+        parent::__construct($cacheDir, $secret, $calculator, $filesystem, $metadataReaderWriter);
 
         $this->storage = $storage;
     }
