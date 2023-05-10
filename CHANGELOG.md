@@ -2,6 +2,12 @@
 
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.0] ()
+
+ * Remove method signatures `getImg(null, …)` and `getSources(null, …)`
+   from `PictureInterface` and
+   add new methods `getRawImg()` and `getRawSources()` as a replacement.
+
 ## [Unreleased]
 
  * Add EXIF, IPTC, XMP metadata handling for JPEG, PNG, WEBP, GIF, HEIC, JXL, AVIF. [#93], [#95], [#96]
