@@ -222,42 +222,6 @@ class ResizeCalculatorTest extends TestCase
             ],
         ];
 
-        yield 'Mode proportional landscape' => [
-            [100, 10, 100, 50, 'proportional'],
-            [
-                'width' => 100,
-                'height' => 50,
-                'target_x' => 0,
-                'target_y' => 0,
-                'target_width' => 100,
-                'target_height' => 50,
-            ],
-        ];
-
-        yield 'Mode proportional portrait' => [
-            [10, 100, 50, 100, 'proportional'],
-            [
-                'width' => 50,
-                'height' => 100,
-                'target_x' => 0,
-                'target_y' => 0,
-                'target_width' => 50,
-                'target_height' => 100,
-            ],
-        ];
-
-        yield 'Mode proportional square' => [
-            [100, 50, 100, 100, 'proportional'],
-            [
-                'width' => 100,
-                'height' => 100,
-                'target_x' => 0,
-                'target_y' => 0,
-                'target_width' => 100,
-                'target_height' => 100,
-            ],
-        ];
-
         yield 'Mode box landscape 1' => [
             [100, 100, 100, 50, 'box'],
             [

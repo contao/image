@@ -30,7 +30,6 @@ class ResizeCalculator
 
             return match ($config->getMode()) {
                 ResizeConfiguration::MODE_CROP => $this->calculateCrop($widthHeight, $dimensions, $importantPartArray, $zoom),
-                ResizeConfiguration::MODE_PROPORTIONAL => $this->calculateProportional($widthHeight, $dimensions, $importantPartArray, $zoom),
                 ResizeConfiguration::MODE_BOX => $this->calculateBox($widthHeight, $dimensions, $importantPartArray, $zoom),
                 default => throw new InvalidArgumentException(sprintf('Unsupported resize mode "%s"', $config->getMode())),
             };
@@ -95,24 +94,6 @@ class ResizeCalculator
         $targetHeight = $original->getSize()->getHeight() * $size[1] / $zoomedImportantPart['height'];
 
         return $this->buildCoordinates([$targetWidth, $targetHeight], [$targetX, $targetY], $size, $original);
-    }
-
-    /**
-     * Calculates the resize coordinates for mode proportional.
-     *
-     * @param array<int> $size
-     */
-    private function calculateProportional(array $size, ImageDimensions $original, array $importantPart, float $zoom): ResizeCoordinates
-    {
-        $importantPart = $this->zoomImportantPart($importantPart, $zoom, $original->getSize());
-
-        if ($importantPart['width'] >= $importantPart['height']) {
-            $size[1] = 0;
-        } else {
-            $size[0] = 0;
-        }
-
-        return $this->calculateSingleDimension($size, $original, $importantPart);
     }
 
     /**
