@@ -19,7 +19,7 @@ jobs:
             - name: Setup PHP
               uses: shivammathur/setup-php@v2
               with:
-                  php-version: 8.1
+                  php-version: 8.2
                   extensions: exif, dom, fileinfo, filter, gd, hash, intl, json, mbstring, pcre, pdo, zlib
                   tools: prestissimo, flex
                   coverage: pcov
@@ -47,7 +47,7 @@ jobs:
             - name: Setup PHP
               uses: shivammathur/setup-php@v2
               with:
-                  php-version: 8.1
+                  php-version: 8.2
                   extensions: exif, dom, fileinfo, filter, gd, hash, intl, json, mbstring, pcre, pdo, zlib
                   tools: prestissimo, flex
                   coverage: none

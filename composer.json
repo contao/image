@@ -27,7 +27,7 @@
         "bamarni/composer-bin-plugin": "^1.8",
         "contao/imagine-svg": "^1.0",
         "contao/test-case": "^4.13",
-        "phpunit/phpunit": "^9.5",
+        "phpunit/phpunit": "^9.6.8",
         "symfony/phpunit-bridge": "^5.4"
     },
     "suggest": {
