@@ -18,6 +18,10 @@ class ResizeConfiguration
 {
     public const MODE_CROP = 'crop';
     public const MODE_BOX = 'box';
+
+    /**
+     * @deprecated Deprecated since version 1.2, to be removed in version 2.0.
+     */
     public const MODE_PROPORTIONAL = 'proportional';
 
     /**
@@ -95,6 +99,10 @@ class ResizeConfiguration
     {
         if (!\in_array($mode, [self::MODE_CROP, self::MODE_BOX, self::MODE_PROPORTIONAL], true)) {
             throw new InvalidArgumentException('Mode must be one of the '.self::class.'::MODE_* constants');
+        }
+
+        if (self::MODE_PROPORTIONAL === $mode) {
+            trigger_deprecation('contao/image', '1.2', 'Using ResizeConfiguration::MODE_PROPORTIONAL has been deprecated and will no longer work in version 2.0. Use ResizeConfiguration::MODE_BOX instead.');
         }
 
         $this->mode = $mode;
