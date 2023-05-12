@@ -15,16 +15,10 @@ namespace Contao\Image\Metadata;
 final class ImageMetadata
 {
     /**
-     * @var array<string,array>
-     */
-    private $byFormat;
-
-    /**
      * @param array<string,array> $byFormat
      */
-    public function __construct(array $byFormat)
+    public function __construct(private readonly array $byFormat)
     {
-        $this->byFormat = $byFormat;
     }
 
     public function getFormat(string $format): array

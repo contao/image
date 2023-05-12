@@ -17,8 +17,8 @@ use Contao\Image\Exception\RuntimeException;
 
 class ExifFormat extends AbstractFormat
 {
-    public const NAME = 'exif';
-    public const DEFAULT_PRESERVE_KEYS = [
+    final public const NAME = 'exif';
+    final public const DEFAULT_PRESERVE_KEYS = [
         'IFD0' => ['Copyright', 'Artist'],
     ];
 

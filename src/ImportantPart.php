@@ -18,28 +18,16 @@ class ImportantPart
 {
     private const ROUNDING_ERROR_THRESHOLD = 1 / 100000;
 
-    /**
-     * @var float
-     */
-    private $x;
+    private readonly float $width;
 
-    /**
-     * @var float
-     */
-    private $y;
+    private readonly float $height;
 
-    /**
-     * @var float
-     */
-    private $width;
-
-    /**
-     * @var float
-     */
-    private $height;
-
-    public function __construct(float $x = 0, float $y = 0, float $width = 1, float $height = 1)
-    {
+    public function __construct(
+        private readonly float $x = 0,
+        private readonly float $y = 0,
+        float $width = 1,
+        float $height = 1,
+    ) {
         if ($x < 0 || $x > 1 || $y < 0 || $y > 1 || $width < 0 || $width > 1 || $height < 0 || $height > 1) {
             throw new CoordinatesOutOfBoundsException('X, Y, width and height must be a float between 0 and 1');
         }
@@ -60,8 +48,6 @@ class ImportantPart
             $height = 1 - $y;
         }
 
-        $this->x = $x;
-        $this->y = $y;
         $this->width = $width;
         $this->height = $height;
     }

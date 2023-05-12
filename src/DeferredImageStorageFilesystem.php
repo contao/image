@@ -25,65 +25,37 @@ class DeferredImageStorageFilesystem implements DeferredImageStorageInterface
     private const PATH_PREFIX = 'deferred';
     private const PATH_SUFFIX = '.json';
 
-    /**
-     * @var string
-     */
-    private $cacheDir;
+    private readonly string $cacheDir;
 
-    /**
-     * @var Filesystem
-     */
-    private $filesystem;
+    private array $locks = [];
 
-    /**
-     * @var array
-     */
-    private $locks = [];
-
-    public function __construct(string $cacheDir, Filesystem $filesystem = null)
-    {
-        if (null === $filesystem) {
-            $filesystem = new Filesystem();
-        }
-
+    public function __construct(
+        string $cacheDir,
+        private readonly Filesystem $filesystem = new Filesystem(),
+    ) {
         $this->cacheDir = Path::join($cacheDir, self::PATH_PREFIX);
-        $this->filesystem = $filesystem;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function set(string $path, array $value): void
     {
-        $json = json_encode($value);
-
-        if (JSON_ERROR_NONE !== json_last_error()) {
-            throw new JsonException(json_last_error_msg());
+        try {
+            $this->filesystem->dumpFile($this->getConfigPath($path), json_encode($value, JSON_THROW_ON_ERROR));
+        } catch (\JsonException $e) {
+            throw new JsonException($e->getMessage(), $e->getCode(), $e);
         }
-
-        $this->filesystem->dumpFile($this->getConfigPath($path), $json);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function get(string $path): array
     {
         return $this->decode(file_get_contents($this->getConfigPath($path)));
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function has(string $path): bool
     {
         return $this->filesystem->exists($this->getConfigPath($path));
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getLocked(string $path, bool $blocking = true): ?array
+    public function getLocked(string $path, bool $blocking = true): array|null
     {
         if (isset($this->locks[$path])) {
             if ($blocking) {
@@ -114,9 +86,6 @@ class DeferredImageStorageFilesystem implements DeferredImageStorageInterface
         return $this->decode(stream_get_contents($handle));
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function releaseLock(string $path): void
     {
         if (!isset($this->locks[$path])) {
@@ -129,9 +98,6 @@ class DeferredImageStorageFilesystem implements DeferredImageStorageInterface
         unset($this->locks[$path]);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function delete(string $path): void
     {
         try {
@@ -150,9 +116,6 @@ class DeferredImageStorageFilesystem implements DeferredImageStorageInterface
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function listPaths(): iterable
     {
         if (!$this->filesystem->exists($this->cacheDir)) {
@@ -164,28 +127,20 @@ class DeferredImageStorageFilesystem implements DeferredImageStorageInterface
 
         $iterator = new \CallbackFilterIterator(
             $iterator,
-            static function ($path) {
-                return self::PATH_SUFFIX === substr((string) $path, -\strlen(self::PATH_SUFFIX));
-            }
+            static fn ($path) => str_ends_with((string) $path, self::PATH_SUFFIX)
         );
 
         return new class($iterator, $this->cacheDir, self::PATH_SUFFIX) extends \IteratorIterator {
-            private $cacheDir;
-            private $suffix;
-
-            public function __construct(\Traversable $iterator, string $cacheDir, string $suffix)
+            public function __construct(\Traversable $iterator, private readonly string $cacheDir, private readonly string $suffix)
             {
                 parent::__construct($iterator);
-
-                $this->cacheDir = $cacheDir;
-                $this->suffix = $suffix;
             }
 
             public function current(): string
             {
                 $path = Path::makeRelative((string) parent::current(), $this->cacheDir);
 
-                return substr($path, 0, -\strlen($this->suffix));
+                return substr($path, 0, -\strlen((string) $this->suffix));
             }
         };
     }
@@ -204,14 +159,14 @@ class DeferredImageStorageFilesystem implements DeferredImageStorageInterface
      */
     private function decode(string $contents): array
     {
-        $content = json_decode($contents, true);
-
-        if (JSON_ERROR_NONE !== json_last_error()) {
-            throw new JsonException(json_last_error_msg());
+        try {
+            $content = json_decode($contents, true, 512, JSON_THROW_ON_ERROR);
+        } catch (\JsonException $e) {
+            throw new JsonException($e->getMessage(), $e->getCode(), $e);
         }
 
         if (!\is_array($content)) {
-            throw new InvalidArgumentException(sprintf('Invalid JSON data: expected array, got "%s"', \gettype($content)));
+            throw new InvalidArgumentException(sprintf('Invalid JSON data: expected array, got "%s"', get_debug_type($content)));
         }
 
         return $content;

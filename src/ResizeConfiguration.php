@@ -16,29 +16,25 @@ use Contao\Image\Exception\InvalidArgumentException;
 
 class ResizeConfiguration
 {
-    public const MODE_CROP = 'crop';
-    public const MODE_BOX = 'box';
-    public const MODE_PROPORTIONAL = 'proportional';
+    final public const MODE_CROP = 'crop';
+    final public const MODE_BOX = 'box';
 
     /**
-     * @var int
+     * @var 0|positive-int
      */
-    private $width = 0;
+    private int $width = 0;
 
     /**
-     * @var int
+     * @var 0|positive-int
      */
-    private $height = 0;
+    private int $height = 0;
 
     /**
-     * @var string
+     * @var self::MODE_*
      */
-    private $mode = self::MODE_CROP;
+    private string $mode = self::MODE_CROP;
 
-    /**
-     * @var int
-     */
-    private $zoomLevel = 0;
+    private int $zoomLevel = 0;
 
     /**
      * Returns true if the resize would have no effect.
@@ -48,12 +44,18 @@ class ResizeConfiguration
         return 0 === $this->width && 0 === $this->height && 0 === $this->zoomLevel;
     }
 
+    /**
+     * @return 0|positive-int
+     */
     public function getWidth(): int
     {
         return $this->width;
     }
 
-    public function setWidth(int $width): self
+    /**
+     * @param 0|positive-int $width
+     */
+    public function setWidth(int $width): static
     {
         if ($width < 0) {
             throw new InvalidArgumentException('Width must not be negative');
@@ -64,12 +66,18 @@ class ResizeConfiguration
         return $this;
     }
 
+    /**
+     * @return 0|positive-int
+     */
     public function getHeight(): int
     {
         return $this->height;
     }
 
-    public function setHeight(int $height): self
+    /**
+     * @param 0|positive-int $height
+     */
+    public function setHeight(int $height): static
     {
         if ($height < 0) {
             throw new InvalidArgumentException('Height must not be negative');
@@ -81,7 +89,7 @@ class ResizeConfiguration
     }
 
     /**
-     * @return string One of the ResizeConfiguration::MODE_* constants
+     * @return self::MODE_*
      */
     public function getMode(): string
     {
@@ -89,11 +97,17 @@ class ResizeConfiguration
     }
 
     /**
-     * @param string $mode One of the ResizeConfiguration::MODE_* constants
+     * @param self::MODE_* $mode
      */
-    public function setMode(string $mode): self
+    public function setMode(string $mode): static
     {
-        if (!\in_array($mode, [self::MODE_CROP, self::MODE_BOX, self::MODE_PROPORTIONAL], true)) {
+        if ('proportional' === $mode) {
+            trigger_deprecation('contao/image', '1.2', 'Using mode "proportional" has been deprecated and will no longer work in version 3.0. Use ResizeConfiguration::MODE_BOX instead.');
+
+            $mode = self::MODE_BOX;
+        }
+
+        if (!\in_array($mode, [self::MODE_CROP, self::MODE_BOX], true)) {
             throw new InvalidArgumentException('Mode must be one of the '.self::class.'::MODE_* constants');
         }
 
@@ -102,12 +116,18 @@ class ResizeConfiguration
         return $this;
     }
 
+    /**
+     * @return int<0,100>
+     */
     public function getZoomLevel(): int
     {
         return $this->zoomLevel;
     }
 
-    public function setZoomLevel(int $zoomLevel): self
+    /**
+     * @param int<0,100> $zoomLevel
+     */
+    public function setZoomLevel(int $zoomLevel): static
     {
         if ($zoomLevel < 0 || $zoomLevel > 100) {
             throw new InvalidArgumentException('Zoom level must be between 0 and 100');

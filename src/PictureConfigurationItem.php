@@ -14,36 +14,20 @@ namespace Contao\Image;
 
 class PictureConfigurationItem
 {
-    /**
-     * @var ResizeConfiguration
-     */
-    private $resizeConfig;
+    private ResizeConfiguration|null $resizeConfig = null;
 
-    /**
-     * @var string
-     */
-    private $sizes = '';
+    private string $sizes = '';
 
-    /**
-     * @var string
-     */
-    private $densities = '';
+    private string $densities = '';
 
-    /**
-     * @var string
-     */
-    private $media = '';
+    private string $media = '';
 
     public function getResizeConfig(): ResizeConfiguration
     {
-        if (null === $this->resizeConfig) {
-            $this->setResizeConfig(new ResizeConfiguration());
-        }
-
-        return $this->resizeConfig;
+        return $this->resizeConfig ??= new ResizeConfiguration();
     }
 
-    public function setResizeConfig(ResizeConfiguration $resizeConfig): self
+    public function setResizeConfig(ResizeConfiguration $resizeConfig): static
     {
         $this->resizeConfig = $resizeConfig;
 
@@ -55,7 +39,7 @@ class PictureConfigurationItem
         return $this->sizes;
     }
 
-    public function setSizes(string $sizes): self
+    public function setSizes(string $sizes): static
     {
         $this->sizes = $sizes;
 
@@ -67,7 +51,7 @@ class PictureConfigurationItem
         return $this->densities;
     }
 
-    public function setDensities(string $densities): self
+    public function setDensities(string $densities): static
     {
         $this->densities = $densities;
 
@@ -79,7 +63,7 @@ class PictureConfigurationItem
         return $this->media;
     }
 
-    public function setMedia(string $media): self
+    public function setMedia(string $media): static
     {
         $this->media = $media;
 

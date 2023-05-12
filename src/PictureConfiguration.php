@@ -16,22 +16,19 @@ use Contao\Image\Exception\InvalidArgumentException;
 
 class PictureConfiguration
 {
-    public const FORMAT_DEFAULT = '.default';
+    final public const FORMAT_DEFAULT = '.default';
 
-    /**
-     * @var PictureConfigurationItem
-     */
-    private $size;
+    private PictureConfigurationItem|null $size = null;
 
     /**
      * @var array<PictureConfigurationItem>
      */
-    private $sizeItems = [];
+    private array $sizeItems = [];
 
     /**
      * @var array<array>
      */
-    private $formats = [];
+    private array $formats = [];
 
     public function getSize(): PictureConfigurationItem
     {
@@ -42,7 +39,7 @@ class PictureConfiguration
         return $this->size;
     }
 
-    public function setSize(PictureConfigurationItem $size): self
+    public function setSize(PictureConfigurationItem $size): static
     {
         $this->size = $size;
 
@@ -60,7 +57,7 @@ class PictureConfiguration
     /**
      * @param array<PictureConfigurationItem> $sizeItems
      */
-    public function setSizeItems(array $sizeItems): self
+    public function setSizeItems(array $sizeItems): static
     {
         foreach ($sizeItems as $sizeItem) {
             if (!$sizeItem instanceof PictureConfigurationItem) {
@@ -84,7 +81,7 @@ class PictureConfiguration
     /**
      * @param array<string, array<string>> $formats
      */
-    public function setFormats(array $formats): self
+    public function setFormats(array $formats): static
     {
         if (!isset($formats[self::FORMAT_DEFAULT])) {
             $formats[self::FORMAT_DEFAULT] = [self::FORMAT_DEFAULT];

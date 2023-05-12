@@ -35,7 +35,7 @@ abstract class AbstractContainer implements ImageContainerInterface
     {
         try {
             return $this->metadataReaderWriter->parseFormat($format, $binaryChunk);
-        } catch (InvalidImageMetadataException $exception) {
+        } catch (InvalidImageMetadataException) {
             return [];
         }
     }

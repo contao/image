@@ -16,11 +16,25 @@ interface PictureInterface
 {
     /**
      * Returns the image tag attributes.
+     *
+     * @return array{src:string,srcset:string,width?:int,height?:int,sizes?:string}
      */
-    public function getImg(string $rootDir = null, string $prefix = ''): array;
+    public function getImg(string $rootDir, string $prefix = ''): array;
+
+    /**
+     * @return array{src:ImageInterface,srcset:list<array{ImageInterface,string}>,width?:int,height?:int,sizes?:string}
+     */
+    public function getRawImg(): array;
 
     /**
      * Returns the source tags attributes.
+     *
+     * @return list<array{srcset:string,sizes?:string,media?:string,type?:string}>
      */
-    public function getSources(string $rootDir = null, string $prefix = ''): array;
+    public function getSources(string $rootDir, string $prefix = ''): array;
+
+    /**
+     * @return list<array{srcset:list<array{ImageInterface,string}>,sizes?:string,media?:string,type?:string}>
+     */
+    public function getRawSources(): array;
 }

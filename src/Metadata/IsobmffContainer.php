@@ -16,20 +16,11 @@ use Contao\Image\Exception\InvalidImageContainerException;
 
 abstract class IsobmffContainer extends AbstractContainer
 {
-    /**
-     * @var array
-     */
-    private $metadata = [];
+    private array $metadata = [];
 
-    /**
-     * @var array
-     */
-    private $items = [];
+    private array $items = [];
 
-    /**
-     * @var string
-     */
-    private $idat = '';
+    private string $idat = '';
 
     public function apply($inputStream, $outputStream, ImageMetadata $metadata, array $preserveKeysByFormat): void
     {
@@ -51,6 +42,9 @@ abstract class IsobmffContainer extends AbstractContainer
         }
     }
 
+    /**
+     * @param resource $stream
+     */
     private function parseBoxList($stream, int $length, string $path = ''): void
     {
         while ($length > 0 && false !== $head = fread($stream, 8)) {
@@ -196,7 +190,7 @@ abstract class IsobmffContainer extends AbstractContainer
     private function parseInfe(string $content, int $version): void
     {
         $itemID = unpack('n', substr($content, 0, 2))[1];
-        //$itemProtectionIndex = unpack('n', substr($content, 2, 2))[1];
+        // $itemProtectionIndex = unpack('n', substr($content, 2, 2))[1];
         $content = substr($content, 4);
         $itemType = '';
 
@@ -217,6 +211,9 @@ abstract class IsobmffContainer extends AbstractContainer
         $this->items[$itemID]['encoding'] = $contentEncoding;
     }
 
+    /**
+     * @param resource $stream
+     */
     private function parseItems($stream): void
     {
         foreach ($this->items as $item) {

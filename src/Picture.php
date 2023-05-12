@@ -17,69 +17,50 @@ use Contao\Image\Exception\InvalidArgumentException;
 class Picture implements PictureInterface
 {
     /**
-     * @var array
+     * @param array{src:ImageInterface,srcset:list<array{ImageInterface,string}>,width?:int,height?:int,sizes?:string} $img
+     * @param list<array{srcset:list<array{ImageInterface,string}>,sizes?:string,media?:string,type?:string}> $sources
      */
-    private $img;
-
-    /**
-     * @var array
-     */
-    private $sources;
-
-    public function __construct(array $img, array $sources)
-    {
+    public function __construct(
+        private readonly array $img,
+        private readonly array $sources,
+    ) {
         $this->validateSrcAttribute($img);
         $this->validateSrcsetAttribute($img);
 
         foreach ($sources as $source) {
             $this->validateSrcsetAttribute($source);
         }
-
-        $this->img = $img;
-        $this->sources = $sources;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getImg(string $rootDir = null, string $prefix = ''): array
+    public function getImg(string $rootDir, string $prefix = ''): array
     {
-        if (null === $rootDir) {
-            if ('' !== $prefix) {
-                throw new InvalidArgumentException(sprintf('Prefix must no be specified if rootDir is null, given "%s"', $prefix));
-            }
-
-            return $this->img;
-        }
-
         return $this->buildUrls($this->img, $rootDir, $prefix);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getSources(string $rootDir = null, string $prefix = ''): array
+    public function getRawImg(): array
     {
-        if (null === $rootDir) {
-            if ('' !== $prefix) {
-                throw new InvalidArgumentException(sprintf('Prefix must no be specified if rootDir is null, given "%s"', $prefix));
-            }
+        return $this->img;
+    }
 
-            return $this->sources;
-        }
-
+    public function getSources(string $rootDir, string $prefix = ''): array
+    {
         return array_map(
-            function ($source) use ($rootDir, $prefix) {
-                return $this->buildUrls($source, $rootDir, $prefix);
-            },
+            fn ($source) => $this->buildUrls($source, $rootDir, $prefix),
             $this->sources
         );
+    }
+
+    public function getRawSources(): array
+    {
+        return $this->sources;
     }
 
     /**
      * Converts image objects in an attributes array to URLs.
      *
-     * @param array{src:ImageInterface|null, srcset:list<array{0:ImageInterface, 1:string}>} $img
+     * @param array{src?:ImageInterface,srcset:list<array{ImageInterface,string}>} $img
+     *
+     * @return array{src?:string,srcset:string}
      */
     private function buildUrls(array $img, string $rootDir, string $prefix): array
     {

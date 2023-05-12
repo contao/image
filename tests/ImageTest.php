@@ -30,14 +30,8 @@ use Symfony\Component\Filesystem\Path;
 
 class ImageTest extends TestCase
 {
-    /**
-     * @var string
-     */
-    private $rootDir;
+    private string $rootDir;
 
-    /**
-     * {@inheritdoc}
-     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -45,9 +39,6 @@ class ImageTest extends TestCase
         $this->rootDir = Path::canonicalize(__DIR__.'/tmp');
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function tearDown(): void
     {
         parent::tearDown();

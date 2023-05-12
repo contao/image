@@ -29,8 +29,7 @@ class XmpFormatTest extends TestCase
             .'<x:xmpmeta xmlns:x="adobe:ns:meta/">'
             .$source
             .'</x:xmpmeta>'
-            .'<?xpacket end="w"?>'
-        ;
+            .'<?xpacket end="w"?>';
 
         if (!$expected) {
             $this->expectException(InvalidImageMetadataException::class);

@@ -19,7 +19,7 @@ use Imagine\Image\Point;
 
 class ResizeCalculator
 {
-    public function calculate(ResizeConfiguration $config, ImageDimensions $dimensions, ImportantPart $importantPart = null): ResizeCoordinates
+    public function calculate(ResizeConfiguration $config, ImageDimensions $dimensions, ImportantPart $importantPart = new ImportantPart()): ResizeCoordinates
     {
         $zoom = max(0, min(1, $config->getZoomLevel() / 100));
         $importantPartArray = $this->importantPartAsArray($dimensions, $importantPart);
@@ -28,18 +28,11 @@ class ResizeCalculator
         if ($config->getWidth() && $config->getHeight()) {
             $widthHeight = [$config->getWidth(), $config->getHeight()];
 
-            switch ($config->getMode()) {
-                case ResizeConfiguration::MODE_CROP:
-                    return $this->calculateCrop($widthHeight, $dimensions, $importantPartArray, $zoom);
-
-                case ResizeConfiguration::MODE_PROPORTIONAL:
-                    return $this->calculateProportional($widthHeight, $dimensions, $importantPartArray, $zoom);
-
-                case ResizeConfiguration::MODE_BOX:
-                    return $this->calculateBox($widthHeight, $dimensions, $importantPartArray, $zoom);
-            }
-
-            throw new InvalidArgumentException(sprintf('Unsupported resize mode "%s"', $config->getMode()));
+            return match ($config->getMode()) {
+                ResizeConfiguration::MODE_CROP => $this->calculateCrop($widthHeight, $dimensions, $importantPartArray, $zoom),
+                ResizeConfiguration::MODE_BOX => $this->calculateBox($widthHeight, $dimensions, $importantPartArray, $zoom),
+                default => throw new InvalidArgumentException(sprintf('Unsupported resize mode "%s"', $config->getMode())),
+            };
         }
 
         // If no dimensions are specified, use the zoomed important part
@@ -104,24 +97,6 @@ class ResizeCalculator
     }
 
     /**
-     * Calculates the resize coordinates for mode proportional.
-     *
-     * @param array<int> $size
-     */
-    private function calculateProportional(array $size, ImageDimensions $original, array $importantPart, float $zoom): ResizeCoordinates
-    {
-        $importantPart = $this->zoomImportantPart($importantPart, $zoom, $original->getSize());
-
-        if ($importantPart['width'] >= $importantPart['height']) {
-            $size[1] = 0;
-        } else {
-            $size[0] = 0;
-        }
-
-        return $this->calculateSingleDimension($size, $original, $importantPart);
-    }
-
-    /**
      * Calculates the resize coordinates for mode box.
      *
      * @param array<int> $size
@@ -168,12 +143,8 @@ class ResizeCalculator
      *
      * @return array<string,int>
      */
-    private function importantPartAsArray(ImageDimensions $dimensions, ImportantPart $importantPart = null): array
+    private function importantPartAsArray(ImageDimensions $dimensions, ImportantPart $importantPart): array
     {
-        if (null === $importantPart) {
-            $importantPart = new ImportantPart();
-        }
-
         $imageWidth = $dimensions->getSize()->getWidth();
         $imageHeight = $dimensions->getSize()->getHeight();
 
@@ -264,8 +235,7 @@ class ResizeCalculator
             if ($zoomed['width'] > $part['width']) {
                 $zoomed['x'] = ($origSize->getWidth() - $zoomed['width'])
                     * $part['x']
-                    / ($origSize->getWidth() - $part['width'])
-                ;
+                    / ($origSize->getWidth() - $part['width']);
             } else {
                 $zoomed['x'] = $part['x'] + (($part['width'] - $zoomed['width']) / 2);
             }
@@ -275,8 +245,7 @@ class ResizeCalculator
             if ($zoomed['height'] > $part['height']) {
                 $zoomed['y'] = ($origSize->getHeight() - $zoomed['height'])
                     * $part['y']
-                    / ($origSize->getHeight() - $part['height'])
-                ;
+                    / ($origSize->getHeight() - $part['height']);
             } else {
                 $zoomed['y'] = $part['y'] + (($part['height'] - $zoomed['height']) / 2);
             }
@@ -304,8 +273,7 @@ class ResizeCalculator
             if ($origSize->getHeight() > $part['height']) {
                 $zoomed['y'] -= ($zoomed['height'] - $part['height'])
                     * $part['y']
-                    / ($origSize->getHeight() - $part['height'])
-                ;
+                    / ($origSize->getHeight() - $part['height']);
             }
         } else {
             $zoomed['width'] = $size[0] * $zoomed['height'] / $size[1];
@@ -313,8 +281,7 @@ class ResizeCalculator
             if ($origSize->getWidth() > $part['width']) {
                 $zoomed['x'] -= ($zoomed['width'] - $part['width'])
                     * $part['x']
-                    / ($origSize->getWidth() - $part['width'])
-                ;
+                    / ($origSize->getWidth() - $part['width']);
             }
         }
 

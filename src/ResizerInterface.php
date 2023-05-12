@@ -14,8 +14,5 @@ namespace Contao\Image;
 
 interface ResizerInterface
 {
-    /**
-     * Resizes an Image object.
-     */
     public function resize(ImageInterface $image, ResizeConfiguration $config, ResizeOptions $options): ImageInterface;
 }

@@ -22,30 +22,15 @@ use Symfony\Component\Filesystem\Filesystem;
 
 class ResizeOptions
 {
-    /**
-     * @var array
-     */
-    private $imagineOptions = [];
+    private array $imagineOptions = [];
 
-    /**
-     * @var ?string
-     */
-    private $targetPath;
+    private string|null $targetPath = null;
 
-    /**
-     * @var bool
-     */
-    private $bypassCache = false;
+    private bool $bypassCache = false;
 
-    /**
-     * @var bool
-     */
-    private $skipIfDimensionsMatch = false;
+    private bool $skipIfDimensionsMatch = false;
 
-    /**
-     * @var array
-     */
-    private $preserveCopyrightMetadata = [
+    private array $preserveCopyrightMetadata = [
         XmpFormat::NAME => XmpFormat::DEFAULT_PRESERVE_KEYS,
         IptcFormat::NAME => IptcFormat::DEFAULT_PRESERVE_KEYS,
         ExifFormat::NAME => ExifFormat::DEFAULT_PRESERVE_KEYS,
@@ -58,19 +43,19 @@ class ResizeOptions
         return $this->imagineOptions;
     }
 
-    public function setImagineOptions(array $imagineOptions): self
+    public function setImagineOptions(array $imagineOptions): static
     {
         $this->imagineOptions = $imagineOptions;
 
         return $this;
     }
 
-    public function getTargetPath(): ?string
+    public function getTargetPath(): string|null
     {
         return $this->targetPath;
     }
 
-    public function setTargetPath(?string $targetPath): self
+    public function setTargetPath(string|null $targetPath): static
     {
         if (null !== $targetPath && !(new Filesystem())->isAbsolutePath($targetPath)) {
             throw new InvalidArgumentException('"'.$targetPath.'" is not an absolute target path');
@@ -86,7 +71,7 @@ class ResizeOptions
         return $this->bypassCache;
     }
 
-    public function setBypassCache(bool $bypassCache): self
+    public function setBypassCache(bool $bypassCache): static
     {
         $this->bypassCache = $bypassCache;
 
@@ -98,7 +83,7 @@ class ResizeOptions
         return $this->skipIfDimensionsMatch;
     }
 
-    public function setSkipIfDimensionsMatch(bool $skipIfDimensionsMatch): self
+    public function setSkipIfDimensionsMatch(bool $skipIfDimensionsMatch): static
     {
         $this->skipIfDimensionsMatch = $skipIfDimensionsMatch;
 
@@ -110,7 +95,7 @@ class ResizeOptions
         return $this->preserveCopyrightMetadata;
     }
 
-    public function setPreserveCopyrightMetadata(array $preserveCopyrightMetadata): self
+    public function setPreserveCopyrightMetadata(array $preserveCopyrightMetadata): static
     {
         $this->preserveCopyrightMetadata = $preserveCopyrightMetadata;
 

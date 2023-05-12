@@ -15,9 +15,12 @@ namespace Contao\Image\Tests;
 use Contao\Image\Exception\InvalidArgumentException;
 use Contao\Image\ResizeConfiguration;
 use PHPUnit\Framework\TestCase;
+use Symfony\Bridge\PhpUnit\ExpectDeprecationTrait;
 
 class ResizeConfigurationTest extends TestCase
 {
+    use ExpectDeprecationTrait;
+
     public function testIsEmpty(): void
     {
         $config = new ResizeConfiguration();
@@ -25,10 +28,6 @@ class ResizeConfigurationTest extends TestCase
         $this->assertTrue($config->isEmpty());
 
         $config->setMode(ResizeConfiguration::MODE_CROP);
-
-        $this->assertTrue($config->isEmpty());
-
-        $config->setMode(ResizeConfiguration::MODE_PROPORTIONAL);
 
         $this->assertTrue($config->isEmpty());
 
@@ -55,6 +54,13 @@ class ResizeConfigurationTest extends TestCase
         $config->setWidth(0)->setHeight(0)->setZoomLevel(0);
 
         $this->assertTrue($config->isEmpty());
+
+        $this->expectDeprecation('Using mode "proportional" has been deprecated%s');
+
+        /** @phpstan-ignore-next-line */
+        $config->setMode('proportional');
+
+        $this->assertTrue($config->isEmpty());
     }
 
     public function testSetWidth(): void
@@ -67,6 +73,7 @@ class ResizeConfigurationTest extends TestCase
 
         $this->expectException(InvalidArgumentException::class);
 
+        /** @phpstan-ignore-next-line */
         $config->setWidth(-1);
     }
 
@@ -80,6 +87,7 @@ class ResizeConfigurationTest extends TestCase
 
         $this->expectException(InvalidArgumentException::class);
 
+        /** @phpstan-ignore-next-line */
         $config->setHeight(-1);
     }
 
@@ -93,6 +101,7 @@ class ResizeConfigurationTest extends TestCase
 
         $this->expectException(InvalidArgumentException::class);
 
+        /** @phpstan-ignore-next-line */
         $config->setMode('invalid');
     }
 
@@ -106,6 +115,7 @@ class ResizeConfigurationTest extends TestCase
 
         $this->expectException(InvalidArgumentException::class);
 
+        /** @phpstan-ignore-next-line */
         $config->setZoomLevel(-1);
     }
 
@@ -115,6 +125,7 @@ class ResizeConfigurationTest extends TestCase
 
         $this->expectException(InvalidArgumentException::class);
 
+        /** @phpstan-ignore-next-line */
         $config->setZoomLevel(101);
     }
 }

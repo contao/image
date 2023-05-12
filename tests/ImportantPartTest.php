@@ -43,7 +43,7 @@ class ImportantPartTest extends TestCase
         $this->expectException(CoordinatesOutOfBoundsException::class);
 
         if (method_exists($this, 'expectExceptionMessageRegExp')) {
-            $this->expectExceptionMessageRegExp('/'.$message.'/i');
+            $this->expectExceptionMessageMatches('/'.$message.'/i');
         } else {
             $this->expectExceptionMessageMatches('/'.$message.'/i');
         }
