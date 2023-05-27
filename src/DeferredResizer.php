@@ -23,6 +23,10 @@ use Symfony\Component\Filesystem\Path;
 
 class DeferredResizer extends Resizer implements DeferredResizerInterface
 {
+    private readonly Filesystem $filesystem;
+
+    private readonly string $cacheDir;
+
     /**
      * @internal
      */
@@ -33,13 +37,11 @@ class DeferredResizer extends Resizer implements DeferredResizerInterface
      */
     public function __construct(string $cacheDir, string $secret, ResizeCalculator $calculator = null, Filesystem $filesystem = null, DeferredImageStorageInterface $storage = null, MetadataReaderWriter $metadataReaderWriter = null)
     {
-        if (null === $storage) {
-            $storage = new DeferredImageStorageFilesystem($cacheDir);
-        }
-
         parent::__construct($cacheDir, $secret, $calculator, $filesystem, $metadataReaderWriter);
 
-        $this->storage = $storage;
+        $this->filesystem = $filesystem ?? new Filesystem();
+        $this->cacheDir = $cacheDir;
+        $this->storage = $storage ?? new DeferredImageStorageFilesystem($cacheDir);
     }
 
     public function getDeferredImage(string $targetPath, ImagineInterface $imagine): DeferredImageInterface|null

@@ -25,15 +25,9 @@ use Symfony\Component\Filesystem\Path;
 
 class Resizer implements ResizerInterface
 {
-    /**
-     * @internal
-     */
-    protected Filesystem $filesystem;
+    private readonly Filesystem $filesystem;
 
-    /**
-     * @internal
-     */
-    protected string $cacheDir;
+    private readonly string $cacheDir;
 
     private readonly ResizeCalculator $calculator;
 
@@ -49,26 +43,14 @@ class Resizer implements ResizerInterface
      */
     public function __construct(string $cacheDir, string $secret, ResizeCalculator $calculator = null, Filesystem $filesystem = null, MetadataReaderWriter $metadataReaderWriter = null)
     {
-        if (null === $calculator) {
-            $calculator = new ResizeCalculator();
-        }
-
-        if (null === $filesystem) {
-            $filesystem = new Filesystem();
-        }
-
-        if (null === $metadataReaderWriter) {
-            $metadataReaderWriter = new MetadataReaderWriter();
-        }
-
         if ('' === $secret) {
             throw new InvalidArgumentException('$secret must not be empty');
         }
 
         $this->cacheDir = $cacheDir;
-        $this->calculator = $calculator;
-        $this->filesystem = $filesystem;
-        $this->metadataReaderWriter = $metadataReaderWriter;
+        $this->calculator = $calculator ?? new ResizeCalculator();
+        $this->filesystem = $filesystem ?? new Filesystem();
+        $this->metadataReaderWriter = $metadataReaderWriter ?? new MetadataReaderWriter();
         $this->secret = $secret;
     }
 
@@ -159,12 +141,7 @@ class Resizer implements ResizerInterface
         return $this->createImage($image, $path);
     }
 
-    /**
-     * Creates a new image instance for the specified path.
-     *
-     * @internal Do not call this method in your code; it will be made private in a future version
-     */
-    protected function createImage(ImageInterface $image, string $path): ImageInterface
+    private function createImage(ImageInterface $image, string $path): ImageInterface
     {
         return new Image($path, $image->getImagine(), $this->filesystem);
     }
