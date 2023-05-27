@@ -45,6 +45,8 @@ class Picture implements PictureInterface
     public function getImg(string $rootDir = null, string $prefix = ''): array
     {
         if (null === $rootDir) {
+            trigger_deprecation('contao/image', '1.2', 'Passing NULL as $rootDir is deprecated and will no longer work in version 2.0. Use the getRawImg() method instead.');
+
             if ('' !== $prefix) {
                 throw new InvalidArgumentException(sprintf('Prefix must no be specified if rootDir is null, given "%s"', $prefix));
             }
@@ -58,9 +60,19 @@ class Picture implements PictureInterface
     /**
      * {@inheritdoc}
      */
+    public function getRawImg(): array
+    {
+        return $this->img;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getSources(string $rootDir = null, string $prefix = ''): array
     {
         if (null === $rootDir) {
+            trigger_deprecation('contao/image', '1.2', 'Passing NULL as $rootDir is deprecated and will no longer work in version 2.0. Use the getRawSources() method instead.');
+
             if ('' !== $prefix) {
                 throw new InvalidArgumentException(sprintf('Prefix must no be specified if rootDir is null, given "%s"', $prefix));
             }
@@ -74,6 +86,14 @@ class Picture implements PictureInterface
             },
             $this->sources
         );
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getRawSources(): array
+    {
+        return $this->sources;
     }
 
     /**

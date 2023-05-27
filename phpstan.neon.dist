@@ -31,3 +31,5 @@ parameters:
         -
             message: '#ResizeCoordinates::isEqualTo\(\) expects .*, stdClass given#'
             path: %currentWorkingDirectory%/tests/ResizeCoordinatesTest.php
+        -
+            message: '#Access to an undefined property XMLReader::#'
