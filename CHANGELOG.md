@@ -8,6 +8,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
  * Improve file name hashing algorithm. [#90]
  * Fix wrong exception class being thrown.
  * Deprecate `ResizeConfiguration::MODE_PROPORTIONAL`. [#97]
+ * Add new methods `getRawImg()` and `getRawSources()` to Picture. [#98]
 
 ## [1.1.2] (2022-08-16)
 
@@ -159,6 +160,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 [0.2.0]: https://github.com/contao/image/compare/0.1.0...0.2.0
 [0.1.0]: https://github.com/contao/image/commits/0.1.0
 
+[#98]: https://github.com/contao/image/issues/98
 [#97]: https://github.com/contao/image/issues/97
 [#96]: https://github.com/contao/image/issues/96
 [#95]: https://github.com/contao/image/issues/95

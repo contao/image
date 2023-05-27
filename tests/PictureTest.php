@@ -18,15 +18,18 @@ use Contao\Image\ImageInterface;
 use Contao\Image\Picture;
 use Imagine\Image\ImagineInterface;
 use PHPUnit\Framework\TestCase;
+use Symfony\Bridge\PhpUnit\ExpectDeprecationTrait;
 use Symfony\Component\Filesystem\Filesystem;
 
 class PictureTest extends TestCase
 {
+    use ExpectDeprecationTrait;
+
     public function testGetImg(): void
     {
         $picture = $this->createPicture(null, '/path/to/a/filename with special&<>"\'chars.jpeg');
 
-        $this->assertInstanceOf(ImageInterface::class, $picture->getImg()['src']);
+        $this->assertInstanceOf(ImageInterface::class, $picture->getRawImg()['src']);
 
         $this->assertSame(
             'path/to/a/filename%20with%20special%26%3C%3E%22%27chars.jpeg',
@@ -53,7 +56,7 @@ class PictureTest extends TestCase
             $picture->getImg('/path/to', 'https://example.com/images/')['src']
         );
 
-        $this->assertInstanceOf(ImageInterface::class, $picture->getImg()['srcset'][0][0]);
+        $this->assertInstanceOf(ImageInterface::class, $picture->getRawImg()['srcset'][0][0]);
 
         $this->assertSame(
             'path/to/a/filename%20with%20special%26%3C%3E%22%27chars.jpeg 1x',
@@ -80,8 +83,22 @@ class PictureTest extends TestCase
             $picture->getImg('/path/to', 'https://example.com/images/')['srcset']
         );
 
-        $this->assertSame('custom attribute', $picture->getImg()['data-custom']);
+        $this->assertSame('custom attribute', $picture->getRawImg()['data-custom']);
         $this->assertSame('custom attribute', $picture->getImg('/')['data-custom']);
+    }
+
+    /**
+     * @group legacy
+     */
+    public function testDeprecatedGetImg(): void
+    {
+        $picture = $this->createPicture(null, '/path/to/image.jpg');
+
+        $this->expectDeprecation('Passing NULL as $rootDir is deprecated%s');
+
+        $this->assertInstanceOf(ImageInterface::class, $picture->getImg()['src']);
+        $this->assertInstanceOf(ImageInterface::class, $picture->getImg()['srcset'][0][0]);
+        $this->assertSame('custom attribute', $picture->getImg()['data-custom']);
 
         $this->expectException(InvalidArgumentException::class);
 
@@ -92,7 +109,7 @@ class PictureTest extends TestCase
     {
         $picture = $this->createPicture(null, '/path/to/a/filename with special&<>"\'chars.jpeg');
 
-        $this->assertInstanceOf(ImageInterface::class, $picture->getSources()[0]['srcset'][0][0]);
+        $this->assertInstanceOf(ImageInterface::class, $picture->getRawSources()[0]['srcset'][0][0]);
 
         $this->assertSame(
             'path/to/a/filename%20with%20special%26%3C%3E%22%27chars.jpeg 1x',
@@ -119,8 +136,21 @@ class PictureTest extends TestCase
             $picture->getSources('/path/to', 'https://example.com/images/')[0]['srcset']
         );
 
-        $this->assertSame('custom attribute', $picture->getSources()[0]['data-custom']);
+        $this->assertSame('custom attribute', $picture->getRawSources()[0]['data-custom']);
         $this->assertSame('custom attribute', $picture->getSources('/')[0]['data-custom']);
+    }
+
+    /**
+     * @group legacy
+     */
+    public function testDeprecatedGetSources(): void
+    {
+        $picture = $this->createPicture(null, '/path/to/image.jpg');
+
+        $this->expectDeprecation('Passing NULL as $rootDir is deprecated%s');
+
+        $this->assertInstanceOf(ImageInterface::class, $picture->getSources()[0]['srcset'][0][0]);
+        $this->assertSame('custom attribute', $picture->getSources()[0]['data-custom']);
 
         $this->expectException(InvalidArgumentException::class);
 
