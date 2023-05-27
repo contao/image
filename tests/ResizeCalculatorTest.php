@@ -21,9 +21,12 @@ use Contao\Image\ResizeCoordinates;
 use Imagine\Image\Box;
 use Imagine\Image\Point;
 use PHPUnit\Framework\TestCase;
+use Symfony\Bridge\PhpUnit\ExpectDeprecationTrait;
 
 class ResizeCalculatorTest extends TestCase
 {
+    use ExpectDeprecationTrait;
+
     /**
      * @dataProvider getCalculateDataWithoutImportantPart
      */
@@ -67,6 +70,10 @@ class ResizeCalculatorTest extends TestCase
                 $importantPart['width'],
                 $importantPart['height']
             );
+        }
+
+        if (ResizeConfiguration::MODE_PROPORTIONAL === $arguments[4]) {
+            $this->expectDeprecation('Using ResizeConfiguration::MODE_PROPORTIONAL has been deprecated%s');
         }
 
         if ($arguments[4]) {
