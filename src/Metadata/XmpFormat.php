@@ -257,9 +257,12 @@ class XmpFormat extends AbstractFormat
                 $wrap->appendChild($bag);
 
                 foreach ($values as $value) {
-                    $bag->appendChild(
-                        $dom->createElementNS('http://www.w3.org/1999/02/22-rdf-syntax-ns#', 'rdf:li', $value)
-                    );
+                    $bag
+                        ->appendChild(
+                            $dom->createElementNS('http://www.w3.org/1999/02/22-rdf-syntax-ns#', 'rdf:li')
+                        )
+                        ->appendChild($dom->createTextNode($value))
+                    ;
                 }
             }
         }
