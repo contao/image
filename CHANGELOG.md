@@ -4,6 +4,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+ * Fix unterminated entity reference error. [#101]
 
 ## [1.2.0] (2023-05-30)
 
@@ -164,6 +165,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 [0.2.0]: https://github.com/contao/image/compare/0.1.0...0.2.0
 [0.1.0]: https://github.com/contao/image/commits/0.1.0
 
+[#101]: https://github.com/contao/image/issues/101
 [#98]: https://github.com/contao/image/issues/98
 [#97]: https://github.com/contao/image/issues/97
 [#96]: https://github.com/contao/image/issues/96
