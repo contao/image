@@ -202,4 +202,42 @@ class XmpFormatTest extends TestCase
             '',
         ];
     }
+
+    public function testSerializeValuesWithAmpersands(): void
+    {
+        $this->assertSame(
+            "<?xpacket begin=\"\u{FEFF}\" id=\"W5M0MpCehiHzreSzNTczkc9d\"?>"
+            .'<x:xmpmeta xmlns:x="adobe:ns:meta/">'
+            .'<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">'
+            .'<rdf:Description '
+            .'xmlns:photoshop="http://ns.adobe.com/photoshop/1.0/" xmlns:dc="http://purl.org/dc/elements/1.1/" '
+            .'photoshop:Credit="&amp;copy"'
+            .'>'
+            .'<dc:rights xmlns:dc="http://purl.org/dc/elements/1.1/">'
+            .'<rdf:Bag><rdf:li>Rights</rdf:li><rdf:li>&amp; more</rdf:li></rdf:Bag>'
+            .'</dc:rights>'
+            .'<dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">'
+            .'<rdf:Bag><rdf:li>Creator 1</rdf:li><rdf:li>&amp;crea</rdf:li></rdf:Bag>'
+            .'</dc:creator>'
+            .'</rdf:Description>'
+            .'</rdf:RDF>'
+            .'</x:xmpmeta>'
+            .'<?xpacket end="w"?>',
+            (new XmpFormat())->serialize(
+                new ImageMetadata([
+                    'xmp' => [
+                        'http://purl.org/dc/elements/1.1/' => [
+                            'rights' => ['Rights', '& more'],
+                            'creator' => ['Creator 1', '&crea'],
+                            'title' => ['Some long title...'],
+                        ],
+                        'http://ns.adobe.com/photoshop/1.0/' => [
+                            'Credit' => '&copy',
+                        ],
+                    ],
+                ]),
+                XmpFormat::DEFAULT_PRESERVE_KEYS
+            )
+        );
+    }
 }
