@@ -4,6 +4,9 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+
+## [1.2.1] (2024-06-12)
+
  * Fix unterminated entity reference error. [#101]
  * Compatibility with Symfony 7. [#104]
 
@@ -140,7 +143,8 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
  * Initial release
 
-[Unreleased]: https://github.com/contao/image/compare/1.2.0...1.x
+[Unreleased]: https://github.com/contao/image/compare/1.2.1...1.x
+[1.2.1]: https://github.com/contao/image/compare/1.2.0...1.2.1
 [1.2.0]: https://github.com/contao/image/compare/1.1.2...1.2.0
 [1.1.2]: https://github.com/contao/image/compare/1.1.1...1.1.2
 [1.1.1]: https://github.com/contao/image/compare/1.1.0...1.1.1
