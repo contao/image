@@ -15,9 +15,12 @@ namespace Contao\Image;
 use Contao\Image\Exception\InvalidArgumentException;
 use Contao\Image\Metadata\ImageMetadata;
 use Contao\Image\Metadata\MetadataReaderWriter;
+use Contao\ImagineSvg\Image as SvgImage;
 use Imagine\Exception\InvalidArgumentException as ImagineInvalidArgumentException;
 use Imagine\Exception\RuntimeException as ImagineRuntimeException;
 use Imagine\Filter\Basic\Autorotate;
+use Imagine\Gd\Image as GdImage;
+use Imagine\Image\ImageInterface as ImagineImageInterface;
 use Imagine\Image\Palette\RGB;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Path;
@@ -161,8 +164,15 @@ class Resizer implements ResizerInterface
             (new Autorotate())->apply($imagineImage);
         }
 
+        if ($imagineImage instanceof SvgImage || $imagineImage instanceof GdImage) {
+            // Backwards compatibility with imagine/imagine <= 1.2.4 and contao/imagine-svg <= 1.0.3
+            $filter = ImagineImageInterface::FILTER_UNDEFINED;
+        } else {
+            $filter = $imagineOptions['resampling-filter'] ?? ImagineImageInterface::FILTER_LANCZOS;
+        }
+
         $imagineImage
-            ->resize($coordinates->getSize())
+            ->resize($coordinates->getSize(), $filter)
             ->crop($coordinates->getCropStart(), $coordinates->getCropSize())
             ->usePalette(new RGB())
             ->strip()
