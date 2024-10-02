@@ -4,6 +4,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+ * Add support for resampling-filter option. [#108]
 
 ## [1.2.1] (2024-06-12)
 
@@ -170,6 +171,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 [0.2.0]: https://github.com/contao/image/compare/0.1.0...0.2.0
 [0.1.0]: https://github.com/contao/image/commits/0.1.0
 
+[#108]: https://github.com/contao/image/issues/108
 [#104]: https://github.com/contao/image/issues/104
 [#101]: https://github.com/contao/image/issues/101
 [#98]: https://github.com/contao/image/issues/98
