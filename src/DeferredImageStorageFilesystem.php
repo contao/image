@@ -69,7 +69,7 @@ class DeferredImageStorageFilesystem implements DeferredImageStorageInterface
      */
     public function get(string $path): array
     {
-        return $this->decode(file_get_contents($this->getConfigPath($path)));
+        return $this->decode(file_get_contents($this->getConfigPath($path)), $path);
     }
 
     /**
@@ -111,7 +111,7 @@ class DeferredImageStorageFilesystem implements DeferredImageStorageInterface
 
         $this->locks[$path] = $handle;
 
-        return $this->decode(stream_get_contents($handle));
+        return $this->decode(stream_get_contents($handle), $path);
     }
 
     /**
@@ -202,15 +202,21 @@ class DeferredImageStorageFilesystem implements DeferredImageStorageInterface
     /**
      * Decodes the contents of a stored configuration.
      */
-    private function decode(string $contents): array
+    private function decode(string $contents, string $path): array
     {
         $content = json_decode($contents, true);
 
         if (JSON_ERROR_NONE !== json_last_error()) {
+            // Delete the file if the contents are corrupt
+            $this->delete($path);
+
             throw new JsonException(json_last_error_msg());
         }
 
         if (!\is_array($content)) {
+            // Delete the file if the contents are invalid
+            $this->delete($path);
+
             throw new InvalidArgumentException(sprintf('Invalid JSON data: expected array, got "%s"', \gettype($content)));
         }
 

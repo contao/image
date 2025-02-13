@@ -4,6 +4,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+ * Handle corrupt JSON files in deferred image storage. [#110]
 
 ## [1.2.2] (2024-10-02)
 
@@ -175,6 +176,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 [0.2.0]: https://github.com/contao/image/compare/0.1.0...0.2.0
 [0.1.0]: https://github.com/contao/image/commits/0.1.0
 
+[#110]: https://github.com/contao/image/issues/110
 [#108]: https://github.com/contao/image/issues/108
 [#104]: https://github.com/contao/image/issues/104
 [#101]: https://github.com/contao/image/issues/101

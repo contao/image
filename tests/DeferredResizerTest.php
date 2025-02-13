@@ -17,6 +17,7 @@ use Contao\Image\DeferredImageStorageInterface;
 use Contao\Image\DeferredResizer;
 use Contao\Image\Exception\FileNotExistsException;
 use Contao\Image\Exception\InvalidArgumentException;
+use Contao\Image\Exception\JsonException;
 use Contao\Image\Exception\RuntimeException;
 use Contao\Image\Image;
 use Contao\Image\ImageDimensions;
@@ -223,6 +224,28 @@ class DeferredResizerTest extends TestCase
         $imagePath = Path::join($this->rootDir, 'a/foo-5fc1c9f9.jpg');
 
         $this->assertNull($resizer->getDeferredImage($imagePath, $imagine));
+    }
+
+    public function testGetCorruptDeferredImage(): void
+    {
+        $storage = $this->createMock(DeferredImageStorageInterface::class);
+        $storage
+            ->method('has')
+            ->willReturn(true)
+        ;
+
+        $storage
+            ->method('get')
+            ->with('a/foo-5fc1c9f9.jpg')
+            ->willThrowException(new JsonException('JSON error'))
+        ;
+
+        $imagine = $this->createMock(ImagineInterface::class);
+        $resizer = $this->createResizer(null, null, null, $storage);
+        $imagePath = Path::join($this->rootDir, 'a/foo-5fc1c9f9.jpg');
+        $deferredImage = $resizer->getDeferredImage($imagePath, $imagine);
+
+        $this->assertNull($deferredImage);
     }
 
     public function testResizeDeferredImageThrowsForOutsidePath(): void
