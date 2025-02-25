@@ -28,7 +28,7 @@
     "require-dev": {
         "bamarni/composer-bin-plugin": "^1.4",
         "contao/imagine-svg": "^1.0",
-        "contao/test-case": "^4.5",
+        "contao/test-case": "^4.5 <4.13.51",
         "phpunit/phpunit": "^8.5 || ^9.5",
         "symfony/phpunit-bridge": "^5.4 || ^6.0 || ^7.0",
         "symfony/polyfill-php81": "^1.27"
