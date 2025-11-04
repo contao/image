@@ -184,12 +184,16 @@ class XmpFormat extends AbstractFormat
                 $foundDescription = true;
 
                 foreach ($desc->attributes ?? [] as $attr) {
-                    $metadata[] = $this->parseValue($attr->namespaceURI, $attr->localName, $attr->value);
+                    if ($attr->namespaceURI && $attr->localName) {
+                        $metadata[] = $this->parseValue($attr->namespaceURI, $attr->localName, $attr->value);
+                    }
                 }
 
                 foreach ($desc->childNodes ?? [] as $node) {
                     if ($node instanceof \DOMElement) {
-                        $metadata[] = $this->parseValue($node->namespaceURI, $node->localName, $node);
+                        if ($node->namespaceURI && $node->localName) {
+                            $metadata[] = $this->parseValue($node->namespaceURI, $node->localName, $node);
+                        }
                     }
                 }
             }
