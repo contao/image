@@ -175,24 +175,28 @@ class XmpFormat extends AbstractFormat
         $foundDescription = false;
         $metadata = [];
 
-        foreach ($this->loadXml($binaryChunk)->getElementsByTagNameNS('http://www.w3.org/1999/02/22-rdf-syntax-ns#', 'RDF') as $rdf) {
-            foreach ($rdf->childNodes ?? [] as $desc) {
-                if ('Description' !== $desc->localName || 'http://www.w3.org/1999/02/22-rdf-syntax-ns#' !== $desc->namespaceURI) {
-                    continue;
-                }
+        try {
+            foreach ($this->loadXml($binaryChunk)->getElementsByTagNameNS('http://www.w3.org/1999/02/22-rdf-syntax-ns#', 'RDF') as $rdf) {
+                foreach ($rdf->childNodes ?? [] as $desc) {
+                    if ('Description' !== $desc->localName || 'http://www.w3.org/1999/02/22-rdf-syntax-ns#' !== $desc->namespaceURI) {
+                        continue;
+                    }
 
-                $foundDescription = true;
+                    $foundDescription = true;
 
-                foreach ($desc->attributes ?? [] as $attr) {
-                    $metadata[] = $this->parseValue($attr->namespaceURI, $attr->localName, $attr->value);
-                }
+                    foreach ($desc->attributes ?? [] as $attr) {
+                        $metadata[] = $this->parseValue($attr->namespaceURI ?? $desc->namespaceURI, $attr->localName, $attr->value);
+                    }
 
-                foreach ($desc->childNodes ?? [] as $node) {
-                    if ($node instanceof \DOMElement) {
-                        $metadata[] = $this->parseValue($node->namespaceURI, $node->localName, $node);
+                    foreach ($desc->childNodes ?? [] as $node) {
+                        if ($node instanceof \DOMElement) {
+                            $metadata[] = $this->parseValue($node->namespaceURI, $node->localName, $node);
+                        }
                     }
                 }
             }
+        } catch (\Throwable $exception) {
+            throw new InvalidImageMetadataException('Parsing XMP metadata failed', 0, $exception);
         }
 
         if (!$foundDescription) {
@@ -308,14 +312,23 @@ class XmpFormat extends AbstractFormat
             $disableEntities = libxml_disable_entity_loader();
         }
 
-        $document = new \DOMDocument();
-        $document->loadXML($xml, LIBXML_NONET);
+        try {
+            $document = new \DOMDocument();
 
-        libxml_clear_errors();
-        libxml_use_internal_errors($internalErrors);
+            if (!$document->loadXML($xml, LIBXML_NONET)) {
+                if ($error = libxml_get_last_error()) {
+                    throw new \ErrorException($error->message, $error->code, E_ERROR, null, $error->line);
+                }
 
-        if (LIBXML_VERSION < 20900) {
-            libxml_disable_entity_loader($disableEntities);
+                throw new \ErrorException('XML parse error');
+            }
+        } finally {
+            libxml_clear_errors();
+            libxml_use_internal_errors($internalErrors);
+
+            if (LIBXML_VERSION < 20900) {
+                libxml_disable_entity_loader($disableEntities);
+            }
         }
 
         return $document;
