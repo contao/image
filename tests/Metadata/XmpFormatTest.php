@@ -101,9 +101,39 @@ class XmpFormatTest extends TestCase
         ];
 
         yield [
+            '<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:iX="http://ns.adobe.com/iX/1.0/">'
+            .'<rdf:Description>'
+            .'<creator>missing namespace</creator>'
+            .'</rdf:Description>'
+            .'</rdf:RDF>',
+            [],
+            [],
+        ];
+
+        yield [
             'NOT XMP',
             [],
             [],
+        ];
+
+        yield [
+            '<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:iX="http://ns.adobe.com/iX/1.0/">'
+            .'<rdf:Description about="missing-namespace-prefix" xmlns:xapMM="http://ns.adobe.com/xap/1.0/mm/">'
+            .'<xapMM:DocumentID>adobe:docid:photoshop:00000000-0000-1000-8000-000000000000</xapMM:DocumentID>'
+            .'</rdf:Description>'
+            .'</rdf:RDF>',
+            [
+                'http://www.w3.org/1999/02/22-rdf-syntax-ns#' => [
+                    'about' => ['missing-namespace-prefix'],
+                ],
+                'http://ns.adobe.com/xap/1.0/mm/' => [
+                    'DocumentID' => ['adobe:docid:photoshop:00000000-0000-1000-8000-000000000000'],
+                ],
+            ],
+            [
+                'rdf:about' => ['missing-namespace-prefix'],
+                'xmpMM:DocumentID' => ['adobe:docid:photoshop:00000000-0000-1000-8000-000000000000'],
+            ],
         ];
     }
 
