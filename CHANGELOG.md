@@ -4,6 +4,9 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+
+## [1.2.4] (2026-01-21)
+
  * Handle missing attribute namespace in XMP. [#112]
  * Support the simple file format of WEBP. [#114]
  * Fix missing EXIF author field in Apple Preview. [#115]
@@ -154,7 +157,8 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
  * Initial release
 
-[Unreleased]: https://github.com/contao/image/compare/1.2.3...1.x
+[Unreleased]: https://github.com/contao/image/compare/1.2.4...1.x
+[1.2.4]: https://github.com/contao/image/compare/1.2.3...1.2.4
 [1.2.3]: https://github.com/contao/image/compare/1.2.2...1.2.3
 [1.2.2]: https://github.com/contao/image/compare/1.2.1...1.2.2
 [1.2.1]: https://github.com/contao/image/compare/1.2.0...1.2.1
