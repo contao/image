@@ -151,11 +151,14 @@ class ExifFormat extends AbstractFormat
         }
 
         // Offset to data area
-        $offset = \count($data) * 12 + 14;
+        $offset = (\count($data) + 1) * 12 + 14;
 
         $exif = "II\x2A\x00"; // TIFF header Intel byte order (little endian)
         $exif .= pack('V', 8); // Offset to first IFD
-        $exif .= pack('v', \count($data)); // Number of directory entries
+        $exif .= pack('v', \count($data) + 1); // Number of directory entries
+
+        // Add Orientation tag to improve compatibility with Apple Preview
+        $exif .= "\x12\x01\x03\x00\x01\x00\x00\x00\x01\x00\x00\x00";
 
         foreach ($data as $key => $value) {
             $exif .= (string) $key;
