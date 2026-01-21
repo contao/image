@@ -4,6 +4,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+ * Handle missing attribute namespace in XMP. [#112]
 
 ## [1.2.3] (2025-02-13)
 
@@ -180,6 +181,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 [0.2.0]: https://github.com/contao/image/compare/0.1.0...0.2.0
 [0.1.0]: https://github.com/contao/image/commits/0.1.0
 
+[#112]: https://github.com/contao/image/issues/112
 [#110]: https://github.com/contao/image/issues/110
 [#108]: https://github.com/contao/image/issues/108
 [#104]: https://github.com/contao/image/issues/104
