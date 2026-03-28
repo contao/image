@@ -247,6 +247,10 @@ class Resizer implements ResizerInterface
             return $this->createImage($image, $image->getPath());
         }
 
+        if ($this->isAnimatedGif($image->getPath())) {
+            return $this->createImage($image, $image->getPath());
+        }
+
         $cachePath = Path::join($this->cacheDir, $this->createCachePath($image->getPath(), $coordinates, $options, false));
 
         if (!$options->getBypassCache()) {
@@ -364,5 +368,31 @@ class Resizer implements ResizerInterface
         }
 
         return implode('', $result);
+    }
+
+    /**
+     * Check if a file is an animated GIF.
+     */
+    private function isAnimatedGif(string $path): bool
+    {
+        if (strtolower(pathinfo($path, PATHINFO_EXTENSION)) !== 'gif') {
+            return false;
+        }
+
+        if (!file_exists($path)) {
+            return false;
+        }
+
+        $content = file_get_contents($path, false, null, 0, 3145728);
+
+        if ($content === false) {
+            return false;
+        }
+
+        // Count occurrences of the GIF image separator byte
+        // Animated GIFs have multiple image blocks (0x00,0x21,0xF9)
+        $count = preg_match_all('#\x00\x21\xF9\x04#', $content, $matches);
+
+        return $count > 1;
     }
 }
