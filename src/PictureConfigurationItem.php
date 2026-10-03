@@ -34,6 +34,11 @@ class PictureConfigurationItem
      */
     private $media = '';
 
+    public function __clone()
+    {
+        $this->resizeConfig = null === $this->resizeConfig ? null : clone $this->resizeConfig;
+    }
+
     public function getResizeConfig(): ResizeConfiguration
     {
         if (null === $this->resizeConfig) {
@@ -84,5 +89,37 @@ class PictureConfigurationItem
         $this->media = $media;
 
         return $this;
+    }
+
+    public function withResizeConfig(ResizeConfiguration $resizeConfig): self
+    {
+        $copy = clone $this;
+        $copy->resizeConfig = $resizeConfig;
+
+        return $copy;
+    }
+
+    public function withSizes(string $sizes): self
+    {
+        $copy = clone $this;
+        $copy->sizes = $sizes;
+
+        return $copy;
+    }
+
+    public function withDensities(string $densities): self
+    {
+        $copy = clone $this;
+        $copy->densities = $densities;
+
+        return $copy;
+    }
+
+    public function withMedia(string $media): self
+    {
+        $copy = clone $this;
+        $copy->media = $media;
+
+        return $copy;
     }
 }
