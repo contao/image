@@ -33,6 +33,12 @@ class PictureConfiguration
      */
     private $formats = [];
 
+    public function __clone()
+    {
+        $this->size = null === $this->size ? null : clone $this->size;
+        $this->sizeItems = array_map(static fn (PictureConfigurationItem $item) => clone $item, $this->sizeItems);
+    }
+
     public function getSize(): PictureConfigurationItem
     {
         if (null === $this->size) {
@@ -101,6 +107,50 @@ class PictureConfiguration
         $this->formats = $formats;
 
         return $this;
+    }
+
+    public function withSize(PictureConfigurationItem $size): self
+    {
+        $copy = clone $this;
+        $copy->size = $size;
+
+        return $copy;
+    }
+
+    public function withSizeItems(array $sizeItems): self
+    {
+        $copy = clone $this;
+
+        foreach ($sizeItems as $sizeItem) {
+            if (!$sizeItem instanceof PictureConfigurationItem) {
+                throw new InvalidArgumentException('$sizeItems must be an array of PictureConfigurationItem objects');
+            }
+        }
+
+        $copy->sizeItems = $sizeItems;
+
+        return $copy;
+    }
+
+    public function withFormats(array $formats): self
+    {
+        $copy = clone $this;
+
+        if (!isset($formats[self::FORMAT_DEFAULT])) {
+            $formats[self::FORMAT_DEFAULT] = [self::FORMAT_DEFAULT];
+        }
+
+        foreach ($formats as $sourceFormat => $targetFormats) {
+            $copy->assertValidFormat($sourceFormat);
+
+            foreach ($targetFormats as $targetFormat) {
+                $copy->assertValidFormat($targetFormat);
+            }
+        }
+
+        $copy->formats = $formats;
+
+        return $copy;
     }
 
     /**

@@ -20,7 +20,7 @@ class ResizeConfiguration
     public const MODE_BOX = 'box';
 
     /**
-     * @deprecated Deprecated since version 1.2, to be removed in version 2.0.
+     * @deprecated Legacy use is deprecated since 1.2. The planned removal in 2.0 is superseded.
      */
     public const MODE_PROPORTIONAL = 'proportional';
 
@@ -124,5 +124,57 @@ class ResizeConfiguration
         $this->zoomLevel = $zoomLevel;
 
         return $this;
+    }
+
+    public function withWidth(int $width): self
+    {
+        $copy = clone $this;
+
+        if ($width < 0) {
+            throw new InvalidArgumentException('Width must not be negative');
+        }
+
+        $copy->width = $width;
+
+        return $copy;
+    }
+
+    public function withHeight(int $height): self
+    {
+        $copy = clone $this;
+
+        if ($height < 0) {
+            throw new InvalidArgumentException('Height must not be negative');
+        }
+
+        $copy->height = $height;
+
+        return $copy;
+    }
+
+    public function withMode(string $mode): self
+    {
+        $copy = clone $this;
+
+        if (!\in_array($mode, [self::MODE_CROP, self::MODE_BOX, self::MODE_PROPORTIONAL], true)) {
+            throw new InvalidArgumentException('Mode must be one of the '.self::class.'::MODE_* constants');
+        }
+
+        $copy->mode = $mode;
+
+        return $copy;
+    }
+
+    public function withZoomLevel(int $zoomLevel): self
+    {
+        $copy = clone $this;
+
+        if ($zoomLevel < 0 || $zoomLevel > 100) {
+            throw new InvalidArgumentException('Zoom level must be between 0 and 100');
+        }
+
+        $copy->zoomLevel = $zoomLevel;
+
+        return $copy;
     }
 }

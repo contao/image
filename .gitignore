@@ -9,3 +9,9 @@
 # PhpUnit
 /phpunit.xml
 /.phpunit.result.cache
+
+# Downloaded upstream test fixtures
+/tests/fixtures/
+/examples/consumer/vendor/
+/examples/consumer/var/
+/examples/consumer/.composer-local.*
