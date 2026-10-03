@@ -20,6 +20,7 @@ use Contao\Image\ProcessingOptions;
 use Contao\Image\ResizeConfiguration;
 use Contao\Image\SourceReference;
 use Imagine\Gd\Imagine;
+use Imagine\Image\Metadata\DefaultMetadataReader;
 use Symfony\Component\Filesystem\Filesystem;
 
 class OrientationContractTest extends AbstractImagePipelineTest
@@ -27,15 +28,8 @@ class OrientationContractTest extends AbstractImagePipelineTest
     public function testInspectionControlsRotationWhenDriverOmitsMetadata(): void
     {
         $this->createOrientedSource();
-        $driver = new class() extends Imagine {
-            public function open($path)
-            {
-                $image = parent::open($path);
-                unset($image->metadata()['ifd0.Orientation']);
-
-                return $image;
-            }
-        };
+        $driver = new Imagine();
+        $driver->setMetadataReader(new DefaultMetadataReader());
         $factory = new FilesystemImageFactory(new FilesystemImageConfiguration($this->directory.'/oriented', '/images', 'secret'), $this->resolver, new ImagineImageDecoderEncoder($driver));
         $source = $this->resolver->resolve(new SourceReference('assets', 'source'));
         $result = $factory->getResizer()->resize($source, (new ResizeConfiguration())->withWidth(40), new ProcessingOptions());
