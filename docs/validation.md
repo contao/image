@@ -7,11 +7,11 @@ The inspected starting point is `06cafbc`. The additive implementation is on `co
 | Environment | Result |
 | --- | --- |
 | PHP 8.3.35, GD and Imagick | 379 tests, 2,601 assertions |
-| PHP 8.4.20, GD | 379 tests, 2,068 assertions, Imagick test skipped |
-| PHP 8.5, GD and Imagick | 379 tests, 2,601 assertions |
+| PHP 8.4.26, GD | 379 tests, 2,068 assertions, Imagick test skipped |
+| PHP 8.5.5, GD and Imagick | 379 tests, 2,601 assertions |
 | Lowest dependencies, PHP 8.3 | 379 tests, 2,601 assertions |
 | PHPStan 1.12.34 on PHP 8.4 | No errors |
-| ECS non-mutating check | No errors |
+| ECS non-mutating check on PHP 8.3 | No errors |
 | Composer strict validation | Passed |
 | actionlint 1.7.7 | Passed |
 | Local Composer consumer override 1.3.99 | Passed, five real transformations |
@@ -20,7 +20,7 @@ The repaired PHP 8.3 runtime works locally. Compatible minimum dependency versio
 
 Coverage includes exact legacy filename and JSON fixtures, 54 preserved calculation cases, stream inspection and ownership, unknown adapter options and precedence, copyright and orientation, SVG/SVGZ, source mutation, pending/completed recovery, exports, revisions and chaining, lifecycle restoration, corrupt records, and a URL-only backend. Process barriers cover cold inspection, duplicate registration, blocking/non-blocking workers, process death, publication-before-completion failure and pruning interrupted during deletion. These tests use independent local processes and shared filesystem storage, not an untested distributed lease implementation.
 
-Linux and Windows PHP 8.3–8.5 matrices, lowest dependency jobs and an Imagick coverage job are configured. Hosted jobs were not run because this task does not push changes. Local checks ran on macOS.
+Linux and Windows PHP 8.3–8.5 matrices, lowest dependency jobs and an Imagick coverage job are configured. The 1.3 quality job uses PHP 8.3 for the compatible ECS 5 toolchain. Hosted jobs were not run because this task does not push changes. Local checks ran on macOS.
 
 ## Warm-cache measurements
 
