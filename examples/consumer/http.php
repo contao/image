@@ -14,7 +14,10 @@ try {
         http_response_code(404);
     } elseif ($result instanceof ReadableImageResultInterface) {
         $stream = $result->openStream();
-        header('Content-Type: '.('jpg' === $result->getFormat() ? 'image/jpeg' : 'image/'.$result->getFormat()));
+        $format = $result->getFormat();
+        $mime = match ($format) { 'jpg' => 'image/jpeg', 'svg', 'svgz' => 'image/svg+xml', default => 'image/'.$format };
+        header('Content-Type: '.$mime);
+        if ('svgz' === $format) { header('Content-Encoding: gzip'); }
         try { fpassthru($stream); } finally { fclose($stream); }
     } else {
         header('Location: '.$result->getUrl(), true, 302);
