@@ -90,11 +90,14 @@ class Image implements ImageInterface
      */
     public function getUrl(string $rootDir, string $prefix = ''): string
     {
-        if (!Path::isBasePath($rootDir, $this->path)) {
+        $rootDir = str_replace('\\', '/', $rootDir);
+        $path = str_replace('\\', '/', $this->path);
+
+        if (!Path::isBasePath($rootDir, $path)) {
             throw new InvalidArgumentException(sprintf('Path "%s" is not inside root directory "%s"', $this->path, $rootDir));
         }
 
-        $url = Path::makeRelative($this->path, $rootDir);
+        $url = Path::makeRelative($path, $rootDir);
         $url = str_replace('%2F', '/', rawurlencode($url));
 
         return $prefix.$url;

@@ -13,6 +13,7 @@ declare(strict_types=1);
 use Contao\EasyCodingStandard\Fixer\TypeHintOrderFixer;
 use PhpCsFixer\Fixer\Comment\HeaderCommentFixer;
 use PhpCsFixer\Fixer\ControlStructure\EmptyLoopBodyFixer;
+use PhpCsFixer\Fixer\FunctionNotation\NullableTypeDeclarationForDefaultNullValueFixer;
 use PhpCsFixer\Fixer\FunctionNotation\UseArrowFunctionsFixer;
 use PhpCsFixer\Fixer\Phpdoc\NoSuperfluousPhpdocTagsFixer;
 use PhpCsFixer\Fixer\PhpUnit\PhpUnitExpectationFixer;
@@ -37,9 +38,12 @@ return static function (ECSConfig $ecsConfig): void {
 
     $ecsConfig->ruleWithConfiguration(EmptyLoopBodyFixer::class, ['style' => 'semicolon']);
 
-    $ecsConfig->parallel();
+    $ecsConfig->ruleWithConfiguration(NullableTypeDeclarationForDefaultNullValueFixer::class, [
+        'use_nullable_type_declaration' => true,
+    ]);
     $ecsConfig->lineEnding("\n");
 
     $parameters = $ecsConfig->parameters();
+    $parameters->set(Option::PARALLEL, false);
     $parameters->set(Option::CACHE_DIRECTORY, sys_get_temp_dir().'/ecs_default_cache');
 };
