@@ -134,7 +134,7 @@ class WebpContainer extends AbstractContainer
             }
 
             if (8 !== \strlen($marker)) {
-                throw new InvalidImageContainerException(sprintf('Invalid WEBP chunk "%s"', '0x'.bin2hex($marker)));
+                throw new InvalidImageContainerException(\sprintf('Invalid WEBP chunk "%s"', '0x'.bin2hex($marker)));
             }
 
             $type = substr($marker, 0, 4);
@@ -143,17 +143,17 @@ class WebpContainer extends AbstractContainer
             if ('EXIF' === $type) {
                 $exif = fread($stream, $size);
 
-                // Older ImageMagick versions incorrectly included the JPEG APP1
-                // Exif identifier string 45 78 69 66 00 00
-                // see https://github.com/ImageMagick/ImageMagick/issues/3140
+                // Older ImageMagick versions incorrectly included the JPEG APP1 Exif identifier string
+                // 45 78 69 66 00 00 see https://github.com/ImageMagick/ImageMagick/issues/3140
                 if (str_starts_with($exif, "Exif\x00\x00")) {
                     $exif = substr($exif, 6);
                 }
 
                 $metadata[ExifFormat::NAME] = $this->parseFormat(ExifFormat::NAME, $exif);
             } elseif ('XMP ' === $type || "XMP\x00" === $type) {
-                // Older ImageMagick versions incorrectly used XMP followed by a null byte: 58 4D 50 00
-                // see https://github.com/ImageMagick/ImageMagick/commit/da99bea66a4ad0bcf6149170eda81e6dcc229af0
+                // Older ImageMagick versions incorrectly used XMP followed by a null byte:
+                // 58 4D 50 00 see
+                // https://github.com/ImageMagick/ImageMagick/commit/da99bea66a4ad0bcf6149170eda81e6dcc229af0
                 $metadata[XmpFormat::NAME] = $this->parseFormat(XmpFormat::NAME, fread($stream, $size));
             } else {
                 // Skip to the next chunk
@@ -185,7 +185,7 @@ class WebpContainer extends AbstractContainer
         return $this->buildVp8xChunk(
             0b00000000 | $vp8xMetaFlags,
             $width,
-            $height
+            $height,
         );
     }
 
@@ -212,7 +212,7 @@ class WebpContainer extends AbstractContainer
         return $this->buildVp8xChunk(
             0b00000000 | $vp8xMetaFlags,
             $width,
-            $height
+            $height,
         );
     }
 
@@ -232,7 +232,7 @@ class WebpContainer extends AbstractContainer
             $width >> 16 & 0xFF,
             $height & 0xFF,
             $height >> 8 & 0xFF,
-            $height >> 16 & 0xFF
+            $height >> 16 & 0xFF,
         );
 
         return $this->buildChunk('VP8X', $vp8x);

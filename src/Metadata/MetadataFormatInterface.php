@@ -17,6 +17,7 @@ use Contao\Image\Exception\InvalidImageMetadataException;
 interface MetadataFormatInterface
 {
     public const NAME = null;
+
     public const DEFAULT_PRESERVE_KEYS = [];
 
     public function serialize(ImageMetadata $metadata, array $preserveKeys): string;
@@ -27,7 +28,7 @@ interface MetadataFormatInterface
     public function parse(string $binaryChunk): array;
 
     /**
-     * @return array<string,list<string>> Labels as keys, values as string lists
+     * @return array<string, list<string>> Labels as keys, values as string lists
      */
     public function toReadable(array $data): array;
 }

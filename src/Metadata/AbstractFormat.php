@@ -22,7 +22,7 @@ abstract class AbstractFormat implements MetadataFormatInterface
             function ($value) {
                 return $this->ensureStringList($value);
             },
-            $data
+            $data,
         );
     }
 
@@ -69,7 +69,7 @@ abstract class AbstractFormat implements MetadataFormatInterface
 
                     return $value;
                 },
-            ]
+            ],
         );
     }
 
@@ -98,7 +98,7 @@ abstract class AbstractFormat implements MetadataFormatInterface
 
                 return trim((string) $value);
             },
-            (array) $value
+            (array) $value,
         );
 
         return array_values(
@@ -106,8 +106,8 @@ abstract class AbstractFormat implements MetadataFormatInterface
                 $value,
                 static function ($value) {
                     return '' !== $value;
-                }
-            )
+                },
+            ),
         );
     }
 }

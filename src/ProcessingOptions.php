@@ -24,10 +24,15 @@ use Symfony\Component\Filesystem\Path;
 final class ProcessingOptions
 {
     private EncodingOptions $encoding;
+
     private bool $deferred = false;
+
     private bool $bypassCache = false;
+
     private bool $skipIfDimensionsMatch = false;
+
     private ?string $destination = null;
+
     private array $preserveCopyrightMetadata = [XmpFormat::NAME => XmpFormat::DEFAULT_PRESERVE_KEYS, IptcFormat::NAME => IptcFormat::DEFAULT_PRESERVE_KEYS, ExifFormat::NAME => ExifFormat::DEFAULT_PRESERVE_KEYS, PngFormat::NAME => PngFormat::DEFAULT_PRESERVE_KEYS, GifFormat::NAME => GifFormat::DEFAULT_PRESERVE_KEYS];
 
     public function __construct()

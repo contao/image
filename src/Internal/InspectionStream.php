@@ -19,9 +19,13 @@ use Contao\Image\SourceVersion;
 final class InspectionStream
 {
     private $input;
+
     private $buffer;
+
     private int $length = 0;
+
     private int $position = 0;
+
     private SourceVersion $version;
 
     public function __construct(private ImageSourceInterface $source)

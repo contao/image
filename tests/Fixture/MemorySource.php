@@ -19,12 +19,18 @@ use Contao\Image\SourceReference;
 final class MemorySource implements ImageSourceInterface
 {
     public ?\Closure $onRead = null;
+
     public int $opens = 0;
+
     public int $closes = 0;
+
     public int $bytesRead = 0;
 
-    public function __construct(public string $contents, private string $filename = 'wrong.txt', private string $key = 'image')
-    {
+    public function __construct(
+        public string $contents,
+        private string $filename = 'wrong.txt',
+        private string $key = 'image',
+    ) {
     }
 
     public function getReference(): SourceReference

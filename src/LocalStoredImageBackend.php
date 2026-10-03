@@ -14,8 +14,11 @@ namespace Contao\Image;
 
 final class LocalStoredImageBackend extends ReadableStoredImageBackend implements LocalImageBackendInterface
 {
-    public function __construct(ImageDecoderEncoderInterface $codec, private LocalTargetContentStorageInterface $localStorage, string $namespace = 'imagine-v1')
-    {
+    public function __construct(
+        ImageDecoderEncoderInterface $codec,
+        private LocalTargetContentStorageInterface $localStorage,
+        string $namespace = 'imagine-v1',
+    ) {
         parent::__construct($codec, $localStorage, $namespace);
     }
 

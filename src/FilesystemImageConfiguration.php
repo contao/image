@@ -15,10 +15,14 @@ namespace Contao\Image;
 final class FilesystemImageConfiguration
 {
     private string $namespace = 'imagine-v1';
+
     private ImageInspectorInterface $inspector;
 
-    public function __construct(private string $cacheDirectory, private string $urlPrefix, private string $secret)
-    {
+    public function __construct(
+        private string $cacheDirectory,
+        private string $urlPrefix,
+        private string $secret,
+    ) {
         $this->inspector = new StreamImageInspector();
     }
 

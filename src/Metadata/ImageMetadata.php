@@ -15,12 +15,12 @@ namespace Contao\Image\Metadata;
 final class ImageMetadata
 {
     /**
-     * @var array<string,array>
+     * @var array<string, array>
      */
     private $byFormat;
 
     /**
-     * @param array<string,array> $byFormat
+     * @param array<string, array> $byFormat
      */
     public function __construct(array $byFormat)
     {
@@ -33,7 +33,7 @@ final class ImageMetadata
     }
 
     /**
-     * @return array<string,array>
+     * @return array<string, array>
      */
     public function getAll(): array
     {

@@ -15,6 +15,7 @@ namespace Contao\Image\Internal;
 final class SvgRoot
 {
     public ?array $attributes = null;
+
     public bool $found = false;
 
     /**

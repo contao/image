@@ -16,6 +16,7 @@ use Contao\Image\FilesystemImageConfiguration;
 use Contao\Image\FilesystemImageFactory;
 use Contao\Image\FilesystemSourceResolver;
 use Contao\Image\ImageSourceInterface;
+use Contao\Image\ImagineImageDecoderEncoder;
 use Contao\Image\SourceReference;
 use Imagine\Gd\Imagine;
 use Imagine\Image\Box;
@@ -25,7 +26,9 @@ use Symfony\Component\Filesystem\Filesystem;
 abstract class AbstractImagePipelineTest extends TestCase
 {
     protected string $directory;
+
     protected FilesystemSourceResolver $resolver;
+
     protected FilesystemImageFactory $factory;
 
     protected function setUp(): void
@@ -33,7 +36,7 @@ abstract class AbstractImagePipelineTest extends TestCase
         $this->directory = sys_get_temp_dir().'/contao-image-test-'.bin2hex(random_bytes(8));
         (new Filesystem())->mkdir($this->directory);
         $this->resolver = new FilesystemSourceResolver(['assets' => $this->directory]);
-        $this->factory = new FilesystemImageFactory(new FilesystemImageConfiguration($this->directory.'/cache', '/images', 'test-secret'), $this->resolver, new Imagine());
+        $this->factory = new FilesystemImageFactory(new FilesystemImageConfiguration($this->directory.'/cache', '/images', 'test-secret'), $this->resolver, new ImagineImageDecoderEncoder(new Imagine()));
     }
 
     protected function tearDown(): void

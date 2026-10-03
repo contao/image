@@ -14,8 +14,11 @@ namespace Contao\Image;
 
 final class TransformationCoordinates
 {
-    public function __construct(private Size $size, private Point $cropStart, private Size $cropSize)
-    {
+    public function __construct(
+        private Size $size,
+        private Point $cropStart,
+        private Size $cropSize,
+    ) {
     }
 
     public function getSize(): Size

@@ -15,19 +15,3 @@ parameters:
     paths:
         - %currentWorkingDirectory%/src
         - %currentWorkingDirectory%/tests
-
-    ignoreErrors:
-        -
-            # Ignore the forward compatible phpDoc comment
-            message: '#PHPDoc tag @param references unknown parameter:#'
-            path: %currentWorkingDirectory%/src/Resizer.php
-        -
-            # Ignore the forward compatible phpDoc comment
-            message: '#PHPDoc tag @param references unknown parameter:#'
-            path: %currentWorkingDirectory%/src/DeferredResizer.php
-        -
-            message: '#class Imagine\\Image\\(Box|Point) constructor expects int, float given#'
-            path: %currentWorkingDirectory%/tests/ResizeCoordinatesTest.php
-        -
-            message: '#ResizeCoordinates::isEqualTo\(\) expects .*, stdClass given#'
-            path: %currentWorkingDirectory%/tests/ResizeCoordinatesTest.php

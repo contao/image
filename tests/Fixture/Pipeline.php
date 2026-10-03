@@ -30,8 +30,11 @@ use Contao\Image\TargetRecordStorageInterface;
 final class Pipeline
 {
     public readonly ImageResizer $resizer;
+
     public readonly ImageLifecycle $lifecycle;
+
     public readonly TargetCoordinator $targets;
+
     public readonly TargetRecordStorageInterface $records;
 
     public function __construct(string $root, ImageSourceResolverInterface $resolver, ImageBackendInterface $backend, ?ClockInterface $clock = null, ?TargetRecordStorageInterface $records = null)

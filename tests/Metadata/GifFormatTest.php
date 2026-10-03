@@ -27,7 +27,7 @@ class GifFormatTest extends TestCase
         $this->assertSame($expected, (new GifFormat())->toReadable((new GifFormat())->parse($source)));
     }
 
-    public function getParse(): \Generator
+    public static function getParse(): iterable
     {
         yield [
             "\x04Test\x00",
@@ -59,7 +59,7 @@ class GifFormatTest extends TestCase
         $this->assertSame($expected, (new GifFormat())->serialize($source, $preserveKeys));
     }
 
-    public function getSerialize(): \Generator
+    public static function getSerialize(): iterable
     {
         yield [
             new ImageMetadata([

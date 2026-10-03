@@ -17,6 +17,7 @@ use Contao\Image\Exception\InvalidImageMetadataException;
 class IptcFormat extends AbstractFormat
 {
     public const NAME = 'iptc';
+
     public const DEFAULT_PRESERVE_KEYS = ['2#116', '2#080', '2#115', '2#110'];
 
     public function serialize(ImageMetadata $metadata, array $preserveKeys): string
@@ -29,7 +30,7 @@ class IptcFormat extends AbstractFormat
             ?? $metadata->getFormat(ExifFormat::NAME)['IFD0']['Copyright']
             ?? $metadata->getFormat(PngFormat::NAME)['Copyright']
             ?? $metadata->getFormat(GifFormat::NAME)['Comment']
-            ?? []
+            ?? [],
         );
 
         $iptc[80] = $this->filterValue(
@@ -37,28 +38,28 @@ class IptcFormat extends AbstractFormat
             ?? $metadata->getFormat(XmpFormat::NAME)['http://purl.org/dc/elements/1.1/']['creator']
             ?? $metadata->getFormat(ExifFormat::NAME)['IFD0']['Artist']
             ?? $metadata->getFormat(PngFormat::NAME)['Author']
-            ?? []
+            ?? [],
         );
 
         $iptc[115] = $this->filterValue(
             $metadata->getFormat(self::NAME)['2#115']
             ?? $metadata->getFormat(XmpFormat::NAME)['http://ns.adobe.com/photoshop/1.0/']['Source']
             ?? $metadata->getFormat(PngFormat::NAME)['Source']
-            ?? []
+            ?? [],
         );
 
         $iptc[110] = $this->filterValue(
             $metadata->getFormat(self::NAME)['2#110']
             ?? $metadata->getFormat(XmpFormat::NAME)['http://ns.adobe.com/photoshop/1.0/']['Credit']
             ?? $metadata->getFormat(PngFormat::NAME)['Disclaimer']
-            ?? []
+            ?? [],
         );
 
         $iptc[5] = $this->filterValue(
             $metadata->getFormat(self::NAME)['2#005']
             ?? $metadata->getFormat(XmpFormat::NAME)['http://purl.org/dc/elements/1.1/']['title']
             ?? $metadata->getFormat(PngFormat::NAME)['Title']
-            ?? []
+            ?? [],
         );
 
         $filtered = [];
@@ -161,7 +162,7 @@ class IptcFormat extends AbstractFormat
                     '2#255' => 'CatalogSets',
                 ][$key] ?? $key;
             },
-            array_keys($data)
+            array_keys($data),
         );
 
         return parent::toReadable(array_combine($keys, $data));

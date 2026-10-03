@@ -73,8 +73,10 @@ if (str_starts_with($mode, 'inspection')) {
         }
     };
     $inspector = new class($directory, $mode) implements ImageInspectorInterface {
-        public function __construct(private string $directory, private string $mode)
-        {
+        public function __construct(
+            private string $directory,
+            private string $mode,
+        ) {
         }
 
         public function inspect(ImageSourceInterface $source): ImageInformation
@@ -119,12 +121,18 @@ $codec = new class($directory) implements ImageDecoderEncoderInterface {
 $storage = new ContentStorageDecorator(new FilesystemTargetContentStorage($directory.'/content', '/images'));
 
 if ('prune' === $mode) {
-    $storage->beforeDelete = static function (): void { fwrite(STDOUT, "delete\n"); fgets(STDIN); };
+    $storage->beforeDelete = static function (): void {
+        fwrite(STDOUT, "delete\n");
+        fgets(STDIN);
+    };
 }
 
 if ('regenerate' === $mode) {
     $records->beforeTargetLock = null;
-    $records->beforeSourceLock = static function () use ($records): void { fwrite(STDOUT, "source-lock\n"); $records->beforeSourceLock = null; };
+    $records->beforeSourceLock = static function () use ($records): void {
+        fwrite(STDOUT, "source-lock\n");
+        $records->beforeSourceLock = null;
+    };
 }
 $backend = new LocalStoredImageBackend($codec, $storage);
 $pipeline = new Pipeline($directory.'/race', $resolver, $backend, null, $records);

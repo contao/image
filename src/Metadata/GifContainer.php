@@ -33,7 +33,7 @@ class GifContainer extends AbstractContainer
         }
 
         if (!\in_array(substr($head, 3, 3), ['87a', '89a'], true)) {
-            throw new InvalidImageContainerException(sprintf('Unrecognized GIF version "%s".', substr($head, 3, 3)));
+            throw new InvalidImageContainerException(\sprintf('Unrecognized GIF version "%s".', substr($head, 3, 3)));
         }
 
         // Application and comment extension require version 89a
@@ -92,7 +92,7 @@ class GifContainer extends AbstractContainer
         }
 
         if (!\in_array(substr($head, 3, 3), ['87a', '89a'], true)) {
-            throw new InvalidImageContainerException(sprintf('Unrecognized GIF version "%s".', substr($head, 3, 3)));
+            throw new InvalidImageContainerException(\sprintf('Unrecognized GIF version "%s".', substr($head, 3, 3)));
         }
 
         // Skip Global Color Table
@@ -175,8 +175,8 @@ class GifContainer extends AbstractContainer
                     throw new InvalidImageContainerException('Invalid GIF sub block');
                 }
 
-                // According to section 1.1.2 in the XMP Specification
-                // Part 3, the size bytes are part of the UTF-8 text
+                // According to section 1.1.2 in the XMP Specification Part 3, the size bytes are
+                // part of the UTF-8 text
                 $xmp .= $subBlockSize;
                 $xmp .= fread($stream, \ord($subBlockSize));
             }

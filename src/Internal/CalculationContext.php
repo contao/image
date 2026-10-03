@@ -16,7 +16,10 @@ use Contao\Image\Dimensions;
 
 final class CalculationContext
 {
-    public function __construct(public readonly Dimensions $dimensions, public readonly array $importantPart, public readonly float $zoom)
-    {
+    public function __construct(
+        public readonly Dimensions $dimensions,
+        public readonly array $importantPart,
+        public readonly float $zoom,
+    ) {
     }
 }

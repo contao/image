@@ -29,8 +29,7 @@ class XmpFormatTest extends TestCase
             .'<x:xmpmeta xmlns:x="adobe:ns:meta/">'
             .$source
             .'</x:xmpmeta>'
-            .'<?xpacket end="w"?>'
-        ;
+            .'<?xpacket end="w"?>';
 
         if (!$expected) {
             $this->expectException(InvalidImageMetadataException::class);
@@ -41,7 +40,7 @@ class XmpFormatTest extends TestCase
         $this->assertSame($expectedReadable, (new XmpFormat())->toReadable((new XmpFormat())->parse($source)));
     }
 
-    public function getParse(): \Generator
+    public static function getParse(): iterable
     {
         yield [
             '<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">'
@@ -145,7 +144,7 @@ class XmpFormatTest extends TestCase
         $this->assertSame($expected, (new XmpFormat())->serialize($source, $preserveKeys));
     }
 
-    public function getSerialize(): \Generator
+    public static function getSerialize(): iterable
     {
         yield [
             new ImageMetadata([
@@ -266,8 +265,8 @@ class XmpFormatTest extends TestCase
                         ],
                     ],
                 ]),
-                XmpFormat::DEFAULT_PRESERVE_KEYS
-            )
+                XmpFormat::DEFAULT_PRESERVE_KEYS,
+            ),
         );
     }
 }

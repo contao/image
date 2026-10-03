@@ -32,7 +32,7 @@ class IptcFormatTest extends TestCase
         $this->assertSame($expectedReadable, (new IptcFormat())->toReadable((new IptcFormat())->parse($source)));
     }
 
-    public function getParse(): \Generator
+    public static function getParse(): iterable
     {
         yield [
             "8BIM\x04\x04\x00\x00\x00\x00\x00\x38"
@@ -94,7 +94,7 @@ class IptcFormatTest extends TestCase
         $this->assertSame($expected, (new IptcFormat())->serialize($source, $preserveKeys));
     }
 
-    public function getSerialize(): \Generator
+    public static function getSerialize(): iterable
     {
         yield [
             new ImageMetadata([

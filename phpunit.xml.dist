@@ -14,7 +14,4 @@
       <directory>./tests</directory>
     </testsuite>
   </testsuites>
-  <extensions>
-    <extension class="Contao\Image\Tests\PhpunitExtension\DeprecatedClasses"/>
-  </extensions>
 </phpunit>

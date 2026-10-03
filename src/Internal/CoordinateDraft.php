@@ -14,7 +14,10 @@ namespace Contao\Image\Internal;
 
 final class CoordinateDraft
 {
-    public function __construct(public readonly array $size, public readonly array $cropStart, public readonly array $cropSize)
-    {
+    public function __construct(
+        public readonly array $size,
+        public readonly array $cropStart,
+        public readonly array $cropSize,
+    ) {
     }
 }

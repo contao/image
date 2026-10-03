@@ -14,8 +14,11 @@ namespace Contao\Image;
 
 class ReadableImageResult extends ImageResult implements ReadableImageResultInterface
 {
-    public function __construct(TargetRecord $record, ReadableImageBackendInterface $backend, private TargetCoordinator $coordinator)
-    {
+    public function __construct(
+        TargetRecord $record,
+        ReadableImageBackendInterface $backend,
+        private TargetCoordinator $coordinator,
+    ) {
         parent::__construct($record, $backend);
     }
 

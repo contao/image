@@ -17,8 +17,13 @@ use Contao\Image\Exception\SourceUnavailableException;
 
 final class ImageLifecycle
 {
-    public function __construct(private TargetRecordStorageInterface $records, private SourceInformationStorageInterface $information, private BackendRegistry $backends, private ImageSourceResolverInterface $resolver, private ClockInterface $clock = new SystemClock())
-    {
+    public function __construct(
+        private TargetRecordStorageInterface $records,
+        private SourceInformationStorageInterface $information,
+        private BackendRegistry $backends,
+        private ImageSourceResolverInterface $resolver,
+        private ClockInterface $clock = new SystemClock(),
+    ) {
     }
 
     public function acquire(SourceVersion $source): StorageLockInterface

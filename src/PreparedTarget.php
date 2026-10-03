@@ -14,8 +14,11 @@ namespace Contao\Image;
 
 final class PreparedTarget
 {
-    public function __construct(private TargetDescription $description, private ImageTransformation $transformation, private bool $complete = false)
-    {
+    public function __construct(
+        private TargetDescription $description,
+        private ImageTransformation $transformation,
+        private bool $complete = false,
+    ) {
     }
 
     public function getDescription(): TargetDescription

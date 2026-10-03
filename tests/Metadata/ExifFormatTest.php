@@ -32,7 +32,7 @@ class ExifFormatTest extends TestCase
         $this->assertSame($expectedReadable, (new ExifFormat())->toReadable((new ExifFormat())->parse($source)));
     }
 
-    public function getParse(): \Generator
+    public static function getParse(): iterable
     {
         yield [
             // Little endian byte order
@@ -85,7 +85,7 @@ class ExifFormatTest extends TestCase
         $this->assertSame($expected, (new ExifFormat())->serialize($source, $preserveKeys));
     }
 
-    public function getSerialize(): \Generator
+    public static function getSerialize(): iterable
     {
         yield [
             new ImageMetadata([

@@ -51,7 +51,7 @@ class ImportantPartTest extends TestCase
         new ImportantPart($x, $y, $width, $height);
     }
 
-    public function getInvalidValues(): \Generator
+    public static function getInvalidValues(): iterable
     {
         yield [2, 0, 1, 1, 'float between 0 and 1'];
         yield [0, 2, 1, 1, 'float between 0 and 1'];
@@ -80,7 +80,7 @@ class ImportantPartTest extends TestCase
         $this->assertLessThanOrEqual(1.0, $importantPart->getY() + $importantPart->getHeight());
     }
 
-    public function getValuesWithRoundingErrors(): \Generator
+    public static function getValuesWithRoundingErrors(): iterable
     {
         yield [3E-16, 0, 1, 1];
         yield [0, 3E-16, 1, 1];

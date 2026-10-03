@@ -17,10 +17,14 @@ use Contao\Image\Exception\SourceUnavailableException;
 final class ResultImageSource implements ImageSourceInterface
 {
     public const STORAGE = 'image-results';
+
     private ?ImportantPart $part = null;
 
-    public function __construct(private TargetIdentity $identity, private TargetRecordStorageInterface $records, private BackendRegistry $backends)
-    {
+    public function __construct(
+        private TargetIdentity $identity,
+        private TargetRecordStorageInterface $records,
+        private BackendRegistry $backends,
+    ) {
     }
 
     public function getReference(): SourceReference

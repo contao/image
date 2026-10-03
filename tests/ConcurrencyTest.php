@@ -159,7 +159,7 @@ class ConcurrencyTest extends AbstractImagePipelineTest
         $lock->release();
     }
 
-    public function cleanupModes(): iterable
+    public static function cleanupModes(): iterable
     {
         yield 'completed cleanup' => [false];
         yield 'interrupted cleanup' => [true];

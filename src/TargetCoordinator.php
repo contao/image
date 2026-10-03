@@ -16,8 +16,12 @@ use Contao\Image\Exception\CorruptImageRecordException;
 
 final class TargetCoordinator implements DeferredImageProcessorInterface
 {
-    public function __construct(private TargetRecordStorageInterface $records, private BackendRegistry $backends, private ImageSourceResolverInterface $resolver, private ImageLifecycle $lifecycle)
-    {
+    public function __construct(
+        private TargetRecordStorageInterface $records,
+        private BackendRegistry $backends,
+        private ImageSourceResolverInterface $resolver,
+        private ImageLifecycle $lifecycle,
+    ) {
     }
 
     public function register(TargetRequest $request, ImageBackendInterface $backend, ImageSourceInterface $source): ImageResultInterface

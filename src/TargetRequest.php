@@ -14,8 +14,11 @@ namespace Contao\Image;
 
 final class TargetRequest
 {
-    public function __construct(private TargetIdentity $identity, private SourceVersion $source, private ImageTransformation $transformation)
-    {
+    public function __construct(
+        private TargetIdentity $identity,
+        private SourceVersion $source,
+        private ImageTransformation $transformation,
+    ) {
     }
 
     public function getIdentity(): TargetIdentity

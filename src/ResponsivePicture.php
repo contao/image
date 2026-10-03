@@ -14,8 +14,10 @@ namespace Contao\Image;
 
 final class ResponsivePicture implements ResponsivePictureInterface
 {
-    public function __construct(private array $img, private array $sources)
-    {
+    public function __construct(
+        private array $img,
+        private array $sources,
+    ) {
     }
 
     public function getRawImg(): array

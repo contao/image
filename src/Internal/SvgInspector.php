@@ -34,7 +34,7 @@ final class SvgInspector
                     $state->found = true;
                 }
             },
-            static function (): void {}
+            static function (): void {},
         );
         xml_set_external_entity_ref_handler($parser, static fn () => false);
         $inflate = $compressed ? inflate_init(ZLIB_ENCODING_GZIP) : null;
@@ -68,7 +68,7 @@ final class SvgInspector
         // Retain the established SVG unit and aspect-ratio calculations
         $size = (new Image($document, new MetadataBag()))->getSize();
         $kind = match ($size->getType()) {
-            SvgBox::TYPE_ASPECT_RATIO => Dimensions::RELATIVE, SvgBox::TYPE_NONE => Dimensions::UNDEFINED, default => Dimensions::ABSOLUTE
+            SvgBox::TYPE_ASPECT_RATIO => Dimensions::RELATIVE, SvgBox::TYPE_NONE => Dimensions::UNDEFINED, default => Dimensions::ABSOLUTE,
         };
 
         return new ImageInformation(new Dimensions(new Size($size->getWidth(), $size->getHeight()), $kind), $compressed ? 'svgz' : 'svg');

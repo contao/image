@@ -17,6 +17,7 @@ use Contao\Image\LocalTargetContentStorageInterface;
 final class ContentStorageDecorator implements LocalTargetContentStorageInterface
 {
     public ?\Closure $beforeDelete = null;
+
     public array $counts = [];
 
     public function __construct(private LocalTargetContentStorageInterface $inner)

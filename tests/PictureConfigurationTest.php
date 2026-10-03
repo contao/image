@@ -19,71 +19,81 @@ use PHPUnit\Framework\TestCase;
 
 class PictureConfigurationTest extends TestCase
 {
-    public function testSetSize(): void
+    public function testWithSize(): void
     {
         $config = new PictureConfiguration();
         $configItem = $this->createMock(PictureConfigurationItem::class);
 
-        $this->assertSame($config, $config->setSize($configItem));
+        $copy = $config->withSize($configItem);
+        $this->assertNotSame($config, $copy);
+        $config = $copy;
         $this->assertSame($configItem, $config->getSize());
     }
 
-    public function testSetSizeItems(): void
+    public function testWithSizeItems(): void
     {
         $config = new PictureConfiguration();
         $configItem = $this->createMock(PictureConfigurationItem::class);
 
         $this->assertSame([], $config->getSizeItems());
-        $this->assertSame($config, $config->setSizeItems([$configItem]));
+        $copy = $config->withSizeItems([$configItem]);
+        $this->assertNotSame($config, $copy);
+        $config = $copy;
         $this->assertSame([$configItem], $config->getSizeItems());
 
         $this->expectException(InvalidArgumentException::class);
 
-        $config->setSizeItems([$configItem, 'not a PictureConfigurationItem']);
+        $config = $config->withSizeItems([$configItem, 'not a PictureConfigurationItem']);
     }
 
-    public function testSetFormats(): void
+    public function testWithFormats(): void
     {
         $config = new PictureConfiguration();
 
         $this->assertSame(
             [PictureConfiguration::FORMAT_DEFAULT => [PictureConfiguration::FORMAT_DEFAULT]],
-            $config->getFormats()
+            $config->getFormats(),
         );
 
         $formats = ['png' => ['webp', 'png'], 'jpeg' => ['heic']];
         $expected = $formats + [PictureConfiguration::FORMAT_DEFAULT => [PictureConfiguration::FORMAT_DEFAULT]];
 
-        $this->assertSame($config, $config->setFormats($formats));
+        $copy = $config->withFormats($formats);
+        $this->assertNotSame($config, $copy);
+        $config = $copy;
         $this->assertSame($expected, $config->getFormats());
 
         $formats = ['png' => ['webp', 'png'], PictureConfiguration::FORMAT_DEFAULT => ['heic']];
         $expected = $formats;
 
-        $this->assertSame($config, $config->setFormats($formats));
+        $copy = $config->withFormats($formats);
+        $this->assertNotSame($config, $copy);
+        $config = $copy;
         $this->assertSame($expected, $config->getFormats());
 
-        $this->assertSame($config, $config->setFormats([]));
+        $copy = $config->withFormats([]);
+        $this->assertNotSame($config, $copy);
+        $config = $copy;
 
         $this->assertSame(
             [PictureConfiguration::FORMAT_DEFAULT => [PictureConfiguration::FORMAT_DEFAULT]],
-            $config->getFormats()
+            $config->getFormats(),
         );
     }
 
-    public function testSetFormatsThrowsForInvalidSourceFormat(): void
+    public function testWithFormatsThrowsForInvalidSourceFormat(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('"not-valid"');
 
-        (new PictureConfiguration())->setFormats(['not-valid' => ['png']]);
+        (new PictureConfiguration())->withFormats(['not-valid' => ['png']]);
     }
 
-    public function testSetFormatsThrowsForInvalidTargetFormat(): void
+    public function testWithFormatsThrowsForInvalidTargetFormat(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('"not-valid"');
 
-        (new PictureConfiguration())->setFormats(['png' => ['not-valid']]);
+        (new PictureConfiguration())->withFormats(['png' => ['not-valid']]);
     }
 }

@@ -38,7 +38,7 @@ class TransformationCalculator
                     return $this->calculateBox($widthHeight, new CalculationContext($dimensions, $importantPartArray, $zoom));
             }
 
-            throw new InvalidArgumentException(sprintf('Unsupported resize mode "%s"', $config->getMode()));
+            throw new InvalidArgumentException(\sprintf('Unsupported resize mode "%s"', $config->getMode()));
         }
 
         // If no dimensions are specified, use the zoomed important part
@@ -52,7 +52,7 @@ class TransformationCalculator
         return $this->calculateSingleDimension(
             [$config->getWidth(), $config->getHeight()],
             $dimensions,
-            $this->zoomImportantPart($importantPartArray, $zoom, $dimensions->getSize())
+            $this->zoomImportantPart($importantPartArray, $zoom, $dimensions->getSize()),
         );
     }
 
@@ -71,14 +71,14 @@ class TransformationCalculator
         $leastZoomed = $this->calculateLeastZoomed(
             $size,
             $original->getSize(),
-            $importantPart
+            $importantPart,
         );
 
         // Calculate the image part for zoom 100
         $mostZoomed = $this->calculateMostZoomed(
             $size,
             $original->getSize(),
-            $importantPart
+            $importantPart,
         );
 
         // If the most zoomed area is larger, no zooming can be applied
@@ -172,7 +172,7 @@ class TransformationCalculator
     /**
      * Converts an important part to an x, y, width and height array.
      *
-     * @return array<string,int>
+     * @return array<string, int>
      */
     private function importantPartAsArray(Dimensions $dimensions, ?ImportantPart $importantPart = null): array
     {
@@ -197,7 +197,7 @@ class TransformationCalculator
     /**
      * Zooms an important part by the specified zoom level.
      *
-     * @return array<string,float>
+     * @return array<string, float>
      */
     private function zoomImportantPart(array $importantPart, float $zoom, Size $origSize): array
     {
@@ -231,17 +231,17 @@ class TransformationCalculator
 
         $sizeBox = new Size(
             (int) max(round($size[0] * $scale), 1),
-            (int) max(round($size[1] * $scale), 1)
+            (int) max(round($size[1] * $scale), 1),
         );
 
         $cropPoint = new Point(
             (int) min(round($cropStart[0] * $scale), $sizeBox->getWidth() - 1),
-            (int) min(round($cropStart[1] * $scale), $sizeBox->getHeight() - 1)
+            (int) min(round($cropStart[1] * $scale), $sizeBox->getHeight() - 1),
         );
 
         $cropBox = new Size(
             (int) max(round($cropSize[0] * $scale), 1),
-            (int) max(round($cropSize[1] * $scale), 1)
+            (int) max(round($cropSize[1] * $scale), 1),
         );
 
         return new TransformationCoordinates($sizeBox, $cropPoint, $cropBox);
@@ -254,7 +254,7 @@ class TransformationCalculator
      * @param Size       $origSize Original size
      * @param array      $part     Important part
      *
-     * @return array<string,float>
+     * @return array<string, float>
      */
     private function calculateLeastZoomed(array $size, Size $origSize, array $part): array
     {
@@ -271,8 +271,7 @@ class TransformationCalculator
             if ($zoomed['width'] > $part['width']) {
                 $zoomed['x'] = ($origSize->getWidth() - $zoomed['width'])
                     * $part['x']
-                    / ($origSize->getWidth() - $part['width'])
-                ;
+                    / ($origSize->getWidth() - $part['width']);
             } else {
                 $zoomed['x'] = $part['x'] + (($part['width'] - $zoomed['width']) / 2);
             }
@@ -282,8 +281,7 @@ class TransformationCalculator
             if ($zoomed['height'] > $part['height']) {
                 $zoomed['y'] = ($origSize->getHeight() - $zoomed['height'])
                     * $part['y']
-                    / ($origSize->getHeight() - $part['height'])
-                ;
+                    / ($origSize->getHeight() - $part['height']);
             } else {
                 $zoomed['y'] = $part['y'] + (($part['height'] - $zoomed['height']) / 2);
             }
@@ -299,7 +297,7 @@ class TransformationCalculator
      * @param Size       $origSize Original size
      * @param array      $part     Important part
      *
-     * @return array<string,float>
+     * @return array<string, float>
      */
     private function calculateMostZoomed(array $size, Size $origSize, array $part): array
     {
@@ -311,8 +309,7 @@ class TransformationCalculator
             if ($origSize->getHeight() > $part['height']) {
                 $zoomed['y'] -= ($zoomed['height'] - $part['height'])
                     * $part['y']
-                    / ($origSize->getHeight() - $part['height'])
-                ;
+                    / ($origSize->getHeight() - $part['height']);
             }
         } else {
             $zoomed['width'] = $size[0] * $zoomed['height'] / $size[1];
@@ -320,8 +317,7 @@ class TransformationCalculator
             if ($origSize->getWidth() > $part['width']) {
                 $zoomed['x'] -= ($zoomed['width'] - $part['width'])
                     * $part['x']
-                    / ($origSize->getWidth() - $part['width'])
-                ;
+                    / ($origSize->getWidth() - $part['width']);
             }
         }
 

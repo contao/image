@@ -27,7 +27,7 @@ class PngFormatTest extends TestCase
         $this->assertSame($expected, (new PngFormat())->toReadable((new PngFormat())->parse($source)));
     }
 
-    public function getParse(): \Generator
+    public static function getParse(): iterable
     {
         yield [
             "Copyright\x00© 2023 me",
@@ -59,7 +59,7 @@ class PngFormatTest extends TestCase
         $this->assertSame($expected, (new PngFormat())->serialize($source, $preserveKeys));
     }
 
-    public function getSerialize(): \Generator
+    public static function getSerialize(): iterable
     {
         yield [
             new ImageMetadata([

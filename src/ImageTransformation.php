@@ -16,8 +16,11 @@ final class ImageTransformation
 {
     private bool $copy = false;
 
-    public function __construct(private ImageInformation $sourceInformation, private TransformationCoordinates $coordinates, private ProcessingOptions $options)
-    {
+    public function __construct(
+        private ImageInformation $sourceInformation,
+        private TransformationCoordinates $coordinates,
+        private ProcessingOptions $options,
+    ) {
     }
 
     public function getSourceInformation(): ImageInformation

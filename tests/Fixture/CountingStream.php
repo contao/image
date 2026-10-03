@@ -15,7 +15,9 @@ namespace Contao\Image\Tests\Fixture;
 final class CountingStream
 {
     public $context;
+
     private MemorySource $source;
+
     private int $offset = 0;
 
     public function stream_open(): bool

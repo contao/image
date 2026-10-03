@@ -14,7 +14,10 @@ namespace Contao\Image\Internal;
 
 final class SrcsetContext
 {
-    public function __construct(public readonly string $descriptorType, public readonly int $width, public readonly string $format)
-    {
+    public function __construct(
+        public readonly string $descriptorType,
+        public readonly int $width,
+        public readonly string $format,
+    ) {
     }
 }
