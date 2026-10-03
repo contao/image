@@ -15,6 +15,7 @@ namespace Contao\Image\Metadata;
 class PngFormat extends AbstractFormat
 {
     public const NAME = 'png';
+
     public const DEFAULT_PRESERVE_KEYS = ['Copyright', 'Author', 'Source', 'Disclaimer'];
 
     public function serialize(ImageMetadata $metadata, array $preserveKeys): string
@@ -27,7 +28,7 @@ class PngFormat extends AbstractFormat
             ?? $metadata->getFormat(IptcFormat::NAME)['2#116']
             ?? $metadata->getFormat(ExifFormat::NAME)['IFD0']['Copyright']
             ?? $metadata->getFormat(GifFormat::NAME)['Comment']
-            ?? []
+            ?? [],
         );
 
         $png['Author'] = $this->filterValue(
@@ -35,28 +36,28 @@ class PngFormat extends AbstractFormat
             ?? $metadata->getFormat(XmpFormat::NAME)['http://purl.org/dc/elements/1.1/']['creator']
             ?? $metadata->getFormat(IptcFormat::NAME)['2#080']
             ?? $metadata->getFormat(ExifFormat::NAME)['IFD0']['Artist']
-            ?? []
+            ?? [],
         );
 
         $png['Source'] = $this->filterValue(
             $metadata->getFormat(self::NAME)['Source']
             ?? $metadata->getFormat(XmpFormat::NAME)['http://ns.adobe.com/photoshop/1.0/']['Source']
             ?? $metadata->getFormat(IptcFormat::NAME)['2#115']
-            ?? []
+            ?? [],
         );
 
         $png['Disclaimer'] = $this->filterValue(
             $metadata->getFormat(self::NAME)['Disclaimer']
             ?? $metadata->getFormat(XmpFormat::NAME)['http://ns.adobe.com/photoshop/1.0/']['Credit']
             ?? $metadata->getFormat(IptcFormat::NAME)['2#110']
-            ?? []
+            ?? [],
         );
 
         $png['Title'] = $this->filterValue(
             $metadata->getFormat(self::NAME)['Title']
             ?? $metadata->getFormat(XmpFormat::NAME)['http://purl.org/dc/elements/1.1/']['title']
             ?? $metadata->getFormat(IptcFormat::NAME)['2#005']
-            ?? []
+            ?? [],
         );
 
         $filtered = [];

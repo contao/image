@@ -109,7 +109,10 @@ class StreamInspectionTest extends AbstractImagePipelineTest
     {
         $this->source();
         $source = new MemorySource(file_get_contents($this->directory.'/source'));
-        $source->onRead = static function () use ($source): void { $source->contents .= 'changed'; $source->onRead = null; };
+        $source->onRead = static function () use ($source): void {
+            $source->contents .= 'changed';
+            $source->onRead = null;
+        };
 
         try {
             (new StreamImageInspector())->inspect($source);

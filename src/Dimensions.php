@@ -17,11 +17,16 @@ use Contao\Image\Exception\InvalidArgumentException;
 final class Dimensions
 {
     public const ABSOLUTE = 'absolute';
+
     public const RELATIVE = 'relative';
+
     public const UNDEFINED = 'undefined';
 
-    public function __construct(private Size $size, private string $kind = self::ABSOLUTE, private int $orientation = 1)
-    {
+    public function __construct(
+        private Size $size,
+        private string $kind = self::ABSOLUTE,
+        private int $orientation = 1,
+    ) {
         if (!\in_array($kind, [self::ABSOLUTE, self::RELATIVE, self::UNDEFINED], true) || $orientation < 1 || $orientation > 8) {
             throw new InvalidArgumentException('Invalid dimension kind or orientation');
         }

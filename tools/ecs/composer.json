@@ -1,9 +1,6 @@
 {
     "require": {
-        "contao/easy-coding-standard": "^5.0"
-    },
-    "conflict": {
-        "slevomat/coding-standard": ">= 8.16"
+        "contao/easy-coding-standard": "^6.14.2"
     },
     "config": {
         "allow-plugins": {

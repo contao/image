@@ -16,8 +16,10 @@ use Contao\Image\Exception\InvalidArgumentException;
 
 final class Size
 {
-    public function __construct(private int $width, private int $height)
-    {
+    public function __construct(
+        private int $width,
+        private int $height,
+    ) {
         if ($width < 1 || $height < 1) {
             throw new InvalidArgumentException('Image dimensions must be positive');
         }

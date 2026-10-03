@@ -22,8 +22,10 @@ final class FilesystemTargetContentStorage implements LocalTargetContentStorageI
 {
     private FilesystemRecords $files;
 
-    public function __construct(string $root, private string $urlPrefix)
-    {
+    public function __construct(
+        string $root,
+        private string $urlPrefix,
+    ) {
         $this->files = new FilesystemRecords($root);
     }
 

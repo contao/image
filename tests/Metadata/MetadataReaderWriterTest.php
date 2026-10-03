@@ -19,7 +19,7 @@ use Contao\Image\Metadata\IptcFormat;
 use Contao\Image\Metadata\MetadataReaderWriter;
 use Contao\Image\Metadata\PngFormat;
 use Contao\Image\Metadata\XmpFormat;
-use Contao\Image\ResizeOptions;
+use Contao\Image\ProcessingOptions;
 use Imagine\Gd\Imagine as GdImagine;
 use Imagine\Gmagick\Imagine as GmagickImagine;
 use Imagine\Image\Box;
@@ -36,16 +36,16 @@ class MetadataReaderWriterTest extends TestCase
     {
         $this->assertExpectedArrayRecursive(
             $expected,
-            (new MetadataReaderWriter())->parse($sourcePath)->getAll()
+            (new MetadataReaderWriter())->parse($sourcePath)->getAll(),
         );
 
         $this->assertExpectedArrayRecursive(
             $expectedReadable,
-            (new MetadataReaderWriter())->toReadable((new MetadataReaderWriter())->parse($sourcePath))
+            (new MetadataReaderWriter())->toReadable((new MetadataReaderWriter())->parse($sourcePath)),
         );
     }
 
-    public function getParse(): \Generator
+    public static function getParse(): iterable
     {
         $paths = [
             'jxl1.jxl' => [
@@ -178,7 +178,7 @@ class MetadataReaderWriterTest extends TestCase
                     PngFormat::NAME => [],
                     GifFormat::NAME => [],
                 ]),
-                (new ResizeOptions())->getPreserveCopyrightMetadata()
+                (new ProcessingOptions())->getPreserveCopyrightMetadata(),
             );
 
             $this->assertFileEquals($sourcePath, $targetPath);
@@ -187,11 +187,11 @@ class MetadataReaderWriterTest extends TestCase
         }
 
         if (!$supported) {
-            $this->markTestSkipped(sprintf('Format "%s" not supported on this system', $format));
+            $this->markTestSkipped(\sprintf('Format "%s" not supported on this system', $format));
         }
     }
 
-    public function getFormats(): \Generator
+    public static function getFormats(): iterable
     {
         yield ['png', 'gif', 'jpg', 'webp'];
     }

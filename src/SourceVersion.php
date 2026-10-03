@@ -17,8 +17,10 @@ use Contao\Image\Exception\SourceVersionMismatchException;
 
 final class SourceVersion
 {
-    public function __construct(private SourceReference $reference, private string $version)
-    {
+    public function __construct(
+        private SourceReference $reference,
+        private string $version,
+    ) {
         if ('' === $version) {
             throw new InvalidArgumentException('Source version must not be empty');
         }

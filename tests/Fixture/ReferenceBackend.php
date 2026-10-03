@@ -22,9 +22,13 @@ use Contao\Image\TargetRequest;
 final class ReferenceBackend implements ImageBackendInterface
 {
     public int $preparations = 0;
+
     public int $executions = 0;
+
     public int $deletions = 0;
+
     public bool $failDelete = false;
+
     public string $prefix = 'https://images.example';
 
     public function getIdentifier(): string

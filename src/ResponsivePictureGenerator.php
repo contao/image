@@ -16,8 +16,11 @@ use Contao\Image\Internal\PictureGeneration;
 
 final class ResponsivePictureGenerator implements ResponsivePictureGeneratorInterface
 {
-    public function __construct(private ImageResizerInterface $resizer, private SourceInformationProvider $information, private ImageLifecycle $lifecycle)
-    {
+    public function __construct(
+        private ImageResizerInterface $resizer,
+        private SourceInformationProvider $information,
+        private ImageLifecycle $lifecycle,
+    ) {
     }
 
     public function generate(ImageSourceInterface $source, PictureConfiguration $configuration, ProcessingOptions $options): ResponsivePictureInterface

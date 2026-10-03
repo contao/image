@@ -14,8 +14,10 @@ namespace Contao\Image;
 
 final class SourceInformationProvider
 {
-    public function __construct(private SourceInformationStorageInterface $storage, private ImageInspectorInterface $inspector)
-    {
+    public function __construct(
+        private SourceInformationStorageInterface $storage,
+        private ImageInspectorInterface $inspector,
+    ) {
     }
 
     public function get(ImageSourceInterface $source, SourceVersion $version): ImageInformation

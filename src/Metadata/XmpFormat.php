@@ -127,7 +127,7 @@ class XmpFormat extends AbstractFormat
             ?? $metadata->getFormat(ExifFormat::NAME)['IFD0']['Copyright']
             ?? $metadata->getFormat(PngFormat::NAME)['Copyright']
             ?? $metadata->getFormat(GifFormat::NAME)['Comment']
-            ?? []
+            ?? [],
         );
 
         $xmp['http://purl.org/dc/elements/1.1/']['creator'] = $this->filterValue(
@@ -135,28 +135,28 @@ class XmpFormat extends AbstractFormat
             ?? $metadata->getFormat(IptcFormat::NAME)['2#080']
             ?? $metadata->getFormat(ExifFormat::NAME)['IFD0']['Artist']
             ?? $metadata->getFormat(PngFormat::NAME)['Author']
-            ?? []
+            ?? [],
         );
 
         $xmp['http://ns.adobe.com/photoshop/1.0/']['Source'] = $this->filterValue(
             $metadata->getFormat(self::NAME)['http://ns.adobe.com/photoshop/1.0/']['Source']
             ?? $metadata->getFormat(IptcFormat::NAME)['2#115']
             ?? $metadata->getFormat(PngFormat::NAME)['Source']
-            ?? []
+            ?? [],
         );
 
         $xmp['http://ns.adobe.com/photoshop/1.0/']['Credit'] = $this->filterValue(
             $metadata->getFormat(self::NAME)['http://ns.adobe.com/photoshop/1.0/']['Credit']
             ?? $metadata->getFormat(IptcFormat::NAME)['2#110']
             ?? $metadata->getFormat(PngFormat::NAME)['Disclaimer']
-            ?? []
+            ?? [],
         );
 
         $xmp['http://purl.org/dc/elements/1.1/']['title'] = $this->filterValue(
             $metadata->getFormat(self::NAME)['http://purl.org/dc/elements/1.1/']['title']
             ?? $metadata->getFormat(IptcFormat::NAME)['2#005']
             ?? $metadata->getFormat(PngFormat::NAME)['Title']
-            ?? []
+            ?? [],
         );
 
         $filtered = [];
@@ -232,7 +232,7 @@ class XmpFormat extends AbstractFormat
             .'<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">'
             .'<rdf:Description/>'
             .'</rdf:RDF>'
-            .'</x:xmpmeta>'
+            .'</x:xmpmeta>',
         );
 
         $dom->encoding = 'UTF-8';
@@ -263,7 +263,7 @@ class XmpFormat extends AbstractFormat
                 foreach ($values as $value) {
                     $bag
                         ->appendChild(
-                            $dom->createElementNS('http://www.w3.org/1999/02/22-rdf-syntax-ns#', 'rdf:li')
+                            $dom->createElementNS('http://www.w3.org/1999/02/22-rdf-syntax-ns#', 'rdf:li'),
                         )
                         ->appendChild($dom->createTextNode($value))
                     ;

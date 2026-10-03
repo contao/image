@@ -42,17 +42,10 @@ class PictureConfigurationItem
     public function getResizeConfig(): ResizeConfiguration
     {
         if (null === $this->resizeConfig) {
-            $this->setResizeConfig(new ResizeConfiguration());
+            $this->resizeConfig = new ResizeConfiguration();
         }
 
         return $this->resizeConfig;
-    }
-
-    public function setResizeConfig(ResizeConfiguration $resizeConfig): self
-    {
-        $this->resizeConfig = $resizeConfig;
-
-        return $this;
     }
 
     public function getSizes(): string
@@ -60,35 +53,14 @@ class PictureConfigurationItem
         return $this->sizes;
     }
 
-    public function setSizes(string $sizes): self
-    {
-        $this->sizes = $sizes;
-
-        return $this;
-    }
-
     public function getDensities(): string
     {
         return $this->densities;
     }
 
-    public function setDensities(string $densities): self
-    {
-        $this->densities = $densities;
-
-        return $this;
-    }
-
     public function getMedia(): string
     {
         return $this->media;
-    }
-
-    public function setMedia(string $media): self
-    {
-        $this->media = $media;
-
-        return $this;
     }
 
     public function withResizeConfig(ResizeConfiguration $resizeConfig): self

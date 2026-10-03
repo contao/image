@@ -16,8 +16,11 @@ use Contao\Image\Internal\Streams;
 
 class StoredImageBackend implements ImageBackendInterface
 {
-    public function __construct(protected ImageDecoderEncoderInterface $codec, protected TargetContentStorageInterface $storage, private string $namespace = 'imagine-v1')
-    {
+    public function __construct(
+        protected ImageDecoderEncoderInterface $codec,
+        protected TargetContentStorageInterface $storage,
+        private string $namespace = 'imagine-v1',
+    ) {
     }
 
     public function getIdentifier(): string

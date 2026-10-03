@@ -18,32 +18,21 @@ use PhpCsFixer\Fixer\FunctionNotation\UseArrowFunctionsFixer;
 use PhpCsFixer\Fixer\Phpdoc\NoSuperfluousPhpdocTagsFixer;
 use PhpCsFixer\Fixer\PhpUnit\PhpUnitExpectationFixer;
 use Symplify\EasyCodingStandard\Config\ECSConfig;
-use Symplify\EasyCodingStandard\ValueObject\Option;
 
-return static function (ECSConfig $ecsConfig): void {
-    $ecsConfig->sets([__DIR__.'/../vendor/contao/easy-coding-standard/config/contao.php']);
-
-    $ecsConfig->skip([
-        PhpUnitExpectationFixer::class => [
-            'tests/ImportantPartTest.php',
-        ],
+return ECSConfig::configure()
+    ->withSets([__DIR__.'/../vendor/contao/easy-coding-standard/config/contao.php'])
+    ->withSkip([
+        PhpUnitExpectationFixer::class => ['tests/ImportantPartTest.php'],
         UseArrowFunctionsFixer::class => ['*'],
         NoSuperfluousPhpdocTagsFixer::class => ['*'],
         TypeHintOrderFixer::class => ['*'],
-    ]);
-
-    $ecsConfig->ruleWithConfiguration(HeaderCommentFixer::class, [
+    ])
+    ->withConfiguredRule(HeaderCommentFixer::class, [
         'header' => "This file is part of Contao.\n\n(c) Leo Feyer\n\n@license LGPL-3.0-or-later",
-    ]);
-
-    $ecsConfig->ruleWithConfiguration(EmptyLoopBodyFixer::class, ['style' => 'semicolon']);
-
-    $ecsConfig->ruleWithConfiguration(NullableTypeDeclarationForDefaultNullValueFixer::class, [
-        'use_nullable_type_declaration' => true,
-    ]);
-    $ecsConfig->lineEnding("\n");
-
-    $parameters = $ecsConfig->parameters();
-    $parameters->set(Option::PARALLEL, false);
-    $parameters->set(Option::CACHE_DIRECTORY, sys_get_temp_dir().'/ecs_default_cache');
-};
+    ])
+    ->withConfiguredRule(EmptyLoopBodyFixer::class, ['style' => 'semicolon'])
+    ->withConfiguredRule(NullableTypeDeclarationForDefaultNullValueFixer::class, ['use_nullable_type_declaration' => true])
+    ->withSpacing(lineEnding: "\n")
+    ->withCache(sys_get_temp_dir().'/ecs_default_cache')
+    ->withoutParallel()
+;

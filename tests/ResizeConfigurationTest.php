@@ -24,97 +24,105 @@ class ResizeConfigurationTest extends TestCase
 
         $this->assertTrue($config->isEmpty());
 
-        $config->setMode(ResizeConfiguration::MODE_CROP);
+        $config = $config->withMode(ResizeConfiguration::MODE_CROP);
 
         $this->assertTrue($config->isEmpty());
 
-        $config->setMode(ResizeConfiguration::MODE_PROPORTIONAL);
+        $config = $config->withMode(ResizeConfiguration::MODE_PROPORTIONAL);
 
         $this->assertTrue($config->isEmpty());
 
-        $config->setMode(ResizeConfiguration::MODE_BOX);
+        $config = $config->withMode(ResizeConfiguration::MODE_BOX);
 
         $this->assertTrue($config->isEmpty());
 
-        $config->setWidth(100);
+        $config = $config->withWidth(100);
 
         $this->assertFalse($config->isEmpty());
 
-        $config->setWidth(0)->setHeight(100);
+        $config = $config->withWidth(0)->withHeight(100);
 
         $this->assertFalse($config->isEmpty());
 
-        $config->setHeight(0)->setZoomLevel(100);
+        $config = $config->withHeight(0)->withZoomLevel(100);
 
         $this->assertFalse($config->isEmpty());
 
-        $config->setWidth(100)->setHeight(100)->setZoomLevel(100);
+        $config = $config->withWidth(100)->withHeight(100)->withZoomLevel(100);
 
         $this->assertFalse($config->isEmpty());
 
-        $config->setWidth(0)->setHeight(0)->setZoomLevel(0);
+        $config = $config->withWidth(0)->withHeight(0)->withZoomLevel(0);
 
         $this->assertTrue($config->isEmpty());
     }
 
-    public function testSetWidth(): void
+    public function testWithWidth(): void
     {
         $config = new ResizeConfiguration();
 
         $this->assertSame(0, $config->getWidth());
-        $this->assertSame($config, $config->setWidth(100));
+        $copy = $config->withWidth(100);
+        $this->assertNotSame($config, $copy);
+        $config = $copy;
         $this->assertSame(100, $config->getWidth());
 
         $this->expectException(InvalidArgumentException::class);
 
-        $config->setWidth(-1);
+        $config = $config->withWidth(-1);
     }
 
-    public function testSetHeight(): void
+    public function testWithHeight(): void
     {
         $config = new ResizeConfiguration();
 
         $this->assertSame(0, $config->getHeight());
-        $this->assertSame($config, $config->setHeight(100));
+        $copy = $config->withHeight(100);
+        $this->assertNotSame($config, $copy);
+        $config = $copy;
         $this->assertSame(100, $config->getHeight());
 
         $this->expectException(InvalidArgumentException::class);
 
-        $config->setHeight(-1);
+        $config = $config->withHeight(-1);
     }
 
-    public function testSetMode(): void
+    public function testWithMode(): void
     {
         $config = new ResizeConfiguration();
 
         $this->assertSame(ResizeConfiguration::MODE_CROP, $config->getMode());
-        $this->assertSame($config, $config->setMode(ResizeConfiguration::MODE_BOX));
+        $copy = $config->withMode(ResizeConfiguration::MODE_BOX);
+        $this->assertNotSame($config, $copy);
+        $config = $copy;
         $this->assertSame(ResizeConfiguration::MODE_BOX, $config->getMode());
 
         $this->expectException(InvalidArgumentException::class);
 
-        $config->setMode('invalid');
+        $config = $config->withMode('invalid');
     }
 
-    public function testSetZoomLevel(): void
+    public function testWithZoomLevel(): void
     {
         $config = new ResizeConfiguration();
 
         $this->assertSame(0, $config->getZoomLevel());
-        $this->assertSame($config, $config->setZoomLevel(100));
+        $copy = $config->withZoomLevel(100);
+        $this->assertNotSame($config, $copy);
+        $config = $copy;
         $this->assertSame(100, $config->getZoomLevel());
 
         $this->expectException(InvalidArgumentException::class);
 
-        $config->setZoomLevel(-1);
+        $config = $config->withZoomLevel(-1);
     }
 
-    public function testSetZoomLevelTooHigh(): void
+    public function testWithZoomLevelTooHigh(): void
     {
         $config = new ResizeConfiguration();
 
         $this->expectException(InvalidArgumentException::class);
 
-        $config->setZoomLevel(101);
+        $config = $config->withZoomLevel(101);
     }
 }

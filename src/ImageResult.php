@@ -14,8 +14,10 @@ namespace Contao\Image;
 
 class ImageResult implements ImageResultInterface
 {
-    public function __construct(protected TargetRecord $record, protected ImageBackendInterface $backend)
-    {
+    public function __construct(
+        protected TargetRecord $record,
+        protected ImageBackendInterface $backend,
+    ) {
     }
 
     public function getIdentity(): TargetIdentity

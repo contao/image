@@ -16,7 +16,7 @@ $result = $factory->getResizer()->resize(
 echo $result->getUrl();
 ```
 
-The URL prefix must serve the factory's `<cacheDirectory>/image-v2/content` directory. Keep the secret stable and private. A changed secret or output-affecting backend namespace creates different target identities. A changed URL prefix does not.
+The URL prefix must serve the factory's `<cacheDirectory>/image-v2/content` directory. Keep the secret stable and private. A changed secret or output-affecting backend namespace creates different target identities. A changed URL prefix does not. Change `withNamespace()` when replacing a codec, changing its driver or changing output-affecting backend configuration.
 
 `SourceReference` identifies a storage and key. `SourceVersion` adds an opaque version token. Neither stores credentials or resources. Resolve credentials through your application services. Sources open a fresh readable stream for each `openStream()` call and transfer ownership to the caller. The codec similarly transfers ownership of its output stream. Close streams in `finally` blocks.
 

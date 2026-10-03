@@ -14,8 +14,11 @@ namespace Contao\Image;
 
 final class ResultSourceResolver implements ImageSourceResolverInterface
 {
-    public function __construct(private ImageSourceResolverInterface $sources, private TargetRecordStorageInterface $records, private BackendRegistry $backends)
-    {
+    public function __construct(
+        private ImageSourceResolverInterface $sources,
+        private TargetRecordStorageInterface $records,
+        private BackendRegistry $backends,
+    ) {
     }
 
     public function resolve(SourceReference $reference, ?string $version = null): ImageSourceInterface

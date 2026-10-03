@@ -19,8 +19,10 @@ class FilesystemImageSource implements ImageSourceInterface
 {
     private ?ImportantPart $importantPart = null;
 
-    public function __construct(private string $path, private SourceReference $reference)
-    {
+    public function __construct(
+        private string $path,
+        private SourceReference $reference,
+    ) {
     }
 
     public function getReference(): SourceReference

@@ -16,8 +16,10 @@ use Contao\Image\Exception\SourceUnavailableException;
 
 final class ExportedImageResult implements LocalImageResultInterface
 {
-    public function __construct(private ImageResultInterface $original, private string $path)
-    {
+    public function __construct(
+        private ImageResultInterface $original,
+        private string $path,
+    ) {
     }
 
     public function getIdentity(): TargetIdentity

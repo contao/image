@@ -16,8 +16,11 @@ use Contao\Image\Internal\Json;
 
 final class TargetDescription
 {
-    public function __construct(private string $backend, private string $key, private array $data = [])
-    {
+    public function __construct(
+        private string $backend,
+        private string $key,
+        private array $data = [],
+    ) {
         $this->data = Json::normalize($data);
     }
 

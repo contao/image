@@ -27,7 +27,7 @@ class MetadataReaderWriter
     private $containers;
 
     /**
-     * @var array<string,MetadataFormatInterface>
+     * @var array<string, MetadataFormatInterface>
      */
     private $formats;
 
@@ -47,8 +47,7 @@ class MetadataReaderWriter
 
         $this->containers = \is_array($containers)
             ? array_values($containers)
-            : iterator_to_array($containers, false)
-        ;
+            : iterator_to_array($containers, false);
 
         $this->containers[] = new JpegContainer($this);
         $this->containers[] = new PngContainer($this);
@@ -67,7 +66,7 @@ class MetadataReaderWriter
     public function parse($pathOrStream): ImageMetadata
     {
         if (!\is_string($pathOrStream) && (!\is_resource($pathOrStream) || 'stream' !== get_resource_type($pathOrStream))) {
-            throw new \TypeError(sprintf('Argument 1 passed to %s() must be of the type resource|string, %s given', __METHOD__, get_debug_type($pathOrStream)));
+            throw new \TypeError(\sprintf('Argument 1 passed to %s() must be of the type resource|string, %s given', __METHOD__, get_debug_type($pathOrStream)));
         }
 
         if (\is_string($pathOrStream)) {
@@ -92,13 +91,13 @@ class MetadataReaderWriter
         $input = fopen($inputPath, 'r');
 
         if (!$input) {
-            throw new InvalidArgumentException(sprintf('Unable to open image path "%s"', $inputPath));
+            throw new InvalidArgumentException(\sprintf('Unable to open image path "%s"', $inputPath));
         }
 
         $output = fopen($outputPath, 'w');
 
         if (!$output) {
-            throw new InvalidArgumentException(sprintf('Unable to write image to path "%s"', $outputPath));
+            throw new InvalidArgumentException(\sprintf('Unable to write image to path "%s"', $outputPath));
         }
 
         $this->applyCopyrightToStream($input, $output, $metadata, $preserveKeysByFormat);
@@ -111,11 +110,11 @@ class MetadataReaderWriter
     public function applyCopyrightToStream($inputStream, $outputStream, ImageMetadata $metadata, array $preserveKeysByFormat): void
     {
         if (!\is_resource($inputStream) || 'stream' !== get_resource_type($inputStream)) {
-            throw new \TypeError(sprintf('Argument 2 passed to %s() must be of the type resource, %s given', __METHOD__, get_debug_type($inputStream)));
+            throw new \TypeError(\sprintf('Argument 2 passed to %s() must be of the type resource, %s given', __METHOD__, get_debug_type($inputStream)));
         }
 
         if (!\is_resource($outputStream) || 'stream' !== get_resource_type($outputStream)) {
-            throw new \TypeError(sprintf('Argument 3 passed to %s() must be of the type resource, %s given', __METHOD__, get_debug_type($outputStream)));
+            throw new \TypeError(\sprintf('Argument 3 passed to %s() must be of the type resource, %s given', __METHOD__, get_debug_type($outputStream)));
         }
 
         if ($metadata->getAll() && $container = $this->findContainer($inputStream)) {
@@ -141,7 +140,7 @@ class MetadataReaderWriter
     }
 
     /**
-     * @return array<string,array<string,list<string>>> One array per format with labels as keys, values as string lists
+     * @return array<string, array<string, list<string>>> One array per format with labels as keys, values as string lists
      */
     public function toReadable(ImageMetadata $metadata): array
     {
@@ -168,7 +167,7 @@ class MetadataReaderWriter
             if (0 !== fseek($stream, -$length, SEEK_CUR)) {
                 $streamMeta = stream_get_meta_data($stream);
 
-                throw new InvalidArgumentException(sprintf('Unable to rewind "%s" stream "%s"', $streamMeta['stream_type'], $streamMeta['uri']));
+                throw new InvalidArgumentException(\sprintf('Unable to rewind "%s" stream "%s"', $streamMeta['stream_type'], $streamMeta['uri']));
             }
 
             if ($bytes === $magicBytes) {

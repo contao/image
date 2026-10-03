@@ -42,7 +42,7 @@ class PngContainer extends AbstractContainer
             }
 
             if (8 !== \strlen($marker)) {
-                throw new InvalidImageContainerException(sprintf('Invalid PNG chunk "%s"', '0x'.bin2hex($marker)));
+                throw new InvalidImageContainerException(\sprintf('Invalid PNG chunk "%s"', '0x'.bin2hex($marker)));
             }
 
             $size = unpack('N', substr($marker, 0, 4))[1];
@@ -61,7 +61,7 @@ class PngContainer extends AbstractContainer
 
                 if ($iptc) {
                     // Non-standard ImageMagick/exiftool/exiv2 format
-                    fwrite($outputStream, $this->buildItxt('Raw profile type iptc', sprintf("\nIPTC profile\n%8d\n%s", \strlen($iptc), bin2hex($iptc))));
+                    fwrite($outputStream, $this->buildItxt('Raw profile type iptc', \sprintf("\nIPTC profile\n%8d\n%s", \strlen($iptc), bin2hex($iptc))));
                 }
 
                 // Copy the rest of the image
@@ -92,7 +92,7 @@ class PngContainer extends AbstractContainer
             }
 
             if (8 !== \strlen($marker)) {
-                throw new InvalidImageContainerException(sprintf('Invalid PNG chunk "%s"', '0x'.bin2hex($marker)));
+                throw new InvalidImageContainerException(\sprintf('Invalid PNG chunk "%s"', '0x'.bin2hex($marker)));
             }
 
             $size = unpack('N', substr($marker, 0, 4))[1];
@@ -134,13 +134,13 @@ class PngContainer extends AbstractContainer
         if (\strlen($compressed) < \strlen($content)) {
             return $this->buildChunk(
                 'iTXt',
-                "$keyword\x00\x01\x00\x00\x00$compressed"
+                "$keyword\x00\x01\x00\x00\x00$compressed",
             );
         }
 
         return $this->buildChunk(
             'iTXt',
-            "$keyword\x00\x00\x00\x00\x00$content"
+            "$keyword\x00\x00\x00\x00\x00$content",
         );
     }
 

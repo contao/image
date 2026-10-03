@@ -1,0 +1,47 @@
+{
+    "php": "8.4.26",
+    "os": "Darwin",
+    "iterations": 200,
+    "jpg": {
+        "new": {
+            "median_us": 798.21,
+            "p95_us": 859.54,
+            "source_content_opens": 0,
+            "target_content_operations": [],
+            "information_operations_per_picture": {
+                "get": 4
+            },
+            "record_operations_per_picture": {
+                "lockSource": 4,
+                "getLifecycle": 4,
+                "lockTarget": 3,
+                "get": 3
+            }
+        },
+        "source_shared_lock": {
+            "median_us": 26.38,
+            "p95_us": 35.04
+        }
+    },
+    "svg": {
+        "new": {
+            "median_us": 323.08,
+            "p95_us": 395.67,
+            "source_content_opens": 0,
+            "target_content_operations": [],
+            "information_operations_per_picture": {
+                "get": 2
+            },
+            "record_operations_per_picture": {
+                "lockSource": 2,
+                "getLifecycle": 2,
+                "lockTarget": 1,
+                "get": 1
+            }
+        },
+        "source_shared_lock": {
+            "median_us": 25.33,
+            "p95_us": 29.79
+        }
+    }
+}

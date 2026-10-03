@@ -16,8 +16,10 @@ use Contao\Image\Exception\InvalidArgumentException;
 
 final class ImageInformation
 {
-    public function __construct(private Dimensions $dimensions, private string $format)
-    {
+    public function __construct(
+        private Dimensions $dimensions,
+        private string $format,
+    ) {
         if (!preg_match('/^[a-z0-9]+$/D', $format)) {
             throw new InvalidArgumentException('Invalid image format');
         }

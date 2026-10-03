@@ -42,6 +42,7 @@ final class PictureGeneration
     private $resizeOptions;
 
     private ImageInformation $information;
+
     private ImageSourceInterface $image;
 
     public function __construct(ImageResizerInterface $resizer, ImageInformation $information, ImageSourceInterface $image)
@@ -58,7 +59,7 @@ final class PictureGeneration
 
         $formats = $this->getFormatsFromConfig(
             $config,
-            $this->information->getFormat()
+            $this->information->getFormat(),
         );
 
         $sources = [];
@@ -92,7 +93,7 @@ final class PictureGeneration
             $config->getDensities()
             && ($config->getResizeConfig()->getWidth() || $config->getResizeConfig()->getHeight())
         ) {
-            if (!$sizesAttribute && false !== strpos($config->getDensities(), 'w')) {
+            if (!$sizesAttribute && str_contains($config->getDensities(), 'w')) {
                 $sizesAttribute = '100vw';
             }
 
@@ -134,7 +135,7 @@ final class PictureGeneration
             ->calculate(
                 $config->getResizeConfig(),
                 new Dimensions($this->information->getDimensions()->getSize(), Dimensions::RELATIVE),
-                $this->image->getImportantPart()
+                $this->image->getImportantPart(),
             )
             ->getCropSize()
             ->getWidth()
@@ -144,7 +145,7 @@ final class PictureGeneration
     /**
      * Parse the densities string and return an array of scaling factors.
      *
-     * @return array<int,float>
+     * @return array<int, float>
      */
     private function parseDensities(string $densities, int $width1x): array
     {
@@ -160,7 +161,7 @@ final class PictureGeneration
 
                 return (float) $density;
             },
-            $densitiesArray
+            $densitiesArray,
         );
 
         // Strip empty densities
@@ -192,7 +193,7 @@ final class PictureGeneration
 
         if ('x' === $context->descriptorType) {
             $srcX = $resizedImage->getDimensions()->getSize()->getWidth() / $context->width;
-            $src[1] = rtrim(rtrim(sprintf('%.3F', $srcX), '0'), '.').'x';
+            $src[1] = rtrim(rtrim(\sprintf('%.3F', $srcX), '0'), '.').'x';
         } elseif ('w' === $context->descriptorType) {
             $src[1] = $resizedImage->getDimensions()->getSize()->getWidth().'w';
         }
@@ -220,7 +221,7 @@ final class PictureGeneration
                 $usedPaths[$key] = true;
 
                 return true;
-            }
+            },
         ));
 
         if (1 === \count($srcset) && isset($srcset[0][1]) && 'x' === substr($srcset[0][1], -1)) {
@@ -241,7 +242,7 @@ final class PictureGeneration
             static function ($format) use ($config, $sourceFormat) {
                 return $format === $config::FORMAT_DEFAULT ? $sourceFormat : $format;
             },
-            $formatsConfig[$sourceFormat] ?? $formatsConfig[$config::FORMAT_DEFAULT]
+            $formatsConfig[$sourceFormat] ?? $formatsConfig[$config::FORMAT_DEFAULT],
         );
     }
 

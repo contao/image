@@ -14,8 +14,11 @@ namespace Contao\Image;
 
 final class PublicFilesystemImageSource extends FilesystemImageSource implements PublicImageSourceInterface
 {
-    public function __construct(string $path, SourceReference $reference, private string $url)
-    {
+    public function __construct(
+        string $path,
+        SourceReference $reference,
+        private string $url,
+    ) {
         parent::__construct($path, $reference);
     }
 

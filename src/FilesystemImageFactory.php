@@ -13,19 +13,21 @@ declare(strict_types=1);
 namespace Contao\Image;
 
 use Contao\Image\Internal\ImageExporter;
-use Imagine\Image\ImagineInterface;
 
 final class FilesystemImageFactory
 {
     private SourceInformationProvider $information;
+
     private TargetCoordinator $targets;
+
     private ImageLifecycle $lifecycle;
+
     private ImageResizer $resizer;
+
     private FilesystemTargetRecordStorage $records;
 
-    public function __construct(FilesystemImageConfiguration $configuration, ImageSourceResolverInterface $resolver, ImagineInterface|ImageDecoderEncoderInterface $codec)
+    public function __construct(FilesystemImageConfiguration $configuration, ImageSourceResolverInterface $resolver, ImageDecoderEncoderInterface $codec)
     {
-        $codec = $codec instanceof ImagineInterface ? new ImagineImageDecoderEncoder($codec) : $codec;
         $root = rtrim($configuration->getCacheDirectory(), '/').'/image-v2';
         $this->records = new FilesystemTargetRecordStorage($root);
         $information = new FilesystemSourceInformationStorage($root);

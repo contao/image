@@ -18,6 +18,7 @@ use Contao\Image\Exception\RuntimeException;
 class ExifFormat extends AbstractFormat
 {
     public const NAME = 'exif';
+
     public const DEFAULT_PRESERVE_KEYS = [
         'IFD0' => ['Copyright', 'Artist'],
     ];
@@ -36,8 +37,8 @@ class ExifFormat extends AbstractFormat
                 ?? $metadata->getFormat(IptcFormat::NAME)['2#110']
                 ?? $metadata->getFormat(PngFormat::NAME)['Disclaimer']
                 ?? $metadata->getFormat(GifFormat::NAME)['Comment']
-                ?? []
-            )
+                ?? [],
+            ),
         );
 
         $creator = implode(
@@ -51,8 +52,8 @@ class ExifFormat extends AbstractFormat
                 ?? $metadata->getFormat(IptcFormat::NAME)['2#115']
                 ?? $metadata->getFormat(PngFormat::NAME)['Source']
                 ?? $metadata->getFormat(XmpFormat::NAME)['http://xmp.gettyimages.com/gift/1.0/']['AssetID']
-                ?? []
-            )
+                ?? [],
+            ),
         );
 
         if ($creator === $copyright && !($metadata->getFormat(self::NAME)['IFD0']['Artist'] ?? null)) {
@@ -93,7 +94,7 @@ class ExifFormat extends AbstractFormat
             ."\x09\x0D\x11\x0D\x0E\x0F\x10\x10\x11\x10\x0A\x0C\x12\x13\x12\x10"
             ."\x13\x0F\x10\x10\x10\xFF\xC9\x00\x0B\x08\x00\x01\x00\x01\x01\x01"
             ."\x11\x00\xFF\xCC\x00\x06\x00\x10\x10\x05\xFF\xDA\x00\x08\x01\x01"
-            ."\x00\x00\x3F\x00\xD2\xCF\x20\xFF\xD9"
+            ."\x00\x00\x3F\x00\xD2\xCF\x20\xFF\xD9",
         );
 
         rewind($jpegStream);

@@ -35,7 +35,7 @@ class TransformationCalculatorTest extends TestCase
         $this->assertSame([$expected['width'], $expected['height']], $result->getCropSize()->toArray());
     }
 
-    public function calculations(): iterable
+    public static function calculations(): iterable
     {
         foreach (json_decode(file_get_contents(__DIR__.'/data/calculations.json'), true) as $name => $case) {
             yield $name => [$case];

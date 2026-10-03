@@ -17,6 +17,7 @@ use Contao\Image\Exception\SourceVersionMismatchException;
 use Contao\Image\FilesystemImageConfiguration;
 use Contao\Image\FilesystemImageFactory;
 use Contao\Image\FilesystemSourceResolver;
+use Contao\Image\ImagineImageDecoderEncoder;
 use Contao\Image\LocalImageResultInterface;
 use Contao\Image\PictureConfiguration;
 use Contao\Image\PictureConfigurationItem;
@@ -87,7 +88,7 @@ class ImagePipelineTest extends AbstractImagePipelineTest
         $this->assertInstanceOf(LocalImageResultInterface::class, $copy);
         $this->assertSame(file_get_contents($this->directory.'/source'), file_get_contents($copy->getPath()));
         $resolver = new FilesystemSourceResolver(['assets' => $this->directory], ['assets' => 'https://assets.example']);
-        $factory = new FilesystemImageFactory(new FilesystemImageConfiguration($this->directory.'/cache', '/new-images', 'test-secret'), $resolver, new Imagine());
+        $factory = new FilesystemImageFactory(new FilesystemImageConfiguration($this->directory.'/cache', '/new-images', 'test-secret'), $resolver, new ImagineImageDecoderEncoder(new Imagine()));
         $public = $factory->getResizer()->resize($resolver->resolve(new SourceReference('assets', 'source')), new ResizeConfiguration(), $options);
         $this->assertSame('https://assets.example/source', $public->getUrl());
         $updated = $factory->getDeferredProcessor()->getResult($copy->getIdentity());

@@ -18,8 +18,10 @@ use Symfony\Component\Filesystem\Path;
 
 final class FilesystemSourceResolver implements ImageSourceResolverInterface
 {
-    public function __construct(private array $roots, private array $urlPrefixes = [])
-    {
+    public function __construct(
+        private array $roots,
+        private array $urlPrefixes = [],
+    ) {
     }
 
     public function resolve(SourceReference $reference, ?string $version = null): ImageSourceInterface

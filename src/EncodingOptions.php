@@ -18,6 +18,7 @@ use Contao\Image\Internal\Json;
 final class EncodingOptions
 {
     private array $common = [];
+
     private array $adapters = [];
 
     public function withFormat(string $format): self

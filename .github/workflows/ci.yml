@@ -3,7 +3,7 @@ name: CI
 on:
     pull_request: ~
     push:
-        branches: [1.x, 'codex/image-1.3']
+        branches: [2.x, 'codex/image-2.x']
         tags: ['*']
     schedule:
         - cron: '0 13 * * MON,TUE'
@@ -19,11 +19,11 @@ jobs:
             fail-fast: false
             matrix:
                 os: [ubuntu-latest, windows-latest]
-                php: ['8.3', '8.4', '8.5']
+                php: ['8.4', '8.5']
                 dependencies: [highest]
                 include:
-                    - {os: ubuntu-latest, php: '8.3', dependencies: lowest}
-                    - {os: windows-latest, php: '8.3', dependencies: lowest}
+                    - {os: ubuntu-latest, php: '8.4', dependencies: lowest}
+                    - {os: windows-latest, php: '8.4', dependencies: lowest}
         steps:
             - uses: actions/checkout@v4
             - uses: shivammathur/setup-php@v2
@@ -37,7 +37,7 @@ jobs:
             - run: composer validate --strict
             - run: composer unit-tests
             - name: Run consumer with local version override
-              run: php examples/consumer/install.php 1.3.99
+              run: php examples/consumer/install.php 2.0.99
             - run: php examples/consumer/run.php
 
     imagick:

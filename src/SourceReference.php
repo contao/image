@@ -16,8 +16,10 @@ use Contao\Image\Exception\InvalidArgumentException;
 
 final class SourceReference
 {
-    public function __construct(private string $storage, private string $key)
-    {
+    public function __construct(
+        private string $storage,
+        private string $key,
+    ) {
         if ('' === $storage || '' === $key) {
             throw new InvalidArgumentException('Source storage and key must not be empty');
         }

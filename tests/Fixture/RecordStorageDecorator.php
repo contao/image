@@ -23,8 +23,11 @@ use Contao\Image\TargetRecordStorageInterface;
 class RecordStorageDecorator implements TargetRecordStorageInterface
 {
     public ?\Closure $beforeSourceLock = null;
+
     public array $counts = [];
+
     public bool $failCompletion = false;
+
     public ?\Closure $beforeTargetLock = null;
 
     public function __construct(private TargetRecordStorageInterface $inner)

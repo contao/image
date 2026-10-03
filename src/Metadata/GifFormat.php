@@ -15,6 +15,7 @@ namespace Contao\Image\Metadata;
 class GifFormat extends AbstractFormat
 {
     public const NAME = 'gif';
+
     public const DEFAULT_PRESERVE_KEYS = ['Comment'];
 
     public function serialize(ImageMetadata $metadata, array $preserveKeys): string
@@ -31,7 +32,7 @@ class GifFormat extends AbstractFormat
             ?? $metadata->getFormat(XmpFormat::NAME)['http://prismstandard.org/namespaces/prismusagerights/2.1/']['creditLine']
             ?? $metadata->getFormat(IptcFormat::NAME)['2#110']
             ?? $metadata->getFormat(PngFormat::NAME)['Disclaimer']
-            ?? []
+            ?? [],
         );
 
         $filtered = [];

@@ -17,12 +17,13 @@ use PHPUnit\Framework\Assert;
 final class Worker
 {
     private $process;
+
     private array $pipes = [];
 
     public function __construct(string $mode, string $directory, string $identity = '')
     {
-        // Direct pipes provide deterministic worker barriers for these contract tests
-        // @phpstan-ignore-next-line
+        // Direct pipes provide deterministic worker barriers for these contract
+        // tests @phpstan-ignore-next-line
         $this->process = proc_open([PHP_BINARY, __DIR__.'/process-worker.php', $mode, $directory, $identity], [0 => ['pipe', 'r'], 1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $this->pipes);
 
         foreach ([1, 2] as $index) {

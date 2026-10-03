@@ -18,8 +18,11 @@ final class TargetRecord
 {
     private string $revision;
 
-    public function __construct(private TargetIdentity $identity, private SourceVersion $source, private PreparedTarget $target)
-    {
+    public function __construct(
+        private TargetIdentity $identity,
+        private SourceVersion $source,
+        private PreparedTarget $target,
+    ) {
         $this->revision = bin2hex(random_bytes(16));
     }
 

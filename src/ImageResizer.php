@@ -18,8 +18,15 @@ use Contao\Image\Internal\Json;
 
 final class ImageResizer implements ImageResizerInterface
 {
-    public function __construct(private SourceInformationProvider $information, private TargetCoordinator $targets, private ImageLifecycle $lifecycle, private ImageBackendInterface $backend, private string $secret, private ?PublicSourceImageBackend $publicSources = null, private ImageExporter $exporter = new ImageExporter())
-    {
+    public function __construct(
+        private SourceInformationProvider $information,
+        private TargetCoordinator $targets,
+        private ImageLifecycle $lifecycle,
+        private ImageBackendInterface $backend,
+        private string $secret,
+        private ?PublicSourceImageBackend $publicSources = null,
+        private ImageExporter $exporter = new ImageExporter(),
+    ) {
         if ('' === $secret) {
             throw new InvalidArgumentException('Target hashing secret must not be empty');
         }

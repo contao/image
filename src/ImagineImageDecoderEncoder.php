@@ -32,8 +32,11 @@ use Imagine\Image\Point as ImaginePoint;
 
 final class ImagineImageDecoderEncoder implements ImageDecoderEncoderInterface
 {
-    public function __construct(private ImagineInterface $imagine, private ?ImagineInterface $svg = null, private MetadataReaderWriter $metadata = new MetadataReaderWriter())
-    {
+    public function __construct(
+        private ImagineInterface $imagine,
+        private ?ImagineInterface $svg = null,
+        private MetadataReaderWriter $metadata = new MetadataReaderWriter(),
+    ) {
     }
 
     public function transform(ImageSourceInterface $source, ImageTransformation $transformation)
@@ -121,7 +124,8 @@ final class ImagineImageDecoderEncoder implements ImageDecoderEncoderInterface
         $coordinates = $transformation->getCoordinates();
         $image->resize(new Box($coordinates->getSize()->getWidth(), $coordinates->getSize()->getHeight()), $filter)
             ->crop(new ImaginePoint($coordinates->getCropStart()->getX(), $coordinates->getCropStart()->getY()), new Box($coordinates->getCropSize()->getWidth(), $coordinates->getCropSize()->getHeight()))
-            ->usePalette(new RGB())->strip();
+            ->usePalette(new RGB())->strip()
+        ;
 
         if (isset($options['interlace'])) {
             try {
