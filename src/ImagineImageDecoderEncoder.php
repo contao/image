@@ -118,6 +118,8 @@ final class ImagineImageDecoderEncoder implements ImageDecoderEncoderInterface
     private function modify(ImageInterface $image, ImageTransformation $transformation, array $options): void
     {
         if (1 !== $transformation->getSourceInformation()->getDimensions()->getOrientation()) {
+            // Inspection remains authoritative when a custom metadata reader omits EXIF
+            $image->metadata()['ifd0.Orientation'] = $transformation->getSourceInformation()->getDimensions()->getOrientation();
             (new Autorotate())->apply($image);
         }
         $filter = $image instanceof SvgImage || $image instanceof GdImage ? ImageInterface::FILTER_UNDEFINED : ($options['resampling-filter'] ?? ImageInterface::FILTER_LANCZOS);
