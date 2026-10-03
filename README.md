@@ -107,3 +107,7 @@ $picture->getSources('/path/to', 'https://example.com/');
 ```
 
 [1]: https://contao.org
+
+## Shared image API
+
+The new API is available in 1.3 and retained in 2.0. See the [API guide](docs/image-api.md), [migration guide](docs/migration-2.0.md), [storage contract](docs/storage.md) and [format matrix](docs/formats.md). The legacy API below remains supported in 1.3.

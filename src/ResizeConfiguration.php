@@ -20,7 +20,7 @@ class ResizeConfiguration
     public const MODE_BOX = 'box';
 
     /**
-     * @deprecated Deprecated since version 1.2, to be removed in version 2.0.
+     * @deprecated Legacy use is deprecated since 1.2. The planned removal in 2.0 is superseded.
      */
     public const MODE_PROPORTIONAL = 'proportional';
 
